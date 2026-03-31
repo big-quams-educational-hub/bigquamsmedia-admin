@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Admin Panel | BIG QUAMS MEDIA®</title>
 <meta name="robots" content="noindex, nofollow">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -14,7 +14,7 @@
   --border:#e2e8f0; --text:#0f172a; --bg:#f1f5f9;
 }
 html { scroll-behavior: smooth; }
-body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; font-size:15px; -webkit-text-size-adjust:100%; }
+body { font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; font-size:15px; -webkit-text-size-adjust:100%; }
 
 /* LOGIN */
 #loginScreen { min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--blue-dk),var(--blue)); padding:20px; }
@@ -24,7 +24,7 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); 
 .login-logo img { width:100%; height:100%; object-fit:cover; }
 .login-card h2 { font-family:'Syne',sans-serif; font-size:1.25rem; font-weight:800; color:var(--blue-dk); margin-bottom:4px; }
 .login-card p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
-.login-card input { width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:8px; font-size:0.95rem; font-family:'Inter',sans-serif; margin-bottom:12px; transition:border-color 0.2s; color:var(--text); }
+.login-card input { width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:8px; font-size:0.95rem; font-family:'Roboto',sans-serif; margin-bottom:12px; transition:border-color 0.2s; color:var(--text); }
 .login-card input:focus { outline:none; border-color:var(--blue); }
 .login-btn { width:100%; background:var(--blue); color:white; padding:13px; border:none; border-radius:8px; font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; transition:0.2s; }
 .login-btn:hover { background:var(--blue-dk); }
@@ -58,7 +58,7 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); 
 .token-setup p { font-size:0.77rem; color:#78350f; margin-bottom:10px; line-height:1.5; }
 .token-row { display:flex; gap:8px; flex-wrap:wrap; }
 @media(max-width:380px){ .token-row input { width:100%; } .token-row { flex-direction:column; } }
-.token-row input { flex:1; padding:9px 12px; border:1.5px solid #fcd34d; border-radius:7px; font-size:0.84rem; font-family:'Inter',sans-serif; background:white; min-width:0; }
+.token-row input { flex:1; padding:9px 12px; border:1.5px solid #fcd34d; border-radius:7px; font-size:0.84rem; font-family:'Roboto',sans-serif; background:white; min-width:0; }
 .token-row input:focus { outline:none; border-color:var(--orange); }
 
 /* STATUS */
@@ -70,13 +70,13 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); 
 
 /* SECTION TABS */
 .section-tabs { display:flex; gap:5px; margin-bottom:14px; background:white; border-radius:10px; padding:5px; border:1px solid var(--border); width:fit-content; max-width:100%; }
-.section-tab { padding:8px 16px; border-radius:7px; border:none; font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; color:var(--muted); background:transparent; transition:0.2s; white-space:nowrap; }
+.section-tab { padding:8px 16px; border-radius:7px; border:none; font-family:'Roboto',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; color:var(--muted); background:transparent; transition:0.2s; white-space:nowrap; }
 .section-tab.active { background:var(--blue); color:white; }
 .section-tab:hover:not(.active) { background:var(--light); color:var(--blue); }
 
 /* ADMIN TABS */
 .admin-tabs { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; overflow-x:auto; -webkit-overflow-scrolling:touch; }
-.admin-tab { padding:8px 15px; border-radius:8px; border:1.5px solid var(--border); background:white; color:var(--muted); font-size:0.81rem; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; transition:0.2s; white-space:nowrap; }
+.admin-tab { padding:8px 15px; border-radius:8px; border:1.5px solid var(--border); background:white; color:var(--muted); font-size:0.81rem; font-weight:600; cursor:pointer; font-family:'Roboto',sans-serif; transition:0.2s; white-space:nowrap; }
 .admin-tab.active { background:var(--blue); color:white; border-color:var(--blue); }
 .admin-tab:hover:not(.active) { border-color:var(--blue); color:var(--blue); }
 .admin-section { display:none; }
@@ -94,13 +94,13 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); 
 @media(min-width:480px){.form-row{grid-template-columns:1fr 1fr;}}
 .form-group { margin-bottom:10px; }
 .form-group label { display:block; font-size:0.75rem; font-weight:600; color:#374151; margin-bottom:4px; }
-.form-group input,.form-group select,.form-group textarea { width:100%; padding:9px 11px; border:1.5px solid var(--border); border-radius:7px; font-size:0.88rem; font-family:'Inter',sans-serif; color:var(--text); background:#fafafa; transition:border-color 0.2s; }
+.form-group input,.form-group select,.form-group textarea { width:100%; padding:9px 11px; border:1.5px solid var(--border); border-radius:7px; font-size:0.88rem; font-family:'Roboto',sans-serif; color:var(--text); background:#fafafa; transition:border-color 0.2s; }
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus { outline:none; border-color:var(--blue); background:white; }
 .form-group textarea { resize:vertical; min-height:100px; line-height:1.6; }
 .form-hint { font-size:0.69rem; color:var(--muted); margin-top:3px; }
 
 /* BUTTONS */
-.btn { padding:8px 15px; border-radius:7px; font-weight:600; font-size:0.82rem; cursor:pointer; border:none; font-family:'Inter',sans-serif; transition:0.2s; display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
+.btn { padding:8px 15px; border-radius:7px; font-weight:600; font-size:0.82rem; cursor:pointer; border:none; font-family:'Roboto',sans-serif; transition:0.2s; display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
 .btn:disabled { opacity:0.5; cursor:not-allowed; }
 .btn-primary { background:var(--blue); color:white; }
 .btn-primary:hover:not(:disabled) { background:var(--blue-dk); }
@@ -156,6 +156,24 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); 
 .modal-close:hover { background:rgba(255,255,255,0.3); }
 .modal-body { padding:14px; }
 @media(min-width:480px){.modal-body{padding:18px;}}
+
+/* IMAGE UPLOAD */
+.img-upload-box {
+  border: 2px dashed var(--border); border-radius: 8px;
+  padding: 14px; text-align: center; cursor: pointer;
+  background: #fafafa; transition: 0.2s; position: relative;
+}
+.img-upload-box:hover { border-color: var(--blue); background: var(--light); }
+.img-upload-box input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.img-upload-box .upload-label { font-size: 0.78rem; color: var(--muted); pointer-events: none; }
+.img-upload-box .upload-label span { display: block; font-size: 1.4rem; margin-bottom: 4px; }
+.img-preview {
+  width: 100%; max-height: 130px; object-fit: cover;
+  border-radius: 6px; display: none; margin-top: 8px;
+}
+.img-preview.show { display: block; }
+.img-clear { font-size: 0.72rem; color: var(--red); cursor: pointer; margin-top: 4px; display: none; font-weight: 600; }
+.img-clear.show { display: inline-block; }
 </style>
 </head>
 <body>
@@ -202,6 +220,7 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); 
     <div class="section-tabs">
       <button class="section-tab active" onclick="switchSection('news')">📰 News</button>
       <button class="section-tab" onclick="switchSection('library')">📚 eLibrary</button>
+      <button class="section-tab" onclick="switchSection('dyk')">💡 DYK</button>
     </div>
 
     <!-- NEWS SECTION -->
@@ -227,7 +246,16 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); 
           </div>
           <div class="form-row">
             <div class="form-group"><label>Date</label><input type="text" id="addDate"></div>
-            <div class="form-group"><label>Cover Image URL</label><input type="url" id="addImage" placeholder="https://… (optional)"><div class="form-hint">Direct image link — Imgur, etc.</div></div>
+            <div class="form-group">
+              <label>Cover Image</label>
+              <div class="img-upload-box" onclick="document.getElementById('addImageFile').click()">
+                <input type="file" id="addImageFile" accept="image/*" onchange="previewImg(this,'addImgPreview','addImgClear','addImageB64')">
+                <div class="upload-label"><span>🖼️</span>Tap to upload image</div>
+              </div>
+              <img id="addImgPreview" class="img-preview" alt="preview">
+              <span id="addImgClear" class="img-clear" onclick="clearImg('addImageFile','addImgPreview','addImgClear','addImageB64')">✕ Remove image</span>
+              <input type="hidden" id="addImageB64">
+            </div>
           </div>
           <div class="form-group"><label>Short Summary * <span style="font-weight:400;color:var(--muted)">(shown on card previews)</span></label><textarea id="addSummary" style="min-height:75px;" placeholder="2–3 sentence summary…"></textarea></div>
           <div class="form-group"><label>Full Article Content * <span style="font-weight:400;color:var(--muted)">(blank line = new paragraph)</span></label><textarea id="addFullContent" placeholder="Write the full article here…"></textarea></div>
@@ -266,7 +294,16 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); 
             <select id="bAddCategory"><option value="">— Select —</option><option>JAMB & UTME</option><option>University</option><option>Novels & Fiction</option><option>Secondary School</option><option>Scholarship</option><option>Professional</option></select>
           </div>
           <div class="form-group"><label>Short Description *</label><textarea id="bAddDesc" style="min-height:75px;" placeholder="What is this book about?"></textarea></div>
-          <div class="form-group"><label>Cover Image URL</label><input type="url" id="bAddCover" placeholder="https://… (optional)"><div class="form-hint">Direct image link for book cover preview</div></div>
+          <div class="form-group">
+            <label>Cover Image</label>
+            <div class="img-upload-box" onclick="document.getElementById('bAddCoverFile').click()">
+              <input type="file" id="bAddCoverFile" accept="image/*" onchange="previewImg(this,'bAddCoverPreview','bAddCoverClear','bAddCoverB64')">
+              <div class="upload-label"><span>🖼️</span>Tap to upload cover</div>
+            </div>
+            <img id="bAddCoverPreview" class="img-preview" alt="preview">
+            <span id="bAddCoverClear" class="img-clear" onclick="clearImg('bAddCoverFile','bAddCoverPreview','bAddCoverClear','bAddCoverB64')">✕ Remove image</span>
+            <input type="hidden" id="bAddCoverB64">
+          </div>
           <div class="form-row">
             <div class="form-group"><label>Google Drive File ID *</label><input type="text" id="bAddDriveId" placeholder="1aBcDeFgHiJkLmNoPqRsT"><div class="form-hint">Long ID from your Google Drive share link</div></div>
             <div class="form-group"><label>Or: Direct Read URL</label><input type="url" id="bAddReadUrl" placeholder="https://… (overrides Drive ID)"></div>
@@ -274,6 +311,57 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); 
           <div class="btn-row">
             <button class="btn btn-success" onclick="addBook()" id="addBookBtn">Add to eLibrary</button>
             <button class="btn btn-ghost" onclick="clearBookForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DYK SECTION -->
+    <div class="admin-section" id="section-dyk">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('dyk','list')">All Items</button>
+        <button class="admin-tab" onclick="switchTab('dyk','add')">Add Item</button>
+      </div>
+      <div class="admin-panel active" id="dyk-tab-list">
+        <div class="section-card">
+          <h3>💡 DYK, History &amp; Current Affairs</h3>
+          <div id="dykList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="dyk-tab-add">
+        <div class="section-card">
+          <h3>➕ Add New Item</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Title / Headline *</label><input type="text" id="dAddTitle" placeholder="e.g. Did You Know? Nigeria has..."></div>
+            <div class="form-group"><label>Category *</label>
+              <select id="dAddCategory">
+                <option value="">— Select —</option>
+                <option>DYK Fact</option>
+                <option>Today in History</option>
+                <option>Current Affairs</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Date</label><input type="text" id="dAddDate"></div>
+          <div class="form-group"><label>Short Summary * <span style="font-weight:400;color:var(--muted)">(shown on homepage card)</span></label>
+            <textarea id="dAddSummary" style="min-height:75px;" placeholder="Brief 1–2 sentence teaser…"></textarea>
+          </div>
+          <div class="form-group"><label>Full Content * <span style="font-weight:400;color:var(--muted)">(shown on DYK page)</span></label>
+            <textarea id="dAddContent" placeholder="Write the full content here…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Cover Image (optional)</label>
+            <div class="img-upload-box" onclick="document.getElementById('dAddImgFile').click()">
+              <input type="file" id="dAddImgFile" accept="image/*" onchange="previewImg(this,'dAddImgPreview','dAddImgClear','dAddImgB64')">
+              <div class="upload-label"><span>🖼️</span>Tap to upload image</div>
+            </div>
+            <img id="dAddImgPreview" class="img-preview" alt="preview">
+            <span id="dAddImgClear" class="img-clear" onclick="clearImg('dAddImgFile','dAddImgPreview','dAddImgClear','dAddImgB64')">✕ Remove image</span>
+            <input type="hidden" id="dAddImgB64">
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addDyk()" id="addDykBtn">Publish Item</button>
+            <button class="btn btn-ghost" onclick="clearDykForm()">Clear</button>
           </div>
         </div>
       </div>
@@ -294,7 +382,16 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); 
       </div>
       <div class="form-row">
         <div class="form-group"><label>Date</label><input type="text" id="eDate"></div>
-        <div class="form-group"><label>Cover Image URL</label><input type="url" id="eImage"></div>
+        <div class="form-group">
+          <label>Cover Image</label>
+          <div class="img-upload-box" onclick="document.getElementById('eImageFile').click()">
+            <input type="file" id="eImageFile" accept="image/*" onchange="previewImg(this,'eImgPreview','eImgClear','eImageB64')">
+            <div class="upload-label"><span>🖼️</span>Tap to replace image</div>
+          </div>
+          <img id="eImgPreview" class="img-preview" alt="preview">
+          <span id="eImgClear" class="img-clear" onclick="clearImg('eImageFile','eImgPreview','eImgClear','eImageB64')">✕ Remove image</span>
+          <input type="hidden" id="eImageB64">
+        </div>
       </div>
       <div class="form-group"><label>Short Summary *</label><textarea id="eSummary" style="min-height:75px;"></textarea></div>
       <div class="form-group"><label>Full Article Content *</label><textarea id="eFullContent"></textarea></div>
@@ -319,7 +416,16 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); 
       </div>
       <div class="form-group"><label>Category *</label><select id="bECategory"><option>JAMB & UTME</option><option>University</option><option>Novels & Fiction</option><option>Secondary School</option><option>Scholarship</option><option>Professional</option></select></div>
       <div class="form-group"><label>Short Description *</label><textarea id="bEDesc" style="min-height:75px;"></textarea></div>
-      <div class="form-group"><label>Cover Image URL</label><input type="url" id="bECover"></div>
+      <div class="form-group">
+        <label>Cover Image</label>
+        <div class="img-upload-box" onclick="document.getElementById('bECoverFile').click()">
+          <input type="file" id="bECoverFile" accept="image/*" onchange="previewImg(this,'bECoverPreview','bECoverClear','bECoverB64')">
+          <div class="upload-label"><span>🖼️</span>Tap to replace cover</div>
+        </div>
+        <img id="bECoverPreview" class="img-preview" alt="preview">
+        <span id="bECoverClear" class="img-clear" onclick="clearImg('bECoverFile','bECoverPreview','bECoverClear','bECoverB64')">✕ Remove image</span>
+        <input type="hidden" id="bECoverB64">
+      </div>
       <div class="form-row">
         <div class="form-group"><label>Google Drive File ID</label><input type="text" id="bEDriveId"></div>
         <div class="form-group"><label>Direct Read URL</label><input type="url" id="bEReadUrl"></div>
@@ -593,6 +699,381 @@ function init(){
   if(ghToken) loadAll();
 }
 if(sessionStorage.getItem('bqm_auth')==='1') init();
+
+// ── IMAGE UPLOAD HELPERS ──
+function previewImg(input, previewId, clearId, hiddenId) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 500000) { // 500KB limit
+    showStatus('error', 'Image too large. Please use an image under 500KB.');
+    input.value = ''; return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const b64 = e.target.result;
+    document.getElementById(hiddenId).value = b64;
+    const prev = document.getElementById(previewId);
+    prev.src = b64; prev.classList.add('show');
+    document.getElementById(clearId).classList.add('show');
+  };
+  reader.readAsDataURL(file);
+}
+function clearImg(inputId, previewId, clearId, hiddenId) {
+  document.getElementById(inputId).value = '';
+  document.getElementById(hiddenId).value = '';
+  const prev = document.getElementById(previewId);
+  prev.src = ''; prev.classList.remove('show');
+  document.getElementById(clearId).classList.remove('show');
+}
+function getImgVal(b64Id, urlId) {
+  const b64 = document.getElementById(b64Id) ? document.getElementById(b64Id).value : '';
+  const url = urlId && document.getElementById(urlId) ? document.getElementById(urlId).value.trim() : '';
+  return b64 || url || '';
+}
+
+// ── DYK DATA ──
+const DYK_FILE = 'dyk.json';
+let dykSha = '', dykData = [];
+
+// Override loadAll to include DYK
+const _origLoadAll = loadAll;
+async function loadAll() {
+  if (!ghToken) return;
+  showStatus('loading', 'Loading from GitHub…');
+  try {
+    const [n, b, d] = await Promise.all([ghFetch(NEWS_FILE), ghFetch(BOOKS_FILE), ghFetch(DYK_FILE)]);
+    newsSha = n.sha; newsData = n.data;
+    booksSha = b.sha; booksData = b.data;
+    dykSha = d.sha; dykData = d.data;
+    renderNews(); renderBooks(); renderDyk(); updateBadge();
+    showStatus('success', `Loaded ${newsData.length} articles, ${booksData.length} books, ${dykData.length} DYK items.`);
+  } catch(e) { showStatus('error', 'Load failed: ' + e.message); }
+}
+
+function updateBadge() {
+  document.getElementById('topBadge').textContent = `${newsData.length} Articles · ${booksData.length} Books · ${dykData.length} DYK`;
+}
+
+// DYK section switching fix
+const _origSwitchSection = switchSection;
+function switchSection(name) {
+  document.querySelectorAll('.section-tab').forEach((t, i) =>
+    t.classList.toggle('active',
+      (i===0&&name==='news') || (i===1&&name==='library') || (i===2&&name==='dyk')));
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  if (name === 'dyk') document.getElementById('section-dyk').classList.add('active');
+  else if (name === 'library') document.getElementById('section-library').classList.add('active');
+  else document.getElementById('section-news').classList.add('active');
+}
+
+// Override switchTab for DYK
+const _origSwitchTab = switchTab;
+function switchTab(sec, tab) {
+  if (sec === 'dyk') {
+    document.querySelectorAll('#section-dyk .admin-tab').forEach((t,i) =>
+      t.classList.toggle('active', (i===0&&tab==='list')||(i===1&&tab==='add')));
+    document.querySelectorAll('#section-dyk .admin-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(`dyk-tab-${tab}`).classList.add('active');
+    return;
+  }
+  const p = sec === 'news' ? 'news' : 'lib';
+  const secEl = document.getElementById(sec === 'news' ? 'section-news' : 'section-library');
+  secEl.querySelectorAll('.admin-tab').forEach((t,i) =>
+    t.classList.toggle('active', (i===0&&tab==='list')||(i===1&&tab==='add')));
+  secEl.querySelectorAll('.admin-panel').forEach(el => el.classList.remove('active'));
+  document.getElementById(`${p}-tab-${tab}`).classList.add('active');
+}
+
+// RENDER DYK
+function renderDyk() {
+  const el = document.getElementById('dykList');
+  if (!dykData.length) { el.innerHTML = '<div class="empty"><div class="ei">📭</div><p>No items yet.</p></div>'; return; }
+  const catColor = { 'DYK Fact': '#dbeafe', 'Today in History': '#fef9c3', 'Current Affairs': '#dcfce7' };
+  const catText  = { 'DYK Fact': '#1a3fa8', 'Today in History': '#854d0e', 'Current Affairs': '#15803d' };
+  el.innerHTML = '<div class="news-list">' + dykData.map((item, i) => `
+    <div class="news-item">
+      <div class="item-num">${i+1}</div>
+      <div class="item-body">
+        <div class="item-title">${item.title}</div>
+        <div class="item-meta">
+          <span class="item-cat" style="background:${catColor[item.category]||'#dbeafe'};color:${catText[item.category]||'#1a3fa8'}">${item.category||'DYK'}</span>
+          ${item.date||''}
+        </div>
+        <div class="item-preview">${(item.summary||'').slice(0,100)}…</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditDyk(${i})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteDyk(${i})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`).join('') + '</div>';
+}
+
+// ADD DYK
+async function addDyk() {
+  const title    = document.getElementById('dAddTitle').value.trim();
+  const category = document.getElementById('dAddCategory').value;
+  const date     = document.getElementById('dAddDate').value.trim();
+  const summary  = document.getElementById('dAddSummary').value.trim();
+  const content  = document.getElementById('dAddContent').value.trim();
+  const image    = document.getElementById('dAddImgB64').value;
+  if (!title||!category||!summary||!content) { showStatus('error','Fill in Title, Category, Summary and Content.'); return; }
+  const item = { title, category, date, summary, content };
+  if (image) item.image = image;
+  dykData.unshift(item);
+  const btn = document.getElementById('addDykBtn'); btn.disabled = true;
+  try {
+    dykSha = await ghPush(DYK_FILE, dykSha, dykData, 'Add DYK: ' + title);
+    showStatus('success', 'Item published!'); clearDykForm(); renderDyk(); updateBadge(); switchTab('dyk','list');
+  } catch(e) { dykData.shift(); showStatus('error', e.message); }
+  btn.disabled = false;
+}
+
+function clearDykForm() {
+  ['dAddTitle','dAddSummary','dAddContent'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('dAddCategory').value = '';
+  document.getElementById('dAddDate').value = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  clearImg('dAddImgFile','dAddImgPreview','dAddImgClear','dAddImgB64');
+}
+
+// EDIT DYK
+function openEditDyk(idx) {
+  const item = dykData[idx];
+  document.getElementById('editDykIdx').value = idx;
+  document.getElementById('dETitle').value    = item.title||'';
+  document.getElementById('dECategory').value = item.category||'';
+  document.getElementById('dEDate').value     = item.date||'';
+  document.getElementById('dESummary').value  = item.summary||'';
+  document.getElementById('dEContent').value  = item.content||'';
+  // Show existing image if any
+  if (item.image) {
+    document.getElementById('dEImgB64').value = item.image;
+    const prev = document.getElementById('dEImgPreview');
+    prev.src = item.image; prev.classList.add('show');
+    document.getElementById('dEImgClear').classList.add('show');
+  } else {
+    clearImg('dEImgFile','dEImgPreview','dEImgClear','dEImgB64');
+  }
+  openModal('editDykModal');
+}
+
+async function saveEditDyk() {
+  const idx      = parseInt(document.getElementById('editDykIdx').value);
+  const title    = document.getElementById('dETitle').value.trim();
+  const category = document.getElementById('dECategory').value;
+  const date     = document.getElementById('dEDate').value.trim();
+  const summary  = document.getElementById('dESummary').value.trim();
+  const content  = document.getElementById('dEContent').value.trim();
+  const image    = document.getElementById('dEImgB64').value;
+  if (!title||!category||!summary||!content) { showStatus('error','All required fields must be filled.'); return; }
+  const old = {...dykData[idx]};
+  dykData[idx] = { title, category, date, summary, content };
+  if (image) dykData[idx].image = image;
+  const btn = document.getElementById('saveDykBtn'); btn.disabled = true;
+  try {
+    dykSha = await ghPush(DYK_FILE, dykSha, dykData, 'Edit DYK: ' + title);
+    showStatus('success', 'Updated!'); closeModal('editDykModal'); renderDyk();
+  } catch(e) { dykData[idx] = old; showStatus('error', e.message); }
+  btn.disabled = false;
+}
+
+async function deleteDyk(idx) {
+  if (!confirm(`Delete "${dykData[idx].title}"?\n\nThis cannot be undone.`)) return;
+  const removed = dykData.splice(idx,1);
+  try {
+    dykSha = await ghPush(DYK_FILE, dykSha, dykData, 'Delete DYK: ' + removed[0].title);
+    showStatus('success','Deleted.'); renderDyk(); updateBadge();
+  } catch(e) { dykData.splice(idx,0,removed[0]); showStatus('error',e.message); }
+}
+
+// ── PATCH NEWS/BOOK FUNCTIONS TO USE BASE64 IMAGES ──
+// Override addNews image handling
+const _origAddNews = addNews;
+async function addNews() {
+  const title = document.getElementById('addTitle').value.trim();
+  const category = document.getElementById('addCategory').value;
+  const date = document.getElementById('addDate').value.trim();
+  const image = document.getElementById('addImageB64').value;
+  const summary = document.getElementById('addSummary').value.trim();
+  const fullContent = document.getElementById('addFullContent').value.trim();
+  const pinned = document.getElementById('addPinned').value === 'true';
+  const link = document.getElementById('addLink').value.trim();
+  if (!title||!category||!summary||!fullContent) { showStatus('error','Fill in Title, Category, Summary and Full Content.'); return; }
+  if (pinned&&newsData.filter(n=>n.pinned).length>=3) { showStatus('error','Max 3 pinned articles. Unpin one first.'); return; }
+  const item = { title, category, date, summary, fullContent, link };
+  if (image) item.image = image;
+  if (pinned) item.pinned = true;
+  newsData.unshift(item);
+  const btn = document.getElementById('addNewsBtn'); btn.disabled = true;
+  try {
+    newsSha = await ghPush(NEWS_FILE, newsSha, newsData, 'Add: ' + title);
+    showStatus('success','Article published!');
+    clearNewsForm(); clearImg('addImageFile','addImgPreview','addImgClear','addImageB64');
+    renderNews(); updateBadge(); switchTab('news','list');
+  } catch(e) { newsData.shift(); showStatus('error',e.message); }
+  btn.disabled = false;
+}
+
+// Override saveEditNews image handling
+const _origSaveEditNews = saveEditNews;
+async function saveEditNews() {
+  const idx = parseInt(document.getElementById('editNewsIdx').value);
+  const title = document.getElementById('eTitle').value.trim();
+  const category = document.getElementById('eCategory').value;
+  const date = document.getElementById('eDate').value.trim();
+  const image = document.getElementById('eImageB64').value || (newsData[idx]||{}).image || '';
+  const summary = document.getElementById('eSummary').value.trim();
+  const fullContent = document.getElementById('eFullContent').value.trim();
+  const pinned = document.getElementById('ePinned').value === 'true';
+  const link = document.getElementById('eLink').value.trim();
+  if (!title||!category||!summary||!fullContent) { showStatus('error','All required fields must be filled.'); return; }
+  if (pinned&&newsData.filter((n,i)=>n.pinned&&i!==idx).length>=3) { showStatus('error','Max 3 pinned. Unpin another first.'); return; }
+  const old = {...newsData[idx]};
+  newsData[idx] = { title, category, date, summary, fullContent, link };
+  if (image) newsData[idx].image = image;
+  if (pinned) newsData[idx].pinned = true;
+  const btn = document.getElementById('saveNewsBtn'); btn.disabled = true;
+  try {
+    newsSha = await ghPush(NEWS_FILE, newsSha, newsData, 'Edit: ' + title);
+    showStatus('success','Updated!'); closeModal('editNewsModal'); renderNews();
+  } catch(e) { newsData[idx] = old; showStatus('error',e.message); }
+  btn.disabled = false;
+}
+
+// Override openEditNews to show existing image
+const _origOpenEditNews = openEditNews;
+function openEditNews(idx) {
+  const item = newsData[idx];
+  document.getElementById('editNewsIdx').value = idx;
+  document.getElementById('eTitle').value       = item.title||'';
+  document.getElementById('eCategory').value    = item.category||'';
+  document.getElementById('eDate').value        = item.date||'';
+  document.getElementById('eSummary').value     = item.summary||item.description||'';
+  document.getElementById('eFullContent').value = item.fullContent||'';
+  document.getElementById('ePinned').value      = item.pinned ? 'true' : 'false';
+  document.getElementById('eLink').value        = item.link||'';
+  if (item.image) {
+    document.getElementById('eImageB64').value = item.image;
+    const prev = document.getElementById('eImgPreview');
+    prev.src = item.image; prev.classList.add('show');
+    document.getElementById('eImgClear').classList.add('show');
+  } else { clearImg('eImageFile','eImgPreview','eImgClear','eImageB64'); }
+  openModal('editNewsModal');
+}
+
+// Override addBook image handling
+const _origAddBook = addBook;
+async function addBook() {
+  const title = document.getElementById('bAddTitle').value.trim();
+  const author = document.getElementById('bAddAuthor').value.trim();
+  const category = document.getElementById('bAddCategory').value;
+  const description = document.getElementById('bAddDesc').value.trim();
+  const cover = document.getElementById('bAddCoverB64').value;
+  const driveId = document.getElementById('bAddDriveId').value.trim();
+  const readUrl = document.getElementById('bAddReadUrl').value.trim();
+  if (!title||!category||!description) { showStatus('error','Fill in Title, Category and Description.'); return; }
+  if (!driveId&&!readUrl) { showStatus('error','Provide a Google Drive File ID or Direct Read URL.'); return; }
+  const item = { title, author, category, description };
+  if (cover) item.cover = cover;
+  if (driveId) item.driveId = driveId;
+  if (readUrl) item.readUrl = readUrl;
+  booksData.unshift(item);
+  const btn = document.getElementById('addBookBtn'); btn.disabled = true;
+  try {
+    booksSha = await ghPush(BOOKS_FILE, booksSha, booksData, 'Add book: ' + title);
+    showStatus('success','Book added!');
+    clearBookForm(); clearImg('bAddCoverFile','bAddCoverPreview','bAddCoverClear','bAddCoverB64');
+    renderBooks(); updateBadge(); switchTab('lib','list');
+  } catch(e) { booksData.shift(); showStatus('error',e.message); }
+  btn.disabled = false;
+}
+
+// Override openEditBook to show existing cover
+const _origOpenEditBook = openEditBook;
+function openEditBook(idx) {
+  const b = booksData[idx];
+  document.getElementById('editBookIdx').value = idx;
+  document.getElementById('bETitle').value    = b.title||'';
+  document.getElementById('bEAuthor').value   = b.author||'';
+  document.getElementById('bECategory').value = b.category||'';
+  document.getElementById('bEDesc').value     = b.description||'';
+  document.getElementById('bEDriveId').value  = b.driveId||'';
+  document.getElementById('bEReadUrl').value  = b.readUrl||'';
+  if (b.cover) {
+    document.getElementById('bECoverB64').value = b.cover;
+    const prev = document.getElementById('bECoverPreview');
+    prev.src = b.cover; prev.classList.add('show');
+    document.getElementById('bECoverClear').classList.add('show');
+  } else { clearImg('bECoverFile','bECoverPreview','bECoverClear','bECoverB64'); }
+  openModal('editBookModal');
+}
+
+// Override saveEditBook to use base64
+const _origSaveEditBook = saveEditBook;
+async function saveEditBook() {
+  const idx = parseInt(document.getElementById('editBookIdx').value);
+  const title = document.getElementById('bETitle').value.trim();
+  const author = document.getElementById('bEAuthor').value.trim();
+  const category = document.getElementById('bECategory').value;
+  const description = document.getElementById('bEDesc').value.trim();
+  const cover = document.getElementById('bECoverB64').value || (booksData[idx]||{}).cover || '';
+  const driveId = document.getElementById('bEDriveId').value.trim();
+  const readUrl = document.getElementById('bEReadUrl').value.trim();
+  if (!title||!category||!description) { showStatus('error','Title, Category and Description are required.'); return; }
+  const old = {...booksData[idx]};
+  booksData[idx] = { title, author, category, description };
+  if (cover) booksData[idx].cover = cover;
+  if (driveId) booksData[idx].driveId = driveId;
+  if (readUrl) booksData[idx].readUrl = readUrl;
+  const btn = document.getElementById('saveBookBtn'); btn.disabled = true;
+  try {
+    booksSha = await ghPush(BOOKS_FILE, booksSha, booksData, 'Edit book: ' + title);
+    showStatus('success','Book updated!'); closeModal('editBookModal'); renderBooks();
+  } catch(e) { booksData[idx] = old; showStatus('error',e.message); }
+  btn.disabled = false;
+}
+
+// Also init DYK date
+const _origInit = init;
+function init() {
+  const today = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('addDate').value = today;
+  document.getElementById('dAddDate').value = today;
+  if (ghToken) loadAll();
+}
+
 </script>
+
+<!-- EDIT DYK MODAL -->
+<div class="modal-overlay" id="editDykModal" onclick="handleOverlay(event,'editDykModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Item</h3><button class="modal-close" onclick="closeModal('editDykModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editDykIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Title *</label><input type="text" id="dETitle"></div>
+        <div class="form-group"><label>Category *</label>
+          <select id="dECategory"><option>DYK Fact</option><option>Today in History</option><option>Current Affairs</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Date</label><input type="text" id="dEDate"></div>
+      <div class="form-group"><label>Short Summary *</label><textarea id="dESummary" style="min-height:75px;"></textarea></div>
+      <div class="form-group"><label>Full Content *</label><textarea id="dEContent"></textarea></div>
+      <div class="form-group">
+        <label>Cover Image</label>
+        <div class="img-upload-box" onclick="document.getElementById('dEImgFile').click()">
+          <input type="file" id="dEImgFile" accept="image/*" onchange="previewImg(this,'dEImgPreview','dEImgClear','dEImgB64')">
+          <div class="upload-label"><span>🖼️</span>Tap to replace image</div>
+        </div>
+        <img id="dEImgPreview" class="img-preview" alt="preview">
+        <span id="dEImgClear" class="img-clear" onclick="clearImg('dEImgFile','dEImgPreview','dEImgClear','dEImgB64')">✕ Remove</span>
+        <input type="hidden" id="dEImgB64">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveEditDyk()" id="saveDykBtn">Save Changes</button>
+        <button class="btn btn-ghost" onclick="closeModal('editDykModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
