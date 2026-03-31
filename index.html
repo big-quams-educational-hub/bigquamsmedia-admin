@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+      <div class<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -7,210 +7,150 @@
 <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --blue:    #1a3fa8;
-  --blue-dk: #102880;
-  --orange:  #f97316;
-  --green:   #16a34a;
-  --red:     #dc2626;
-  --muted:   #64748b;
-  --light:   #f0f5ff;
-  --border:  #e2e8f0;
-  --text:    #0f172a;
-  --card:    #ffffff;
-}
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: var(--text); min-height: 100vh; }
+:root {
+  --blue:#1a3fa8; --blue-dk:#102880; --orange:#f97316; --green:#16a34a;
+  --red:#dc2626; --yellow:#f59e0b; --muted:#64748b; --light:#f0f5ff;
+  --border:#e2e8f0; --text:#0f172a; --bg:#f1f5f9;
+}
+html { scroll-behavior: smooth; }
+body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; font-size:15px; -webkit-text-size-adjust:100%; }
 
-/* ── LOGIN SCREEN ── */
-#loginScreen {
-  min-height: 100vh; display: flex;
-  align-items: center; justify-content: center;
-  background: linear-gradient(135deg, var(--blue-dk), var(--blue));
-  padding: 20px;
-}
-.login-card {
-  background: white; border-radius: 20px;
-  padding: 40px 32px; width: 100%; max-width: 380px;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.25);
-  text-align: center;
-}
-.login-logo { width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--orange); margin: 0 auto 16px; overflow: hidden; }
-.login-logo img { width: 100%; height: 100%; object-fit: cover; }
-.login-card h2 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--blue-dk); margin-bottom: 4px; }
-.login-card p { font-size: 0.82rem; color: var(--muted); margin-bottom: 24px; }
-.login-card input {
-  width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
-  border-radius: 8px; font-size: 0.95rem; font-family: 'Inter', sans-serif;
-  margin-bottom: 12px; transition: border-color 0.2s;
-}
-.login-card input:focus { outline: none; border-color: var(--blue); }
-.login-btn {
-  width: 100%; background: var(--blue); color: white;
-  padding: 13px; border: none; border-radius: 8px;
-  font-family: 'Syne', sans-serif; font-weight: 700;
-  font-size: 1rem; cursor: pointer; transition: 0.2s;
-}
-.login-btn:hover { background: var(--blue-dk); }
-.login-error { color: var(--red); font-size: 0.82rem; margin-top: 10px; display: none; font-weight: 600; }
+/* LOGIN */
+#loginScreen { min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--blue-dk),var(--blue)); padding:20px; }
+.login-card { background:white; border-radius:20px; padding:36px 28px; width:100%; max-width:360px; box-shadow:0 24px 60px rgba(0,0,0,0.25); text-align:center; }
+.login-logo { width:68px; height:68px; border-radius:50%; border:3px solid var(--orange); margin:0 auto 14px; overflow:hidden; }
+.login-logo img { width:100%; height:100%; object-fit:cover; }
+.login-card h2 { font-family:'Syne',sans-serif; font-size:1.25rem; font-weight:800; color:var(--blue-dk); margin-bottom:4px; }
+.login-card p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+.login-card input { width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:8px; font-size:0.95rem; font-family:'Inter',sans-serif; margin-bottom:12px; transition:border-color 0.2s; color:var(--text); }
+.login-card input:focus { outline:none; border-color:var(--blue); }
+.login-btn { width:100%; background:var(--blue); color:white; padding:13px; border:none; border-radius:8px; font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; transition:0.2s; }
+.login-btn:hover { background:var(--blue-dk); }
+.login-error { color:var(--red); font-size:0.82rem; margin-top:10px; display:none; font-weight:600; }
 
-/* ── MAIN ADMIN ── */
-#adminApp { display: none; }
+/* ADMIN APP */
+#adminApp { display:none; }
 
 /* TOPBAR */
-.topbar {
-  background: linear-gradient(135deg, var(--blue-dk), var(--blue));
-  color: white; padding: 0 20px;
-  display: flex; align-items: center; gap: 14px;
-  height: 58px; position: sticky; top: 0; z-index: 100;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-}
-.topbar-logo { display: flex; align-items: center; gap: 10px; }
-.topbar-logo img { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--orange); }
-.topbar-logo span { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.95rem; }
-.topbar-sub { font-size: 0.65rem; color: #bfdbfe; display: block; line-height: 1; }
-.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-.topbar-badge { background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
-.logout-btn { background: rgba(220,38,38,0.2); border: 1px solid rgba(220,38,38,0.4); color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
-.logout-btn:hover { background: rgba(220,38,38,0.4); }
+.topbar { background:linear-gradient(135deg,var(--blue-dk),var(--blue)); color:white; padding:0 14px; display:flex; align-items:center; gap:10px; height:54px; position:sticky; top:0; z-index:200; box-shadow:0 2px 12px rgba(0,0,0,0.2); }
+.topbar-logo { display:flex; align-items:center; gap:9px; flex-shrink:0; }
+.topbar-logo img { width:34px; height:34px; border-radius:50%; border:2px solid var(--orange); flex-shrink:0; }
+.topbar-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:0.88rem; line-height:1.2; }
+.topbar-sub { font-size:0.6rem; color:#bfdbfe; display:block; }
+.topbar-right { margin-left:auto; display:flex; align-items:center; gap:7px; }
+.topbar-badge { background:rgba(255,255,255,0.15); padding:3px 9px; border-radius:20px; font-size:0.68rem; font-weight:600; white-space:nowrap; display:none; }
+@media(min-width:420px){.topbar-badge{display:block;}}
+.site-link { color:rgba(255,255,255,0.75); font-size:0.7rem; text-decoration:none; white-space:nowrap; display:none; }
+@media(min-width:520px){.site-link{display:inline;}}
+.logout-btn { background:rgba(220,38,38,0.2); border:1px solid rgba(220,38,38,0.4); color:white; padding:5px 10px; border-radius:6px; font-size:0.72rem; font-weight:600; cursor:pointer; transition:0.2s; white-space:nowrap; }
+.logout-btn:hover { background:rgba(220,38,38,0.4); }
 
 /* LAYOUT */
-.admin-body { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
+.admin-body { max-width:960px; margin:0 auto; padding:16px 12px 60px; }
+@media(min-width:600px){.admin-body{padding:22px 20px 60px;}}
 
-/* TABS */
-.admin-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-.admin-tab {
-  padding: 9px 18px; border-radius: 8px; border: 1.5px solid var(--border);
-  background: white; color: var(--muted); font-size: 0.85rem; font-weight: 600;
-  cursor: pointer; font-family: 'Inter', sans-serif; transition: 0.2s;
-}
-.admin-tab.active { background: var(--blue); color: white; border-color: var(--blue); }
-.admin-tab:hover:not(.active) { border-color: var(--blue); color: var(--blue); }
+/* TOKEN */
+.token-setup { background:#fffbeb; border:1px solid #fcd34d; border-radius:10px; padding:14px 16px; margin-bottom:14px; }
+.token-setup h4 { font-size:0.84rem; font-weight:700; color:#92400e; margin-bottom:5px; }
+.token-setup p { font-size:0.77rem; color:#78350f; margin-bottom:10px; line-height:1.5; }
+.token-row { display:flex; gap:8px; }
+.token-row input { flex:1; padding:9px 12px; border:1.5px solid #fcd34d; border-radius:7px; font-size:0.84rem; font-family:'Inter',sans-serif; background:white; min-width:0; }
+.token-row input:focus { outline:none; border-color:var(--orange); }
 
-.admin-panel { display: none; }
-.admin-panel.active { display: block; }
+/* STATUS */
+.status-bar { padding:10px 14px; border-radius:8px; font-size:0.83rem; font-weight:600; margin-bottom:12px; display:none; align-items:center; gap:8px; flex-wrap:wrap; }
+.status-bar.show { display:flex; }
+.status-bar.success { background:#dcfce7; color:#15803d; border:1px solid #bbf7d0; }
+.status-bar.error { background:#fee2e2; color:#b91c1c; border:1px solid #fecaca; }
+.status-bar.loading { background:#dbeafe; color:var(--blue); border:1px solid #bfdbfe; }
 
-/* SECTION CARD */
-.section-card {
-  background: white; border-radius: 14px;
-  border: 1px solid var(--border);
-  padding: 24px; margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-.section-card h3 {
-  font-family: 'Syne', sans-serif; font-size: 1rem;
-  font-weight: 800; color: var(--blue-dk); margin-bottom: 18px;
-  padding-bottom: 10px; border-bottom: 2px solid var(--light);
-  display: flex; align-items: center; gap: 8px;
-}
+/* SECTION TABS */
+.section-tabs { display:flex; gap:5px; margin-bottom:14px; background:white; border-radius:10px; padding:5px; border:1px solid var(--border); width:fit-content; }
+.section-tab { padding:8px 16px; border-radius:7px; border:none; font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; color:var(--muted); background:transparent; transition:0.2s; white-space:nowrap; }
+.section-tab.active { background:var(--blue); color:white; }
+.section-tab:hover:not(.active) { background:var(--light); color:var(--blue); }
 
-/* FORM */
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-@media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } }
-.form-group { margin-bottom: 14px; }
-.form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: #374151; margin-bottom: 5px; }
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%; padding: 10px 12px;
-  border: 1.5px solid var(--border); border-radius: 8px;
-  font-size: 0.92rem; font-family: 'Inter', sans-serif;
-  color: var(--text); background: #fafafa; transition: border-color 0.2s;
-}
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus { outline: none; border-color: var(--blue); background: white; }
-.form-group textarea { resize: vertical; min-height: 130px; line-height: 1.6; }
-.form-hint { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+/* ADMIN TABS */
+.admin-tabs { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+.admin-tab { padding:8px 15px; border-radius:8px; border:1.5px solid var(--border); background:white; color:var(--muted); font-size:0.81rem; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; transition:0.2s; white-space:nowrap; }
+.admin-tab.active { background:var(--blue); color:white; border-color:var(--blue); }
+.admin-tab:hover:not(.active) { border-color:var(--blue); color:var(--blue); }
+.admin-section { display:none; }
+.admin-section.active { display:block; }
+.admin-panel { display:none; }
+.admin-panel.active { display:block; }
+
+/* CARD */
+.section-card { background:white; border-radius:12px; border:1px solid var(--border); padding:16px; margin-bottom:14px; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+@media(min-width:600px){.section-card{padding:20px;}}
+.section-card h3 { font-family:'Syne',sans-serif; font-size:0.93rem; font-weight:800; color:var(--blue-dk); margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid var(--light); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+
+/* FORMS */
+.form-row { display:grid; grid-template-columns:1fr; gap:10px; margin-bottom:10px; }
+@media(min-width:500px){.form-row{grid-template-columns:1fr 1fr;}}
+.form-group { margin-bottom:10px; }
+.form-group label { display:block; font-size:0.75rem; font-weight:600; color:#374151; margin-bottom:4px; }
+.form-group input,.form-group select,.form-group textarea { width:100%; padding:9px 11px; border:1.5px solid var(--border); border-radius:7px; font-size:0.88rem; font-family:'Inter',sans-serif; color:var(--text); background:#fafafa; transition:border-color 0.2s; }
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus { outline:none; border-color:var(--blue); background:white; }
+.form-group textarea { resize:vertical; min-height:100px; line-height:1.6; }
+.form-hint { font-size:0.69rem; color:var(--muted); margin-top:3px; }
 
 /* BUTTONS */
-.btn { padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer; border: none; font-family: 'Inter', sans-serif; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
-.btn-primary { background: var(--blue); color: white; }
-.btn-primary:hover { background: var(--blue-dk); }
-.btn-success { background: var(--green); color: white; }
-.btn-success:hover { background: #15803d; }
-.btn-danger  { background: var(--red); color: white; }
-.btn-danger:hover  { background: #b91c1c; }
-.btn-outline { background: white; color: var(--blue); border: 1.5px solid var(--blue); }
-.btn-outline:hover { background: var(--blue); color: white; }
-.btn-sm { padding: 6px 12px; font-size: 0.78rem; }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn { padding:8px 15px; border-radius:7px; font-weight:600; font-size:0.82rem; cursor:pointer; border:none; font-family:'Inter',sans-serif; transition:0.2s; display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
+.btn:disabled { opacity:0.5; cursor:not-allowed; }
+.btn-primary { background:var(--blue); color:white; }
+.btn-primary:hover:not(:disabled) { background:var(--blue-dk); }
+.btn-success { background:var(--green); color:white; }
+.btn-success:hover:not(:disabled) { background:#15803d; }
+.btn-danger { background:var(--red); color:white; }
+.btn-danger:hover:not(:disabled) { background:#b91c1c; }
+.btn-warning { background:var(--yellow); color:white; }
+.btn-warning:hover:not(:disabled) { background:#d97706; }
+.btn-outline { background:white; color:var(--blue); border:1.5px solid var(--blue); }
+.btn-outline:hover:not(:disabled) { background:var(--blue); color:white; }
+.btn-ghost { background:var(--light); color:var(--muted); border:1px solid var(--border); }
+.btn-ghost:hover:not(:disabled) { background:#e2e8f0; }
+.btn-sm { padding:5px 10px; font-size:0.74rem; }
+.btn-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
 
 /* NEWS LIST */
-.news-list { display: flex; flex-direction: column; gap: 12px; }
-.news-item {
-  background: var(--light); border-radius: 10px;
-  padding: 16px; border: 1px solid var(--border);
-  display: flex; gap: 14px; align-items: flex-start;
-}
-.news-item-num {
-  background: var(--blue); color: white;
-  width: 28px; height: 28px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.75rem; font-weight: 700; flex-shrink: 0; margin-top: 2px;
-}
-.news-item-body { flex: 1; min-width: 0; }
-.news-item-title { font-family: 'Syne', sans-serif; font-size: 0.92rem; font-weight: 700; color: var(--blue-dk); margin-bottom: 4px; }
-.news-item-meta { font-size: 0.74rem; color: var(--muted); margin-bottom: 8px; }
-.news-item-actions { display: flex; gap: 7px; flex-wrap: wrap; }
-.news-item-cat { display: inline-block; background: #dbeafe; color: var(--blue); padding: 2px 8px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; margin-right: 6px; }
+.news-list,.book-list { display:flex; flex-direction:column; gap:10px; }
+.news-item,.book-item { background:var(--light); border-radius:10px; padding:13px; border:1px solid var(--border); display:flex; gap:11px; align-items:flex-start; position:relative; }
+.news-item.pinned { border-color:var(--yellow); background:#fffbeb; }
+.pin-badge { position:absolute; top:-1px; right:10px; background:var(--yellow); color:white; font-size:0.6rem; font-weight:700; padding:2px 7px; border-radius:0 0 6px 6px; letter-spacing:0.3px; }
+.item-num { background:var(--blue); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; flex-shrink:0; margin-top:2px; }
+.news-item.pinned .item-num { background:var(--yellow); }
+.item-body { flex:1; min-width:0; }
+.item-title { font-family:'Syne',sans-serif; font-size:0.86rem; font-weight:700; color:var(--blue-dk); margin-bottom:3px; line-height:1.3; word-break:break-word; }
+.item-meta { font-size:0.7rem; color:var(--muted); margin-bottom:5px; }
+.item-preview { font-size:0.76rem; color:var(--muted); margin-bottom:7px; line-height:1.4; word-break:break-word; }
+.item-actions { display:flex; gap:5px; flex-wrap:wrap; }
+.item-cat { display:inline-block; background:#dbeafe; color:var(--blue); padding:1px 7px; border-radius:20px; font-size:0.63rem; font-weight:700; text-transform:uppercase; margin-right:4px; }
+.book-cat { background:#dcfce7; color:var(--green); }
+.book-cover-th { width:42px; height:54px; border-radius:5px; object-fit:cover; flex-shrink:0; background:#dbeafe; display:flex; align-items:center; justify-content:center; font-size:1.3rem; overflow:hidden; }
+.book-cover-th img { width:100%; height:100%; object-fit:cover; }
 
-/* STATUS BAR */
-.status-bar {
-  padding: 12px 16px; border-radius: 8px;
-  font-size: 0.85rem; font-weight: 600;
-  margin-bottom: 16px; display: none; align-items: center; gap: 8px;
-}
-.status-bar.show { display: flex; }
-.status-bar.success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
-.status-bar.error   { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
-.status-bar.loading { background: #dbeafe; color: var(--blue); border: 1px solid #bfdbfe; }
-
-/* TOKEN SETUP */
-.token-setup {
-  background: linear-gradient(135deg, #fef3c7, #fffbeb);
-  border: 1px solid #fcd34d; border-radius: 10px;
-  padding: 16px; margin-bottom: 20px;
-}
-.token-setup h4 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; color: #92400e; margin-bottom: 8px; }
-.token-setup p { font-size: 0.8rem; color: #78350f; margin-bottom: 10px; line-height: 1.5; }
-.token-input-row { display: flex; gap: 8px; }
-.token-input-row input { flex: 1; padding: 9px 12px; border: 1.5px solid #fcd34d; border-radius: 7px; font-size: 0.88rem; font-family: 'Inter', sans-serif; background: white; }
-.token-input-row input:focus { outline: none; border-color: var(--orange); }
+/* EMPTY */
+.empty { text-align:center; padding:32px 16px; color:var(--muted); }
+.empty .ei { font-size:2rem; margin-bottom:8px; }
+.empty p { font-size:0.83rem; }
 
 /* SPINNER */
-.spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* EMPTY STATE */
-.empty { text-align: center; padding: 40px 20px; color: var(--muted); }
-.empty .ei { font-size: 2.5rem; margin-bottom: 10px; }
-.empty p { font-size: 0.88rem; }
+.spinner { width:13px; height:13px; border:2px solid rgba(255,255,255,0.3); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; flex-shrink:0; }
+@keyframes spin{to{transform:rotate(360deg);}}
 
 /* MODAL */
-.edit-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(10,20,60,0.55); backdrop-filter: blur(4px);
-  z-index: 500; align-items: center; justify-content: center; padding: 14px;
-}
-.edit-overlay.open { display: flex; }
-.edit-modal {
-  background: white; border-radius: 16px;
-  width: 100%; max-width: 640px; max-height: 92vh;
-  overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,0.3);
-  animation: popIn 0.25s ease both;
-}
-@keyframes popIn { from { opacity:0; transform: scale(0.92) translateY(16px); } to { opacity:1; transform: scale(1) translateY(0); } }
-.edit-modal-header {
-  background: linear-gradient(135deg, var(--blue-dk), var(--blue));
-  color: white; padding: 20px 22px 16px;
-  border-radius: 16px 16px 0 0;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.edit-modal-header h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800; }
-.edit-close { background: rgba(255,255,255,0.15); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-.edit-close:hover { background: rgba(255,255,255,0.3); }
-.edit-modal-body { padding: 22px; }
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(10,20,60,0.55); backdrop-filter:blur(4px); z-index:500; align-items:flex-start; justify-content:center; padding:12px; overflow-y:auto; }
+.modal-overlay.open { display:flex; }
+.modal-box { background:white; border-radius:14px; width:100%; max-width:580px; box-shadow:0 24px 60px rgba(0,0,0,0.3); animation:popIn 0.25s ease both; margin:auto; }
+@keyframes popIn{from{opacity:0;transform:scale(0.93) translateY(14px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.modal-header { background:linear-gradient(135deg,var(--blue-dk),var(--blue)); color:white; padding:15px 17px; border-radius:14px 14px 0 0; display:flex; align-items:center; justify-content:space-between; }
+.modal-header h3 { font-family:'Syne',sans-serif; font-size:0.93rem; font-weight:800; }
+.modal-close { background:rgba(255,255,255,0.15); border:none; color:white; width:27px; height:27px; border-radius:50%; cursor:pointer; font-size:0.88rem; display:flex; align-items:center; justify-content:center; transition:0.2s; flex-shrink:0; }
+.modal-close:hover { background:rgba(255,255,255,0.3); }
+.modal-body { padding:16px; }
+@media(min-width:500px){.modal-body{padding:20px;}}
 </style>
 </head>
 <body>
@@ -229,104 +169,107 @@ body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: var(--text)
 
 <!-- ADMIN APP -->
 <div id="adminApp">
-
-  <!-- TOPBAR -->
   <div class="topbar">
     <div class="topbar-logo">
       <img src="https://i.imgur.com/lYJXUyY.jpeg" alt="Logo">
-      <div>
-        <span>BIG QUAMS MEDIA®</span>
-        <span class="topbar-sub">Admin Panel</span>
-      </div>
+      <div><div class="topbar-brand">BIG QUAMS MEDIA®</div><span class="topbar-sub">Admin Panel</span></div>
     </div>
     <div class="topbar-right">
-      <span class="topbar-badge" id="newsCountBadge">Loading…</span>
-      <a href="index.html" target="_blank" style="color:white;font-size:0.78rem;text-decoration:none;opacity:0.8;">View Site ↗</a>
+      <span class="topbar-badge" id="topBadge">—</span>
+      <a href="../index.html" target="_blank" class="site-link">View Site ↗</a>
       <button class="logout-btn" onclick="doLogout()">Log Out</button>
     </div>
   </div>
 
   <div class="admin-body">
 
-    <!-- GITHUB TOKEN SETUP -->
     <div class="token-setup" id="tokenSetup">
       <h4>⚙️ GitHub Token Required</h4>
-      <p>Enter your GitHub Personal Access Token to enable publishing. This is stored only in your browser session — never in the code. <strong>You'll need to enter it each session.</strong></p>
-      <div class="token-input-row">
+      <p>Enter your GitHub Personal Access Token. Stored in browser session only — clears when you close the tab.</p>
+      <div class="token-row">
         <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-        <button class="btn btn-primary btn-sm" onclick="saveToken()">Save Token</button>
+        <button class="btn btn-primary btn-sm" onclick="saveToken()">Save</button>
       </div>
     </div>
 
-    <!-- STATUS BAR -->
     <div class="status-bar" id="statusBar"></div>
 
-    <!-- TABS -->
-    <div class="admin-tabs">
-      <button class="admin-tab active" onclick="switchTab('news')">📰 News Manager</button>
-      <button class="admin-tab" onclick="switchTab('add')">➕ Add News</button>
+    <div class="section-tabs">
+      <button class="section-tab active" onclick="switchSection('news')">📰 News</button>
+      <button class="section-tab" onclick="switchSection('library')">📚 eLibrary</button>
     </div>
 
-    <!-- ── TAB: NEWS MANAGER ── -->
-    <div class="admin-panel active" id="tab-news">
-      <div class="section-card">
-        <h3>📋 All News Articles</h3>
-        <div id="newsList">
-          <div class="empty"><div class="ei">⏳</div><p>Loading news…</p></div>
+    <!-- NEWS SECTION -->
+    <div class="admin-section active" id="section-news">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('news','list')">All Articles</button>
+        <button class="admin-tab" onclick="switchTab('news','add')">Add Article</button>
+      </div>
+      <div class="admin-panel active" id="news-tab-list">
+        <div class="section-card">
+          <h3>📋 All Articles <span style="font-size:0.72rem;font-weight:400;color:var(--muted);">Max 3 pinned</span></h3>
+          <div id="newsList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="news-tab-add">
+        <div class="section-card">
+          <h3>➕ Add New Article</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Headline *</label><input type="text" id="addTitle" placeholder="Article title"></div>
+            <div class="form-group"><label>Category *</label>
+              <select id="addCategory"><option value="">— Select —</option><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Date</label><input type="text" id="addDate"></div>
+            <div class="form-group"><label>Cover Image URL</label><input type="url" id="addImage" placeholder="https://… (optional)"><div class="form-hint">Direct image link — Imgur, etc.</div></div>
+          </div>
+          <div class="form-group"><label>Short Summary * <span style="font-weight:400;color:var(--muted)">(shown on card previews)</span></label><textarea id="addSummary" style="min-height:75px;" placeholder="2–3 sentence summary…"></textarea></div>
+          <div class="form-group"><label>Full Article Content * <span style="font-weight:400;color:var(--muted)">(blank line = new paragraph)</span></label><textarea id="addFullContent" placeholder="Write the full article here…"></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label>Pin to Top?</label><select id="addPinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top (max 3)</option></select></div>
+            <div class="form-group"><label>WhatsApp / Read More Link</label><input type="url" id="addLink" value="https://wa.me/message/OVCVEDHU3I2PH1"></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addNews()" id="addNewsBtn">Publish Article</button>
+            <button class="btn btn-ghost" onclick="clearNewsForm()">Clear</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- ── TAB: ADD NEWS ── -->
-    <div class="admin-panel" id="tab-add">
-      <div class="section-card">
-        <h3>➕ Add New Article</h3>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Headline / Title *</label>
-            <input type="text" id="addTitle" placeholder="e.g. JAMB 2026: New Guidelines Released">
+    <!-- ELIBRARY SECTION -->
+    <div class="admin-section" id="section-library">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('lib','list')">All Books</button>
+        <button class="admin-tab" onclick="switchTab('lib','add')">Add Book</button>
+      </div>
+      <div class="admin-panel active" id="lib-tab-list">
+        <div class="section-card">
+          <h3>📚 All Books in eLibrary</h3>
+          <div id="bookList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="lib-tab-add">
+        <div class="section-card">
+          <h3>➕ Add New Book</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Book Title *</label><input type="text" id="bAddTitle" placeholder="e.g. JAMB Past Questions 2020–2024"></div>
+            <div class="form-group"><label>Author</label><input type="text" id="bAddAuthor" placeholder="e.g. Big Quams Media"></div>
           </div>
-          <div class="form-group">
-            <label>Category *</label>
-            <select id="addCategory">
-              <option value="">— Select category —</option>
-              <option value="JAMB Update">JAMB Update</option>
-              <option value="Campus News">Campus News</option>
-              <option value="Scholarship">Scholarship</option>
-              <option value="Admission Guide">Admission Guide</option>
-              <option value="Services">Services</option>
-              <option value="Academic Coaching">Academic Coaching</option>
-              <option value="Lifestyle">Lifestyle</option>
-              <option value="Announcement">Announcement</option>
-            </select>
+          <div class="form-group"><label>Category *</label>
+            <select id="bAddCategory"><option value="">— Select —</option><option>JAMB & UTME</option><option>University</option><option>Novels & Fiction</option><option>Secondary School</option><option>Scholarship</option><option>Professional</option></select>
           </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Date</label>
-            <input type="text" id="addDate" placeholder="e.g. April 1, 2026">
+          <div class="form-group"><label>Short Description *</label><textarea id="bAddDesc" style="min-height:75px;" placeholder="What is this book about?"></textarea></div>
+          <div class="form-group"><label>Cover Image URL</label><input type="url" id="bAddCover" placeholder="https://… (optional)"><div class="form-hint">Direct image link for book cover preview</div></div>
+          <div class="form-row">
+            <div class="form-group"><label>Google Drive File ID *</label><input type="text" id="bAddDriveId" placeholder="1aBcDeFgHiJkLmNoPqRsT"><div class="form-hint">Long ID from your Google Drive share link</div></div>
+            <div class="form-group"><label>Or: Direct Read URL</label><input type="url" id="bAddReadUrl" placeholder="https://… (overrides Drive ID)"></div>
           </div>
-          <div class="form-group">
-            <label>Cover Image URL</label>
-            <input type="url" id="addImage" placeholder="https://… (optional)">
-            <div class="form-hint">Paste a direct image link (Imgur, Google Drive, etc.)</div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addBook()" id="addBookBtn">Add to eLibrary</button>
+            <button class="btn btn-ghost" onclick="clearBookForm()">Clear</button>
           </div>
-        </div>
-        <div class="form-group">
-          <label>Short Summary * <span style="font-weight:400;color:var(--muted)">(shown on homepage & newsroom cards)</span></label>
-          <textarea id="addSummary" style="min-height:80px;" placeholder="2–3 sentence summary of the article…"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Full Article Content * <span style="font-weight:400;color:var(--muted)">(use blank lines to separate paragraphs)</span></label>
-          <textarea id="addFullContent" placeholder="Write the full article here. Leave a blank line between paragraphs.&#10;&#10;Example second paragraph…"></textarea>
-        </div>
-        <div class="form-group">
-          <label>WhatsApp / Read More Link</label>
-          <input type="url" id="addLink" value="https://wa.me/message/OVCVEDHU3I2PH1">
-        </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn btn-success" onclick="addNews()" id="addBtn">✅ Publish Article</button>
-          <button class="btn btn-outline" onclick="clearAddForm()">🗑 Clear Form</button>
         </div>
       </div>
     </div>
@@ -334,343 +277,317 @@ body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: var(--text)
   </div>
 </div>
 
-<!-- EDIT MODAL -->
-<div class="edit-overlay" id="editOverlay" onclick="handleEditOverlay(event)">
-  <div class="edit-modal">
-    <div class="edit-modal-header">
-      <h3>✏️ Edit Article</h3>
-      <button class="edit-close" onclick="closeEdit()">✕</button>
+<!-- EDIT NEWS MODAL -->
+<div class="modal-overlay" id="editNewsModal" onclick="handleOverlay(event,'editNewsModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Article</h3><button class="modal-close" onclick="closeModal('editNewsModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editNewsIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Headline *</label><input type="text" id="eTitle"></div>
+        <div class="form-group"><label>Category *</label><select id="eCategory"><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Date</label><input type="text" id="eDate"></div>
+        <div class="form-group"><label>Cover Image URL</label><input type="url" id="eImage"></div>
+      </div>
+      <div class="form-group"><label>Short Summary *</label><textarea id="eSummary" style="min-height:75px;"></textarea></div>
+      <div class="form-group"><label>Full Article Content *</label><textarea id="eFullContent"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Pin to Top?</label><select id="ePinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top</option></select></div>
+        <div class="form-group"><label>WhatsApp / Read More Link</label><input type="url" id="eLink"></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="saveEditNews()" id="saveNewsBtn">Save Changes</button><button class="btn btn-ghost" onclick="closeModal('editNewsModal')">Cancel</button></div>
     </div>
-    <div class="edit-modal-body">
-      <input type="hidden" id="editIndex">
+  </div>
+</div>
+
+<!-- EDIT BOOK MODAL -->
+<div class="modal-overlay" id="editBookModal" onclick="handleOverlay(event,'editBookModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Book</h3><button class="modal-close" onclick="closeModal('editBookModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editBookIdx">
       <div class="form-row">
-        <div class="form-group">
-          <label>Headline / Title *</label>
-          <input type="text" id="editTitle">
-        </div>
-        <div class="form-group">
-          <label>Category *</label>
-          <select id="editCategory">
-            <option value="JAMB Update">JAMB Update</option>
-            <option value="Campus News">Campus News</option>
-            <option value="Scholarship">Scholarship</option>
-            <option value="Admission Guide">Admission Guide</option>
-            <option value="Services">Services</option>
-            <option value="Academic Coaching">Academic Coaching</option>
-            <option value="Lifestyle">Lifestyle</option>
-            <option value="Announcement">Announcement</option>
-          </select>
-        </div>
+        <div class="form-group"><label>Book Title *</label><input type="text" id="bETitle"></div>
+        <div class="form-group"><label>Author</label><input type="text" id="bEAuthor"></div>
       </div>
+      <div class="form-group"><label>Category *</label><select id="bECategory"><option>JAMB & UTME</option><option>University</option><option>Novels & Fiction</option><option>Secondary School</option><option>Scholarship</option><option>Professional</option></select></div>
+      <div class="form-group"><label>Short Description *</label><textarea id="bEDesc" style="min-height:75px;"></textarea></div>
+      <div class="form-group"><label>Cover Image URL</label><input type="url" id="bECover"></div>
       <div class="form-row">
-        <div class="form-group">
-          <label>Date</label>
-          <input type="text" id="editDate">
-        </div>
-        <div class="form-group">
-          <label>Cover Image URL</label>
-          <input type="url" id="editImage">
-        </div>
+        <div class="form-group"><label>Google Drive File ID</label><input type="text" id="bEDriveId"></div>
+        <div class="form-group"><label>Direct Read URL</label><input type="url" id="bEReadUrl"></div>
       </div>
-      <div class="form-group">
-        <label>Short Summary *</label>
-        <textarea id="editSummary" style="min-height:80px;"></textarea>
-      </div>
-      <div class="form-group">
-        <label>Full Article Content *</label>
-        <textarea id="editFullContent"></textarea>
-      </div>
-      <div class="form-group">
-        <label>WhatsApp / Read More Link</label>
-        <input type="url" id="editLink">
-      </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
-        <button class="btn btn-primary" onclick="saveEdit()" id="saveEditBtn">💾 Save Changes</button>
-        <button class="btn btn-outline" onclick="closeEdit()">Cancel</button>
-      </div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="saveEditBook()" id="saveBookBtn">Save Changes</button><button class="btn btn-ghost" onclick="closeModal('editBookModal')">Cancel</button></div>
     </div>
   </div>
 </div>
 
 <script>
-// ── CONFIG (no secrets here) ──
-const GH_USER   = 'big-quams-educational-hub';
-const GH_REPO   = 'big-quams-educational-hub.github.io';
-const GH_BRANCH = 'main';
-const GH_FILE   = 'news.json';
-const ADMIN_PASS = btoa('#1bigquamsmedia'); // obfuscated, not plain text
+const GH_USER='big-quams-educational-hub', GH_REPO='big-quams-educational-hub.github.io', GH_BRANCH='main', NEWS_FILE='news.json', BOOKS_FILE='books.json';
+const ADMIN_PASS=btoa('#1bigquamsmedia');
 
-// ── AUTH ──
-function doLogin() {
-  const val = document.getElementById('loginPass').value;
-  if (btoa(val) === ADMIN_PASS) {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminApp').style.display = 'block';
-    sessionStorage.setItem('bqm_auth', '1');
-    init();
-  } else {
-    document.getElementById('loginError').style.display = 'block';
-    document.getElementById('loginPass').value = '';
-  }
+// AUTH
+function doLogin(){
+  if(btoa(document.getElementById('loginPass').value)===ADMIN_PASS){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminApp').style.display='block';
+    sessionStorage.setItem('bqm_auth','1'); init();
+  } else { document.getElementById('loginError').style.display='block'; document.getElementById('loginPass').value=''; }
+}
+function doLogout(){ sessionStorage.clear(); location.reload(); }
+if(sessionStorage.getItem('bqm_auth')==='1'){ document.getElementById('loginScreen').style.display='none'; document.getElementById('adminApp').style.display='block'; }
+
+// TOKEN
+let ghToken=sessionStorage.getItem('bqm_token')||'';
+function saveToken(){
+  const t=document.getElementById('ghToken').value.trim();
+  if(!t) return showStatus('error','Please enter your GitHub token.');
+  ghToken=t; sessionStorage.setItem('bqm_token',t);
+  document.getElementById('tokenSetup').style.display='none';
+  showStatus('success','Token saved for this session.'); init();
+}
+if(ghToken) document.getElementById('tokenSetup').style.display='none';
+
+// SECTION / TAB SWITCHING
+function switchSection(name){
+  document.querySelectorAll('.section-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&name==='news')||(i===1&&name==='library')));
+  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(name==='library'?'section-library':'section-news').classList.add('active');
+}
+function switchTab(sec,tab){
+  const p=sec==='news'?'news':'lib';
+  const secEl=document.getElementById(sec==='news'?'section-news':'section-library');
+  secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));
+  secEl.querySelectorAll('.admin-panel').forEach(el=>el.classList.remove('active'));
+  document.getElementById(`${p}-tab-${tab}`).classList.add('active');
 }
 
-function doLogout() {
-  sessionStorage.clear();
-  location.reload();
+// STATUS
+function showStatus(type,msg){
+  const b=document.getElementById('statusBar');
+  b.className='status-bar show '+type;
+  b.innerHTML=(type==='loading'?'<div class="spinner"></div>':(type==='success'?'✅':'❌'))+' '+msg;
+  if(type!=='loading') setTimeout(()=>b.classList.remove('show'),4500);
 }
 
-// Auto-login if session active
-if (sessionStorage.getItem('bqm_auth') === '1') {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('adminApp').style.display = 'block';
+// MODAL
+function openModal(id){ document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+function handleOverlay(e,id){ if(e.target===document.getElementById(id)) closeModal(id); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeModal('editNewsModal'); closeModal('editBookModal'); }});
+
+// GITHUB
+function ghAPI(f){ return `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${f}`; }
+function ghH(){ return { Authorization:'token '+ghToken, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' }; }
+let newsSha='', newsData=[], booksSha='', booksData=[];
+
+async function ghFetch(file){
+  const res=await fetch(ghAPI(file)+'?ref='+GH_BRANCH,{headers:ghH()});
+  if(res.status===404) return {sha:'',data:[]};
+  if(!res.ok) throw new Error('GitHub error '+res.status);
+  const j=await res.json();
+  return {sha:j.sha, data:JSON.parse(atob(j.content.replace(/\n/g,'')))};
+}
+async function ghPush(file,sha,data,msg){
+  const body={message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2)))),branch:GH_BRANCH};
+  if(sha) body.sha=sha;
+  const res=await fetch(ghAPI(file),{method:'PUT',headers:ghH(),body:JSON.stringify(body)});
+  if(!res.ok){ const e=await res.json(); throw new Error(e.message||'Push failed'); }
+  return (await res.json()).content.sha;
 }
 
-// ── TOKEN ──
-let ghToken = sessionStorage.getItem('bqm_token') || '';
-
-function saveToken() {
-  const t = document.getElementById('ghToken').value.trim();
-  if (!t) return showStatus('error', 'Please enter your GitHub token.');
-  ghToken = t;
-  sessionStorage.setItem('bqm_token', t);
-  document.getElementById('tokenSetup').style.display = 'none';
-  showStatus('success', '✅ Token saved for this session.');
-  init();
-}
-
-// Hide token setup if already saved
-if (ghToken) document.getElementById('tokenSetup').style.display = 'none';
-
-// ── TABS ──
-function switchTab(name) {
-  document.querySelectorAll('.admin-tab').forEach((t,i) => {
-    t.classList.toggle('active', (i===0 && name==='news') || (i===1 && name==='add'));
-  });
-  document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-}
-
-// ── STATUS ──
-function showStatus(type, msg) {
-  const bar = document.getElementById('statusBar');
-  bar.className = 'status-bar show ' + type;
-  bar.innerHTML = (type === 'loading' ? '<div class="spinner"></div>' : (type === 'success' ? '✅' : '❌')) + ' ' + msg;
-  if (type !== 'loading') setTimeout(() => bar.classList.remove('show'), 4000);
-}
-
-// ── GITHUB API ──
-const API = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
-let currentSha = '';
-let newsData   = [];
-
-async function fetchNews() {
-  if (!ghToken) { showStatus('error', 'Enter your GitHub token first.'); return; }
-  showStatus('loading', 'Fetching news from GitHub…');
+async function loadAll(){
+  if(!ghToken) return;
+  showStatus('loading','Loading from GitHub…');
   try {
-    const res = await fetch(API + '?ref=' + GH_BRANCH, {
-      headers: { Authorization: 'token ' + ghToken, Accept: 'application/vnd.github.v3+json' }
-    });
-    if (res.status === 404) {
-      // File doesn't exist yet — start fresh
-      newsData = []; currentSha = '';
-      renderNewsList();
-      showStatus('success', 'No news file found — ready to add your first article.');
-      return;
-    }
-    if (!res.ok) throw new Error('GitHub API error ' + res.status);
-    const data = await res.json();
-    currentSha = data.sha;
-    newsData   = JSON.parse(atob(data.content.replace(/\n/g, '')));
-    document.getElementById('newsCountBadge').textContent = newsData.length + ' Articles';
-    renderNewsList();
-    showStatus('success', `Loaded ${newsData.length} articles successfully.`);
-  } catch (e) {
-    showStatus('error', 'Failed to load news: ' + e.message);
-  }
+    const [n,b]=await Promise.all([ghFetch(NEWS_FILE),ghFetch(BOOKS_FILE)]);
+    newsSha=n.sha; newsData=n.data; booksSha=b.sha; booksData=b.data;
+    renderNews(); renderBooks(); updateBadge();
+    showStatus('success',`Loaded ${newsData.length} articles, ${booksData.length} books.`);
+  } catch(e){ showStatus('error','Load failed: '+e.message); }
 }
+function updateBadge(){ document.getElementById('topBadge').textContent=`${newsData.length} Articles · ${booksData.length} Books`; }
 
-async function pushNews(message) {
-  if (!ghToken) { showStatus('error', 'Enter your GitHub token first.'); return false; }
-  showStatus('loading', 'Publishing to GitHub…');
-  try {
-    const body = {
-      message,
-      content: btoa(unescape(encodeURIComponent(JSON.stringify(newsData, null, 2)))),
-      branch: GH_BRANCH
-    };
-    if (currentSha) body.sha = currentSha;
-    const res = await fetch(API, {
-      method: 'PUT',
-      headers: {
-        Authorization: 'token ' + ghToken,
-        Accept: 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message || 'Push failed');
-    }
-    const data = await res.json();
-    currentSha = data.content.sha;
-    document.getElementById('newsCountBadge').textContent = newsData.length + ' Articles';
-    return true;
-  } catch (e) {
-    showStatus('error', 'Publish failed: ' + e.message);
-    return false;
-  }
-}
-
-// ── RENDER LIST ──
-function renderNewsList() {
-  const list = document.getElementById('newsList');
-  if (!newsData.length) {
-    list.innerHTML = '<div class="empty"><div class="ei">📭</div><p>No articles yet. Go to Add News to publish your first one.</p></div>';
-    return;
-  }
-  list.innerHTML = `<div class="news-list">${newsData.map((item, i) => `
-    <div class="news-item">
-      <div class="news-item-num">${i + 1}</div>
-      <div class="news-item-body">
-        <div class="news-item-title">${item.title}</div>
-        <div class="news-item-meta">
-          <span class="news-item-cat">${item.category || 'News'}</span>
-          ${item.date || ''}
-          ${item.image ? ' · 🖼 Image' : ''}
-        </div>
-        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;line-height:1.4;">${(item.summary || item.description || '').slice(0, 120)}…</div>
-        <div class="news-item-actions">
-          <button class="btn btn-outline btn-sm" onclick="openEdit(${i})">✏️ Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteNews(${i})">🗑 Delete</button>
+// NEWS RENDER
+function renderNews(){
+  const el=document.getElementById('newsList');
+  if(!newsData.length){ el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No articles yet. Add one above.</p></div>'; return; }
+  const sorted=[...newsData.filter(n=>n.pinned),...newsData.filter(n=>!n.pinned)];
+  el.innerHTML='<div class="news-list">'+sorted.map(item=>{
+    const idx=newsData.indexOf(item), pin=!!item.pinned;
+    return `<div class="news-item${pin?' pinned':''}">
+      ${pin?'<div class="pin-badge">📌 PINNED</div>':''}
+      <div class="item-num">${idx+1}</div>
+      <div class="item-body">
+        <div class="item-title">${item.title}</div>
+        <div class="item-meta"><span class="item-cat">${item.category||'News'}</span>${item.date||''}</div>
+        <div class="item-preview">${(item.summary||item.description||'').slice(0,100)}…</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditNews(${idx})">✏️ Edit</button>
+          <button class="btn ${pin?'btn-warning':'btn-ghost'} btn-sm" onclick="togglePin(${idx})">${pin?'Unpin':'📌 Pin'}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteNews(${idx})">🗑 Delete</button>
         </div>
       </div>
-    </div>
-  `).join('')}</div>`;
+    </div>`;
+  }).join('')+'</div>';
 }
 
-// ── ADD NEWS ──
-async function addNews() {
-  const title       = document.getElementById('addTitle').value.trim();
-  const category    = document.getElementById('addCategory').value;
-  const date        = document.getElementById('addDate').value.trim();
-  const image       = document.getElementById('addImage').value.trim();
-  const summary     = document.getElementById('addSummary').value.trim();
-  const fullContent = document.getElementById('addFullContent').value.trim();
-  const link        = document.getElementById('addLink').value.trim();
-
-  if (!title || !category || !summary || !fullContent) {
-    showStatus('error', 'Please fill in Title, Category, Summary, and Full Content.'); return;
-  }
-
-  const newItem = { title, category, date, summary, fullContent, link };
-  if (image) newItem.image = image;
-
-  newsData.unshift(newItem); // Add to top
-  const btn = document.getElementById('addBtn');
-  btn.disabled = true;
-  const ok = await pushNews('Add article: ' + title);
-  btn.disabled = false;
-  if (ok) {
-    showStatus('success', '🎉 Article published successfully!');
-    clearAddForm();
-    renderNewsList();
-    switchTab('news');
-  } else {
-    newsData.shift(); // Rollback
-  }
+// ADD NEWS
+async function addNews(){
+  const title=document.getElementById('addTitle').value.trim();
+  const category=document.getElementById('addCategory').value;
+  const date=document.getElementById('addDate').value.trim();
+  const image=document.getElementById('addImage').value.trim();
+  const summary=document.getElementById('addSummary').value.trim();
+  const fullContent=document.getElementById('addFullContent').value.trim();
+  const pinned=document.getElementById('addPinned').value==='true';
+  const link=document.getElementById('addLink').value.trim();
+  if(!title||!category||!summary||!fullContent){ showStatus('error','Fill in Title, Category, Summary and Full Content.'); return; }
+  if(pinned&&newsData.filter(n=>n.pinned).length>=3){ showStatus('error','Max 3 pinned articles. Unpin one first.'); return; }
+  const item={title,category,date,summary,fullContent,link};
+  if(image) item.image=image; if(pinned) item.pinned=true;
+  newsData.unshift(item);
+  const btn=document.getElementById('addNewsBtn'); btn.disabled=true;
+  try{ newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Add: '+title); showStatus('success','Article published!'); clearNewsForm(); renderNews(); updateBadge(); switchTab('news','list'); }
+  catch(e){ newsData.shift(); showStatus('error',e.message); }
+  btn.disabled=false;
+}
+function clearNewsForm(){
+  ['addTitle','addSummary','addFullContent','addImage'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('addCategory').value=''; document.getElementById('addPinned').value='false';
+  document.getElementById('addLink').value='https://wa.me/message/OVCVEDHU3I2PH1';
+  document.getElementById('addDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
 }
 
-function clearAddForm() {
-  ['addTitle','addCategory','addDate','addImage','addSummary','addFullContent'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('addLink').value = 'https://wa.me/message/OVCVEDHU3I2PH1';
+// TOGGLE PIN
+async function togglePin(idx){
+  const item=newsData[idx], willPin=!item.pinned;
+  if(willPin&&newsData.filter(n=>n.pinned).length>=3){ showStatus('error','Max 3 pinned. Unpin one first.'); return; }
+  const old=item.pinned;
+  if(willPin) newsData[idx].pinned=true; else delete newsData[idx].pinned;
+  try{ newsSha=await ghPush(NEWS_FILE,newsSha,newsData,(willPin?'Pin: ':'Unpin: ')+item.title); showStatus('success',willPin?'📌 Pinned!':'Unpinned.'); renderNews(); }
+  catch(e){ if(old) newsData[idx].pinned=old; else delete newsData[idx].pinned; showStatus('error',e.message); }
 }
 
-// ── DELETE ──
-async function deleteNews(index) {
-  const item = newsData[index];
-  if (!confirm(`Delete "${item.title}"?\n\nThis cannot be undone.`)) return;
-  const removed = newsData.splice(index, 1);
-  const ok = await pushNews('Delete article: ' + item.title);
-  if (ok) {
-    showStatus('success', '🗑 Article deleted.');
-    renderNewsList();
-  } else {
-    newsData.splice(index, 0, removed[0]); // Rollback
-    renderNewsList();
-  }
+// DELETE NEWS
+async function deleteNews(idx){
+  const item=newsData[idx];
+  if(!confirm(`Delete "${item.title}"?\n\nThis cannot be undone.`)) return;
+  const removed=newsData.splice(idx,1);
+  try{ newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Delete: '+item.title); showStatus('success','Deleted.'); renderNews(); updateBadge(); }
+  catch(e){ newsData.splice(idx,0,removed[0]); showStatus('error',e.message); }
 }
 
-// ── EDIT ──
-function openEdit(index) {
-  const item = newsData[index];
-  document.getElementById('editIndex').value       = index;
-  document.getElementById('editTitle').value       = item.title || '';
-  document.getElementById('editCategory').value    = item.category || '';
-  document.getElementById('editDate').value        = item.date || '';
-  document.getElementById('editImage').value       = item.image || '';
-  document.getElementById('editSummary').value     = item.summary || item.description || '';
-  document.getElementById('editFullContent').value = item.fullContent || '';
-  document.getElementById('editLink').value        = item.link || '';
-  document.getElementById('editOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+// EDIT NEWS
+function openEditNews(idx){
+  const item=newsData[idx];
+  document.getElementById('editNewsIdx').value=idx;
+  document.getElementById('eTitle').value=item.title||''; document.getElementById('eCategory').value=item.category||'';
+  document.getElementById('eDate').value=item.date||''; document.getElementById('eImage').value=item.image||'';
+  document.getElementById('eSummary').value=item.summary||item.description||'';
+  document.getElementById('eFullContent').value=item.fullContent||'';
+  document.getElementById('ePinned').value=item.pinned?'true':'false';
+  document.getElementById('eLink').value=item.link||''; openModal('editNewsModal');
+}
+async function saveEditNews(){
+  const idx=parseInt(document.getElementById('editNewsIdx').value);
+  const title=document.getElementById('eTitle').value.trim(), category=document.getElementById('eCategory').value;
+  const date=document.getElementById('eDate').value.trim(), image=document.getElementById('eImage').value.trim();
+  const summary=document.getElementById('eSummary').value.trim(), fullContent=document.getElementById('eFullContent').value.trim();
+  const pinned=document.getElementById('ePinned').value==='true', link=document.getElementById('eLink').value.trim();
+  if(!title||!category||!summary||!fullContent){ showStatus('error','All required fields must be filled.'); return; }
+  if(pinned&&newsData.filter((n,i)=>n.pinned&&i!==idx).length>=3){ showStatus('error','Max 3 pinned. Unpin another first.'); return; }
+  const old={...newsData[idx]};
+  newsData[idx]={title,category,date,summary,fullContent,link};
+  if(image) newsData[idx].image=image; if(pinned) newsData[idx].pinned=true;
+  const btn=document.getElementById('saveNewsBtn'); btn.disabled=true;
+  try{ newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Edit: '+title); showStatus('success','Updated!'); closeModal('editNewsModal'); renderNews(); }
+  catch(e){ newsData[idx]=old; showStatus('error',e.message); }
+  btn.disabled=false;
 }
 
-function closeEdit() {
-  document.getElementById('editOverlay').classList.remove('open');
-  document.body.style.overflow = '';
+// BOOKS RENDER
+function renderBooks(){
+  const el=document.getElementById('bookList');
+  if(!booksData.length){ el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No books yet.</p></div>'; return; }
+  el.innerHTML='<div class="book-list">'+booksData.map((book,i)=>`
+    <div class="book-item">
+      <div class="book-cover-th">${book.cover?`<img src="${book.cover}" alt="${book.title}">`:'📖'}</div>
+      <div class="item-body">
+        <div class="item-title">${book.title}</div>
+        <div class="item-meta"><span class="item-cat book-cat">${book.category||'General'}</span>${book.author?'by '+book.author:''}</div>
+        <div class="item-preview">${(book.description||'').slice(0,90)}…</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditBook(${i})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteBook(${i})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`).join('')+'</div>';
 }
 
-function handleEditOverlay(e) {
-  if (e.target === document.getElementById('editOverlay')) closeEdit();
+// ADD BOOK
+async function addBook(){
+  const title=document.getElementById('bAddTitle').value.trim(), author=document.getElementById('bAddAuthor').value.trim();
+  const category=document.getElementById('bAddCategory').value, description=document.getElementById('bAddDesc').value.trim();
+  const cover=document.getElementById('bAddCover').value.trim(), driveId=document.getElementById('bAddDriveId').value.trim();
+  const readUrl=document.getElementById('bAddReadUrl').value.trim();
+  if(!title||!category||!description){ showStatus('error','Fill in Title, Category and Description.'); return; }
+  if(!driveId&&!readUrl){ showStatus('error','Provide a Google Drive File ID or Direct Read URL.'); return; }
+  const item={title,author,category,description};
+  if(cover) item.cover=cover; if(driveId) item.driveId=driveId; if(readUrl) item.readUrl=readUrl;
+  booksData.unshift(item);
+  const btn=document.getElementById('addBookBtn'); btn.disabled=true;
+  try{ booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Add book: '+title); showStatus('success','Book added!'); clearBookForm(); renderBooks(); updateBadge(); switchTab('lib','list'); }
+  catch(e){ booksData.shift(); showStatus('error',e.message); }
+  btn.disabled=false;
+}
+function clearBookForm(){
+  ['bAddTitle','bAddAuthor','bAddDesc','bAddCover','bAddDriveId','bAddReadUrl'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('bAddCategory').value='';
 }
 
-async function saveEdit() {
-  const index       = parseInt(document.getElementById('editIndex').value);
-  const title       = document.getElementById('editTitle').value.trim();
-  const category    = document.getElementById('editCategory').value;
-  const date        = document.getElementById('editDate').value.trim();
-  const image       = document.getElementById('editImage').value.trim();
-  const summary     = document.getElementById('editSummary').value.trim();
-  const fullContent = document.getElementById('editFullContent').value.trim();
-  const link        = document.getElementById('editLink').value.trim();
-
-  if (!title || !category || !summary || !fullContent) {
-    showStatus('error', 'Title, Category, Summary, and Full Content are required.'); return;
-  }
-
-  const oldItem = { ...newsData[index] };
-  newsData[index] = { title, category, date, summary, fullContent, link };
-  if (image) newsData[index].image = image;
-
-  const btn = document.getElementById('saveEditBtn');
-  btn.disabled = true;
-  const ok = await pushNews('Edit article: ' + title);
-  btn.disabled = false;
-
-  if (ok) {
-    showStatus('success', '✅ Article updated successfully!');
-    closeEdit();
-    renderNewsList();
-  } else {
-    newsData[index] = oldItem; // Rollback
-  }
+// EDIT BOOK
+function openEditBook(idx){
+  const b=booksData[idx];
+  document.getElementById('editBookIdx').value=idx;
+  document.getElementById('bETitle').value=b.title||''; document.getElementById('bEAuthor').value=b.author||'';
+  document.getElementById('bECategory').value=b.category||''; document.getElementById('bEDesc').value=b.description||'';
+  document.getElementById('bECover').value=b.cover||''; document.getElementById('bEDriveId').value=b.driveId||'';
+  document.getElementById('bEReadUrl').value=b.readUrl||''; openModal('editBookModal');
+}
+async function saveEditBook(){
+  const idx=parseInt(document.getElementById('editBookIdx').value);
+  const title=document.getElementById('bETitle').value.trim(), author=document.getElementById('bEAuthor').value.trim();
+  const category=document.getElementById('bECategory').value, description=document.getElementById('bEDesc').value.trim();
+  const cover=document.getElementById('bECover').value.trim(), driveId=document.getElementById('bEDriveId').value.trim();
+  const readUrl=document.getElementById('bEReadUrl').value.trim();
+  if(!title||!category||!description){ showStatus('error','Title, Category and Description are required.'); return; }
+  const old={...booksData[idx]};
+  booksData[idx]={title,author,category,description};
+  if(cover) booksData[idx].cover=cover; if(driveId) booksData[idx].driveId=driveId; if(readUrl) booksData[idx].readUrl=readUrl;
+  const btn=document.getElementById('saveBookBtn'); btn.disabled=true;
+  try{ booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Edit book: '+title); showStatus('success','Book updated!'); closeModal('editBookModal'); renderBooks(); }
+  catch(e){ booksData[idx]=old; showStatus('error',e.message); }
+  btn.disabled=false;
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEdit(); });
-
-// ── INIT ──
-function init() {
-  // Set today's date in add form
-  const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-  document.getElementById('addDate').value = today;
-  if (ghToken) fetchNews();
+// DELETE BOOK
+async function deleteBook(idx){
+  const b=booksData[idx];
+  if(!confirm(`Delete "${b.title}"?\n\nThis cannot be undone.`)) return;
+  const removed=booksData.splice(idx,1);
+  try{ booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Delete book: '+b.title); showStatus('success','Deleted.'); renderBooks(); updateBadge(); }
+  catch(e){ booksData.splice(idx,0,removed[0]); showStatus('error',e.message); }
 }
 
-// Auto-init if already logged in and token saved
-if (sessionStorage.getItem('bqm_auth') === '1') init();
+// INIT
+function init(){
+  document.getElementById('addDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  if(ghToken) loadAll();
+}
+if(sessionStorage.getItem('bqm_auth')==='1') init();
 </script>
 </body>
 </html>
