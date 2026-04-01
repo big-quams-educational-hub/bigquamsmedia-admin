@@ -230,6 +230,7 @@ body { font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text);
       <button class="section-tab active" onclick="switchSection('news')">📰 News</button>
       <button class="section-tab" onclick="switchSection('library')">📚 eLibrary</button>
       <button class="section-tab" onclick="switchSection('dyk')">💡 DYK</button>
+      <button class="section-tab" onclick="switchSection('spotlight')">🌟 Spotlight</button>
     </div>
 
     <!-- NEWS SECTION -->
@@ -327,7 +328,7 @@ body { font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text);
             <div class="form-group"><label>Author</label><input type="text" id="bAddAuthor" placeholder="e.g. Big Quams Media"></div>
           </div>
           <div class="form-group"><label>Category *</label>
-            <select id="bAddCategory"><option value="">— Select —</option><option>JAMB & UTME</option><option>University</option><option>Novels & Fiction</option><option>Secondary School</option><option>Scholarship</option><option>Professional</option></select>
+            <select id="bAddCategory"><option value="">— Select —</option><option>JAMB (UTME & DE)</option><option>University</option><option>Novels & Fiction</option><option>Secondary School</option><option>Scholarship</option><option>Professional</option></select>
           </div>
           <div class="form-group"><label>Short Description *</label><textarea id="bAddDesc" style="min-height:75px;" placeholder="What is this book about?"></textarea></div>
           <div class="form-group">
@@ -467,7 +468,7 @@ body { font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text);
         <div class="form-group"><label>Book Title *</label><input type="text" id="bETitle"></div>
         <div class="form-group"><label>Author</label><input type="text" id="bEAuthor"></div>
       </div>
-      <div class="form-group"><label>Category *</label><select id="bECategory"><option>JAMB & UTME</option><option>University</option><option>Novels & Fiction</option><option>Secondary School</option><option>Scholarship</option><option>Professional</option></select></div>
+      <div class="form-group"><label>Category *</label><select id="bECategory"><option>JAMB (UTME & DE)</option><option>University</option><option>Novels & Fiction</option><option>Secondary School</option><option>Scholarship</option><option>Professional</option></select></div>
       <div class="form-group"><label>Short Description *</label><textarea id="bEDesc" style="min-height:75px;"></textarea></div>
       <div class="form-group">
         <label>Cover Image</label>
@@ -1183,7 +1184,228 @@ function setActions(prefix, acts) {
   if (chkDl)    { chkDl.checked = !!a.downloadUrl; if (urlDl) { urlDl.value = a.downloadUrl||''; urlDl.classList.toggle('show', !!a.downloadUrl); } }
 }
 
+
+// ── SPOTLIGHT ──
+const SPOTLIGHT_FILE = 'spotlight.json';
+let spotlightSha = '', spotlightData = [];
+
+// Extend loadAll to include spotlight
+const __origLoadAll = loadAll;
+async function loadAll() {
+  if (!ghToken) return;
+  showStatus('loading', 'Loading from GitHub…');
+  try {
+    const [n, b, d, sp] = await Promise.all([
+      ghFetch(NEWS_FILE), ghFetch(BOOKS_FILE),
+      ghFetch(DYK_FILE),  ghFetch(SPOTLIGHT_FILE)
+    ]);
+    newsSha = n.sha; newsData = n.data;
+    booksSha = b.sha; booksData = b.data;
+    dykSha = d.sha; dykData = d.data;
+    spotlightSha = sp.sha; spotlightData = sp.data;
+    renderNews(); renderBooks(); renderDyk(); renderSpotlights(); updateBadge();
+    showStatus('success', `Loaded ${newsData.length} articles, ${booksData.length} books, ${dykData.length} DYK, ${spotlightData.length} spotlights.`);
+  } catch(e) { showStatus('error', 'Load failed: ' + e.message); }
+}
+
+function updateBadge() {
+  document.getElementById('topBadge').textContent =
+    `${newsData.length} News · ${booksData.length} Books · ${dykData.length} DYK · ${spotlightData.length} Spotlights`;
+}
+
+// Extend switchSection for spotlight
+const __origSwitchSection = switchSection;
+function switchSection(name) {
+  document.querySelectorAll('.section-tab').forEach((t, i) =>
+    t.classList.toggle('active',
+      (i===0&&name==='news') || (i===1&&name==='library') ||
+      (i===2&&name==='dyk') || (i===3&&name==='spotlight')));
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  const map = { news:'section-news', library:'section-library', dyk:'section-dyk', spotlight:'section-spotlight' };
+  const el = document.getElementById(map[name] || 'section-news');
+  if (el) el.classList.add('active');
+}
+
+// Extend switchTab for spotlight
+const __origSwitchTab2 = switchTab;
+function switchTab(sec, tab) {
+  if (sec === 'spotlight') {
+    const secEl = document.getElementById('section-spotlight');
+    secEl.querySelectorAll('.admin-tab').forEach((t,i) =>
+      t.classList.toggle('active', (i===0&&tab==='list')||(i===1&&tab==='add')));
+    secEl.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(`spotlight-tab-${tab}`).classList.add('active');
+    return;
+  }
+  if (sec === 'dyk') {
+    const secEl = document.getElementById('section-dyk');
+    secEl.querySelectorAll('.admin-tab').forEach((t,i) =>
+      t.classList.toggle('active', (i===0&&tab==='list')||(i===1&&tab==='add')));
+    secEl.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(`dyk-tab-${tab}`).classList.add('active');
+    return;
+  }
+  const p = sec === 'news' ? 'news' : 'lib';
+  const secEl = document.getElementById(sec === 'news' ? 'section-news' : 'section-library');
+  secEl.querySelectorAll('.admin-tab').forEach((t,i) =>
+    t.classList.toggle('active', (i===0&&tab==='list')||(i===1&&tab==='add')));
+  secEl.querySelectorAll('.admin-panel').forEach(el => el.classList.remove('active'));
+  document.getElementById(`${p}-tab-${tab}`).classList.add('active');
+}
+
+function renderSpotlights() {
+  const el = document.getElementById('spotlightList');
+  if (!spotlightData.length) { el.innerHTML = '<div class="empty"><div class="ei">📭</div><p>No spotlights yet.</p></div>'; return; }
+  el.innerHTML = '<div class="news-list">' + spotlightData.map((item, i) => `
+    <div class="news-item">
+      <div class="item-num">${i+1}</div>
+      <div class="item-body">
+        <div class="item-title">${item.title}</div>
+        <div class="item-meta"><span class="item-cat" style="background:#fef9c3;color:#854d0e">${item.category||'Spotlight'}</span>${item.date||''}</div>
+        <div class="item-preview">${(item.summary||'').slice(0,100)}…</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditSpotlight(${i})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteSpotlight(${i})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`).join('') + '</div>';
+}
+
+async function addSpotlight() {
+  const title    = document.getElementById('spAddTitle').value.trim();
+  const category = document.getElementById('spAddCategory').value;
+  const date     = document.getElementById('spAddDate').value.trim();
+  const summary  = document.getElementById('spAddSummary').value.trim();
+  const content  = document.getElementById('spAddContent').value.trim();
+  const image    = document.getElementById('spAddImgB64').value;
+  if (!title||!category||!summary) { showStatus('error','Fill in Title, Category and Summary.'); return; }
+  const item = { title, category, date, summary, content };
+  if (image) item.image = image;
+  spotlightData.unshift(item);
+  const btn = document.getElementById('addSpotlightBtn'); btn.disabled = true;
+  try {
+    spotlightSha = await ghPush(SPOTLIGHT_FILE, spotlightSha, spotlightData, 'Add spotlight: ' + title);
+    showStatus('success', 'Spotlight published!'); clearSpotlightForm(); renderSpotlights(); updateBadge(); switchTab('spotlight','list');
+  } catch(e) { spotlightData.shift(); showStatus('error', e.message); }
+  btn.disabled = false;
+}
+
+function clearSpotlightForm() {
+  ['spAddTitle','spAddSummary','spAddContent'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('spAddCategory').value = '';
+  document.getElementById('spAddDate').value = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  clearImg('spAddImgFile','spAddImgPreview','spAddImgClear','spAddImgB64');
+}
+
+function openEditSpotlight(idx) {
+  const item = spotlightData[idx];
+  document.getElementById('editSpotlightIdx').value = idx;
+  document.getElementById('spETitle').value    = item.title||'';
+  document.getElementById('spECategory').value = item.category||'';
+  document.getElementById('spEDate').value     = item.date||'';
+  document.getElementById('spESummary').value  = item.summary||'';
+  document.getElementById('spEContent').value  = item.content||'';
+  if (item.image) {
+    document.getElementById('spEImgB64').value = item.image;
+    const prev = document.getElementById('spEImgPreview');
+    prev.src = item.image; prev.classList.add('show');
+    document.getElementById('spEImgClear').classList.add('show');
+  } else { clearImg('spEImgFile','spEImgPreview','spEImgClear','spEImgB64'); }
+  openModal('editSpotlightModal');
+}
+
+async function saveEditSpotlight() {
+  const idx      = parseInt(document.getElementById('editSpotlightIdx').value);
+  const title    = document.getElementById('spETitle').value.trim();
+  const category = document.getElementById('spECategory').value;
+  const date     = document.getElementById('spEDate').value.trim();
+  const summary  = document.getElementById('spESummary').value.trim();
+  const content  = document.getElementById('spEContent').value.trim();
+  const image    = document.getElementById('spEImgB64').value || (spotlightData[idx]||{}).image || '';
+  if (!title||!category||!summary) { showStatus('error','Title, Category and Summary are required.'); return; }
+  const old = {...spotlightData[idx]};
+  spotlightData[idx] = { title, category, date, summary, content };
+  if (image) spotlightData[idx].image = image;
+  const btn = document.getElementById('saveSpotlightBtn'); btn.disabled = true;
+  try {
+    spotlightSha = await ghPush(SPOTLIGHT_FILE, spotlightSha, spotlightData, 'Edit spotlight: ' + title);
+    showStatus('success','Spotlight updated!'); closeModal('editSpotlightModal'); renderSpotlights();
+  } catch(e) { spotlightData[idx] = old; showStatus('error', e.message); }
+  btn.disabled = false;
+}
+
+async function deleteSpotlight(idx) {
+  if (!confirm(`Delete "${spotlightData[idx].title}"?\n\nThis cannot be undone.`)) return;
+  const removed = spotlightData.splice(idx, 1);
+  try {
+    spotlightSha = await ghPush(SPOTLIGHT_FILE, spotlightSha, spotlightData, 'Delete spotlight: ' + removed[0].title);
+    showStatus('success','Deleted.'); renderSpotlights(); updateBadge();
+  } catch(e) { spotlightData.splice(idx, 0, removed[0]); showStatus('error', e.message); }
+}
+
+// Also init spotlight date
+const __origInit = init;
+function init() {
+  const today = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  if (document.getElementById('addDate')) document.getElementById('addDate').value = today;
+  if (document.getElementById('dAddDate')) document.getElementById('dAddDate').value = today;
+  if (document.getElementById('spAddDate')) document.getElementById('spAddDate').value = today;
+  if (ghToken) loadAll();
+}
+
 </script>
+
+
+    <!-- SPOTLIGHT SECTION -->
+    <div class="admin-section" id="section-spotlight">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('spotlight','list')">All Spotlights</button>
+        <button class="admin-tab" onclick="switchTab('spotlight','add')">Add Spotlight</button>
+      </div>
+      <div class="admin-panel active" id="spotlight-tab-list">
+        <div class="section-card">
+          <h3>🌟 All Spotlights</h3>
+          <div id="spotlightList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="spotlight-tab-add">
+        <div class="section-card">
+          <h3>➕ Add New Spotlight</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Title / Name *</label><input type="text" id="spAddTitle" placeholder="e.g. Celebrating Aisha — JAMB 320!"></div>
+            <div class="form-group"><label>Category *</label>
+              <select id="spAddCategory">
+                <option value="">— Select —</option>
+                <option>Student Achievement</option>
+                <option>Birthday</option>
+                <option>Celebration</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Date</label><input type="text" id="spAddDate"></div>
+          <div class="form-group"><label>Short Summary * <span style="font-weight:400;color:var(--muted)">(shown on homepage card)</span></label>
+            <textarea id="spAddSummary" style="min-height:75px;" placeholder="Brief summary for the spotlight…"></textarea>
+          </div>
+          <div class="form-group"><label>Full Details <span style="font-weight:400;color:var(--muted)">(shown on spotlight page)</span></label>
+            <textarea id="spAddContent" placeholder="Full details about this spotlight…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Photo / Image</label>
+            <div class="img-upload-box" onclick="document.getElementById('spAddImgFile').click()">
+              <input type="file" id="spAddImgFile" accept="image/*" onchange="previewImg(this,'spAddImgPreview','spAddImgClear','spAddImgB64')">
+              <div class="upload-label"><span>🖼️</span>Tap to upload photo</div>
+            </div>
+            <img id="spAddImgPreview" class="img-preview" alt="preview">
+            <span id="spAddImgClear" class="img-clear" onclick="clearImg('spAddImgFile','spAddImgPreview','spAddImgClear','spAddImgB64')">✕ Remove</span>
+            <input type="hidden" id="spAddImgB64">
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addSpotlight()" id="addSpotlightBtn">Publish Spotlight</button>
+            <button class="btn btn-ghost" onclick="clearSpotlightForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
 <!-- EDIT DYK MODAL -->
 <div class="modal-overlay" id="editDykModal" onclick="handleOverlay(event,'editDykModal')">
@@ -1219,6 +1441,39 @@ function setActions(prefix, acts) {
       <div class="btn-row">
         <button class="btn btn-primary" onclick="saveEditDyk()" id="saveDykBtn">Save Changes</button>
         <button class="btn btn-ghost" onclick="closeModal('editDykModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT SPOTLIGHT MODAL -->
+<div class="modal-overlay" id="editSpotlightModal" onclick="handleOverlay(event,'editSpotlightModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Spotlight</h3><button class="modal-close" onclick="closeModal('editSpotlightModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editSpotlightIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Title *</label><input type="text" id="spETitle"></div>
+        <div class="form-group"><label>Category *</label>
+          <select id="spECategory"><option>Student Achievement</option><option>Birthday</option><option>Celebration</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Date</label><input type="text" id="spEDate"></div>
+      <div class="form-group"><label>Short Summary *</label><textarea id="spESummary" style="min-height:75px;"></textarea></div>
+      <div class="form-group"><label>Full Details</label><textarea id="spEContent"></textarea></div>
+      <div class="form-group">
+        <label>Photo / Image</label>
+        <div class="img-upload-box" onclick="document.getElementById('spEImgFile').click()">
+          <input type="file" id="spEImgFile" accept="image/*" onchange="previewImg(this,'spEImgPreview','spEImgClear','spEImgB64')">
+          <div class="upload-label"><span>🖼️</span>Tap to replace photo</div>
+        </div>
+        <img id="spEImgPreview" class="img-preview" alt="preview">
+        <span id="spEImgClear" class="img-clear" onclick="clearImg('spEImgFile','spEImgPreview','spEImgClear','spEImgB64')">✕ Remove</span>
+        <input type="hidden" id="spEImgB64">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveEditSpotlight()" id="saveSpotlightBtn">Save Changes</button>
+        <button class="btn btn-ghost" onclick="closeModal('editSpotlightModal')">Cancel</button>
       </div>
     </div>
   </div>
