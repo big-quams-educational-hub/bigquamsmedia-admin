@@ -231,6 +231,8 @@ body { font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text);
       <button class="section-tab" onclick="switchSection('library')">📚 eLibrary</button>
       <button class="section-tab" onclick="switchSection('dyk')">💡 DYK</button>
       <button class="section-tab" onclick="switchSection('spotlight')">🌟 Spotlight</button>
+      <button class="section-tab" onclick="switchSection('reviews')">⭐ Reviews</button>
+      <button class="section-tab" onclick="switchSection('qa')">❓ Q&amp;A</button>
     </div>
 
     <!-- NEWS SECTION -->
@@ -1353,6 +1355,143 @@ function init() {
   if (ghToken) loadAll();
 }
 
+
+// ── REVIEWS & Q&A ──
+const REVIEWS_FILE = 'reviews.json', QA_FILE = 'qa.json';
+let reviewsSha = '', reviewsData = [], qaSha = '', qaData = [];
+
+// Extend loadAll
+const ___origLoadAll = loadAll;
+async function loadAll() {
+  if (!ghToken) return;
+  showStatus('loading', 'Loading from GitHub…');
+  try {
+    const [n,b,d,sp,rv,qa] = await Promise.all([
+      ghFetch(NEWS_FILE), ghFetch(BOOKS_FILE), ghFetch(DYK_FILE),
+      ghFetch(SPOTLIGHT_FILE), ghFetch(REVIEWS_FILE), ghFetch(QA_FILE)
+    ]);
+    newsSha=n.sha; newsData=n.data; booksSha=b.sha; booksData=b.data;
+    dykSha=d.sha; dykData=d.data; spotlightSha=sp.sha; spotlightData=sp.data;
+    reviewsSha=rv.sha; reviewsData=rv.data; qaSha=qa.sha; qaData=qa.data;
+    renderNews(); renderBooks(); renderDyk(); renderSpotlights(); renderReviews(); renderQA(); updateBadge();
+    showStatus('success', `Loaded all data successfully.`);
+  } catch(e) { showStatus('error','Load failed: '+e.message); }
+}
+function updateBadge() {
+  document.getElementById('topBadge').textContent =
+    `${newsData.length} News · ${booksData.length} Books · ${reviewsData.length} Reviews`;
+}
+
+// Extend switchSection
+const ____origSwitchSection = switchSection;
+function switchSection(name) {
+  document.querySelectorAll('.section-tab').forEach((t,i) =>
+    t.classList.toggle('active',
+      (i===0&&name==='news')||(i===1&&name==='library')||(i===2&&name==='dyk')||
+      (i===3&&name==='spotlight')||(i===4&&name==='reviews')||(i===5&&name==='qa')));
+  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+  const map={news:'section-news',library:'section-library',dyk:'section-dyk',
+    spotlight:'section-spotlight',reviews:'section-reviews',qa:'section-qa'};
+  const el=document.getElementById(map[name]||'section-news');
+  if(el) el.classList.add('active');
+}
+
+// Extend switchTab for reviews and qa
+const ____origSwitchTab = switchTab;
+function switchTab(sec, tab) {
+  if(sec==='rev'||sec==='qa') {
+    const secEl=document.getElementById(sec==='rev'?'section-reviews':'section-qa');
+    secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));
+    secEl.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById(`${sec}-tab-${tab}`).classList.add('active');
+    return;
+  }
+  // Delegate to spotlight handler
+  if(sec==='spotlight'){const secEl=document.getElementById('section-spotlight');secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));secEl.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));document.getElementById(`spotlight-tab-${tab}`).classList.add('active');return;}
+  if(sec==='dyk'){const secEl=document.getElementById('section-dyk');secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));secEl.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));document.getElementById(`dyk-tab-${tab}`).classList.add('active');return;}
+  const p=sec==='news'?'news':'lib';
+  const secEl=document.getElementById(sec==='news'?'section-news':'section-library');
+  secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));
+  secEl.querySelectorAll('.admin-panel').forEach(el=>el.classList.remove('active'));
+  document.getElementById(`${p}-tab-${tab}`).classList.add('active');
+}
+
+function renderReviews() {
+  const el=document.getElementById('reviewsList');
+  if(!el) return;
+  if(!reviewsData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No reviews yet.</p></div>';return;}
+  const stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
+  el.innerHTML='<div class="news-list">'+reviewsData.map((r,i)=>`
+    <div class="news-item">
+      <div class="item-num">${i+1}</div>
+      <div class="item-body">
+        <div class="item-title">${r.name} — ${stars(r.stars||5)}</div>
+        <div class="item-meta">${r.location||''}</div>
+        <div class="item-preview">${r.message}</div>
+        <div class="item-actions">
+          <button class="btn btn-danger btn-sm" onclick="deleteReview(${i})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+
+async function addReview() {
+  const name=document.getElementById('rAddName').value.trim();
+  const location=document.getElementById('rAddLocation').value.trim();
+  const stars=parseInt(document.getElementById('rAddStars').value);
+  const message=document.getElementById('rAddMessage').value.trim();
+  if(!name||!message){showStatus('error','Name and Message are required.');return;}
+  reviewsData.push({name,location,stars,message});
+  const btn=document.getElementById('addReviewBtn');btn.disabled=true;
+  try{reviewsSha=await ghPush(REVIEWS_FILE,reviewsSha,reviewsData,'Add review: '+name);showStatus('success','Review added!');clearReviewForm();renderReviews();}
+  catch(e){reviewsData.pop();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+function clearReviewForm(){
+  ['rAddName','rAddLocation','rAddMessage'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('rAddStars').value='5';
+}
+async function deleteReview(idx){
+  if(!confirm(`Delete review from "${reviewsData[idx].name}"?`)) return;
+  const removed=reviewsData.splice(idx,1);
+  try{reviewsSha=await ghPush(REVIEWS_FILE,reviewsSha,reviewsData,'Delete review: '+removed[0].name);showStatus('success','Deleted.');renderReviews();}
+  catch(e){reviewsData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
+function renderQA() {
+  const el=document.getElementById('qaAdminList');
+  if(!el) return;
+  if(!qaData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No Q&As yet.</p></div>';return;}
+  el.innerHTML='<div class="news-list">'+qaData.map((qa,i)=>`
+    <div class="news-item">
+      <div class="item-num">${i+1}</div>
+      <div class="item-body">
+        <div class="item-title">❓ ${qa.question}</div>
+        <div class="item-preview">✅ ${(qa.answer||'').slice(0,100)}…</div>
+        <div class="item-actions">
+          <button class="btn btn-danger btn-sm" onclick="deleteQA(${i})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+
+async function addQA() {
+  const question=document.getElementById('qaAddQ').value.trim();
+  const answer=document.getElementById('qaAddA').value.trim();
+  if(!question||!answer){showStatus('error','Both question and answer are required.');return;}
+  qaData.unshift({question,answer});
+  const btn=document.getElementById('addQABtn');btn.disabled=true;
+  try{qaSha=await ghPush(QA_FILE,qaSha,qaData,'Add Q&A');showStatus('success','Q&A published!');document.getElementById('qaAddQ').value='';document.getElementById('qaAddA').value='';renderQA();switchTab('qa','list');}
+  catch(e){qaData.shift();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+async function deleteQA(idx){
+  if(!confirm('Delete this Q&A?')) return;
+  const removed=qaData.splice(idx,1);
+  try{qaSha=await ghPush(QA_FILE,qaSha,qaData,'Delete Q&A');showStatus('success','Deleted.');renderQA();}
+  catch(e){qaData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
 </script>
 
 
@@ -1402,6 +1541,69 @@ function init() {
           <div class="btn-row">
             <button class="btn btn-success" onclick="addSpotlight()" id="addSpotlightBtn">Publish Spotlight</button>
             <button class="btn btn-ghost" onclick="clearSpotlightForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- REVIEWS SECTION -->
+    <div class="admin-section" id="section-reviews">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('rev','list')">All Reviews</button>
+        <button class="admin-tab" onclick="switchTab('rev','add')">Add Review</button>
+      </div>
+      <div class="admin-panel active" id="rev-tab-list">
+        <div class="section-card">
+          <h3>⭐ Student Reviews</h3>
+          <div id="reviewsList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="rev-tab-add">
+        <div class="section-card">
+          <h3>➕ Add Review</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Student Name *</label><input type="text" id="rAddName" placeholder="e.g. Aisha Abdulrahmon"></div>
+            <div class="form-group"><label>Location</label><input type="text" id="rAddLocation" placeholder="e.g. Lagos State"></div>
+          </div>
+          <div class="form-group"><label>Star Rating *</label>
+            <select id="rAddStars"><option value="5">★★★★★ (5 stars)</option><option value="4">★★★★☆ (4 stars)</option><option value="3">★★★☆☆ (3 stars)</option></select>
+          </div>
+          <div class="form-group"><label>Message *</label>
+            <textarea id="rAddMessage" style="min-height:90px;" placeholder="What did the student say about us?"></textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addReview()" id="addReviewBtn">Add Review</button>
+            <button class="btn btn-ghost" onclick="clearReviewForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q&A SECTION -->
+    <div class="admin-section" id="section-qa">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('qa','list')">All Q&amp;As</button>
+        <button class="admin-tab" onclick="switchTab('qa','add')">Add Q&amp;A</button>
+      </div>
+      <div class="admin-panel active" id="qa-tab-list">
+        <div class="section-card">
+          <h3>❓ Student Q&amp;A</h3>
+          <div id="qaAdminList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="qa-tab-add">
+        <div class="section-card">
+          <h3>➕ Add Q&amp;A</h3>
+          <div class="form-group"><label>Student Question *</label>
+            <textarea id="qaAddQ" style="min-height:75px;" placeholder="e.g. How do I check my CAPS admission status?"></textarea>
+          </div>
+          <div class="form-group"><label>Your Answer *</label>
+            <textarea id="qaAddA" placeholder="Provide a clear, helpful answer…"></textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addQA()" id="addQABtn">Publish Q&amp;A</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('qaAddQ').value='';document.getElementById('qaAddA').value=''">Clear</button>
           </div>
         </div>
       </div>
