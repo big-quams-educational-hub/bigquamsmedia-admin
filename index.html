@@ -174,6 +174,15 @@ body { font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text);
 .img-preview.show { display: block; }
 .img-clear { font-size: 0.72rem; color: var(--red); cursor: pointer; margin-top: 4px; display: none; font-weight: 600; }
 .img-clear.show { display: inline-block; }
+
+/* ACTION CHECKBOXES */
+.action-checks { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+.action-check-row { display: flex; align-items: center; gap: 10px; font-size: 0.84rem; }
+.action-check-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; }
+.action-check-row label { font-weight: 500; cursor: pointer; flex: 1; }
+.action-url-input { width: 100%; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.84rem; font-family: 'Roboto', sans-serif; margin-top: 4px; display: none; }
+.action-url-input.show { display: block; }
+
 </style>
 </head>
 <body>
@@ -259,9 +268,36 @@ body { font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text);
           </div>
           <div class="form-group"><label>Short Summary * <span style="font-weight:400;color:var(--muted)">(shown on card previews)</span></label><textarea id="addSummary" style="min-height:75px;" placeholder="2–3 sentence summary…"></textarea></div>
           <div class="form-group"><label>Full Article Content * <span style="font-weight:400;color:var(--muted)">(blank line = new paragraph)</span></label><textarea id="addFullContent" placeholder="Write the full article here…"></textarea></div>
+          <div class="form-group"><label>Pin to Top?</label><select id="addPinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top (max 3)</option></select></div>
           <div class="form-row">
-            <div class="form-group"><label>Pin to Top?</label><select id="addPinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top (max 3)</option></select></div>
-            <div class="form-group"><label>WhatsApp / Read More Link</label><input type="url" id="addLink" value="https://wa.me/message/OVCVEDHU3I2PH1"></div>
+            <div class="form-group">
+              <label>Author</label>
+              <input type="text" id="addAuthor" placeholder="BIG QUAMS MEDIA" value="BIG QUAMS MEDIA">
+            </div>
+            <div class="form-group">
+              <label>WhatsApp / Read More Link</label>
+              <input type="url" id="addLink" value="https://wa.me/message/OVCVEDHU3I2PH1">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Action Buttons (select what to show in the article modal)</label>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;">
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;">
+                <input type="checkbox" id="addActShare" checked> Share article
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;">
+                <input type="checkbox" id="addActView"> View link
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;">
+                <input type="checkbox" id="addActDownload"> Download link
+              </label>
+            </div>
+            <div id="addViewUrlWrap" style="display:none;margin-top:8px;">
+              <input type="url" id="addViewUrl" placeholder="View URL (e.g. Google Drive preview link)">
+            </div>
+            <div id="addDownUrlWrap" style="display:none;margin-top:8px;">
+              <input type="url" id="addDownUrl" placeholder="Download URL">
+            </div>
           </div>
           <div class="btn-row">
             <button class="btn btn-success" onclick="addNews()" id="addNewsBtn">Publish Article</button>
@@ -342,7 +378,13 @@ body { font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text);
               </select>
             </div>
           </div>
-          <div class="form-group"><label>Date</label><input type="text" id="dAddDate"></div>
+          <div class="form-row">
+            <div class="form-row">
+            <div class="form-group"><label>Date</label><input type="text" id="dAddDate"></div>
+            <div class="form-group"><label>Author</label><input type="text" id="dAddAuthor" placeholder="BIG QUAMS MEDIA"></div>
+          </div>
+            <div class="form-group"><label>Author</label><input type="text" id="dAddAuthor" placeholder="BIG QUAMS MEDIA" value="BIG QUAMS MEDIA"></div>
+          </div>
           <div class="form-group"><label>Short Summary * <span style="font-weight:400;color:var(--muted)">(shown on homepage card)</span></label>
             <textarea id="dAddSummary" style="min-height:75px;" placeholder="Brief 1–2 sentence teaser…"></textarea>
           </div>
@@ -397,7 +439,18 @@ body { font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text);
       <div class="form-group"><label>Full Article Content *</label><textarea id="eFullContent"></textarea></div>
       <div class="form-row">
         <div class="form-group"><label>Pin to Top?</label><select id="ePinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top</option></select></div>
-        <div class="form-group"><label>WhatsApp / Read More Link</label><input type="url" id="eLink"></div>
+        <div class="form-group"><label>Author</label><input type="text" id="eAuthor" placeholder="BIG QUAMS MEDIA"></div>
+      </div>
+      <div class="form-group"><label>WhatsApp / Read More Link</label><input type="url" id="eLink"></div>
+      <div class="form-group">
+        <label>Action Buttons</label>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;"><input type="checkbox" id="eActShare"> Share</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;"><input type="checkbox" id="eActView"> View link</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;"><input type="checkbox" id="eActDownload"> Download link</label>
+        </div>
+        <div id="eViewUrlWrap" style="display:none;margin-top:8px;"><input type="url" id="eViewUrl" placeholder="View URL"></div>
+        <div id="eDownUrlWrap" style="display:none;margin-top:8px;"><input type="url" id="eDownUrl" placeholder="Download URL"></div>
       </div>
       <div class="btn-row"><button class="btn btn-primary" onclick="saveEditNews()" id="saveNewsBtn">Save Changes</button><button class="btn btn-ghost" onclick="closeModal('editNewsModal')">Cancel</button></div>
     </div>
@@ -568,7 +621,14 @@ async function addNews(){
 function clearNewsForm(){
   ['addTitle','addSummary','addFullContent','addImage'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('addCategory').value=''; document.getElementById('addPinned').value='false';
-  document.getElementById('addLink').value='https://wa.me/message/OVCVEDHU3I2PH1';
+  document.getElementById('addAuthor').value='BIG QUAMS MEDIA';
+  document.getElementById('addActShare').checked=true;
+  document.getElementById('addActView').checked=false;
+  document.getElementById('addActDownload').checked=false;
+  document.getElementById('addViewUrl').value='';
+  document.getElementById('addDownUrl').value='';
+  document.getElementById('addViewUrlWrap').style.display='none';
+  document.getElementById('addDownUrlWrap').style.display='none';
   document.getElementById('addDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
 }
 
@@ -700,6 +760,23 @@ function init(){
 }
 if(sessionStorage.getItem('bqm_auth')==='1') init();
 
+
+// Toggle view/download URL fields
+
+document.getElementById('eActView').addEventListener('change', function() {
+  document.getElementById('eViewUrlWrap').style.display = this.checked ? 'block' : 'none';
+});
+document.getElementById('eActDownload').addEventListener('change', function() {
+  document.getElementById('eDownUrlWrap').style.display = this.checked ? 'block' : 'none';
+});
+
+document.getElementById('addActView').addEventListener('change', function() {
+  document.getElementById('addViewUrlWrap').style.display = this.checked ? 'block' : 'none';
+});
+document.getElementById('addActDownload').addEventListener('change', function() {
+  document.getElementById('addDownUrlWrap').style.display = this.checked ? 'block' : 'none';
+});
+
 // ── IMAGE UPLOAD HELPERS ──
 function previewImg(input, previewId, clearId, hiddenId) {
   const file = input.files[0];
@@ -816,8 +893,9 @@ async function addDyk() {
   const summary  = document.getElementById('dAddSummary').value.trim();
   const content  = document.getElementById('dAddContent').value.trim();
   const image    = document.getElementById('dAddImgB64').value;
+  const author   = document.getElementById('dAddAuthor').value.trim() || 'BIG QUAMS MEDIA';
   if (!title||!category||!summary||!content) { showStatus('error','Fill in Title, Category, Summary and Content.'); return; }
-  const item = { title, category, date, summary, content };
+  const item = { title, category, date, author, summary, content };
   if (image) item.image = image;
   dykData.unshift(item);
   const btn = document.getElementById('addDykBtn'); btn.disabled = true;
@@ -842,6 +920,8 @@ function openEditDyk(idx) {
   document.getElementById('dETitle').value    = item.title||'';
   document.getElementById('dECategory').value = item.category||'';
   document.getElementById('dEDate').value     = item.date||'';
+  if (document.getElementById('dEAuthor')) document.getElementById('dEAuthor').value = item.author || 'BIG QUAMS MEDIA';
+  document.getElementById('dEAuthor').value   = item.author||'BIG QUAMS MEDIA';
   document.getElementById('dESummary').value  = item.summary||'';
   document.getElementById('dEContent').value  = item.content||'';
   // Show existing image if any
@@ -861,12 +941,13 @@ async function saveEditDyk() {
   const title    = document.getElementById('dETitle').value.trim();
   const category = document.getElementById('dECategory').value;
   const date     = document.getElementById('dEDate').value.trim();
+  const author   = document.getElementById('dEAuthor').value.trim() || 'BIG QUAMS MEDIA';
   const summary  = document.getElementById('dESummary').value.trim();
   const content  = document.getElementById('dEContent').value.trim();
   const image    = document.getElementById('dEImgB64').value;
   if (!title||!category||!summary||!content) { showStatus('error','All required fields must be filled.'); return; }
   const old = {...dykData[idx]};
-  dykData[idx] = { title, category, date, summary, content };
+  dykData[idx] = { title, category, date, author, summary, content };
   if (image) dykData[idx].image = image;
   const btn = document.getElementById('saveDykBtn'); btn.disabled = true;
   try {
@@ -896,12 +977,23 @@ async function addNews() {
   const summary = document.getElementById('addSummary').value.trim();
   const fullContent = document.getElementById('addFullContent').value.trim();
   const pinned = document.getElementById('addPinned').value === 'true';
+  const author = document.getElementById('addAuthor').value.trim() || 'BIG QUAMS MEDIA';
   const link = document.getElementById('addLink').value.trim();
+  const actShare = document.getElementById('addActShare').checked;
+  const actView = document.getElementById('addActView').checked;
+  const actDownload = document.getElementById('addActDownload').checked;
+  const viewUrl = document.getElementById('addViewUrl').value.trim();
+  const downUrl = document.getElementById('addDownUrl').value.trim();
   if (!title||!category||!summary||!fullContent) { showStatus('error','Fill in Title, Category, Summary and Full Content.'); return; }
   if (pinned&&newsData.filter(n=>n.pinned).length>=3) { showStatus('error','Max 3 pinned articles. Unpin one first.'); return; }
-  const item = { title, category, date, summary, fullContent, link };
+  const item = { title, category, date, author, summary, fullContent, link };
   if (image) item.image = image;
   if (pinned) item.pinned = true;
+  const actions = {};
+  if (actShare) actions.share = true;
+  if (actView && viewUrl) actions.viewUrl = viewUrl;
+  if (actDownload && downUrl) actions.downloadUrl = downUrl;
+  if (Object.keys(actions).length) item.actions = actions;
   newsData.unshift(item);
   const btn = document.getElementById('addNewsBtn'); btn.disabled = true;
   try {
@@ -924,13 +1016,24 @@ async function saveEditNews() {
   const summary = document.getElementById('eSummary').value.trim();
   const fullContent = document.getElementById('eFullContent').value.trim();
   const pinned = document.getElementById('ePinned').value === 'true';
+  const author = document.getElementById('eAuthor').value.trim() || 'BIG QUAMS MEDIA';
   const link = document.getElementById('eLink').value.trim();
+  const actShare = document.getElementById('eActShare').checked;
+  const actView = document.getElementById('eActView').checked;
+  const actDownload = document.getElementById('eActDownload').checked;
+  const viewUrl = document.getElementById('eViewUrl').value.trim();
+  const downUrl = document.getElementById('eDownUrl').value.trim();
   if (!title||!category||!summary||!fullContent) { showStatus('error','All required fields must be filled.'); return; }
   if (pinned&&newsData.filter((n,i)=>n.pinned&&i!==idx).length>=3) { showStatus('error','Max 3 pinned. Unpin another first.'); return; }
   const old = {...newsData[idx]};
-  newsData[idx] = { title, category, date, summary, fullContent, link };
+  newsData[idx] = { title, category, date, author, summary, fullContent, link };
   if (image) newsData[idx].image = image;
   if (pinned) newsData[idx].pinned = true;
+  const actions = {};
+  if (actShare) actions.share = true;
+  if (actView && viewUrl) actions.viewUrl = viewUrl;
+  if (actDownload && downUrl) actions.downloadUrl = downUrl;
+  if (Object.keys(actions).length) newsData[idx].actions = actions;
   const btn = document.getElementById('saveNewsBtn'); btn.disabled = true;
   try {
     newsSha = await ghPush(NEWS_FILE, newsSha, newsData, 'Edit: ' + title);
@@ -939,7 +1042,7 @@ async function saveEditNews() {
   btn.disabled = false;
 }
 
-// Override openEditNews to show existing image
+// Override openEditNews to show existing image + actions
 const _origOpenEditNews = openEditNews;
 function openEditNews(idx) {
   const item = newsData[idx];
@@ -950,7 +1053,16 @@ function openEditNews(idx) {
   document.getElementById('eSummary').value     = item.summary||item.description||'';
   document.getElementById('eFullContent').value = item.fullContent||'';
   document.getElementById('ePinned').value      = item.pinned ? 'true' : 'false';
+  document.getElementById('eAuthor').value      = item.author||'BIG QUAMS MEDIA';
   document.getElementById('eLink').value        = item.link||'';
+  const acts = item.actions||{};
+  document.getElementById('eActShare').checked = !!acts.share;
+  document.getElementById('eActView').checked = !!acts.viewUrl;
+  document.getElementById('eActDownload').checked = !!acts.downloadUrl;
+  document.getElementById('eViewUrl').value = acts.viewUrl||'';
+  document.getElementById('eDownUrl').value = acts.downloadUrl||'';
+  document.getElementById('eViewUrlWrap').style.display = acts.viewUrl ? 'block' : 'none';
+  document.getElementById('eDownUrlWrap').style.display = acts.downloadUrl ? 'block' : 'none';
   if (item.image) {
     document.getElementById('eImageB64').value = item.image;
     const prev = document.getElementById('eImgPreview');
@@ -1041,6 +1153,36 @@ function init() {
   if (ghToken) loadAll();
 }
 
+
+// TOGGLE ACTION URL INPUTS
+function toggleActionUrl(chkId, urlId) {
+  const url = document.getElementById(urlId);
+  if (url) url.classList.toggle('show', document.getElementById(chkId).checked);
+}
+
+function getActions(prefix) {
+  const acts = {};
+  const share = document.getElementById(prefix + 'ChkShare');
+  const view  = document.getElementById(prefix + 'ChkView');
+  const dl    = document.getElementById(prefix + 'ChkDownload');
+  if (share && share.checked) acts.share = true;
+  if (view  && view.checked)  { const u = document.getElementById(prefix + 'UrlView').value.trim(); if (u) acts.viewUrl = u; }
+  if (dl    && dl.checked)    { const u = document.getElementById(prefix + 'UrlDownload').value.trim(); if (u) acts.downloadUrl = u; }
+  return Object.keys(acts).length ? acts : null;
+}
+
+function setActions(prefix, acts) {
+  const a = acts || {};
+  const chkShare = document.getElementById(prefix + 'ChkShare');
+  const chkView  = document.getElementById(prefix + 'ChkView');
+  const chkDl    = document.getElementById(prefix + 'ChkDownload');
+  const urlView  = document.getElementById(prefix + 'UrlView');
+  const urlDl    = document.getElementById(prefix + 'UrlDownload');
+  if (chkShare) chkShare.checked = !!a.share;
+  if (chkView)  { chkView.checked = !!a.viewUrl; if (urlView) { urlView.value = a.viewUrl||''; urlView.classList.toggle('show', !!a.viewUrl); } }
+  if (chkDl)    { chkDl.checked = !!a.downloadUrl; if (urlDl) { urlDl.value = a.downloadUrl||''; urlDl.classList.toggle('show', !!a.downloadUrl); } }
+}
+
 </script>
 
 <!-- EDIT DYK MODAL -->
@@ -1055,7 +1197,13 @@ function init() {
           <select id="dECategory"><option>DYK Fact</option><option>Today in History</option><option>Current Affairs</option></select>
         </div>
       </div>
-      <div class="form-group"><label>Date</label><input type="text" id="dEDate"></div>
+      <div class="form-row">
+        <div class="form-row">
+        <div class="form-group"><label>Date</label><input type="text" id="dEDate"></div>
+        <div class="form-group"><label>Author</label><input type="text" id="dEAuthor" placeholder="BIG QUAMS MEDIA"></div>
+      </div>
+        <div class="form-group"><label>Author</label><input type="text" id="dEAuthor" placeholder="BIG QUAMS MEDIA"></div>
+      </div>
       <div class="form-group"><label>Short Summary *</label><textarea id="dESummary" style="min-height:75px;"></textarea></div>
       <div class="form-group"><label>Full Content *</label><textarea id="dEContent"></textarea></div>
       <div class="form-group">
