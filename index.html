@@ -772,6 +772,30 @@ body.dark .token-setup { background: #2d2000; border-color: #854d0e; }
   </div>
 </div>
 
+<!-- EDIT REVIEW MODAL -->
+<div class="modal-overlay" id="editReviewModal" onclick="handleOverlay(event,'editReviewModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Review</h3><button class="modal-close" onclick="closeModal('editReviewModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editRevIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Student Name *</label><input type="text" id="rEName" placeholder="e.g. Aisha Abdulrahmon"></div>
+        <div class="form-group"><label>Location</label><input type="text" id="rELocation" placeholder="e.g. Lagos State"></div>
+      </div>
+      <div class="form-group"><label>Star Rating *</label>
+        <select id="rEStars"><option value="5">★★★★★ (5 stars)</option><option value="4">★★★★☆ (4 stars)</option><option value="3">★★★☆☆ (3 stars)</option><option value="2">★★☆☆☆ (2 stars)</option><option value="1">★☆☆☆☆ (1 star)</option></select>
+      </div>
+      <div class="form-group"><label>Message *</label>
+        <textarea id="rEMessage" style="min-height:90px;" placeholder="Review message..."></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveEditReview()" id="saveReviewBtn">Save Changes</button>
+        <button class="btn btn-ghost" onclick="closeModal('editReviewModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- EDIT CALENDAR MODAL -->
 <div class="modal-overlay" id="editCalModal" onclick="handleOverlay(event,'editCalModal')">
   <div class="modal-box">
@@ -1418,19 +1442,71 @@ async function deleteSpotlight(idx){
 // ════════════ REVIEWS ════════════
 function renderReviews(){
   const el=document.getElementById('reviewsList'); if(!el) return;
-  if(!reviewsData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No reviews yet.</p></div>';return;}
+  
+  // Separate pending (not yet approved) from approved
+  const approved = reviewsData.filter(r => !r.pending);
+  const pending  = reviewsData.filter(r => r.pending);
+  
   const stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
-  el.innerHTML='<div class="news-list">'+reviewsData.map((r,i)=>`
-    <div class="news-item">
-      <div class="item-num">${i+1}</div>
-      <div class="item-body">
-        <div class="item-title">${r.name} — ${stars(r.stars||5)}</div>
-        <div class="item-meta">${r.location||''}</div>
-        <div class="item-preview">${r.message}</div>
-        <div class="item-actions"><button class="btn btn-danger btn-sm" onclick="deleteReview(${i})">🗑 Delete</button></div>
-      </div>
-    </div>`).join('')+'</div>';
+  
+  let html = '';
+  
+  // Pending reviews banner
+  if(pending.length) {
+    html += `<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+      <div style="font-family:'Montserrat',sans-serif;font-size:0.85rem;font-weight:700;color:#92400e;margin-bottom:8px;">⏳ Pending Approval (${pending.length})</div>
+      <div class="news-list">` +
+      pending.map((r,i)=>{
+        const realIdx = reviewsData.indexOf(r);
+        return `<div class="news-item" style="background:#fef3c7;border-color:#fcd34d;">
+          <div class="item-num" style="background:#f59e0b;">${realIdx+1}</div>
+          <div class="item-body">
+            <div class="item-title">${r.name} — ${stars(r.stars||5)}</div>
+            <div class="item-meta">${r.location||''}</div>
+            <div class="item-preview">${r.message}</div>
+            <div class="item-actions">
+              <button class="btn btn-success btn-sm" onclick="approveReview(${realIdx})">✅ Approve</button>
+              <button class="btn btn-outline btn-sm" onclick="openEditReview(${realIdx})">✏️ Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteReview(${realIdx})">🗑 Delete</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('') +
+      '</div></div>';
+  }
+  
+  if(!approved.length && !pending.length){
+    el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No reviews yet. Add one below, or wait for student submissions.</p></div>';
+    return;
+  }
+  
+  if(approved.length) {
+    html += '<div class="news-list">' + approved.map((r)=>{
+      const idx=reviewsData.indexOf(r);
+      return `<div class="news-item">
+        <div class="item-num">${idx+1}</div>
+        <div class="item-body">
+          <div class="item-title">${r.name} — ${stars(r.stars||5)}</div>
+          <div class="item-meta">${r.location||''}</div>
+          <div class="item-preview">${r.message}</div>
+          <div class="item-actions">
+            <button class="btn btn-outline btn-sm" onclick="openEditReview(${idx})">✏️ Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteReview(${idx})">🗑 Delete</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('') + '</div>';
+  }
+  
+  el.innerHTML = html || '<div class="empty"><div class="ei">📭</div><p>No reviews yet.</p></div>';
 }
+
+async function approveReview(idx){
+  delete reviewsData[idx].pending;
+  try{reviewsSha=await ghPush(REVIEWS_FILE,reviewsSha,reviewsData,'Approve review: '+reviewsData[idx].name);showStatus('success','✅ Review approved and now live!');renderReviews();}
+  catch(e){reviewsData[idx].pending=true;showStatus('error',e.message);}
+}
+
 async function addReview(){
   const name=document.getElementById('rAddName').value.trim(), location=document.getElementById('rAddLocation').value.trim();
   const stars=parseInt(document.getElementById('rAddStars').value), message=document.getElementById('rAddMessage').value.trim();
@@ -1450,6 +1526,29 @@ async function deleteReview(idx){
   const removed=reviewsData.splice(idx,1);
   try{reviewsSha=await ghPush(REVIEWS_FILE,reviewsSha,reviewsData,'Delete review');showStatus('success','🗑️ Review deleted.');renderReviews();}
   catch(e){reviewsData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+function openEditReview(idx){
+  const r=reviewsData[idx];
+  document.getElementById('editRevIdx').value=idx;
+  document.getElementById('rEName').value=r.name||'';
+  document.getElementById('rELocation').value=r.location||'';
+  document.getElementById('rEStars').value=r.stars||5;
+  document.getElementById('rEMessage').value=r.message||'';
+  openModal('editReviewModal');
+}
+async function saveEditReview(){
+  const idx=parseInt(document.getElementById('editRevIdx').value);
+  const name=document.getElementById('rEName').value.trim();
+  const location=document.getElementById('rELocation').value.trim();
+  const stars=parseInt(document.getElementById('rEStars').value);
+  const message=document.getElementById('rEMessage').value.trim();
+  if(!name||!message){showStatus('error','Name and Message are required.');return;}
+  const old={...reviewsData[idx]};
+  reviewsData[idx]={name,location,stars,message};
+  const btn=document.getElementById('saveReviewBtn'); btn.disabled=true;
+  try{reviewsSha=await ghPush(REVIEWS_FILE,reviewsSha,reviewsData,'Edit review: '+name);showStatus('success','✅ Review updated!');closeModal('editReviewModal');renderReviews();}
+  catch(e){reviewsData[idx]=old;showStatus('error',e.message);}
+  btn.disabled=false;
 }
 
 // ════════════ Q&A ════════════
