@@ -234,6 +234,33 @@ body { font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text);
 .action-url-input { width: 100%; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.84rem; font-family: 'Roboto', sans-serif; margin-top: 4px; display: none; }
 .action-url-input.show { display: block; }
 
+
+/* DARK MODE SYNC */
+body.dark { background: #0f172a; color: #e2e8f0; }
+body.dark header { background: linear-gradient(135deg, #080f20, #102880); }
+body.dark .news-card, body.dark .dyk-card, body.dark .spotlight-card,
+body.dark .book-card, body.dark .review-card, body.dark .cal-card,
+body.dark .qa-card, body.dark .qa-submit-card { background: #1a2540; border-color: #2d3f6b; }
+body.dark h2, body.dark h3 { color: #bfdbfe; }
+body.dark p, body.dark .summary, body.dark .dyk-card-summary { color: #94a3b8; }
+body.dark .category-label { background: #1e3a6e; color: #93c5fd; }
+body.dark .filter-tab { background: #1a2540; border-color: #2d3f6b; color: #94a3b8; }
+body.dark .filter-tab.active { background: #1a3fa8; color: white; }
+body.dark .search-wrap input { background: #1a2540; border-color: #2d3f6b; color: #e2e8f0; }
+body.dark footer { background: #080f20; }
+body.dark .article-modal, body.dark .sp-modal, body.dark .modal-box { background: #1a2540; }
+body.dark .article-body, body.dark .sp-modal-body { color: #cbd5e1; }
+body.dark .results-bar { color: #64748b; }
+body.dark .section-card { background: #1a2540; border-color: #2d3f6b; }
+body.dark .form-group input, body.dark .form-group select, body.dark .form-group textarea { background: #0f172a; border-color: #2d3f6b; color: #e2e8f0; }
+body.dark .admin-content { background: #0f172a; }
+body.dark .sidebar { background: #1a2540; border-color: #2d3f6b; }
+body.dark .section-tab { color: #94a3b8; }
+body.dark .section-tab.active { background: #1a3fa8; color: white; }
+body.dark .news-item, body.dark .book-item { background: #1a2540; border-color: #2d3f6b; }
+body.dark .item-title { color: #bfdbfe; }
+body.dark .token-setup { background: #2d2000; border-color: #854d0e; }
+
 </style>
 </head>
 <body>
@@ -494,1270 +521,7 @@ body { font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text);
       </div>
     </div>
 
-      </div><!-- end admin-body-legacy -->
-    </div><!-- end admin-content -->
-  </div><!-- end admin-layout -->
-</div><!-- end adminApp -->
 
-<!-- EDIT NEWS MODAL -->
-<div class="modal-overlay" id="editNewsModal" onclick="handleOverlay(event,'editNewsModal')">
-  <div class="modal-box">
-    <div class="modal-header"><h3>✏️ Edit Article</h3><button class="modal-close" onclick="closeModal('editNewsModal')">✕</button></div>
-    <div class="modal-body">
-      <input type="hidden" id="editNewsIdx">
-      <div class="form-row">
-        <div class="form-group"><label>Headline *</label><input type="text" id="eTitle"></div>
-        <div class="form-group"><label>Category *</label><select id="eCategory"><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Date</label><input type="text" id="eDate"></div>
-        <div class="form-group">
-          <label>Cover Image</label>
-          <div class="img-upload-box" onclick="document.getElementById('eImageFile').click()">
-            <input type="file" id="eImageFile" accept="image/*" onchange="previewImg(this,'eImgPreview','eImgClear','eImageB64')">
-            <div class="upload-label"><span>🖼️</span>Tap to replace image</div>
-          </div>
-          <img id="eImgPreview" class="img-preview" alt="preview">
-          <span id="eImgClear" class="img-clear" onclick="clearImg('eImageFile','eImgPreview','eImgClear','eImageB64')">✕ Remove image</span>
-          <input type="hidden" id="eImageB64">
-        </div>
-      </div>
-      <div class="form-group"><label>Short Summary *</label><textarea id="eSummary" style="min-height:75px;"></textarea></div>
-      <div class="form-group"><label>Full Article Content *</label><textarea id="eFullContent"></textarea></div>
-      <div class="form-row">
-        <div class="form-group"><label>Pin to Top?</label><select id="ePinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top</option></select></div>
-        <div class="form-group"><label>Author</label><input type="text" id="eAuthor" placeholder="BIG QUAMS MEDIA"></div>
-      </div>
-      <div class="form-group"><label>WhatsApp / Read More Link</label><input type="url" id="eLink"></div>
-      <div class="form-group">
-        <label>Action Buttons</label>
-        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;">
-          <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;"><input type="checkbox" id="eActShare"> Share</label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;"><input type="checkbox" id="eActView"> View link</label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;"><input type="checkbox" id="eActDownload"> Download link</label>
-        </div>
-        <div id="eViewUrlWrap" style="display:none;margin-top:8px;"><input type="url" id="eViewUrl" placeholder="View URL"></div>
-        <div id="eDownUrlWrap" style="display:none;margin-top:8px;"><input type="url" id="eDownUrl" placeholder="Download URL"></div>
-      </div>
-      <div class="btn-row"><button class="btn btn-primary" onclick="saveEditNews()" id="saveNewsBtn">Save Changes</button><button class="btn btn-ghost" onclick="closeModal('editNewsModal')">Cancel</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- EDIT BOOK MODAL -->
-<div class="modal-overlay" id="editBookModal" onclick="handleOverlay(event,'editBookModal')">
-  <div class="modal-box">
-    <div class="modal-header"><h3>✏️ Edit Book</h3><button class="modal-close" onclick="closeModal('editBookModal')">✕</button></div>
-    <div class="modal-body">
-      <input type="hidden" id="editBookIdx">
-      <div class="form-row">
-        <div class="form-group"><label>Book Title *</label><input type="text" id="bETitle"></div>
-        <div class="form-group"><label>Author</label><input type="text" id="bEAuthor"></div>
-      </div>
-      <div class="form-group"><label>Category *</label><select id="bECategory"><option>JAMB (UTME & DE)</option><option>University</option><option>Novels & Fiction</option><option>Secondary School</option><option>Scholarship</option><option>Professional</option></select></div>
-      <div class="form-group"><label>Short Description *</label><textarea id="bEDesc" style="min-height:75px;"></textarea></div>
-      <div class="form-group">
-        <label>Cover Image</label>
-        <div class="img-upload-box" onclick="document.getElementById('bECoverFile').click()">
-          <input type="file" id="bECoverFile" accept="image/*" onchange="previewImg(this,'bECoverPreview','bECoverClear','bECoverB64')">
-          <div class="upload-label"><span>🖼️</span>Tap to replace cover</div>
-        </div>
-        <img id="bECoverPreview" class="img-preview" alt="preview">
-        <span id="bECoverClear" class="img-clear" onclick="clearImg('bECoverFile','bECoverPreview','bECoverClear','bECoverB64')">✕ Remove image</span>
-        <input type="hidden" id="bECoverB64">
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Google Drive File ID</label><input type="text" id="bEDriveId"></div>
-        <div class="form-group"><label>Direct Read URL</label><input type="url" id="bEReadUrl"></div>
-      </div>
-      <div class="btn-row"><button class="btn btn-primary" onclick="saveEditBook()" id="saveBookBtn">Save Changes</button><button class="btn btn-ghost" onclick="closeModal('editBookModal')">Cancel</button></div>
-    </div>
-  </div>
-</div>
-
-<script>
-const GH_USER='big-quams-educational-hub', GH_REPO='big-quams-educational-hub.github.io', GH_BRANCH='main', NEWS_FILE='news.json', BOOKS_FILE='books.json';
-// Login: Username = admin username (only you know it)
-// Password field = your GitHub Personal Access Token (starts with ghp_)
-// This means the token IS your password — no separate token box needed
-const ADMIN_USER = btoa('bigquams'); // obfuscated username
-
-function doLogin(){
-  const user  = document.getElementById('loginUser').value.trim();
-  const token = document.getElementById('loginPass').value.trim();
-  // Validate username
-  if(btoa(user) !== ADMIN_USER || !token.startsWith('ghp_')) {
-    document.getElementById('loginError').style.display='block';
-    document.getElementById('loginPass').value='';
-    return;
-  }
-  // Username correct + valid token format — log in
-  ghToken = token;
-  sessionStorage.setItem('bqm_token', token);
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('adminApp').style.display='block';
-  sessionStorage.setItem('bqm_auth','1'); init();
-}
-function doLogout(){ sessionStorage.clear(); location.reload(); }
-if(sessionStorage.getItem('bqm_auth')==='1'){ document.getElementById('loginScreen').style.display='none'; document.getElementById('adminApp').style.display='block'; }
-
-// TOKEN
-let ghToken=sessionStorage.getItem('bqm_token')||'';
-function saveToken(){
-  const t=document.getElementById('ghToken').value.trim();
-  if(!t) return showStatus('error','Please enter your GitHub token.');
-  ghToken=t; sessionStorage.setItem('bqm_token',t);
-  document.getElementById('tokenSetup').style.display='none';
-  showStatus('success','Token saved for this session.'); init();
-}
-document.getElementById('tokenSetup').style.display='none'; // Token captured at login
-
-// SECTION / TAB SWITCHING
-function switchSection(name){
-  document.querySelectorAll('.section-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&name==='news')||(i===1&&name==='library')));
-  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
-  document.getElementById(name==='library'?'section-library':'section-news').classList.add('active');
-}
-function switchTab(sec,tab){
-  const p=sec==='news'?'news':'lib';
-  const secEl=document.getElementById(sec==='news'?'section-news':'section-library');
-  secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));
-  secEl.querySelectorAll('.admin-panel').forEach(el=>el.classList.remove('active'));
-  document.getElementById(`${p}-tab-${tab}`).classList.add('active');
-}
-
-// STATUS
-function showStatus(type,msg){
-  const b=document.getElementById('statusBar');
-  b.className='status-bar show '+type;
-  b.innerHTML=(type==='loading'?'<div class="spinner"></div>':(type==='success'?'✅':'❌'))+' '+msg;
-  if(type!=='loading') setTimeout(()=>b.classList.remove('show'), type==='success' ? 8000 : 5000);
-}
-
-// MODAL
-function openModal(id){ document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
-function handleOverlay(e,id){ if(e.target===document.getElementById(id)) closeModal(id); }
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeModal('editNewsModal'); closeModal('editBookModal'); }});
-
-// GITHUB
-function ghAPI(f){ return `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${f}`; }
-function ghH(){ return { Authorization:'token '+ghToken, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' }; }
-let newsSha='', newsData=[], booksSha='', booksData=[];
-
-async function ghFetch(file){
-  const res=await fetch(ghAPI(file)+'?ref='+GH_BRANCH,{headers:ghH()});
-  if(res.status===404) return {sha:'',data:[]};
-  if(!res.ok) throw new Error('GitHub error '+res.status);
-  const j=await res.json();
-  return {sha:j.sha, data:JSON.parse(atob(j.content.replace(/\n/g,'')))};
-}
-async function ghPush(file,sha,data,msg){
-  const body={message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2)))),branch:GH_BRANCH};
-  if(sha) body.sha=sha;
-  const res=await fetch(ghAPI(file),{method:'PUT',headers:ghH(),body:JSON.stringify(body)});
-  if(!res.ok){ const e=await res.json(); throw new Error(e.message||'Push failed'); }
-  return (await res.json()).content.sha;
-}
-
-async function loadAll(){
-  if(!ghToken) return;
-  showStatus('loading','Loading from GitHub…');
-  try {
-    const [n,b]=await Promise.all([ghFetch(NEWS_FILE),ghFetch(BOOKS_FILE)]);
-    newsSha=n.sha; newsData=n.data; booksSha=b.sha; booksData=b.data;
-    renderNews(); renderBooks(); updateBadge();
-    showStatus('success',`Loaded ${newsData.length} articles, ${booksData.length} books.`);
-  } catch(e){ showStatus('error','Load failed: '+e.message); }
-}
-function updateBadge(){ document.getElementById('topBadge').textContent=`${newsData.length} Articles · ${booksData.length} Books`; }
-
-// NEWS RENDER
-function renderNews(){
-  const el=document.getElementById('newsList');
-  if(!newsData.length){ el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No articles yet. Add one above.</p></div>'; return; }
-  const sorted=[...newsData.filter(n=>n.pinned),...newsData.filter(n=>!n.pinned)];
-  el.innerHTML='<div class="news-list">'+sorted.map(item=>{
-    const idx=newsData.indexOf(item), pin=!!item.pinned;
-    return `<div class="news-item${pin?' pinned':''}">
-      ${pin?'<div class="pin-badge">📌 PINNED</div>':''}
-      <div class="item-num">${idx+1}</div>
-      <div class="item-body">
-        <div class="item-title">${item.title}</div>
-        <div class="item-meta"><span class="item-cat">${item.category||'News'}</span>${item.date||''}</div>
-        <div class="item-preview">${(item.summary||item.description||'').slice(0,100)}…</div>
-        <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="openEditNews(${idx})">✏️ Edit</button>
-          <button class="btn ${pin?'btn-warning':'btn-ghost'} btn-sm" onclick="togglePin(${idx})">${pin?'Unpin':'📌 Pin'}</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteNews(${idx})">🗑 Delete</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('')+'</div>';
-}
-
-// ADD NEWS
-async function addNews(){
-  const title=document.getElementById('addTitle').value.trim();
-  const category=document.getElementById('addCategory').value;
-  const date=document.getElementById('addDate').value.trim();
-  const image=document.getElementById('addImage').value.trim();
-  const summary=document.getElementById('addSummary').value.trim();
-  const fullContent=document.getElementById('addFullContent').value.trim();
-  const pinned=document.getElementById('addPinned').value==='true';
-  const link=document.getElementById('addLink').value.trim();
-  if(!title||!category||!summary||!fullContent){ showStatus('error','Fill in Title, Category, Summary and Full Content.'); return; }
-  if(pinned&&newsData.filter(n=>n.pinned).length>=3){ showStatus('error','Max 3 pinned articles. Unpin one first.'); return; }
-  const item={title,category,date,summary,fullContent,link};
-  if(image) item.image=image; if(pinned) item.pinned=true;
-  newsData.unshift(item);
-  const btn=document.getElementById('addNewsBtn'); btn.disabled=true;
-  try{ newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Add: '+title); showStatus('success', '🎉 Article published successfully! It is now live on your website.'); clearNewsForm(); renderNews(); updateBadge(); switchTab('news','list'); }
-  catch(e){ newsData.shift(); showStatus('error',e.message); }
-  btn.disabled=false;
-}
-function clearNewsForm(){
-  ['addTitle','addSummary','addFullContent','addImage'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('addCategory').value=''; document.getElementById('addPinned').value='false';
-  document.getElementById('addAuthor').value='BIG QUAMS MEDIA';
-  document.getElementById('addActShare').checked=true;
-  document.getElementById('addActView').checked=false;
-  document.getElementById('addActDownload').checked=false;
-  document.getElementById('addViewUrl').value='';
-  document.getElementById('addDownUrl').value='';
-  document.getElementById('addViewUrlWrap').style.display='none';
-  document.getElementById('addDownUrlWrap').style.display='none';
-  document.getElementById('addDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-}
-
-// TOGGLE PIN
-async function togglePin(idx){
-  const item=newsData[idx], willPin=!item.pinned;
-  if(willPin&&newsData.filter(n=>n.pinned).length>=3){ showStatus('error','Max 3 pinned. Unpin one first.'); return; }
-  const old=item.pinned;
-  if(willPin) newsData[idx].pinned=true; else delete newsData[idx].pinned;
-  try{ newsSha=await ghPush(NEWS_FILE,newsSha,newsData,(willPin?'Pin: ':'Unpin: ')+item.title); showStatus('success',willPin?'📌 Pinned!':'Unpinned.'); renderNews(); }
-  catch(e){ if(old) newsData[idx].pinned=old; else delete newsData[idx].pinned; showStatus('error',e.message); }
-}
-
-// DELETE NEWS
-async function deleteNews(idx){
-  const item=newsData[idx];
-  if(!confirm(`Delete "${item.title}"?\n\nThis cannot be undone.`)) return;
-  const removed=newsData.splice(idx,1);
-  try{ newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Delete: '+item.title); showStatus('success', '🗑️ Item deleted successfully.'); renderNews(); updateBadge(); }
-  catch(e){ newsData.splice(idx,0,removed[0]); showStatus('error',e.message); }
-}
-
-// EDIT NEWS
-function openEditNews(idx){
-  const item=newsData[idx];
-  document.getElementById('editNewsIdx').value=idx;
-  document.getElementById('eTitle').value=item.title||''; document.getElementById('eCategory').value=item.category||'';
-  document.getElementById('eDate').value=item.date||''; document.getElementById('eImage').value=item.image||'';
-  document.getElementById('eSummary').value=item.summary||item.description||'';
-  document.getElementById('eFullContent').value=item.fullContent||'';
-  document.getElementById('ePinned').value=item.pinned?'true':'false';
-  document.getElementById('eLink').value=item.link||''; openModal('editNewsModal');
-}
-async function saveEditNews(){
-  const idx=parseInt(document.getElementById('editNewsIdx').value);
-  const title=document.getElementById('eTitle').value.trim(), category=document.getElementById('eCategory').value;
-  const date=document.getElementById('eDate').value.trim(), image=document.getElementById('eImage').value.trim();
-  const summary=document.getElementById('eSummary').value.trim(), fullContent=document.getElementById('eFullContent').value.trim();
-  const pinned=document.getElementById('ePinned').value==='true', link=document.getElementById('eLink').value.trim();
-  if(!title||!category||!summary||!fullContent){ showStatus('error','All required fields must be filled.'); return; }
-  if(pinned&&newsData.filter((n,i)=>n.pinned&&i!==idx).length>=3){ showStatus('error','Max 3 pinned. Unpin another first.'); return; }
-  const old={...newsData[idx]};
-  newsData[idx]={title,category,date,summary,fullContent,link};
-  if(image) newsData[idx].image=image; if(pinned) newsData[idx].pinned=true;
-  const btn=document.getElementById('saveNewsBtn'); btn.disabled=true;
-  try{ newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Edit: '+title); showStatus('success', '✅ Changes saved successfully.'); closeModal('editNewsModal'); renderNews(); }
-  catch(e){ newsData[idx]=old; showStatus('error',e.message); }
-  btn.disabled=false;
-}
-
-// BOOKS RENDER
-function renderBooks(){
-  const el=document.getElementById('bookList');
-  if(!booksData.length){ el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No books yet.</p></div>'; return; }
-  el.innerHTML='<div class="book-list">'+booksData.map((book,i)=>`
-    <div class="book-item">
-      <div class="book-cover-th">${book.cover?`<img src="${book.cover}" alt="${book.title}">`:'📖'}</div>
-      <div class="item-body">
-        <div class="item-title">${book.title}</div>
-        <div class="item-meta"><span class="item-cat book-cat">${book.category||'General'}</span>${book.author?'by '+book.author:''}</div>
-        <div class="item-preview">${(book.description||'').slice(0,90)}…</div>
-        <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="openEditBook(${i})">✏️ Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteBook(${i})">🗑 Delete</button>
-        </div>
-      </div>
-    </div>`).join('')+'</div>';
-}
-
-// ADD BOOK
-async function addBook(){
-  const title=document.getElementById('bAddTitle').value.trim(), author=document.getElementById('bAddAuthor').value.trim();
-  const category=document.getElementById('bAddCategory').value, description=document.getElementById('bAddDesc').value.trim();
-  const cover=document.getElementById('bAddCover').value.trim(), driveId=document.getElementById('bAddDriveId').value.trim();
-  const readUrl=document.getElementById('bAddReadUrl').value.trim();
-  if(!title||!category||!description){ showStatus('error','Fill in Title, Category and Description.'); return; }
-  if(!driveId&&!readUrl){ showStatus('error','Provide a Google Drive File ID or Direct Read URL.'); return; }
-  const item={title,author,category,description};
-  if(cover) item.cover=cover; if(driveId) item.driveId=driveId; if(readUrl) item.readUrl=readUrl;
-  booksData.unshift(item);
-  const btn=document.getElementById('addBookBtn'); btn.disabled=true;
-  try{ booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Add book: '+title); showStatus('success', '🎉 Book added to eLibrary! Students can now access it.'); clearBookForm(); renderBooks(); updateBadge(); switchTab('lib','list'); }
-  catch(e){ booksData.shift(); showStatus('error',e.message); }
-  btn.disabled=false;
-}
-function clearBookForm(){
-  ['bAddTitle','bAddAuthor','bAddDesc','bAddCover','bAddDriveId','bAddReadUrl'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('bAddCategory').value='';
-}
-
-// EDIT BOOK
-function openEditBook(idx){
-  const b=booksData[idx];
-  document.getElementById('editBookIdx').value=idx;
-  document.getElementById('bETitle').value=b.title||''; document.getElementById('bEAuthor').value=b.author||'';
-  document.getElementById('bECategory').value=b.category||''; document.getElementById('bEDesc').value=b.description||'';
-  document.getElementById('bECover').value=b.cover||''; document.getElementById('bEDriveId').value=b.driveId||'';
-  document.getElementById('bEReadUrl').value=b.readUrl||''; openModal('editBookModal');
-}
-async function saveEditBook(){
-  const idx=parseInt(document.getElementById('editBookIdx').value);
-  const title=document.getElementById('bETitle').value.trim(), author=document.getElementById('bEAuthor').value.trim();
-  const category=document.getElementById('bECategory').value, description=document.getElementById('bEDesc').value.trim();
-  const cover=document.getElementById('bECover').value.trim(), driveId=document.getElementById('bEDriveId').value.trim();
-  const readUrl=document.getElementById('bEReadUrl').value.trim();
-  if(!title||!category||!description){ showStatus('error','Title, Category and Description are required.'); return; }
-  const old={...booksData[idx]};
-  booksData[idx]={title,author,category,description};
-  if(cover) booksData[idx].cover=cover; if(driveId) booksData[idx].driveId=driveId; if(readUrl) booksData[idx].readUrl=readUrl;
-  const btn=document.getElementById('saveBookBtn'); btn.disabled=true;
-  try{ booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Edit book: '+title); showStatus('success', '✅ Book details updated successfully.'); closeModal('editBookModal'); renderBooks(); }
-  catch(e){ booksData[idx]=old; showStatus('error',e.message); }
-  btn.disabled=false;
-}
-
-// DELETE BOOK
-async function deleteBook(idx){
-  const b=booksData[idx];
-  if(!confirm(`Delete "${b.title}"?\n\nThis cannot be undone.`)) return;
-  const removed=booksData.splice(idx,1);
-  try{ booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Delete book: '+b.title); showStatus('success', '🗑️ Item deleted successfully.'); renderBooks(); updateBadge(); }
-  catch(e){ booksData.splice(idx,0,removed[0]); showStatus('error',e.message); }
-}
-
-// INIT
-function init(){
-  document.getElementById('addDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-  if(ghToken) loadAll();
-}
-if(sessionStorage.getItem('bqm_auth')==='1') init();
-
-
-// Toggle view/download URL fields
-
-document.getElementById('eActView').addEventListener('change', function() {
-  document.getElementById('eViewUrlWrap').style.display = this.checked ? 'block' : 'none';
-});
-document.getElementById('eActDownload').addEventListener('change', function() {
-  document.getElementById('eDownUrlWrap').style.display = this.checked ? 'block' : 'none';
-});
-
-document.getElementById('addActView').addEventListener('change', function() {
-  document.getElementById('addViewUrlWrap').style.display = this.checked ? 'block' : 'none';
-});
-document.getElementById('addActDownload').addEventListener('change', function() {
-  document.getElementById('addDownUrlWrap').style.display = this.checked ? 'block' : 'none';
-});
-
-// ── IMAGE UPLOAD HELPERS ──
-function previewImg(input, previewId, clearId, hiddenId) {
-  const file = input.files[0];
-  if (!file) return;
-  if (file.size > 500000) { // 500KB limit
-    showStatus('error', 'Image too large. Please use an image under 500KB.');
-    input.value = ''; return;
-  }
-  const reader = new FileReader();
-  reader.onload = e => {
-    const b64 = e.target.result;
-    document.getElementById(hiddenId).value = b64;
-    const prev = document.getElementById(previewId);
-    prev.src = b64; prev.classList.add('show');
-    document.getElementById(clearId).classList.add('show');
-  };
-  reader.readAsDataURL(file);
-}
-function clearImg(inputId, previewId, clearId, hiddenId) {
-  document.getElementById(inputId).value = '';
-  document.getElementById(hiddenId).value = '';
-  const prev = document.getElementById(previewId);
-  prev.src = ''; prev.classList.remove('show');
-  document.getElementById(clearId).classList.remove('show');
-}
-function getImgVal(b64Id, urlId) {
-  const b64 = document.getElementById(b64Id) ? document.getElementById(b64Id).value : '';
-  const url = urlId && document.getElementById(urlId) ? document.getElementById(urlId).value.trim() : '';
-  return b64 || url || '';
-}
-
-// ── DYK DATA ──
-const DYK_FILE = 'dyk.json';
-let dykSha = '', dykData = [];
-
-// Override loadAll to include DYK
-const _origLoadAll = loadAll;
-async function loadAll() {
-  if (!ghToken) return;
-  showStatus('loading', 'Loading from GitHub…');
-  try {
-    const [n, b, d] = await Promise.all([ghFetch(NEWS_FILE), ghFetch(BOOKS_FILE), ghFetch(DYK_FILE)]);
-    newsSha = n.sha; newsData = n.data;
-    booksSha = b.sha; booksData = b.data;
-    dykSha = d.sha; dykData = d.data;
-    renderNews(); renderBooks(); renderDyk(); updateBadge();
-    showStatus('success', `Loaded ${newsData.length} articles, ${booksData.length} books, ${dykData.length} DYK items.`);
-  } catch(e) { showStatus('error', 'Load failed: ' + e.message); }
-}
-
-function updateBadge() {
-  document.getElementById('topBadge').textContent = `${newsData.length} Articles · ${booksData.length} Books · ${dykData.length} DYK`;
-}
-
-// DYK section switching fix
-const _origSwitchSection = switchSection;
-function switchSection(name) {
-  document.querySelectorAll('.section-tab').forEach((t, i) =>
-    t.classList.toggle('active',
-      (i===0&&name==='news') || (i===1&&name==='library') || (i===2&&name==='dyk')));
-  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-  if (name === 'dyk') document.getElementById('section-dyk').classList.add('active');
-  else if (name === 'library') document.getElementById('section-library').classList.add('active');
-  else document.getElementById('section-news').classList.add('active');
-}
-
-// Override switchTab for DYK
-const _origSwitchTab = switchTab;
-function switchTab(sec, tab) {
-  if (sec === 'dyk') {
-    document.querySelectorAll('#section-dyk .admin-tab').forEach((t,i) =>
-      t.classList.toggle('active', (i===0&&tab==='list')||(i===1&&tab==='add')));
-    document.querySelectorAll('#section-dyk .admin-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(`dyk-tab-${tab}`).classList.add('active');
-    return;
-  }
-  const p = sec === 'news' ? 'news' : 'lib';
-  const secEl = document.getElementById(sec === 'news' ? 'section-news' : 'section-library');
-  secEl.querySelectorAll('.admin-tab').forEach((t,i) =>
-    t.classList.toggle('active', (i===0&&tab==='list')||(i===1&&tab==='add')));
-  secEl.querySelectorAll('.admin-panel').forEach(el => el.classList.remove('active'));
-  document.getElementById(`${p}-tab-${tab}`).classList.add('active');
-}
-
-// RENDER DYK
-function renderDyk() {
-  const el = document.getElementById('dykList');
-  if (!dykData.length) { el.innerHTML = '<div class="empty"><div class="ei">📭</div><p>No items yet.</p></div>'; return; }
-  const catColor = { 'DYK Fact': '#dbeafe', 'Today in History': '#fef9c3', 'Current Affairs': '#dcfce7' };
-  const catText  = { 'DYK Fact': '#1a3fa8', 'Today in History': '#854d0e', 'Current Affairs': '#15803d' };
-  el.innerHTML = '<div class="news-list">' + dykData.map((item, i) => `
-    <div class="news-item">
-      <div class="item-num">${i+1}</div>
-      <div class="item-body">
-        <div class="item-title">${item.title}</div>
-        <div class="item-meta">
-          <span class="item-cat" style="background:${catColor[item.category]||'#dbeafe'};color:${catText[item.category]||'#1a3fa8'}">${item.category||'DYK'}</span>
-          ${item.date||''}
-        </div>
-        <div class="item-preview">${(item.summary||'').slice(0,100)}…</div>
-        <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="openEditDyk(${i})">✏️ Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteDyk(${i})">🗑 Delete</button>
-        </div>
-      </div>
-    </div>`).join('') + '</div>';
-}
-
-// ADD DYK
-async function addDyk() {
-  const title    = document.getElementById('dAddTitle').value.trim();
-  const category = document.getElementById('dAddCategory').value;
-  const date     = document.getElementById('dAddDate').value.trim();
-  const summary  = document.getElementById('dAddSummary').value.trim();
-  const content  = document.getElementById('dAddContent').value.trim();
-  const image    = document.getElementById('dAddImgB64').value;
-  const author   = document.getElementById('dAddAuthor').value.trim() || 'BIG QUAMS MEDIA';
-  if (!title||!category||!summary||!content) { showStatus('error','Fill in Title, Category, Summary and Content.'); return; }
-  const item = { title, category, date, author, summary, content };
-  if (image) item.image = image;
-  dykData.unshift(item);
-  const btn = document.getElementById('addDykBtn'); btn.disabled = true;
-  try {
-    dykSha = await ghPush(DYK_FILE, dykSha, dykData, 'Add DYK: ' + title);
-    showStatus('success', 'Item published!'); clearDykForm(); renderDyk(); updateBadge(); switchTab('dyk','list');
-  } catch(e) { dykData.shift(); showStatus('error', e.message); }
-  btn.disabled = false;
-}
-
-function clearDykForm() {
-  ['dAddTitle','dAddSummary','dAddContent'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('dAddCategory').value = '';
-  document.getElementById('dAddDate').value = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-  clearImg('dAddImgFile','dAddImgPreview','dAddImgClear','dAddImgB64');
-}
-
-// EDIT DYK
-function openEditDyk(idx) {
-  const item = dykData[idx];
-  document.getElementById('editDykIdx').value = idx;
-  document.getElementById('dETitle').value    = item.title||'';
-  document.getElementById('dECategory').value = item.category||'';
-  document.getElementById('dEDate').value     = item.date||'';
-  if (document.getElementById('dEAuthor')) document.getElementById('dEAuthor').value = item.author || 'BIG QUAMS MEDIA';
-  document.getElementById('dEAuthor').value   = item.author||'BIG QUAMS MEDIA';
-  document.getElementById('dESummary').value  = item.summary||'';
-  document.getElementById('dEContent').value  = item.content||'';
-  // Show existing image if any
-  if (item.image) {
-    document.getElementById('dEImgB64').value = item.image;
-    const prev = document.getElementById('dEImgPreview');
-    prev.src = item.image; prev.classList.add('show');
-    document.getElementById('dEImgClear').classList.add('show');
-  } else {
-    clearImg('dEImgFile','dEImgPreview','dEImgClear','dEImgB64');
-  }
-  openModal('editDykModal');
-}
-
-async function saveEditDyk() {
-  const idx      = parseInt(document.getElementById('editDykIdx').value);
-  const title    = document.getElementById('dETitle').value.trim();
-  const category = document.getElementById('dECategory').value;
-  const date     = document.getElementById('dEDate').value.trim();
-  const author   = document.getElementById('dEAuthor').value.trim() || 'BIG QUAMS MEDIA';
-  const summary  = document.getElementById('dESummary').value.trim();
-  const content  = document.getElementById('dEContent').value.trim();
-  const image    = document.getElementById('dEImgB64').value;
-  if (!title||!category||!summary||!content) { showStatus('error','All required fields must be filled.'); return; }
-  const old = {...dykData[idx]};
-  dykData[idx] = { title, category, date, author, summary, content };
-  if (image) dykData[idx].image = image;
-  const btn = document.getElementById('saveDykBtn'); btn.disabled = true;
-  try {
-    dykSha = await ghPush(DYK_FILE, dykSha, dykData, 'Edit DYK: ' + title);
-    showStatus('success', 'Updated!'); closeModal('editDykModal'); renderDyk();
-  } catch(e) { dykData[idx] = old; showStatus('error', e.message); }
-  btn.disabled = false;
-}
-
-async function deleteDyk(idx) {
-  if (!confirm(`Delete "${dykData[idx].title}"?\n\nThis cannot be undone.`)) return;
-  const removed = dykData.splice(idx,1);
-  try {
-    dykSha = await ghPush(DYK_FILE, dykSha, dykData, 'Delete DYK: ' + removed[0].title);
-    showStatus('success', '🗑️ Item deleted successfully.'); renderDyk(); updateBadge();
-  } catch(e) { dykData.splice(idx,0,removed[0]); showStatus('error',e.message); }
-}
-
-// ── PATCH NEWS/BOOK FUNCTIONS TO USE BASE64 IMAGES ──
-// Override addNews image handling
-const _origAddNews = addNews;
-async function addNews() {
-  const title = document.getElementById('addTitle').value.trim();
-  const category = document.getElementById('addCategory').value;
-  const date = document.getElementById('addDate').value.trim();
-  const image = document.getElementById('addImageB64').value;
-  const summary = document.getElementById('addSummary').value.trim();
-  const fullContent = document.getElementById('addFullContent').value.trim();
-  const pinned = document.getElementById('addPinned').value === 'true';
-  const author = document.getElementById('addAuthor').value.trim() || 'BIG QUAMS MEDIA';
-  const link = document.getElementById('addLink').value.trim();
-  const actShare = document.getElementById('addActShare').checked;
-  const actView = document.getElementById('addActView').checked;
-  const actDownload = document.getElementById('addActDownload').checked;
-  const viewUrl = document.getElementById('addViewUrl').value.trim();
-  const downUrl = document.getElementById('addDownUrl').value.trim();
-  if (!title||!category||!summary||!fullContent) { showStatus('error','Fill in Title, Category, Summary and Full Content.'); return; }
-  if (pinned&&newsData.filter(n=>n.pinned).length>=3) { showStatus('error','Max 3 pinned articles. Unpin one first.'); return; }
-  const item = { title, category, date, author, summary, fullContent, link };
-  if (image) item.image = image;
-  if (pinned) item.pinned = true;
-  const actions = {};
-  if (actShare) actions.share = true;
-  if (actView && viewUrl) actions.viewUrl = viewUrl;
-  if (actDownload && downUrl) actions.downloadUrl = downUrl;
-  if (Object.keys(actions).length) item.actions = actions;
-  newsData.unshift(item);
-  const btn = document.getElementById('addNewsBtn'); btn.disabled = true;
-  try {
-    newsSha = await ghPush(NEWS_FILE, newsSha, newsData, 'Add: ' + title);
-    showStatus('success', '🎉 Article published successfully! It is now live on your website.');
-    clearNewsForm(); clearImg('addImageFile','addImgPreview','addImgClear','addImageB64');
-    renderNews(); updateBadge(); switchTab('news','list');
-  } catch(e) { newsData.shift(); showStatus('error',e.message); }
-  btn.disabled = false;
-}
-
-// Override saveEditNews image handling
-const _origSaveEditNews = saveEditNews;
-async function saveEditNews() {
-  const idx = parseInt(document.getElementById('editNewsIdx').value);
-  const title = document.getElementById('eTitle').value.trim();
-  const category = document.getElementById('eCategory').value;
-  const date = document.getElementById('eDate').value.trim();
-  const image = document.getElementById('eImageB64').value || (newsData[idx]||{}).image || '';
-  const summary = document.getElementById('eSummary').value.trim();
-  const fullContent = document.getElementById('eFullContent').value.trim();
-  const pinned = document.getElementById('ePinned').value === 'true';
-  const author = document.getElementById('eAuthor').value.trim() || 'BIG QUAMS MEDIA';
-  const link = document.getElementById('eLink').value.trim();
-  const actShare = document.getElementById('eActShare').checked;
-  const actView = document.getElementById('eActView').checked;
-  const actDownload = document.getElementById('eActDownload').checked;
-  const viewUrl = document.getElementById('eViewUrl').value.trim();
-  const downUrl = document.getElementById('eDownUrl').value.trim();
-  if (!title||!category||!summary||!fullContent) { showStatus('error','All required fields must be filled.'); return; }
-  if (pinned&&newsData.filter((n,i)=>n.pinned&&i!==idx).length>=3) { showStatus('error','Max 3 pinned. Unpin another first.'); return; }
-  const old = {...newsData[idx]};
-  newsData[idx] = { title, category, date, author, summary, fullContent, link };
-  if (image) newsData[idx].image = image;
-  if (pinned) newsData[idx].pinned = true;
-  const actions = {};
-  if (actShare) actions.share = true;
-  if (actView && viewUrl) actions.viewUrl = viewUrl;
-  if (actDownload && downUrl) actions.downloadUrl = downUrl;
-  if (Object.keys(actions).length) newsData[idx].actions = actions;
-  const btn = document.getElementById('saveNewsBtn'); btn.disabled = true;
-  try {
-    newsSha = await ghPush(NEWS_FILE, newsSha, newsData, 'Edit: ' + title);
-    showStatus('success', '✅ Changes saved successfully.'); closeModal('editNewsModal'); renderNews();
-  } catch(e) { newsData[idx] = old; showStatus('error',e.message); }
-  btn.disabled = false;
-}
-
-// Override openEditNews to show existing image + actions
-const _origOpenEditNews = openEditNews;
-function openEditNews(idx) {
-  const item = newsData[idx];
-  document.getElementById('editNewsIdx').value = idx;
-  document.getElementById('eTitle').value       = item.title||'';
-  document.getElementById('eCategory').value    = item.category||'';
-  document.getElementById('eDate').value        = item.date||'';
-  document.getElementById('eSummary').value     = item.summary||item.description||'';
-  document.getElementById('eFullContent').value = item.fullContent||'';
-  document.getElementById('ePinned').value      = item.pinned ? 'true' : 'false';
-  document.getElementById('eAuthor').value      = item.author||'BIG QUAMS MEDIA';
-  document.getElementById('eLink').value        = item.link||'';
-  const acts = item.actions||{};
-  document.getElementById('eActShare').checked = !!acts.share;
-  document.getElementById('eActView').checked = !!acts.viewUrl;
-  document.getElementById('eActDownload').checked = !!acts.downloadUrl;
-  document.getElementById('eViewUrl').value = acts.viewUrl||'';
-  document.getElementById('eDownUrl').value = acts.downloadUrl||'';
-  document.getElementById('eViewUrlWrap').style.display = acts.viewUrl ? 'block' : 'none';
-  document.getElementById('eDownUrlWrap').style.display = acts.downloadUrl ? 'block' : 'none';
-  if (item.image) {
-    document.getElementById('eImageB64').value = item.image;
-    const prev = document.getElementById('eImgPreview');
-    prev.src = item.image; prev.classList.add('show');
-    document.getElementById('eImgClear').classList.add('show');
-  } else { clearImg('eImageFile','eImgPreview','eImgClear','eImageB64'); }
-  openModal('editNewsModal');
-}
-
-// Override addBook image handling
-const _origAddBook = addBook;
-async function addBook() {
-  const title = document.getElementById('bAddTitle').value.trim();
-  const author = document.getElementById('bAddAuthor').value.trim();
-  const category = document.getElementById('bAddCategory').value;
-  const description = document.getElementById('bAddDesc').value.trim();
-  const cover = document.getElementById('bAddCoverB64').value;
-  const driveId = document.getElementById('bAddDriveId').value.trim();
-  const readUrl = document.getElementById('bAddReadUrl').value.trim();
-  if (!title||!category||!description) { showStatus('error','Fill in Title, Category and Description.'); return; }
-  if (!driveId&&!readUrl) { showStatus('error','Provide a Google Drive File ID or Direct Read URL.'); return; }
-  const item = { title, author, category, description };
-  if (cover) item.cover = cover;
-  if (driveId) item.driveId = driveId;
-  if (readUrl) item.readUrl = readUrl;
-  booksData.unshift(item);
-  const btn = document.getElementById('addBookBtn'); btn.disabled = true;
-  try {
-    booksSha = await ghPush(BOOKS_FILE, booksSha, booksData, 'Add book: ' + title);
-    showStatus('success', '🎉 Book added to eLibrary! Students can now access it.');
-    clearBookForm(); clearImg('bAddCoverFile','bAddCoverPreview','bAddCoverClear','bAddCoverB64');
-    renderBooks(); updateBadge(); switchTab('lib','list');
-  } catch(e) { booksData.shift(); showStatus('error',e.message); }
-  btn.disabled = false;
-}
-
-// Override openEditBook to show existing cover
-const _origOpenEditBook = openEditBook;
-function openEditBook(idx) {
-  const b = booksData[idx];
-  document.getElementById('editBookIdx').value = idx;
-  document.getElementById('bETitle').value    = b.title||'';
-  document.getElementById('bEAuthor').value   = b.author||'';
-  document.getElementById('bECategory').value = b.category||'';
-  document.getElementById('bEDesc').value     = b.description||'';
-  document.getElementById('bEDriveId').value  = b.driveId||'';
-  document.getElementById('bEReadUrl').value  = b.readUrl||'';
-  if (b.cover) {
-    document.getElementById('bECoverB64').value = b.cover;
-    const prev = document.getElementById('bECoverPreview');
-    prev.src = b.cover; prev.classList.add('show');
-    document.getElementById('bECoverClear').classList.add('show');
-  } else { clearImg('bECoverFile','bECoverPreview','bECoverClear','bECoverB64'); }
-  openModal('editBookModal');
-}
-
-// Override saveEditBook to use base64
-const _origSaveEditBook = saveEditBook;
-async function saveEditBook() {
-  const idx = parseInt(document.getElementById('editBookIdx').value);
-  const title = document.getElementById('bETitle').value.trim();
-  const author = document.getElementById('bEAuthor').value.trim();
-  const category = document.getElementById('bECategory').value;
-  const description = document.getElementById('bEDesc').value.trim();
-  const cover = document.getElementById('bECoverB64').value || (booksData[idx]||{}).cover || '';
-  const driveId = document.getElementById('bEDriveId').value.trim();
-  const readUrl = document.getElementById('bEReadUrl').value.trim();
-  if (!title||!category||!description) { showStatus('error','Title, Category and Description are required.'); return; }
-  const old = {...booksData[idx]};
-  booksData[idx] = { title, author, category, description };
-  if (cover) booksData[idx].cover = cover;
-  if (driveId) booksData[idx].driveId = driveId;
-  if (readUrl) booksData[idx].readUrl = readUrl;
-  const btn = document.getElementById('saveBookBtn'); btn.disabled = true;
-  try {
-    booksSha = await ghPush(BOOKS_FILE, booksSha, booksData, 'Edit book: ' + title);
-    showStatus('success', '✅ Book details updated successfully.'); closeModal('editBookModal'); renderBooks();
-  } catch(e) { booksData[idx] = old; showStatus('error',e.message); }
-  btn.disabled = false;
-}
-
-// Also init DYK date
-const _origInit = init;
-function init() {
-  const today = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-  document.getElementById('addDate').value = today;
-  document.getElementById('dAddDate').value = today;
-  if (ghToken) loadAll();
-}
-
-
-// TOGGLE ACTION URL INPUTS
-function toggleActionUrl(chkId, urlId) {
-  const url = document.getElementById(urlId);
-  if (url) url.classList.toggle('show', document.getElementById(chkId).checked);
-}
-
-function getActions(prefix) {
-  const acts = {};
-  const share = document.getElementById(prefix + 'ChkShare');
-  const view  = document.getElementById(prefix + 'ChkView');
-  const dl    = document.getElementById(prefix + 'ChkDownload');
-  if (share && share.checked) acts.share = true;
-  if (view  && view.checked)  { const u = document.getElementById(prefix + 'UrlView').value.trim(); if (u) acts.viewUrl = u; }
-  if (dl    && dl.checked)    { const u = document.getElementById(prefix + 'UrlDownload').value.trim(); if (u) acts.downloadUrl = u; }
-  return Object.keys(acts).length ? acts : null;
-}
-
-function setActions(prefix, acts) {
-  const a = acts || {};
-  const chkShare = document.getElementById(prefix + 'ChkShare');
-  const chkView  = document.getElementById(prefix + 'ChkView');
-  const chkDl    = document.getElementById(prefix + 'ChkDownload');
-  const urlView  = document.getElementById(prefix + 'UrlView');
-  const urlDl    = document.getElementById(prefix + 'UrlDownload');
-  if (chkShare) chkShare.checked = !!a.share;
-  if (chkView)  { chkView.checked = !!a.viewUrl; if (urlView) { urlView.value = a.viewUrl||''; urlView.classList.toggle('show', !!a.viewUrl); } }
-  if (chkDl)    { chkDl.checked = !!a.downloadUrl; if (urlDl) { urlDl.value = a.downloadUrl||''; urlDl.classList.toggle('show', !!a.downloadUrl); } }
-}
-
-
-// ── SPOTLIGHT ──
-const SPOTLIGHT_FILE = 'spotlight.json';
-let spotlightSha = '', spotlightData = [];
-
-// Extend loadAll to include spotlight
-const __origLoadAll = loadAll;
-async function loadAll() {
-  if (!ghToken) return;
-  showStatus('loading', 'Loading from GitHub…');
-  try {
-    const [n, b, d, sp] = await Promise.all([
-      ghFetch(NEWS_FILE), ghFetch(BOOKS_FILE),
-      ghFetch(DYK_FILE),  ghFetch(SPOTLIGHT_FILE)
-    ]);
-    newsSha = n.sha; newsData = n.data;
-    booksSha = b.sha; booksData = b.data;
-    dykSha = d.sha; dykData = d.data;
-    spotlightSha = sp.sha; spotlightData = sp.data;
-    renderNews(); renderBooks(); renderDyk(); renderSpotlights(); updateBadge();
-    showStatus('success', `Loaded ${newsData.length} articles, ${booksData.length} books, ${dykData.length} DYK, ${spotlightData.length} spotlights.`);
-  } catch(e) { showStatus('error', 'Load failed: ' + e.message); }
-}
-
-function updateBadge() {
-  document.getElementById('topBadge').textContent =
-    `${newsData.length} News · ${booksData.length} Books · ${dykData.length} DYK · ${spotlightData.length} Spotlights`;
-}
-
-// Extend switchSection for spotlight
-const __origSwitchSection = switchSection;
-function switchSection(name) {
-  document.querySelectorAll('.section-tab').forEach((t, i) =>
-    t.classList.toggle('active',
-      (i===0&&name==='news') || (i===1&&name==='library') ||
-      (i===2&&name==='dyk') || (i===3&&name==='spotlight')));
-  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-  const map = { news:'section-news', library:'section-library', dyk:'section-dyk', spotlight:'section-spotlight' };
-  const el = document.getElementById(map[name] || 'section-news');
-  if (el) el.classList.add('active');
-}
-
-// Extend switchTab for spotlight
-const __origSwitchTab2 = switchTab;
-function switchTab(sec, tab) {
-  if (sec === 'spotlight') {
-    const secEl = document.getElementById('section-spotlight');
-    secEl.querySelectorAll('.admin-tab').forEach((t,i) =>
-      t.classList.toggle('active', (i===0&&tab==='list')||(i===1&&tab==='add')));
-    secEl.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(`spotlight-tab-${tab}`).classList.add('active');
-    return;
-  }
-  if (sec === 'dyk') {
-    const secEl = document.getElementById('section-dyk');
-    secEl.querySelectorAll('.admin-tab').forEach((t,i) =>
-      t.classList.toggle('active', (i===0&&tab==='list')||(i===1&&tab==='add')));
-    secEl.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(`dyk-tab-${tab}`).classList.add('active');
-    return;
-  }
-  const p = sec === 'news' ? 'news' : 'lib';
-  const secEl = document.getElementById(sec === 'news' ? 'section-news' : 'section-library');
-  secEl.querySelectorAll('.admin-tab').forEach((t,i) =>
-    t.classList.toggle('active', (i===0&&tab==='list')||(i===1&&tab==='add')));
-  secEl.querySelectorAll('.admin-panel').forEach(el => el.classList.remove('active'));
-  document.getElementById(`${p}-tab-${tab}`).classList.add('active');
-}
-
-function renderSpotlights() {
-  const el = document.getElementById('spotlightList');
-  if (!spotlightData.length) { el.innerHTML = '<div class="empty"><div class="ei">📭</div><p>No spotlights yet.</p></div>'; return; }
-  el.innerHTML = '<div class="news-list">' + spotlightData.map((item, i) => `
-    <div class="news-item">
-      <div class="item-num">${i+1}</div>
-      <div class="item-body">
-        <div class="item-title">${item.title}</div>
-        <div class="item-meta"><span class="item-cat" style="background:#fef9c3;color:#854d0e">${item.category||'Spotlight'}</span>${item.date||''}</div>
-        <div class="item-preview">${(item.summary||'').slice(0,100)}…</div>
-        <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="openEditSpotlight(${i})">✏️ Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteSpotlight(${i})">🗑 Delete</button>
-        </div>
-      </div>
-    </div>`).join('') + '</div>';
-}
-
-async function addSpotlight() {
-  const title    = document.getElementById('spAddTitle').value.trim();
-  const category = document.getElementById('spAddCategory').value;
-  const date     = document.getElementById('spAddDate').value.trim();
-  const summary  = document.getElementById('spAddSummary').value.trim();
-  const content  = document.getElementById('spAddContent').value.trim();
-  const image    = document.getElementById('spAddImgB64').value;
-  if (!title||!category||!summary) { showStatus('error','Fill in Title, Category and Summary.'); return; }
-  const item = { title, category, date, summary, content };
-  if (image) item.image = image;
-  spotlightData.unshift(item);
-  const btn = document.getElementById('addSpotlightBtn'); btn.disabled = true;
-  try {
-    spotlightSha = await ghPush(SPOTLIGHT_FILE, spotlightSha, spotlightData, 'Add spotlight: ' + title);
-    showStatus('success', 'Spotlight published!'); clearSpotlightForm(); renderSpotlights(); updateBadge(); switchTab('spotlight','list');
-  } catch(e) { spotlightData.shift(); showStatus('error', e.message); }
-  btn.disabled = false;
-}
-
-function clearSpotlightForm() {
-  ['spAddTitle','spAddSummary','spAddContent'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('spAddCategory').value = '';
-  document.getElementById('spAddDate').value = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-  clearImg('spAddImgFile','spAddImgPreview','spAddImgClear','spAddImgB64');
-}
-
-function openEditSpotlight(idx) {
-  const item = spotlightData[idx];
-  document.getElementById('editSpotlightIdx').value = idx;
-  document.getElementById('spETitle').value    = item.title||'';
-  document.getElementById('spECategory').value = item.category||'';
-  document.getElementById('spEDate').value     = item.date||'';
-  document.getElementById('spESummary').value  = item.summary||'';
-  document.getElementById('spEContent').value  = item.content||'';
-  if (item.image) {
-    document.getElementById('spEImgB64').value = item.image;
-    const prev = document.getElementById('spEImgPreview');
-    prev.src = item.image; prev.classList.add('show');
-    document.getElementById('spEImgClear').classList.add('show');
-  } else { clearImg('spEImgFile','spEImgPreview','spEImgClear','spEImgB64'); }
-  openModal('editSpotlightModal');
-}
-
-async function saveEditSpotlight() {
-  const idx      = parseInt(document.getElementById('editSpotlightIdx').value);
-  const title    = document.getElementById('spETitle').value.trim();
-  const category = document.getElementById('spECategory').value;
-  const date     = document.getElementById('spEDate').value.trim();
-  const summary  = document.getElementById('spESummary').value.trim();
-  const content  = document.getElementById('spEContent').value.trim();
-  const image    = document.getElementById('spEImgB64').value || (spotlightData[idx]||{}).image || '';
-  if (!title||!category||!summary) { showStatus('error','Title, Category and Summary are required.'); return; }
-  const old = {...spotlightData[idx]};
-  spotlightData[idx] = { title, category, date, summary, content };
-  if (image) spotlightData[idx].image = image;
-  const btn = document.getElementById('saveSpotlightBtn'); btn.disabled = true;
-  try {
-    spotlightSha = await ghPush(SPOTLIGHT_FILE, spotlightSha, spotlightData, 'Edit spotlight: ' + title);
-    showStatus('success','Spotlight updated!'); closeModal('editSpotlightModal'); renderSpotlights();
-  } catch(e) { spotlightData[idx] = old; showStatus('error', e.message); }
-  btn.disabled = false;
-}
-
-async function deleteSpotlight(idx) {
-  if (!confirm(`Delete "${spotlightData[idx].title}"?\n\nThis cannot be undone.`)) return;
-  const removed = spotlightData.splice(idx, 1);
-  try {
-    spotlightSha = await ghPush(SPOTLIGHT_FILE, spotlightSha, spotlightData, 'Delete spotlight: ' + removed[0].title);
-    showStatus('success', '🗑️ Item deleted successfully.'); renderSpotlights(); updateBadge();
-  } catch(e) { spotlightData.splice(idx, 0, removed[0]); showStatus('error', e.message); }
-}
-
-// Also init spotlight date
-const __origInit = init;
-function init() {
-  const today = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-  if (document.getElementById('addDate')) document.getElementById('addDate').value = today;
-  if (document.getElementById('dAddDate')) document.getElementById('dAddDate').value = today;
-  if (document.getElementById('spAddDate')) document.getElementById('spAddDate').value = today;
-  if (ghToken) loadAll();
-}
-
-
-// ── REVIEWS & Q&A ──
-const REVIEWS_FILE = 'reviews.json', QA_FILE = 'qa.json';
-let reviewsSha = '', reviewsData = [], qaSha = '', qaData = [];
-
-// Extend loadAll
-const ___origLoadAll = loadAll;
-async function loadAll() {
-  if (!ghToken) return;
-  showStatus('loading', 'Loading from GitHub…');
-  try {
-    const [n,b,d,sp,rv,qa] = await Promise.all([
-      ghFetch(NEWS_FILE), ghFetch(BOOKS_FILE), ghFetch(DYK_FILE),
-      ghFetch(SPOTLIGHT_FILE), ghFetch(REVIEWS_FILE), ghFetch(QA_FILE)
-    ]);
-    newsSha=n.sha; newsData=n.data; booksSha=b.sha; booksData=b.data;
-    dykSha=d.sha; dykData=d.data; spotlightSha=sp.sha; spotlightData=sp.data;
-    reviewsSha=rv.sha; reviewsData=rv.data; qaSha=qa.sha; qaData=qa.data;
-    renderNews(); renderBooks(); renderDyk(); renderSpotlights(); renderReviews(); renderQA(); updateBadge();
-    showStatus('success', `Loaded all data successfully.`);
-  } catch(e) { showStatus('error','Load failed: '+e.message); }
-}
-function updateBadge() {
-  document.getElementById('topBadge').textContent = `${newsData.length + booksData.length + dykData.length} items`;
-  const counts = {
-    'cnt-news': newsData.length, 'cnt-lib': booksData.length,
-    'cnt-dyk': dykData.length, 'cnt-sp': spotlightData.length,
-    'cnt-rev': reviewsData.length, 'cnt-qa': qaData.length,
-    'cnt-cal': calData.length
-  };
-  Object.entries(counts).forEach(([id, val]) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val;
-  });
-}
-
-// Extend switchSection
-const ____origSwitchSection = switchSection;
-function switchSection(name) {
-  document.querySelectorAll('.section-tab').forEach((t,i) =>
-    t.classList.toggle('active',
-      (i===0&&name==='news')||(i===1&&name==='library')||(i===2&&name==='dyk')||
-      (i===3&&name==='spotlight')||(i===4&&name==='reviews')||(i===5&&name==='qa')));
-  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
-  const map={news:'section-news',library:'section-library',dyk:'section-dyk',
-    spotlight:'section-spotlight',reviews:'section-reviews',qa:'section-qa'};
-  const el=document.getElementById(map[name]||'section-news');
-  if(el) el.classList.add('active');
-}
-
-// Extend switchTab for reviews and qa
-const ____origSwitchTab = switchTab;
-function switchTab(sec, tab) {
-  if(sec==='rev'||sec==='qa') {
-    const secEl=document.getElementById(sec==='rev'?'section-reviews':'section-qa');
-    secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));
-    secEl.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
-    document.getElementById(`${sec}-tab-${tab}`).classList.add('active');
-    return;
-  }
-  // Delegate to spotlight handler
-  if(sec==='spotlight'){const secEl=document.getElementById('section-spotlight');secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));secEl.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));document.getElementById(`spotlight-tab-${tab}`).classList.add('active');return;}
-  if(sec==='dyk'){const secEl=document.getElementById('section-dyk');secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));secEl.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));document.getElementById(`dyk-tab-${tab}`).classList.add('active');return;}
-  const p=sec==='news'?'news':'lib';
-  const secEl=document.getElementById(sec==='news'?'section-news':'section-library');
-  secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));
-  secEl.querySelectorAll('.admin-panel').forEach(el=>el.classList.remove('active'));
-  document.getElementById(`${p}-tab-${tab}`).classList.add('active');
-}
-
-function renderReviews() {
-  const el=document.getElementById('reviewsList');
-  if(!el) return;
-  if(!reviewsData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No reviews yet.</p></div>';return;}
-  const stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
-  el.innerHTML='<div class="news-list">'+reviewsData.map((r,i)=>`
-    <div class="news-item">
-      <div class="item-num">${i+1}</div>
-      <div class="item-body">
-        <div class="item-title">${r.name} — ${stars(r.stars||5)}</div>
-        <div class="item-meta">${r.location||''}</div>
-        <div class="item-preview">${r.message}</div>
-        <div class="item-actions">
-          <button class="btn btn-danger btn-sm" onclick="deleteReview(${i})">🗑 Delete</button>
-        </div>
-      </div>
-    </div>`).join('')+'</div>';
-}
-
-async function addReview() {
-  const name=document.getElementById('rAddName').value.trim();
-  const location=document.getElementById('rAddLocation').value.trim();
-  const stars=parseInt(document.getElementById('rAddStars').value);
-  const message=document.getElementById('rAddMessage').value.trim();
-  if(!name||!message){showStatus('error','Name and Message are required.');return;}
-  reviewsData.push({name,location,stars,message});
-  const btn=document.getElementById('addReviewBtn');btn.disabled=true;
-  try{reviewsSha=await ghPush(REVIEWS_FILE,reviewsSha,reviewsData,'Add review: '+name);showStatus('success', '⭐ Review added! It will appear on the homepage.');clearReviewForm();renderReviews();}
-  catch(e){reviewsData.pop();showStatus('error',e.message);}
-  btn.disabled=false;
-}
-function clearReviewForm(){
-  ['rAddName','rAddLocation','rAddMessage'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('rAddStars').value='5';
-}
-async function deleteReview(idx){
-  if(!confirm(`Delete review from "${reviewsData[idx].name}"?`)) return;
-  const removed=reviewsData.splice(idx,1);
-  try{reviewsSha=await ghPush(REVIEWS_FILE,reviewsSha,reviewsData,'Delete review: '+removed[0].name);showStatus('success', '🗑️ Item deleted successfully.');renderReviews();}
-  catch(e){reviewsData.splice(idx,0,removed[0]);showStatus('error',e.message);}
-}
-
-function renderQA() {
-  const el=document.getElementById('qaAdminList');
-  if(!el) return;
-  if(!qaData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No Q&As yet.</p></div>';return;}
-  el.innerHTML='<div class="news-list">'+qaData.map((qa,i)=>`
-    <div class="news-item">
-      <div class="item-num">${i+1}</div>
-      <div class="item-body">
-        <div class="item-title">❓ ${qa.question}</div>
-        <div class="item-preview">✅ ${(qa.answer||'').slice(0,100)}…</div>
-        <div class="item-actions">
-          <button class="btn btn-danger btn-sm" onclick="deleteQA(${i})">🗑 Delete</button>
-        </div>
-      </div>
-    </div>`).join('')+'</div>';
-}
-
-async function addQA() {
-  const question=document.getElementById('qaAddQ').value.trim();
-  const answer=document.getElementById('qaAddA').value.trim();
-  if(!question||!answer){showStatus('error','Both question and answer are required.');return;}
-  qaData.unshift({question,answer});
-  const btn=document.getElementById('addQABtn');btn.disabled=true;
-  try{qaSha=await ghPush(QA_FILE,qaSha,qaData,'Add Q&A');showStatus('success', '✅ Q&A published! Students can now see this answer.');document.getElementById('qaAddQ').value='';document.getElementById('qaAddA').value='';renderQA();switchTab('qa','list');}
-  catch(e){qaData.shift();showStatus('error',e.message);}
-  btn.disabled=false;
-}
-async function deleteQA(idx){
-  if(!confirm('Delete this Q&A?')) return;
-  const removed=qaData.splice(idx,1);
-  try{qaSha=await ghPush(QA_FILE,qaSha,qaData,'Delete Q&A');showStatus('success', '🗑️ Item deleted successfully.');renderQA();}
-  catch(e){qaData.splice(idx,0,removed[0]);showStatus('error',e.message);}
-}
-
-
-// ── ACADEMIC CALENDAR ──
-const CAL_FILE = 'calendar.json';
-let calSha = '', calData = [];
-
-const _extLoadAll = loadAll;
-async function loadAll() {
-  if (!ghToken) return;
-  showStatus('loading', 'Loading from GitHub…');
-  try {
-    const [n,b,d,sp,rv,qa,cal] = await Promise.all([
-      ghFetch(NEWS_FILE), ghFetch(BOOKS_FILE), ghFetch(DYK_FILE),
-      ghFetch(SPOTLIGHT_FILE), ghFetch(REVIEWS_FILE), ghFetch(QA_FILE),
-      ghFetch(CAL_FILE)
-    ]);
-    newsSha=n.sha; newsData=n.data; booksSha=b.sha; booksData=b.data;
-    dykSha=d.sha; dykData=d.data; spotlightSha=sp.sha; spotlightData=sp.data;
-    reviewsSha=rv.sha; reviewsData=rv.data; qaSha=qa.sha; qaData=qa.data;
-    calSha=cal.sha; calData=cal.data;
-    renderNews(); renderBooks(); renderDyk(); renderSpotlights();
-    renderReviews(); renderQA(); renderCalendar(); updateBadge();
-    showStatus('success','All data loaded successfully.');
-  } catch(e) { showStatus('error','Load failed: '+e.message); }
-}
-
-const _extSwitchSection = switchSection;
-function switchSection(name) {
-  // Update sidebar buttons
-  const navMap = ['news','library','dyk','spotlight','reviews','qa','calendar'];
-  document.querySelectorAll('.section-tab').forEach((t,i) =>
-    t.classList.toggle('active', navMap[i] === name));
-  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
-  const map={news:'section-news',library:'section-library',dyk:'section-dyk',
-    spotlight:'section-spotlight',reviews:'section-reviews',qa:'section-qa',calendar:'section-calendar'};
-  const el=document.getElementById(map[name]||'section-news');
-  if(el) el.classList.add('active');
-  // Close mobile sidebar after tap on small screens
-  if (window.innerWidth <= 640) {
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  }
-}
-
-const _extSwitchTab = switchTab;
-function switchTab(sec, tab) {
-  if(sec==='cal') {
-    const secEl=document.getElementById('section-calendar');
-    secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));
-    secEl.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
-    document.getElementById(`cal-tab-${tab}`).classList.add('active');
-    return;
-  }
-  if(sec==='rev'||sec==='qa') {
-    const secEl=document.getElementById(sec==='rev'?'section-reviews':'section-qa');
-    secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));
-    secEl.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
-    document.getElementById(`${sec}-tab-${tab}`).classList.add('active');
-    return;
-  }
-  if(sec==='spotlight'){const s=document.getElementById('section-spotlight');s.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));s.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));document.getElementById(`spotlight-tab-${tab}`).classList.add('active');return;}
-  if(sec==='dyk'){const s=document.getElementById('section-dyk');s.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));s.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));document.getElementById(`dyk-tab-${tab}`).classList.add('active');return;}
-  const p=sec==='news'?'news':'lib';
-  const secEl=document.getElementById(sec==='news'?'section-news':'section-library');
-  secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));
-  secEl.querySelectorAll('.admin-panel').forEach(el=>el.classList.remove('active'));
-  document.getElementById(`${p}-tab-${tab}`).classList.add('active');
-}
-
-function fmtDate(dateStr) {
-  if (!dateStr) return {month:'—',day:'—'};
-  const d = new Date(dateStr);
-  return { month: d.toLocaleString('en-US',{month:'short'}), day: d.getDate() };
-}
-
-const calBadgeLabels = {jamb:'JAMB',exam:'Exam',admission:'Admission',school:'School',scholarship:'Scholarship'};
-
-function renderCalendar() {
-  const el=document.getElementById('calList');
-  if(!el) return;
-  if(!calData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No events yet.</p></div>';return;}
-  const sorted=[...calData].sort((a,b)=>new Date(a.date)-new Date(b.date));
-  el.innerHTML='<div class="news-list">'+sorted.map(item=>{
-    const idx=calData.indexOf(item);
-    const {month,day}=fmtDate(item.date);
-    return `<div class="news-item">
-      <div style="background:${item.color||'#1a3fa8'};color:white;border-radius:8px;min-width:44px;padding:8px 4px;text-align:center;flex-shrink:0;">
-        <div style="font-size:0.58rem;font-weight:700;text-transform:uppercase;opacity:0.85;">${month}</div>
-        <div style="font-family:'Montserrat',sans-serif;font-size:1.3rem;font-weight:800;line-height:1;">${day}</div>
-      </div>
-      <div class="item-body">
-        <div class="item-title">${item.title}</div>
-        <div class="item-meta"><span class="item-cat">${calBadgeLabels[item.category]||item.category||'Event'}</span> ${item.date||''}</div>
-        <div class="item-preview">${(item.description||'').slice(0,100)}</div>
-        <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="openEditCal(${idx})">✏️ Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteCal(${idx})">🗑 Delete</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('')+'</div>';
-}
-
-async function addCalEvent() {
-  const title=document.getElementById('calAddTitle').value.trim();
-  const category=document.getElementById('calAddCategory').value;
-  const date=document.getElementById('calAddDate').value;
-  const color=document.getElementById('calAddColor').value;
-  const description=document.getElementById('calAddDesc').value.trim();
-  if(!title||!category||!date||!description){showStatus('error','All fields are required.');return;}
-  calData.push({title,category,date,color,description});
-  const btn=document.getElementById('addCalBtn');btn.disabled=true;
-  try{calSha=await ghPush(CAL_FILE,calSha,calData,'Add calendar: '+title);showStatus('success', '📅 Calendar event added! Students can see this important date.');clearCalForm();renderCalendar();switchTab('cal','list');}
-  catch(e){calData.pop();showStatus('error',e.message);}
-  btn.disabled=false;
-}
-function clearCalForm(){
-  ['calAddTitle','calAddDesc'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('calAddCategory').value='';
-  document.getElementById('calAddDate').value='';
-  document.getElementById('calAddColor').value='#1a3fa8';
-}
-
-function openEditCal(idx) {
-  const item=calData[idx];
-  document.getElementById('editCalIdx').value=idx;
-  document.getElementById('calETitle').value=item.title||'';
-  document.getElementById('calECategory').value=item.category||'';
-  document.getElementById('calEDate').value=item.date||'';
-  document.getElementById('calEColor').value=item.color||'#1a3fa8';
-  document.getElementById('calEDesc').value=item.description||'';
-  openModal('editCalModal');
-}
-async function saveEditCal() {
-  const idx=parseInt(document.getElementById('editCalIdx').value);
-  const title=document.getElementById('calETitle').value.trim();
-  const category=document.getElementById('calECategory').value;
-  const date=document.getElementById('calEDate').value;
-  const color=document.getElementById('calEColor').value;
-  const description=document.getElementById('calEDesc').value.trim();
-  if(!title||!category||!date||!description){showStatus('error','All fields required.');return;}
-  const old={...calData[idx]};
-  calData[idx]={title,category,date,color,description};
-  const btn=document.getElementById('saveCalBtn');btn.disabled=true;
-  try{calSha=await ghPush(CAL_FILE,calSha,calData,'Edit calendar: '+title);showStatus('success', '✅ Calendar event updated successfully.');closeModal('editCalModal');renderCalendar();}
-  catch(e){calData[idx]=old;showStatus('error',e.message);}
-  btn.disabled=false;
-}
-async function deleteCal(idx){
-  if(!confirm(`Delete "${calData[idx].title}"?`)) return;
-  const removed=calData.splice(idx,1);
-  try{calSha=await ghPush(CAL_FILE,calSha,calData,'Delete calendar: '+removed[0].title);showStatus('success', '🗑️ Item deleted successfully.');renderCalendar();}
-  catch(e){calData.splice(idx,0,removed[0]);showStatus('error',e.message);}
-}
-
-// Init date field
-const _extInit = init;
-function init() {
-  const today = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-  ['addDate','dAddDate','spAddDate'].forEach(id=>{const el=document.getElementById(id);if(el) el.value=today;});
-  if(ghToken) loadAll();
-}
-
-</script>
 
 
     <!-- SPOTLIGHT SECTION -->
@@ -2047,5 +811,755 @@ function init() {
     </div>
   </div>
 </div>
+
+      </div><!-- end admin-body-legacy -->
+    </div><!-- end admin-content -->
+  </div><!-- end admin-layout -->
+</div><!-- end adminApp -->
+
+<!-- EDIT NEWS MODAL -->
+<div class="modal-overlay" id="editNewsModal" onclick="handleOverlay(event,'editNewsModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Article</h3><button class="modal-close" onclick="closeModal('editNewsModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editNewsIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Headline *</label><input type="text" id="eTitle"></div>
+        <div class="form-group"><label>Category *</label><select id="eCategory"><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Date</label><input type="text" id="eDate"></div>
+        <div class="form-group">
+          <label>Cover Image</label>
+          <div class="img-upload-box" onclick="document.getElementById('eImageFile').click()">
+            <input type="file" id="eImageFile" accept="image/*" onchange="previewImg(this,'eImgPreview','eImgClear','eImageB64')">
+            <div class="upload-label"><span>🖼️</span>Tap to replace image</div>
+          </div>
+          <img id="eImgPreview" class="img-preview" alt="preview">
+          <span id="eImgClear" class="img-clear" onclick="clearImg('eImageFile','eImgPreview','eImgClear','eImageB64')">✕ Remove image</span>
+          <input type="hidden" id="eImageB64">
+        </div>
+      </div>
+      <div class="form-group"><label>Short Summary *</label><textarea id="eSummary" style="min-height:75px;"></textarea></div>
+      <div class="form-group"><label>Full Article Content *</label><textarea id="eFullContent"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Pin to Top?</label><select id="ePinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top</option></select></div>
+        <div class="form-group"><label>Author</label><input type="text" id="eAuthor" placeholder="BIG QUAMS MEDIA"></div>
+      </div>
+      <div class="form-group"><label>WhatsApp / Read More Link</label><input type="url" id="eLink"></div>
+      <div class="form-group">
+        <label>Action Buttons</label>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;"><input type="checkbox" id="eActShare"> Share</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;"><input type="checkbox" id="eActView"> View link</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;"><input type="checkbox" id="eActDownload"> Download link</label>
+        </div>
+        <div id="eViewUrlWrap" style="display:none;margin-top:8px;"><input type="url" id="eViewUrl" placeholder="View URL"></div>
+        <div id="eDownUrlWrap" style="display:none;margin-top:8px;"><input type="url" id="eDownUrl" placeholder="Download URL"></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="saveEditNews()" id="saveNewsBtn">Save Changes</button><button class="btn btn-ghost" onclick="closeModal('editNewsModal')">Cancel</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT BOOK MODAL -->
+<div class="modal-overlay" id="editBookModal" onclick="handleOverlay(event,'editBookModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Book</h3><button class="modal-close" onclick="closeModal('editBookModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editBookIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Book Title *</label><input type="text" id="bETitle"></div>
+        <div class="form-group"><label>Author</label><input type="text" id="bEAuthor"></div>
+      </div>
+      <div class="form-group"><label>Category *</label><select id="bECategory"><option>JAMB (UTME & DE)</option><option>University</option><option>Novels & Fiction</option><option>Secondary School</option><option>Scholarship</option><option>Professional</option></select></div>
+      <div class="form-group"><label>Short Description *</label><textarea id="bEDesc" style="min-height:75px;"></textarea></div>
+      <div class="form-group">
+        <label>Cover Image</label>
+        <div class="img-upload-box" onclick="document.getElementById('bECoverFile').click()">
+          <input type="file" id="bECoverFile" accept="image/*" onchange="previewImg(this,'bECoverPreview','bECoverClear','bECoverB64')">
+          <div class="upload-label"><span>🖼️</span>Tap to replace cover</div>
+        </div>
+        <img id="bECoverPreview" class="img-preview" alt="preview">
+        <span id="bECoverClear" class="img-clear" onclick="clearImg('bECoverFile','bECoverPreview','bECoverClear','bECoverB64')">✕ Remove image</span>
+        <input type="hidden" id="bECoverB64">
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Google Drive File ID</label><input type="text" id="bEDriveId"></div>
+        <div class="form-group"><label>Direct Read URL</label><input type="url" id="bEReadUrl"></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="saveEditBook()" id="saveBookBtn">Save Changes</button><button class="btn btn-ghost" onclick="closeModal('editBookModal')">Cancel</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// ── DARK MODE SYNC FROM HOMEPAGE ──
+(function syncDarkMode() {
+  const theme = localStorage.getItem('bqm-theme');
+  if (theme === 'dark') {
+    document.body.classList.add('dark');
+  } else {
+    document.body.classList.remove('dark');
+  }
+})();
+
+// ── CONFIG ──
+const GH_USER='big-quams-educational-hub', GH_REPO='big-quams-educational-hub.github.io', GH_BRANCH='main';
+const NEWS_FILE='news.json', BOOKS_FILE='books.json', DYK_FILE='dyk.json';
+const SPOTLIGHT_FILE='spotlight.json', REVIEWS_FILE='reviews.json', QA_FILE='qa.json', CAL_FILE='calendar.json';
+const ADMIN_USER = btoa('bigquams');
+
+// ── AUTH ──
+let ghToken = sessionStorage.getItem('bqm_token') || '';
+
+function doLogin(){
+  const user  = document.getElementById('loginUser').value.trim();
+  const token = document.getElementById('loginPass').value.trim();
+  if(btoa(user) !== ADMIN_USER || !token.startsWith('ghp_')) {
+    document.getElementById('loginError').style.display='block';
+    document.getElementById('loginPass').value='';
+    return;
+  }
+  ghToken = token;
+  sessionStorage.setItem('bqm_token', token);
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('adminApp').style.display='block';
+  sessionStorage.setItem('bqm_auth','1');
+  init();
+}
+function doLogout(){ sessionStorage.clear(); location.reload(); }
+if(sessionStorage.getItem('bqm_auth')==='1' && sessionStorage.getItem('bqm_token')){
+  ghToken = sessionStorage.getItem('bqm_token');
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('adminApp').style.display='block';
+  // Auto-init with restored session
+  setTimeout(init, 200);
+}
+document.getElementById('tokenSetup').style.display='none';
+
+// ── GITHUB API ──
+function ghAPI(f){ return `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${f}`; }
+function ghH(){ return { Authorization:'token '+ghToken, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' }; }
+
+async function ghFetch(file){
+  try {
+    const res = await fetch(ghAPI(file)+'?ref='+GH_BRANCH, {headers:ghH()});
+    if(res.status === 401) throw new Error('Invalid token — check your GitHub token');
+    if(res.status === 403) throw new Error('Token lacks permissions — ensure "repo" scope is enabled');
+    if(res.status === 404) return {sha:'', data:[]};  // File doesn't exist yet
+    if(!res.ok) {
+      const errJson = await res.json().catch(()=>({message:'Unknown error'}));
+      throw new Error(errJson.message || 'GitHub error ' + res.status + ' for ' + file);
+    }
+    const j = await res.json();
+    if(!j.content) return {sha: j.sha||'', data:[]};
+    // Decode base64 — handle large files and special characters
+    let text = '';
+    try {
+      text = decodeURIComponent(escape(atob(j.content.replace(/\s/g,''))));
+    } catch {
+      text = atob(j.content.replace(/\s/g,''));
+    }
+    text = text.trim();
+    if(!text || text === 'null') return {sha: j.sha, data:[]};
+    let parsed;
+    try { parsed = JSON.parse(text); } catch(pe) {
+      console.warn('JSON parse error for', file, pe.message);
+      return {sha: j.sha, data:[]};
+    }
+    return {sha: j.sha, data: Array.isArray(parsed) ? parsed : []};
+  } catch(e) {
+    if(e.message.includes('token') || e.message.includes('permission')) throw e;
+    console.warn('ghFetch failed for', file, e.message);
+    return {sha:'', data:[]};  // Gracefully return empty for missing files
+  }
+}
+async function ghPush(file, sha, data, msg){
+  const json = JSON.stringify(data, null, 2);
+  // Robust base64 encoding for Unicode content
+  const b64 = btoa(unescape(encodeURIComponent(json)));
+  const body = {message: msg, content: b64, branch: GH_BRANCH};
+  if(sha) body.sha = sha;
+  const res = await fetch(ghAPI(file), {method:'PUT', headers:ghH(), body:JSON.stringify(body)});
+  if(!res.ok){
+    const errText = await res.text();
+    let errMsg = 'Push failed';
+    try { errMsg = JSON.parse(errText).message || errMsg; } catch {}
+    if(res.status === 409) errMsg = 'File conflict — please refresh the page and try again.';
+    if(res.status === 422) errMsg = 'Invalid data format. Check your inputs.';
+    throw new Error(errMsg);
+  }
+  const result = await res.json();
+  return result.content.sha;
+}
+
+// ── DATA ──
+let newsSha='', newsData=[], booksSha='', booksData=[], dykSha='', dykData=[];
+let spotlightSha='', spotlightData=[], reviewsSha='', reviewsData=[], qaSha='', qaData=[], calSha='', calData=[];
+
+// ── LOAD ALL ──
+async function loadAll(){
+  if(!ghToken){ showStatus('error','No GitHub token found. Please log out and log back in.'); return; }
+  showStatus('loading','Loading from GitHub… please wait');
+  const files = [
+    {name:NEWS_FILE,      onDone:(r)=>{newsSha=r.sha; newsData=r.data;}},
+    {name:BOOKS_FILE,     onDone:(r)=>{booksSha=r.sha; booksData=r.data;}},
+    {name:DYK_FILE,       onDone:(r)=>{dykSha=r.sha; dykData=r.data;}},
+    {name:SPOTLIGHT_FILE, onDone:(r)=>{spotlightSha=r.sha; spotlightData=r.data;}},
+    {name:REVIEWS_FILE,   onDone:(r)=>{reviewsSha=r.sha; reviewsData=r.data;}},
+    {name:QA_FILE,        onDone:(r)=>{qaSha=r.sha; qaData=r.data;}},
+    {name:CAL_FILE,       onDone:(r)=>{calSha=r.sha; calData=r.data;}},
+  ];
+  let hasError = false;
+  for(const f of files){
+    try{
+      const result = await ghFetch(f.name);
+      f.onDone(result);
+    } catch(e){
+      hasError = true;
+      showStatus('error', '❌ Failed loading ' + f.name + ': ' + e.message);
+      return; // Stop on critical error (usually token issue)
+    }
+  }
+  renderNews(); renderBooks(); renderDyk(); renderSpotlights();
+  renderReviews(); renderQA(); renderCalendar(); updateBadge();
+  if(!hasError) showStatus('success','✅ All data loaded successfully! Welcome to the admin panel.');
+}
+
+// ── UI ──
+function showStatus(type,msg){
+  const b=document.getElementById('statusBar');
+  b.className='status-bar show '+type;
+  b.innerHTML=(type==='loading'?'<div class="spinner"></div>':(type==='success'?'✅':'❌'))+' '+msg;
+  if(type!=='loading') setTimeout(()=>b.classList.remove('show'), type==='success'?8000:5000);
+}
+function openModal(id){ document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+function handleOverlay(e,id){ if(e.target===document.getElementById(id)) closeModal(id); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')) });
+
+function updateBadge(){
+  document.getElementById('topBadge').textContent=newsData.length+' News · '+booksData.length+' Books';
+  const m={'cnt-news':newsData.length,'cnt-lib':booksData.length,'cnt-dyk':dykData.length,
+    'cnt-sp':spotlightData.length,'cnt-rev':reviewsData.length,'cnt-qa':qaData.length,'cnt-cal':calData.length};
+  Object.entries(m).forEach(([id,v])=>{const el=document.getElementById(id);if(el) el.textContent=v;});
+}
+
+// ── SECTION SWITCHING ──
+const NAV_ORDER = ['news','library','dyk','spotlight','reviews','qa','calendar'];
+function switchSection(name){
+  document.querySelectorAll('.section-tab').forEach((t,i)=>t.classList.toggle('active', NAV_ORDER[i]===name));
+  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+  const m={news:'section-news',library:'section-library',dyk:'section-dyk',spotlight:'section-spotlight',
+    reviews:'section-reviews',qa:'section-qa',calendar:'section-calendar'};
+  const el=document.getElementById(m[name]||'section-news');
+  if(el) el.classList.add('active');
+  if(window.innerWidth<=640) window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function switchTab(sec,tab){
+  const sMap={news:'section-news',lib:'section-library',dyk:'section-dyk',spotlight:'section-spotlight',rev:'section-reviews',qa:'section-qa',cal:'section-calendar'};
+  const prefix=sec;
+  const secEl=document.getElementById(sMap[sec]||(sec==='news'?'section-news':'section-library'));
+  if(!secEl) return;
+  secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));
+  secEl.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
+  const panel=document.getElementById(`${prefix}-tab-${tab}`);
+  if(panel) panel.classList.add('active');
+}
+
+// ── IMAGE HELPERS ──
+function previewImg(input,prevId,clearId,hiddenId){
+  const file=input.files[0]; if(!file) return;
+  if(file.size>500000){showStatus('error','Image too large. Max 500KB.');input.value='';return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const b64=e.target.result;
+    document.getElementById(hiddenId).value=b64;
+    const prev=document.getElementById(prevId); prev.src=b64; prev.classList.add('show');
+    document.getElementById(clearId).classList.add('show');
+  };
+  reader.readAsDataURL(file);
+}
+function clearImg(inputId,prevId,clearId,hiddenId){
+  document.getElementById(inputId).value='';
+  document.getElementById(hiddenId).value='';
+  const prev=document.getElementById(prevId); prev.src=''; prev.classList.remove('show');
+  document.getElementById(clearId).classList.remove('show');
+}
+
+// ── ACTION CHECKBOXES ──
+function toggleActionUrl(chkId,urlId){const url=document.getElementById(urlId);if(url) url.classList.toggle('show',document.getElementById(chkId).checked);}
+function getActions(p){
+  const acts={};
+  const share=document.getElementById(p+'ChkShare'), view=document.getElementById(p+'ChkView'), dl=document.getElementById(p+'ChkDownload');
+  if(share&&share.checked) acts.share=true;
+  if(view&&view.checked){const u=document.getElementById(p+'UrlView').value.trim();if(u) acts.viewUrl=u;}
+  if(dl&&dl.checked){const u=document.getElementById(p+'UrlDownload').value.trim();if(u) acts.downloadUrl=u;}
+  return Object.keys(acts).length?acts:null;
+}
+function setActions(p,acts){
+  const a=acts||{};
+  const chkShare=document.getElementById(p+'ChkShare'),chkView=document.getElementById(p+'ChkView'),chkDl=document.getElementById(p+'ChkDownload');
+  const urlView=document.getElementById(p+'UrlView'),urlDl=document.getElementById(p+'UrlDownload');
+  if(chkShare) chkShare.checked=!!a.share;
+  if(chkView){chkView.checked=!!a.viewUrl;if(urlView){urlView.value=a.viewUrl||'';urlView.classList.toggle('show',!!a.viewUrl);}}
+  if(chkDl){chkDl.checked=!!a.downloadUrl;if(urlDl){urlDl.value=a.downloadUrl||'';urlDl.classList.toggle('show',!!a.downloadUrl);}}
+}
+
+// ════════════ NEWS ════════════
+function renderNews(){
+  const el=document.getElementById('newsList'); if(!el) return;
+  if(!newsData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No articles yet.</p></div>';return;}
+  const sorted=[...newsData.filter(n=>n.pinned),...newsData.filter(n=>!n.pinned)];
+  el.innerHTML='<div class="news-list">'+sorted.map(item=>{
+    const idx=newsData.indexOf(item), pin=!!item.pinned;
+    return `<div class="news-item${pin?' pinned':''}">
+      ${pin?'<div class="pin-badge">📌 PINNED</div>':''}
+      <div class="item-num">${idx+1}</div>
+      <div class="item-body">
+        <div class="item-title">${item.title}</div>
+        <div class="item-meta"><span class="item-cat">${item.category||'News'}</span>${item.date||''}</div>
+        <div class="item-preview">${(item.summary||item.description||'').slice(0,100)}…</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditNews(${idx})">✏️ Edit</button>
+          <button class="btn ${pin?'btn-warning':'btn-ghost'} btn-sm" onclick="togglePin(${idx})">${pin?'Unpin':'📌 Pin'}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteNews(${idx})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+async function addNews(){
+  const title=document.getElementById('addTitle').value.trim();
+  const category=document.getElementById('addCategory').value;
+  const date=document.getElementById('addDate').value.trim();
+  const image=document.getElementById('addImageB64').value;
+  const summary=document.getElementById('addSummary').value.trim();
+  const fullContent=document.getElementById('addFullContent').value.trim();
+  const pinned=document.getElementById('addPinned').value==='true';
+  const author=document.getElementById('addAuthor').value.trim()||'BIG QUAMS MEDIA';
+  const actions=getActions('');
+  if(!title||!category||!summary||!fullContent){showStatus('error','Fill in Title, Category, Summary and Full Content.');return;}
+  if(pinned&&newsData.filter(n=>n.pinned).length>=3){showStatus('error','Max 3 pinned articles. Unpin one first.');return;}
+  const item={title,category,date,author,summary,fullContent,link:'https://wa.me/message/OVCVEDHU3I2PH1'};
+  if(image) item.image=image; if(pinned) item.pinned=true; if(actions) item.actions=actions;
+  newsData.unshift(item);
+  const btn=document.getElementById('addNewsBtn'); btn.disabled=true;
+  try{newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Add: '+title);showStatus('success','🎉 Article published! It is now live on your website.');clearNewsForm();renderNews();updateBadge();switchTab('news','list');}
+  catch(e){newsData.shift();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+function clearNewsForm(){
+  ['addTitle','addSummary','addFullContent'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('addCategory').value=''; document.getElementById('addPinned').value='false';
+  document.getElementById('addAuthor').value='BIG QUAMS MEDIA';
+  document.getElementById('addDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  ['chkShare','chkView','chkDownload'].forEach(id=>{const el=document.getElementById(id);if(el) el.checked=false;});
+  ['urlView','urlDownload'].forEach(id=>{const el=document.getElementById(id);if(el){el.value='';el.classList.remove('show');}});
+  clearImg('addImageFile','addImgPreview','addImgClear','addImageB64');
+}
+async function togglePin(idx){
+  const item=newsData[idx], willPin=!item.pinned;
+  if(willPin&&newsData.filter(n=>n.pinned).length>=3){showStatus('error','Max 3 pinned.');return;}
+  const old=item.pinned;
+  if(willPin) newsData[idx].pinned=true; else delete newsData[idx].pinned;
+  try{newsSha=await ghPush(NEWS_FILE,newsSha,newsData,(willPin?'Pin: ':'Unpin: ')+item.title);showStatus('success',willPin?'📌 Article pinned!':'✅ Article unpinned.');renderNews();}
+  catch(e){if(old) newsData[idx].pinned=old; else delete newsData[idx].pinned; showStatus('error',e.message);}
+}
+async function deleteNews(idx){
+  if(!confirm(`Delete "${newsData[idx].title}"?\n\nThis cannot be undone.`)) return;
+  const removed=newsData.splice(idx,1);
+  try{newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Delete: '+removed[0].title);showStatus('success','🗑️ Article deleted.');renderNews();updateBadge();}
+  catch(e){newsData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+function openEditNews(idx){
+  const item=newsData[idx];
+  document.getElementById('editNewsIdx').value=idx;
+  document.getElementById('eTitle').value=item.title||''; document.getElementById('eCategory').value=item.category||'';
+  document.getElementById('eDate').value=item.date||''; document.getElementById('eSummary').value=item.summary||item.description||'';
+  document.getElementById('eFullContent').value=item.fullContent||'';
+  document.getElementById('ePinned').value=item.pinned?'true':'false';
+  document.getElementById('eAuthor').value=item.author||'BIG QUAMS MEDIA';
+  setActions('e',item.actions||null);
+  if(item.image){document.getElementById('eImageB64').value=item.image;const p=document.getElementById('eImgPreview');p.src=item.image;p.classList.add('show');document.getElementById('eImgClear').classList.add('show');}
+  else clearImg('eImageFile','eImgPreview','eImgClear','eImageB64');
+  openModal('editNewsModal');
+}
+async function saveEditNews(){
+  const idx=parseInt(document.getElementById('editNewsIdx').value);
+  const title=document.getElementById('eTitle').value.trim(), category=document.getElementById('eCategory').value;
+  const date=document.getElementById('eDate').value.trim(), summary=document.getElementById('eSummary').value.trim();
+  const fullContent=document.getElementById('eFullContent').value.trim(), pinned=document.getElementById('ePinned').value==='true';
+  const author=document.getElementById('eAuthor').value.trim()||'BIG QUAMS MEDIA';
+  const image=document.getElementById('eImageB64').value||(newsData[idx]||{}).image||'';
+  const actions=getActions('e');
+  if(!title||!category||!summary||!fullContent){showStatus('error','All required fields must be filled.');return;}
+  if(pinned&&newsData.filter((n,i)=>n.pinned&&i!==idx).length>=3){showStatus('error','Max 3 pinned.');return;}
+  const old={...newsData[idx]};
+  newsData[idx]={title,category,date,author,summary,fullContent,link:old.link||'https://wa.me/message/OVCVEDHU3I2PH1'};
+  if(image) newsData[idx].image=image; if(pinned) newsData[idx].pinned=true; if(actions) newsData[idx].actions=actions;
+  const btn=document.getElementById('saveNewsBtn'); btn.disabled=true;
+  try{newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Edit: '+title);showStatus('success','✅ Article updated successfully!');closeModal('editNewsModal');renderNews();}
+  catch(e){newsData[idx]=old;showStatus('error',e.message);}
+  btn.disabled=false;
+}
+
+// ════════════ BOOKS ════════════
+function renderBooks(){
+  const el=document.getElementById('bookList'); if(!el) return;
+  if(!booksData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No books yet.</p></div>';return;}
+  el.innerHTML='<div class="book-list">'+booksData.map((book,i)=>`
+    <div class="book-item">
+      <div class="book-cover-th">${book.cover?`<img src="${book.cover}" alt="${book.title}">`:'📖'}</div>
+      <div class="item-body">
+        <div class="item-title">${book.title}</div>
+        <div class="item-meta"><span class="item-cat book-cat">${book.category||'General'}</span>${book.author?'by '+book.author:''}</div>
+        <div class="item-preview">${(book.description||'').slice(0,90)}…</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditBook(${i})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteBook(${i})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+async function addBook(){
+  const title=document.getElementById('bAddTitle').value.trim(), author=document.getElementById('bAddAuthor').value.trim();
+  const category=document.getElementById('bAddCategory').value, description=document.getElementById('bAddDesc').value.trim();
+  const cover=document.getElementById('bAddCoverB64').value, driveId=document.getElementById('bAddDriveId').value.trim(), readUrl=document.getElementById('bAddReadUrl').value.trim();
+  if(!title||!category||!description){showStatus('error','Fill in Title, Category and Description.');return;}
+  if(!driveId&&!readUrl){showStatus('error','Provide a Google Drive File ID or Direct Read URL.');return;}
+  const item={title,author,category,description};
+  if(cover) item.cover=cover; if(driveId) item.driveId=driveId; if(readUrl) item.readUrl=readUrl;
+  booksData.unshift(item);
+  const btn=document.getElementById('addBookBtn'); btn.disabled=true;
+  try{booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Add book: '+title);showStatus('success','🎉 Book added to eLibrary! Students can now access it.');clearBookForm();renderBooks();updateBadge();switchTab('lib','list');}
+  catch(e){booksData.shift();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+function clearBookForm(){
+  ['bAddTitle','bAddAuthor','bAddDesc','bAddDriveId','bAddReadUrl'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('bAddCategory').value='';
+  clearImg('bAddCoverFile','bAddCoverPreview','bAddCoverClear','bAddCoverB64');
+}
+function openEditBook(idx){
+  const b=booksData[idx];
+  document.getElementById('editBookIdx').value=idx;
+  document.getElementById('bETitle').value=b.title||''; document.getElementById('bEAuthor').value=b.author||'';
+  document.getElementById('bECategory').value=b.category||''; document.getElementById('bEDesc').value=b.description||'';
+  document.getElementById('bEDriveId').value=b.driveId||''; document.getElementById('bEReadUrl').value=b.readUrl||'';
+  if(b.cover){document.getElementById('bECoverB64').value=b.cover;const p=document.getElementById('bECoverPreview');p.src=b.cover;p.classList.add('show');document.getElementById('bECoverClear').classList.add('show');}
+  else clearImg('bECoverFile','bECoverPreview','bECoverClear','bECoverB64');
+  openModal('editBookModal');
+}
+async function saveEditBook(){
+  const idx=parseInt(document.getElementById('editBookIdx').value);
+  const title=document.getElementById('bETitle').value.trim(), author=document.getElementById('bEAuthor').value.trim();
+  const category=document.getElementById('bECategory').value, description=document.getElementById('bEDesc').value.trim();
+  const cover=document.getElementById('bECoverB64').value||(booksData[idx]||{}).cover||'';
+  const driveId=document.getElementById('bEDriveId').value.trim(), readUrl=document.getElementById('bEReadUrl').value.trim();
+  if(!title||!category||!description){showStatus('error','Title, Category and Description are required.');return;}
+  const old={...booksData[idx]};
+  booksData[idx]={title,author,category,description};
+  if(cover) booksData[idx].cover=cover; if(driveId) booksData[idx].driveId=driveId; if(readUrl) booksData[idx].readUrl=readUrl;
+  const btn=document.getElementById('saveBookBtn'); btn.disabled=true;
+  try{booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Edit book: '+title);showStatus('success','✅ Book updated successfully!');closeModal('editBookModal');renderBooks();}
+  catch(e){booksData[idx]=old;showStatus('error',e.message);}
+  btn.disabled=false;
+}
+async function deleteBook(idx){
+  if(!confirm(`Delete "${booksData[idx].title}"?`)) return;
+  const removed=booksData.splice(idx,1);
+  try{booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Delete book: '+removed[0].title);showStatus('success','🗑️ Book deleted.');renderBooks();updateBadge();}
+  catch(e){booksData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
+// ════════════ DYK ════════════
+function renderDyk(){
+  const el=document.getElementById('dykList'); if(!el) return;
+  if(!dykData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No items yet.</p></div>';return;}
+  const catColor={'DYK Fact':'#dbeafe','Today in History':'#fef9c3','Current Affairs':'#dcfce7'};
+  const catText={'DYK Fact':'#1a3fa8','Today in History':'#854d0e','Current Affairs':'#15803d'};
+  el.innerHTML='<div class="news-list">'+dykData.map((item,i)=>`
+    <div class="news-item">
+      <div class="item-num">${i+1}</div>
+      <div class="item-body">
+        <div class="item-title">${item.title}</div>
+        <div class="item-meta"><span class="item-cat" style="background:${catColor[item.category]||'#dbeafe'};color:${catText[item.category]||'#1a3fa8'}">${item.category||'DYK'}</span>${item.date||''}</div>
+        <div class="item-preview">${(item.summary||'').slice(0,100)}…</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditDyk(${i})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteDyk(${i})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+async function addDyk(){
+  const title=document.getElementById('dAddTitle').value.trim(), category=document.getElementById('dAddCategory').value;
+  const date=document.getElementById('dAddDate').value.trim(), summary=document.getElementById('dAddSummary').value.trim();
+  const content=document.getElementById('dAddContent').value.trim(), image=document.getElementById('dAddImgB64').value;
+  const author=document.getElementById('dAddAuthor')?document.getElementById('dAddAuthor').value.trim()||'BIG QUAMS MEDIA':'BIG QUAMS MEDIA';
+  if(!title||!category||!summary||!content){showStatus('error','Fill in Title, Category, Summary and Content.');return;}
+  const item={title,category,date,author,summary,content}; if(image) item.image=image;
+  dykData.unshift(item);
+  const btn=document.getElementById('addDykBtn'); btn.disabled=true;
+  try{dykSha=await ghPush(DYK_FILE,dykSha,dykData,'Add DYK: '+title);showStatus('success','🎉 DYK item published!');clearDykForm();renderDyk();updateBadge();switchTab('dyk','list');}
+  catch(e){dykData.shift();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+function clearDykForm(){
+  ['dAddTitle','dAddSummary','dAddContent'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('dAddCategory').value='';
+  document.getElementById('dAddDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  if(document.getElementById('dAddAuthor')) document.getElementById('dAddAuthor').value='BIG QUAMS MEDIA';
+  clearImg('dAddImgFile','dAddImgPreview','dAddImgClear','dAddImgB64');
+}
+function openEditDyk(idx){
+  const item=dykData[idx];
+  document.getElementById('editDykIdx').value=idx;
+  document.getElementById('dETitle').value=item.title||''; document.getElementById('dECategory').value=item.category||'';
+  document.getElementById('dEDate').value=item.date||''; document.getElementById('dESummary').value=item.summary||'';
+  document.getElementById('dEContent').value=item.content||'';
+  if(document.getElementById('dEAuthor')) document.getElementById('dEAuthor').value=item.author||'BIG QUAMS MEDIA';
+  if(item.image){document.getElementById('dEImgB64').value=item.image;const p=document.getElementById('dEImgPreview');p.src=item.image;p.classList.add('show');document.getElementById('dEImgClear').classList.add('show');}
+  else clearImg('dEImgFile','dEImgPreview','dEImgClear','dEImgB64');
+  openModal('editDykModal');
+}
+async function saveEditDyk(){
+  const idx=parseInt(document.getElementById('editDykIdx').value);
+  const title=document.getElementById('dETitle').value.trim(), category=document.getElementById('dECategory').value;
+  const date=document.getElementById('dEDate').value.trim(), summary=document.getElementById('dESummary').value.trim();
+  const content=document.getElementById('dEContent').value.trim(), image=document.getElementById('dEImgB64').value;
+  const author=document.getElementById('dEAuthor')?document.getElementById('dEAuthor').value.trim()||'BIG QUAMS MEDIA':'BIG QUAMS MEDIA';
+  if(!title||!category||!summary||!content){showStatus('error','All required fields must be filled.');return;}
+  const old={...dykData[idx]};
+  dykData[idx]={title,category,date,author,summary,content}; if(image) dykData[idx].image=image;
+  const btn=document.getElementById('saveDykBtn'); btn.disabled=true;
+  try{dykSha=await ghPush(DYK_FILE,dykSha,dykData,'Edit DYK: '+title);showStatus('success','✅ DYK item updated!');closeModal('editDykModal');renderDyk();}
+  catch(e){dykData[idx]=old;showStatus('error',e.message);}
+  btn.disabled=false;
+}
+async function deleteDyk(idx){
+  if(!confirm(`Delete "${dykData[idx].title}"?`)) return;
+  const removed=dykData.splice(idx,1);
+  try{dykSha=await ghPush(DYK_FILE,dykSha,dykData,'Delete DYK: '+removed[0].title);showStatus('success','🗑️ Deleted.');renderDyk();updateBadge();}
+  catch(e){dykData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
+// ════════════ SPOTLIGHT ════════════
+function renderSpotlights(){
+  const el=document.getElementById('spotlightList'); if(!el) return;
+  if(!spotlightData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No spotlights yet.</p></div>';return;}
+  el.innerHTML='<div class="news-list">'+spotlightData.map((item,i)=>`
+    <div class="news-item">
+      <div class="item-num">${i+1}</div>
+      <div class="item-body">
+        <div class="item-title">${item.title}</div>
+        <div class="item-meta"><span class="item-cat" style="background:#fef9c3;color:#854d0e">${item.category||'Spotlight'}</span>${item.date||''}</div>
+        <div class="item-preview">${(item.summary||'').slice(0,100)}…</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditSpotlight(${i})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteSpotlight(${i})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+async function addSpotlight(){
+  const title=document.getElementById('spAddTitle').value.trim(), category=document.getElementById('spAddCategory').value;
+  const date=document.getElementById('spAddDate').value.trim(), summary=document.getElementById('spAddSummary').value.trim();
+  const content=document.getElementById('spAddContent').value.trim(), image=document.getElementById('spAddImgB64').value;
+  if(!title||!category||!summary){showStatus('error','Fill in Title, Category and Summary.');return;}
+  const item={title,category,date,summary,content}; if(image) item.image=image;
+  spotlightData.unshift(item);
+  const btn=document.getElementById('addSpotlightBtn'); btn.disabled=true;
+  try{spotlightSha=await ghPush(SPOTLIGHT_FILE,spotlightSha,spotlightData,'Add spotlight: '+title);showStatus('success','🌟 Spotlight published!');clearSpotlightForm();renderSpotlights();updateBadge();switchTab('spotlight','list');}
+  catch(e){spotlightData.shift();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+function clearSpotlightForm(){
+  ['spAddTitle','spAddSummary','spAddContent'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('spAddCategory').value='';
+  document.getElementById('spAddDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  clearImg('spAddImgFile','spAddImgPreview','spAddImgClear','spAddImgB64');
+}
+function openEditSpotlight(idx){
+  const item=spotlightData[idx];
+  document.getElementById('editSpotlightIdx').value=idx;
+  document.getElementById('spETitle').value=item.title||''; document.getElementById('spECategory').value=item.category||'';
+  document.getElementById('spEDate').value=item.date||''; document.getElementById('spESummary').value=item.summary||'';
+  document.getElementById('spEContent').value=item.content||'';
+  if(item.image){document.getElementById('spEImgB64').value=item.image;const p=document.getElementById('spEImgPreview');p.src=item.image;p.classList.add('show');document.getElementById('spEImgClear').classList.add('show');}
+  else clearImg('spEImgFile','spEImgPreview','spEImgClear','spEImgB64');
+  openModal('editSpotlightModal');
+}
+async function saveEditSpotlight(){
+  const idx=parseInt(document.getElementById('editSpotlightIdx').value);
+  const title=document.getElementById('spETitle').value.trim(), category=document.getElementById('spECategory').value;
+  const date=document.getElementById('spEDate').value.trim(), summary=document.getElementById('spESummary').value.trim();
+  const content=document.getElementById('spEContent').value.trim(), image=document.getElementById('spEImgB64').value||(spotlightData[idx]||{}).image||'';
+  if(!title||!category||!summary){showStatus('error','Title, Category and Summary are required.');return;}
+  const old={...spotlightData[idx]};
+  spotlightData[idx]={title,category,date,summary,content}; if(image) spotlightData[idx].image=image;
+  const btn=document.getElementById('saveSpotlightBtn'); btn.disabled=true;
+  try{spotlightSha=await ghPush(SPOTLIGHT_FILE,spotlightSha,spotlightData,'Edit spotlight: '+title);showStatus('success','✅ Spotlight updated!');closeModal('editSpotlightModal');renderSpotlights();}
+  catch(e){spotlightData[idx]=old;showStatus('error',e.message);}
+  btn.disabled=false;
+}
+async function deleteSpotlight(idx){
+  if(!confirm(`Delete "${spotlightData[idx].title}"?`)) return;
+  const removed=spotlightData.splice(idx,1);
+  try{spotlightSha=await ghPush(SPOTLIGHT_FILE,spotlightSha,spotlightData,'Delete spotlight: '+removed[0].title);showStatus('success','🗑️ Deleted.');renderSpotlights();updateBadge();}
+  catch(e){spotlightData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
+// ════════════ REVIEWS ════════════
+function renderReviews(){
+  const el=document.getElementById('reviewsList'); if(!el) return;
+  if(!reviewsData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No reviews yet.</p></div>';return;}
+  const stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
+  el.innerHTML='<div class="news-list">'+reviewsData.map((r,i)=>`
+    <div class="news-item">
+      <div class="item-num">${i+1}</div>
+      <div class="item-body">
+        <div class="item-title">${r.name} — ${stars(r.stars||5)}</div>
+        <div class="item-meta">${r.location||''}</div>
+        <div class="item-preview">${r.message}</div>
+        <div class="item-actions"><button class="btn btn-danger btn-sm" onclick="deleteReview(${i})">🗑 Delete</button></div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+async function addReview(){
+  const name=document.getElementById('rAddName').value.trim(), location=document.getElementById('rAddLocation').value.trim();
+  const stars=parseInt(document.getElementById('rAddStars').value), message=document.getElementById('rAddMessage').value.trim();
+  if(!name||!message){showStatus('error','Name and Message are required.');return;}
+  reviewsData.push({name,location,stars,message});
+  const btn=document.getElementById('addReviewBtn'); btn.disabled=true;
+  try{reviewsSha=await ghPush(REVIEWS_FILE,reviewsSha,reviewsData,'Add review: '+name);showStatus('success','⭐ Review added to homepage!');clearReviewForm();renderReviews();}
+  catch(e){reviewsData.pop();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+function clearReviewForm(){
+  ['rAddName','rAddLocation','rAddMessage'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('rAddStars').value='5';
+}
+async function deleteReview(idx){
+  if(!confirm('Delete this review?')) return;
+  const removed=reviewsData.splice(idx,1);
+  try{reviewsSha=await ghPush(REVIEWS_FILE,reviewsSha,reviewsData,'Delete review');showStatus('success','🗑️ Review deleted.');renderReviews();}
+  catch(e){reviewsData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
+// ════════════ Q&A ════════════
+function renderQA(){
+  const el=document.getElementById('qaAdminList'); if(!el) return;
+  if(!qaData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No Q&As yet.</p></div>';return;}
+  el.innerHTML='<div class="news-list">'+qaData.map((qa,i)=>`
+    <div class="news-item">
+      <div class="item-num">${i+1}</div>
+      <div class="item-body">
+        <div class="item-title">❓ ${qa.question}</div>
+        <div class="item-preview">✅ ${(qa.answer||'').slice(0,100)}…</div>
+        <div class="item-actions"><button class="btn btn-danger btn-sm" onclick="deleteQA(${i})">🗑 Delete</button></div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+async function addQA(){
+  const question=document.getElementById('qaAddQ').value.trim(), answer=document.getElementById('qaAddA').value.trim();
+  if(!question||!answer){showStatus('error','Both question and answer are required.');return;}
+  qaData.unshift({question,answer});
+  const btn=document.getElementById('addQABtn'); btn.disabled=true;
+  try{qaSha=await ghPush(QA_FILE,qaSha,qaData,'Add Q&A');showStatus('success','✅ Q&A published!');document.getElementById('qaAddQ').value='';document.getElementById('qaAddA').value='';renderQA();switchTab('qa','list');}
+  catch(e){qaData.shift();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+async function deleteQA(idx){
+  if(!confirm('Delete this Q&A?')) return;
+  const removed=qaData.splice(idx,1);
+  try{qaSha=await ghPush(QA_FILE,qaSha,qaData,'Delete Q&A');showStatus('success','🗑️ Deleted.');renderQA();}
+  catch(e){qaData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
+// ════════════ CALENDAR ════════════
+const CAL_BADGE_LABELS={jamb:'JAMB',exam:'Exam',admission:'Admission',school:'School',scholarship:'Scholarship'};
+function renderCalendar(){
+  const el=document.getElementById('calList'); if(!el) return;
+  if(!calData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No events yet.</p></div>';return;}
+  const sorted=[...calData].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  el.innerHTML='<div class="news-list">'+sorted.map(item=>{
+    const idx=calData.indexOf(item), d=new Date(item.date);
+    const month=d.toLocaleString('en-US',{month:'short'}), day=d.getDate();
+    return `<div class="news-item">
+      <div style="background:${item.color||'#1a3fa8'};color:white;border-radius:8px;min-width:44px;padding:8px 4px;text-align:center;flex-shrink:0;">
+        <div style="font-size:0.58rem;font-weight:700;text-transform:uppercase;opacity:0.85;">${month}</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:1.3rem;font-weight:800;line-height:1;">${day}</div>
+      </div>
+      <div class="item-body">
+        <div class="item-title">${item.title}</div>
+        <div class="item-meta"><span class="item-cat">${CAL_BADGE_LABELS[item.category]||item.category||'Event'}</span>${item.date||''}</div>
+        <div class="item-preview">${(item.description||'').slice(0,100)}</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditCal(${idx})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteCal(${idx})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+async function addCalEvent(){
+  const title=document.getElementById('calAddTitle').value.trim(), category=document.getElementById('calAddCategory').value;
+  const date=document.getElementById('calAddDate').value, color=document.getElementById('calAddColor').value;
+  const description=document.getElementById('calAddDesc').value.trim();
+  if(!title||!category||!date||!description){showStatus('error','All fields are required.');return;}
+  calData.push({title,category,date,color,description});
+  const btn=document.getElementById('addCalBtn'); btn.disabled=true;
+  try{calSha=await ghPush(CAL_FILE,calSha,calData,'Add calendar: '+title);showStatus('success','📅 Calendar event added!');clearCalForm();renderCalendar();switchTab('cal','list');}
+  catch(e){calData.pop();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+function clearCalForm(){
+  ['calAddTitle','calAddDesc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('calAddCategory').value=''; document.getElementById('calAddDate').value='';
+  document.getElementById('calAddColor').value='#1a3fa8';
+}
+function openEditCal(idx){
+  const item=calData[idx];
+  document.getElementById('editCalIdx').value=idx;
+  document.getElementById('calETitle').value=item.title||''; document.getElementById('calECategory').value=item.category||'';
+  document.getElementById('calEDate').value=item.date||''; document.getElementById('calEColor').value=item.color||'#1a3fa8';
+  document.getElementById('calEDesc').value=item.description||'';
+  openModal('editCalModal');
+}
+async function saveEditCal(){
+  const idx=parseInt(document.getElementById('editCalIdx').value);
+  const title=document.getElementById('calETitle').value.trim(), category=document.getElementById('calECategory').value;
+  const date=document.getElementById('calEDate').value, color=document.getElementById('calEColor').value;
+  const description=document.getElementById('calEDesc').value.trim();
+  if(!title||!category||!date||!description){showStatus('error','All fields required.');return;}
+  const old={...calData[idx]};
+  calData[idx]={title,category,date,color,description};
+  const btn=document.getElementById('saveCalBtn'); btn.disabled=true;
+  try{calSha=await ghPush(CAL_FILE,calSha,calData,'Edit calendar: '+title);showStatus('success','✅ Event updated!');closeModal('editCalModal');renderCalendar();}
+  catch(e){calData[idx]=old;showStatus('error',e.message);}
+  btn.disabled=false;
+}
+async function deleteCal(idx){
+  if(!confirm(`Delete "${calData[idx].title}"?`)) return;
+  const removed=calData.splice(idx,1);
+  try{calSha=await ghPush(CAL_FILE,calSha,calData,'Delete calendar: '+removed[0].title);showStatus('success','🗑️ Event deleted.');renderCalendar();}
+  catch(e){calData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
+// ════════════ INIT ════════════
+function init(){
+  const today=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  ['addDate','dAddDate','spAddDate'].forEach(id=>{const el=document.getElementById(id);if(el) el.value=today;});
+  if(document.getElementById('addAuthor')) document.getElementById('addAuthor').value='BIG QUAMS MEDIA';
+  if(ghToken) loadAll();
+}
+if(sessionStorage.getItem('bqm_auth')==='1') init();
+</script>
 </body>
 </html>
