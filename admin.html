@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin Panel | BIG QUAMS MEDIA®</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue:#1a3fa8; --blue-dk:#102880; --orange:#f97316; --green:#16a34a;
+  --red:#dc2626; --yellow:#f59e0b; --muted:#64748b; --light:#f0f5ff;
+  --border:#e2e8f0; --text:#0f172a; --bg:#f1f5f9;
+}
+html { scroll-behavior: smooth; }
+body { font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; font-size:15px; -webkit-text-size-adjust:100%; }
+
+/* LOGIN */
+#loginScreen { min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--blue-dk),var(--blue)); padding:20px; }
+.login-card { background:white; border-radius:18px; padding:28px 20px; width:100%; max-width:360px; box-shadow:0 24px 60px rgba(0,0,0,0.25); text-align:center; }
+@media(min-width:400px){ .login-card { padding:36px 28px; } }
+.login-logo { width:68px; height:68px; border-radius:50%; border:3px solid var(--orange); margin:0 auto 14px; overflow:hidden; }
+.login-logo img { width:100%; height:100%; object-fit:cover; }
+.login-card h2 { font-family:'Montserrat',sans-serif; font-size:1.25rem; font-weight:800; color:var(--blue-dk); margin-bottom:4px; }
+.login-card p { font-size:0.82rem; color:var(--muted); margin-bottom:22px; }
+.login-card input { width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:8px; font-size:0.95rem; font-family:'Roboto',sans-serif; margin-bottom:12px; transition:border-color 0.2s; color:var(--text); }
+.login-card input:focus { outline:none; border-color:var(--blue); }
+.login-btn { width:100%; background:var(--blue); color:white; padding:13px; border:none; border-radius:8px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; transition:0.2s; }
+.login-btn:hover { background:var(--blue-dk); }
+.login-error { color:var(--red); font-size:0.82rem; margin-top:10px; display:none; font-weight:600; }
+
+/* ADMIN APP */
+#adminApp { display:none; }
+
+/* TOPBAR */
+.topbar { background:linear-gradient(135deg,var(--blue-dk),var(--blue)); color:white; padding:0 14px; display:flex; align-items:center; gap:10px; height:54px; position:sticky; top:0; z-index:200; box-shadow:0 2px 12px rgba(0,0,0,0.2); }
+.topbar-logo { display:flex; align-items:center; gap:9px; flex-shrink:0; }
+.topbar-logo img { width:34px; height:34px; border-radius:50%; border:2px solid var(--orange); flex-shrink:0; }
+.topbar-brand { font-family:'Montserrat',sans-serif; font-weight:800; font-size:0.82rem; line-height:1.2; }
+@media (max-width:360px) { .topbar-brand { font-size:0.72rem; } }
+.topbar-sub { font-size:0.6rem; color:#bfdbfe; display:block; }
+.topbar-right { margin-left:auto; display:flex; align-items:center; gap:7px; }
+.topbar-badge { background:rgba(255,255,255,0.15); padding:3px 9px; border-radius:20px; font-size:0.68rem; font-weight:600; white-space:nowrap; display:none; }
+@media(min-width:420px){.topbar-badge{display:block;}}
+.site-link { color:rgba(255,255,255,0.75); font-size:0.7rem; text-decoration:none; white-space:nowrap; display:none; }
+@media(min-width:520px){.site-link{display:inline;}}
+.logout-btn { background:rgba(220,38,38,0.2); border:1px solid rgba(220,38,38,0.4); color:white; padding:5px 10px; border-radius:6px; font-size:0.72rem; font-weight:600; cursor:pointer; transition:0.2s; white-space:nowrap; }
+.logout-btn:hover { background:rgba(220,38,38,0.4); }
+
+/* LAYOUT */
+.admin-body { max-width:960px; margin:0 auto; padding:16px 12px 60px; }
+@media(min-width:600px){.admin-body{padding:22px 20px 60px;}}
+
+/* TOKEN */
+.token-setup { background:#fffbeb; border:1px solid #fcd34d; border-radius:10px; padding:14px 16px; margin-bottom:14px; }
+.token-setup h4 { font-size:0.84rem; font-weight:700; color:#92400e; margin-bottom:5px; }
+.token-setup p { font-size:0.77rem; color:#78350f; margin-bottom:10px; line-height:1.5; }
+.token-row { display:flex; gap:8px; flex-wrap:wrap; }
+@media(max-width:380px){ .token-row input { width:100%; } .token-row { flex-direction:column; } }
+.token-row input { flex:1; padding:9px 12px; border:1.5px solid #fcd34d; border-radius:7px; font-size:0.84rem; font-family:'Roboto',sans-serif; background:white; min-width:0; }
+.token-row input:focus { outline:none; border-color:var(--orange); }
+
+/* STATUS */
+.status-bar { padding:10px 14px; border-radius:8px; font-size:0.83rem; font-weight:600; margin-bottom:12px; display:none; align-items:center; gap:8px; flex-wrap:wrap; }
+.status-bar.show { display:flex; }
+.status-bar.success { background:#dcfce7; color:#15803d; border:1px solid #bbf7d0; }
+.status-bar.error { background:#fee2e2; color:#b91c1c; border:1px solid #fecaca; }
+.status-bar.loading { background:#dbeafe; color:var(--blue); border:1px solid #bfdbfe; }
+
+/* SECTION TABS */
+/* SIDEBAR NAV */
+.admin-layout {
+  display: flex; gap: 0; min-height: calc(100vh - 54px);
+}
+.sidebar {
+  width: 200px; flex-shrink: 0;
+  background: white; border-right: 1px solid var(--border);
+  padding: 16px 10px;
+  display: flex; flex-direction: column; gap: 4px;
+  position: sticky; top: 54px; height: calc(100vh - 54px);
+  overflow-y: auto;
+}
+@media(max-width:640px) {
+  .admin-layout { flex-direction: column; }
+  .sidebar {
+    width: 100%; height: auto; position: static;
+    flex-direction: row; flex-wrap: wrap; padding: 10px;
+    border-right: none; border-bottom: 1px solid var(--border);
+    gap: 6px; overflow-x: auto; overflow-y: visible;
+  }
+}
+.section-tab {
+  display: flex; align-items: center; gap: 9px;
+  padding: 10px 14px; border-radius: 9px; border: none;
+  font-family: 'Roboto', sans-serif; font-size: 0.85rem;
+  font-weight: 600; cursor: pointer; color: var(--muted);
+  background: transparent; transition: 0.18s;
+  white-space: nowrap; width: 100%; text-align: left;
+}
+@media(max-width:640px) {
+  .section-tab {
+    width: auto; padding: 8px 12px;
+    font-size: 0.78rem; flex-shrink: 0;
+  }
+}
+.section-tab .nav-icon { font-size: 1.05rem; flex-shrink: 0; }
+.section-tab .nav-label { flex: 1; }
+.section-tab .nav-count {
+  background: var(--border); color: var(--muted);
+  font-size: 0.65rem; font-weight: 700; padding: 1px 6px;
+  border-radius: 10px; min-width: 18px; text-align: center;
+}
+@media(max-width:640px){ .section-tab .nav-count { display: none; } }
+.section-tab:hover:not(.active) { background: var(--light); color: var(--blue); }
+.section-tab.active { background: var(--blue); color: white; }
+.section-tab.active .nav-count { background: rgba(255,255,255,0.25); color: white; }
+.sidebar-divider { height: 1px; background: var(--border); margin: 6px 4px; }
+@media(max-width:640px){ .sidebar-divider { display: none; } }
+
+/* MAIN CONTENT AREA */
+.admin-content { flex: 1; min-width: 0; padding: 16px 14px 60px; }
+@media(min-width:641px){ .admin-content { padding: 20px 20px 60px; } }
+
+/* Remove old admin-body padding since layout handles it now */
+.admin-body-legacy { max-width: 960px; margin: 0 auto; }
+
+/* ADMIN TABS */
+.admin-tabs { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.admin-tab { padding:8px 15px; border-radius:8px; border:1.5px solid var(--border); background:white; color:var(--muted); font-size:0.81rem; font-weight:600; cursor:pointer; font-family:'Roboto',sans-serif; transition:0.2s; white-space:nowrap; }
+.admin-tab.active { background:var(--blue); color:white; border-color:var(--blue); }
+.admin-tab:hover:not(.active) { border-color:var(--blue); color:var(--blue); }
+.admin-section { display:none; }
+.admin-section.active { display:block; }
+.admin-panel { display:none; }
+.admin-panel.active { display:block; }
+
+/* CARD */
+.section-card { background:white; border-radius:12px; border:1px solid var(--border); padding:16px; margin-bottom:14px; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+@media(min-width:600px){.section-card{padding:20px;}}
+.section-card h3 { font-family:'Montserrat',sans-serif; font-size:0.93rem; font-weight:800; color:var(--blue-dk); margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid var(--light); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+
+/* FORMS */
+.form-row { display:grid; grid-template-columns:1fr; gap:10px; margin-bottom:10px; }
+@media(min-width:480px){.form-row{grid-template-columns:1fr 1fr;}}
+.form-group { margin-bottom:10px; }
+.form-group label { display:block; font-size:0.75rem; font-weight:600; color:#374151; margin-bottom:4px; }
+.form-group input,.form-group select,.form-group textarea { width:100%; padding:9px 11px; border:1.5px solid var(--border); border-radius:7px; font-size:0.88rem; font-family:'Roboto',sans-serif; color:var(--text); background:#fafafa; transition:border-color 0.2s; }
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus { outline:none; border-color:var(--blue); background:white; }
+.form-group textarea { resize:vertical; min-height:100px; line-height:1.6; }
+.form-hint { font-size:0.69rem; color:var(--muted); margin-top:3px; }
+
+/* BUTTONS */
+.btn { padding:8px 15px; border-radius:7px; font-weight:600; font-size:0.82rem; cursor:pointer; border:none; font-family:'Roboto',sans-serif; transition:0.2s; display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
+.btn:disabled { opacity:0.5; cursor:not-allowed; }
+.btn-primary { background:var(--blue); color:white; }
+.btn-primary:hover:not(:disabled) { background:var(--blue-dk); }
+.btn-success { background:var(--green); color:white; }
+.btn-success:hover:not(:disabled) { background:#15803d; }
+.btn-danger { background:var(--red); color:white; }
+.btn-danger:hover:not(:disabled) { background:#b91c1c; }
+.btn-warning { background:var(--yellow); color:white; }
+.btn-warning:hover:not(:disabled) { background:#d97706; }
+.btn-outline { background:white; color:var(--blue); border:1.5px solid var(--blue); }
+.btn-outline:hover:not(:disabled) { background:var(--blue); color:white; }
+.btn-ghost { background:var(--light); color:var(--muted); border:1px solid var(--border); }
+.btn-ghost:hover:not(:disabled) { background:#e2e8f0; }
+.btn-sm { padding:5px 10px; font-size:0.74rem; }
+.btn-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+
+/* NEWS LIST */
+.news-list,.book-list { display:flex; flex-direction:column; gap:10px; }
+.news-item,.book-item { background:var(--light); border-radius:10px; padding:12px; border:1px solid var(--border); display:flex; gap:10px; align-items:flex-start; position:relative; }
+@media(max-width:340px){ .news-item,.book-item { flex-direction:column; } }
+.news-item.pinned { border-color:var(--yellow); background:#fffbeb; }
+.pin-badge { position:absolute; top:-1px; right:10px; background:var(--yellow); color:white; font-size:0.6rem; font-weight:700; padding:2px 7px; border-radius:0 0 6px 6px; letter-spacing:0.3px; }
+.item-num { background:var(--blue); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; flex-shrink:0; margin-top:2px; }
+.news-item.pinned .item-num { background:var(--yellow); }
+.item-body { flex:1; min-width:0; }
+.item-title { font-family:'Montserrat',sans-serif; font-size:0.86rem; font-weight:700; color:var(--blue-dk); margin-bottom:3px; line-height:1.3; word-break:break-word; }
+.item-meta { font-size:0.7rem; color:var(--muted); margin-bottom:5px; }
+.item-preview { font-size:0.76rem; color:var(--muted); margin-bottom:7px; line-height:1.4; word-break:break-word; }
+.item-actions { display:flex; gap:5px; flex-wrap:wrap; margin-top:2px; }
+@media(max-width:360px){ .item-actions .btn { font-size:0.7rem; padding:4px 8px; } }
+.item-cat { display:inline-block; background:#dbeafe; color:var(--blue); padding:1px 7px; border-radius:20px; font-size:0.63rem; font-weight:700; text-transform:uppercase; margin-right:4px; }
+.book-cat { background:#dcfce7; color:var(--green); }
+.book-cover-th { width:42px; height:54px; border-radius:5px; object-fit:cover; flex-shrink:0; background:#dbeafe; display:flex; align-items:center; justify-content:center; font-size:1.3rem; overflow:hidden; }
+.book-cover-th img { width:100%; height:100%; object-fit:cover; }
+
+/* EMPTY */
+.empty { text-align:center; padding:32px 16px; color:var(--muted); }
+.empty .ei { font-size:2rem; margin-bottom:8px; }
+.empty p { font-size:0.83rem; }
+
+/* SPINNER */
+.spinner { width:13px; height:13px; border:2px solid rgba(255,255,255,0.3); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; flex-shrink:0; }
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* MODAL */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(10,20,60,0.55); backdrop-filter:blur(4px); z-index:500; align-items:flex-start; justify-content:center; padding:10px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.modal-overlay.open { display:flex; }
+.modal-box { background:white; border-radius:14px; width:100%; max-width:580px; box-shadow:0 24px 60px rgba(0,0,0,0.3); animation:popIn 0.25s ease both; margin:auto; }
+@keyframes popIn{from{opacity:0;transform:scale(0.93) translateY(14px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.modal-header { background:linear-gradient(135deg,var(--blue-dk),var(--blue)); color:white; padding:15px 17px; border-radius:14px 14px 0 0; display:flex; align-items:center; justify-content:space-between; }
+.modal-header h3 { font-family:'Montserrat',sans-serif; font-size:0.93rem; font-weight:800; }
+.modal-close { background:rgba(255,255,255,0.15); border:none; color:white; width:27px; height:27px; border-radius:50%; cursor:pointer; font-size:0.88rem; display:flex; align-items:center; justify-content:center; transition:0.2s; flex-shrink:0; }
+.modal-close:hover { background:rgba(255,255,255,0.3); }
+.modal-body { padding:14px; }
+@media(min-width:480px){.modal-body{padding:18px;}}
+
+/* IMAGE UPLOAD */
+.img-upload-box {
+  border: 2px dashed var(--border); border-radius: 8px;
+  padding: 14px; text-align: center; cursor: pointer;
+  background: #fafafa; transition: 0.2s; position: relative;
+}
+.img-upload-box:hover { border-color: var(--blue); background: var(--light); }
+.img-upload-box input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.img-upload-box .upload-label { font-size: 0.78rem; color: var(--muted); pointer-events: none; }
+.img-upload-box .upload-label span { display: block; font-size: 1.4rem; margin-bottom: 4px; }
+.img-preview {
+  width: 100%; max-height: 130px; object-fit: cover;
+  border-radius: 6px; display: none; margin-top: 8px;
+}
+.img-preview.show { display: block; }
+.img-clear { font-size: 0.72rem; color: var(--red); cursor: pointer; margin-top: 4px; display: none; font-weight: 600; }
+.img-clear.show { display: inline-block; }
+
+/* ACTION CHECKBOXES */
+.action-checks { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+.action-check-row { display: flex; align-items: center; gap: 10px; font-size: 0.84rem; }
+.action-check-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; }
+.action-check-row label { font-weight: 500; cursor: pointer; flex: 1; }
+.action-url-input { width: 100%; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.84rem; font-family: 'Roboto', sans-serif; margin-top: 4px; display: none; }
+.action-url-input.show { display: block; }
+
+
+/* DARK MODE SYNC */
+body.dark { background: #0f172a; color: #e2e8f0; }
+body.dark header { background: linear-gradient(135deg, #080f20, #102880); }
+body.dark .news-card, body.dark .dyk-card, body.dark .spotlight-card,
+body.dark .book-card, body.dark .review-card, body.dark .cal-card,
+body.dark .qa-card, body.dark .qa-submit-card { background: #1a2540; border-color: #2d3f6b; }
+body.dark h2, body.dark h3 { color: #bfdbfe; }
+body.dark p, body.dark .summary, body.dark .dyk-card-summary { color: #94a3b8; }
+body.dark .category-label { background: #1e3a6e; color: #93c5fd; }
+body.dark .filter-tab { background: #1a2540; border-color: #2d3f6b; color: #94a3b8; }
+body.dark .filter-tab.active { background: #1a3fa8; color: white; }
+body.dark .search-wrap input { background: #1a2540; border-color: #2d3f6b; color: #e2e8f0; }
+body.dark footer { background: #080f20; }
+body.dark .article-modal, body.dark .sp-modal, body.dark .modal-box { background: #1a2540; }
+body.dark .article-body, body.dark .sp-modal-body { color: #cbd5e1; }
+body.dark .results-bar { color: #64748b; }
+body.dark .section-card { background: #1a2540; border-color: #2d3f6b; }
+body.dark .form-group input, body.dark .form-group select, body.dark .form-group textarea { background: #0f172a; border-color: #2d3f6b; color: #e2e8f0; }
+body.dark .admin-content { background: #0f172a; }
+body.dark .sidebar { background: #1a2540; border-color: #2d3f6b; }
+body.dark .section-tab { color: #94a3b8; }
+body.dark .section-tab.active { background: #1a3fa8; color: white; }
+body.dark .news-item, body.dark .book-item { background: #1a2540; border-color: #2d3f6b; }
+body.dark .item-title { color: #bfdbfe; }
+body.dark .token-setup { background: #2d2000; border-color: #854d0e; }
+
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo"><img src="https://i.imgur.com/lYJXUyY.jpeg" alt="Logo"></div>
+    <h2>BIG QUAMS MEDIA®</h2>
+    <p>Admin Panel — Authorised Access Only</p>
+    <input type="text" id="loginUser" placeholder="Username" autocomplete="username" onkeydown="if(event.key==='Enter') document.getElementById('loginPass').focus()">
+    <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()">
+    <button class="login-btn" onclick="doLogin()">Sign In →</button>
+    <div class="login-error" id="loginError">Invalid username or password.</div>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="adminApp">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <img src="https://i.imgur.com/lYJXUyY.jpeg" alt="Logo">
+      <div><div class="topbar-brand">BIG QUAMS MEDIA®</div><span class="topbar-sub">Admin Panel</span></div>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-badge" id="topBadge">—</span>
+      <a href="../index.html" target="_blank" class="site-link">View Site ↗</a>
+      <button class="logout-btn" onclick="doLogout()">Log Out</button>
+    </div>
+  </div>
+
+  <!-- TOKEN & STATUS (full width above layout) -->
+  <div style="padding:12px 14px 0;">
+    <div class="token-setup" id="tokenSetup">
+      <h4>⚙️ GitHub Token Required</h4>
+      <p>GitHub token auto-captured from login. If needed, enter it manually here.</p>
+      <div class="token-row">
+        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+        <button class="btn btn-primary btn-sm" onclick="saveToken()">Save</button>
+      </div>
+    </div>
+    <div class="status-bar" id="statusBar"></div>
+  </div>
+
+  <div class="admin-layout">
+    <!-- SIDEBAR NAV -->
+    <nav class="sidebar" id="adminSidebar">
+      <button class="section-tab active" onclick="switchSection('news')">
+        <span class="nav-icon">📰</span><span class="nav-label">News</span>
+        <span class="nav-count" id="cnt-news">—</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('library')">
+        <span class="nav-icon">📚</span><span class="nav-label">eLibrary</span>
+        <span class="nav-count" id="cnt-lib">—</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('dyk')">
+        <span class="nav-icon">💡</span><span class="nav-label">DYK</span>
+        <span class="nav-count" id="cnt-dyk">—</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('spotlight')">
+        <span class="nav-icon">🌟</span><span class="nav-label">Spotlight</span>
+        <span class="nav-count" id="cnt-sp">—</span>
+      </button>
+      <div class="sidebar-divider"></div>
+      <button class="section-tab" onclick="switchSection('reviews')">
+        <span class="nav-icon">⭐</span><span class="nav-label">Reviews</span>
+        <span class="nav-count" id="cnt-rev">—</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('qa')">
+        <span class="nav-icon">❓</span><span class="nav-label">Q&amp;A</span>
+        <span class="nav-count" id="cnt-qa">—</span>
+      </button>
+      <div class="sidebar-divider"></div>
+      <button class="section-tab" onclick="switchSection('calendar')">
+        <span class="nav-icon">📅</span><span class="nav-label">Calendar</span>
+        <span class="nav-count" id="cnt-cal">—</span>
+      </button>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="admin-content">
+      <div class="admin-body-legacy">
+
+    <!-- NEWS SECTION -->
+    <div class="admin-section active" id="section-news">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('news','list')">All Articles</button>
+        <button class="admin-tab" onclick="switchTab('news','add')">Add Article</button>
+      </div>
+      <div class="admin-panel active" id="news-tab-list">
+        <div class="section-card">
+          <h3>📋 All Articles <span style="font-size:0.72rem;font-weight:400;color:var(--muted);">Max 3 pinned</span></h3>
+          <div id="newsList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="news-tab-add">
+        <div class="section-card">
+          <h3>➕ Add New Article</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Headline *</label><input type="text" id="addTitle" placeholder="Article title"></div>
+            <div class="form-group"><label>Category *</label>
+              <select id="addCategory"><option value="">— Select —</option><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Date</label><input type="text" id="addDate"></div>
+            <div class="form-group">
+              <label>Cover Image</label>
+              <div class="img-upload-box" onclick="document.getElementById('addImageFile').click()">
+                <input type="file" id="addImageFile" accept="image/*" onchange="previewImg(this,'addImgPreview','addImgClear','addImageB64')">
+                <div class="upload-label"><span>🖼️</span>Tap to upload image</div>
+              </div>
+              <img id="addImgPreview" class="img-preview" alt="preview">
+              <span id="addImgClear" class="img-clear" onclick="clearImg('addImageFile','addImgPreview','addImgClear','addImageB64')">✕ Remove image</span>
+              <input type="hidden" id="addImageB64">
+            </div>
+          </div>
+          <div class="form-group"><label>Short Summary * <span style="font-weight:400;color:var(--muted)">(shown on card previews)</span></label><textarea id="addSummary" style="min-height:75px;" placeholder="2–3 sentence summary…"></textarea></div>
+          <div class="form-group"><label>Full Article Content * <span style="font-weight:400;color:var(--muted)">(blank line = new paragraph)</span></label><textarea id="addFullContent" placeholder="Write the full article here…"></textarea></div>
+          <div class="form-group"><label>Pin to Top?</label><select id="addPinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top (max 3)</option></select></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Author</label>
+              <input type="text" id="addAuthor" placeholder="BIG QUAMS MEDIA" value="BIG QUAMS MEDIA">
+            </div>
+            <div class="form-group">
+              <label>WhatsApp / Read More Link</label>
+              <input type="url" id="addLink" value="https://wa.me/message/OVCVEDHU3I2PH1">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Action Buttons (select what to show in the article modal)</label>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;">
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;">
+                <input type="checkbox" id="addActShare" checked> Share article
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;">
+                <input type="checkbox" id="addActView"> View link
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;">
+                <input type="checkbox" id="addActDownload"> Download link
+              </label>
+            </div>
+            <div id="addViewUrlWrap" style="display:none;margin-top:8px;">
+              <input type="url" id="addViewUrl" placeholder="View URL (e.g. Google Drive preview link)">
+            </div>
+            <div id="addDownUrlWrap" style="display:none;margin-top:8px;">
+              <input type="url" id="addDownUrl" placeholder="Download URL">
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addNews()" id="addNewsBtn">Publish Article</button>
+            <button class="btn btn-ghost" onclick="clearNewsForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ELIBRARY SECTION -->
+    <div class="admin-section" id="section-library">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('lib','list')">All Books</button>
+        <button class="admin-tab" onclick="switchTab('lib','add')">Add Book</button>
+      </div>
+      <div class="admin-panel active" id="lib-tab-list">
+        <div class="section-card">
+          <h3>📚 All Books in eLibrary</h3>
+          <div id="bookList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="lib-tab-add">
+        <div class="section-card">
+          <h3>➕ Add New Book</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Book Title *</label><input type="text" id="bAddTitle" placeholder="e.g. JAMB Past Questions 2020–2024"></div>
+            <div class="form-group"><label>Author</label><input type="text" id="bAddAuthor" placeholder="e.g. Big Quams Media"></div>
+          </div>
+          <div class="form-group"><label>Category *</label>
+            <select id="bAddCategory"><option value="">— Select —</option><option>JAMB (UTME & DE)</option><option>University</option><option>Novels & Fiction</option><option>Secondary School</option><option>Scholarship</option><option>Professional</option></select>
+          </div>
+          <div class="form-group"><label>Short Description *</label><textarea id="bAddDesc" style="min-height:75px;" placeholder="What is this book about?"></textarea></div>
+          <div class="form-group">
+            <label>Cover Image</label>
+            <div class="img-upload-box" onclick="document.getElementById('bAddCoverFile').click()">
+              <input type="file" id="bAddCoverFile" accept="image/*" onchange="previewImg(this,'bAddCoverPreview','bAddCoverClear','bAddCoverB64')">
+              <div class="upload-label"><span>🖼️</span>Tap to upload cover</div>
+            </div>
+            <img id="bAddCoverPreview" class="img-preview" alt="preview">
+            <span id="bAddCoverClear" class="img-clear" onclick="clearImg('bAddCoverFile','bAddCoverPreview','bAddCoverClear','bAddCoverB64')">✕ Remove image</span>
+            <input type="hidden" id="bAddCoverB64">
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Google Drive File ID *</label><input type="text" id="bAddDriveId" placeholder="1aBcDeFgHiJkLmNoPqRsT"><div class="form-hint">Long ID from your Google Drive share link</div></div>
+            <div class="form-group"><label>Or: Direct Read URL</label><input type="url" id="bAddReadUrl" placeholder="https://… (overrides Drive ID)"></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addBook()" id="addBookBtn">Add to eLibrary</button>
+            <button class="btn btn-ghost" onclick="clearBookForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DYK SECTION -->
+    <div class="admin-section" id="section-dyk">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('dyk','list')">All Items</button>
+        <button class="admin-tab" onclick="switchTab('dyk','add')">Add Item</button>
+      </div>
+      <div class="admin-panel active" id="dyk-tab-list">
+        <div class="section-card">
+          <h3>💡 DYK, History &amp; Current Affairs</h3>
+          <div id="dykList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="dyk-tab-add">
+        <div class="section-card">
+          <h3>➕ Add New Item</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Title / Headline *</label><input type="text" id="dAddTitle" placeholder="e.g. Did You Know? Nigeria has..."></div>
+            <div class="form-group"><label>Category *</label>
+              <select id="dAddCategory">
+                <option value="">— Select —</option>
+                <option>DYK Fact</option>
+                <option>Today in History</option>
+                <option>Current Affairs</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-row">
+            <div class="form-group"><label>Date</label><input type="text" id="dAddDate"></div>
+            <div class="form-group"><label>Author</label><input type="text" id="dAddAuthor" placeholder="BIG QUAMS MEDIA"></div>
+          </div>
+            <div class="form-group"><label>Author</label><input type="text" id="dAddAuthor" placeholder="BIG QUAMS MEDIA" value="BIG QUAMS MEDIA"></div>
+          </div>
+          <div class="form-group"><label>Short Summary * <span style="font-weight:400;color:var(--muted)">(shown on homepage card)</span></label>
+            <textarea id="dAddSummary" style="min-height:75px;" placeholder="Brief 1–2 sentence teaser…"></textarea>
+          </div>
+          <div class="form-group"><label>Full Content * <span style="font-weight:400;color:var(--muted)">(shown on DYK page)</span></label>
+            <textarea id="dAddContent" placeholder="Write the full content here…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Cover Image (optional)</label>
+            <div class="img-upload-box" onclick="document.getElementById('dAddImgFile').click()">
+              <input type="file" id="dAddImgFile" accept="image/*" onchange="previewImg(this,'dAddImgPreview','dAddImgClear','dAddImgB64')">
+              <div class="upload-label"><span>🖼️</span>Tap to upload image</div>
+            </div>
+            <img id="dAddImgPreview" class="img-preview" alt="preview">
+            <span id="dAddImgClear" class="img-clear" onclick="clearImg('dAddImgFile','dAddImgPreview','dAddImgClear','dAddImgB64')">✕ Remove image</span>
+            <input type="hidden" id="dAddImgB64">
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addDyk()" id="addDykBtn">Publish Item</button>
+            <button class="btn btn-ghost" onclick="clearDykForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <!-- SPOTLIGHT SECTION -->
+    <div class="admin-section" id="section-spotlight">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('spotlight','list')">All Spotlights</button>
+        <button class="admin-tab" onclick="switchTab('spotlight','add')">Add Spotlight</button>
+      </div>
+      <div class="admin-panel active" id="spotlight-tab-list">
+        <div class="section-card">
+          <h3>🌟 All Spotlights</h3>
+          <div id="spotlightList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="spotlight-tab-add">
+        <div class="section-card">
+          <h3>➕ Add New Spotlight</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Title / Name *</label><input type="text" id="spAddTitle" placeholder="e.g. Celebrating Aisha — JAMB 320!"></div>
+            <div class="form-group"><label>Category *</label>
+              <select id="spAddCategory">
+                <option value="">— Select —</option>
+                <option>Student Achievement</option>
+                <option>Birthday</option>
+                <option>Celebration</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Date</label><input type="text" id="spAddDate"></div>
+          <div class="form-group"><label>Short Summary * <span style="font-weight:400;color:var(--muted)">(shown on homepage card)</span></label>
+            <textarea id="spAddSummary" style="min-height:75px;" placeholder="Brief summary for the spotlight…"></textarea>
+          </div>
+          <div class="form-group"><label>Full Details <span style="font-weight:400;color:var(--muted)">(shown on spotlight page)</span></label>
+            <textarea id="spAddContent" placeholder="Full details about this spotlight…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Photo / Image</label>
+            <div class="img-upload-box" onclick="document.getElementById('spAddImgFile').click()">
+              <input type="file" id="spAddImgFile" accept="image/*" onchange="previewImg(this,'spAddImgPreview','spAddImgClear','spAddImgB64')">
+              <div class="upload-label"><span>🖼️</span>Tap to upload photo</div>
+            </div>
+            <img id="spAddImgPreview" class="img-preview" alt="preview">
+            <span id="spAddImgClear" class="img-clear" onclick="clearImg('spAddImgFile','spAddImgPreview','spAddImgClear','spAddImgB64')">✕ Remove</span>
+            <input type="hidden" id="spAddImgB64">
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addSpotlight()" id="addSpotlightBtn">Publish Spotlight</button>
+            <button class="btn btn-ghost" onclick="clearSpotlightForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- REVIEWS SECTION -->
+    <div class="admin-section" id="section-reviews">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('rev','list')">All Reviews</button>
+        <button class="admin-tab" onclick="switchTab('rev','add')">Add Review</button>
+      </div>
+      <div class="admin-panel active" id="rev-tab-list">
+        <div class="section-card">
+          <h3>⭐ Student Reviews</h3>
+          <div id="reviewsList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="rev-tab-add">
+        <div class="section-card">
+          <h3>➕ Add Review</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Student Name *</label><input type="text" id="rAddName" placeholder="e.g. Aisha Abdulrahmon"></div>
+            <div class="form-group"><label>Location</label><input type="text" id="rAddLocation" placeholder="e.g. Lagos State"></div>
+          </div>
+          <div class="form-group"><label>Star Rating *</label>
+            <select id="rAddStars"><option value="5">★★★★★ (5 stars)</option><option value="4">★★★★☆ (4 stars)</option><option value="3">★★★☆☆ (3 stars)</option></select>
+          </div>
+          <div class="form-group"><label>Message *</label>
+            <textarea id="rAddMessage" style="min-height:90px;" placeholder="What did the student say about us?"></textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addReview()" id="addReviewBtn">Add Review</button>
+            <button class="btn btn-ghost" onclick="clearReviewForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q&A SECTION -->
+    <div class="admin-section" id="section-qa">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('qa','list')">All Q&amp;As</button>
+        <button class="admin-tab" onclick="switchTab('qa','add')">Add Q&amp;A</button>
+      </div>
+      <div class="admin-panel active" id="qa-tab-list">
+        <div class="section-card">
+          <h3>❓ Student Q&amp;A</h3>
+          <div id="qaAdminList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="qa-tab-add">
+        <div class="section-card">
+          <h3>➕ Add Q&amp;A</h3>
+          <div class="form-group"><label>Student Question *</label>
+            <textarea id="qaAddQ" style="min-height:75px;" placeholder="e.g. How do I check my CAPS admission status?"></textarea>
+          </div>
+          <div class="form-group"><label>Your Answer *</label>
+            <textarea id="qaAddA" placeholder="Provide a clear, helpful answer…"></textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addQA()" id="addQABtn">Publish Q&amp;A</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('qaAddQ').value='';document.getElementById('qaAddA').value=''">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- CALENDAR SECTION -->
+    <div class="admin-section" id="section-calendar">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('cal','list')">All Events</button>
+        <button class="admin-tab" onclick="switchTab('cal','add')">Add Event</button>
+      </div>
+      <div class="admin-panel active" id="cal-tab-list">
+        <div class="section-card">
+          <h3>📅 Academic Calendar Events</h3>
+          <div id="calList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="cal-tab-add">
+        <div class="section-card">
+          <h3>➕ Add Calendar Event</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Event Title *</label>
+              <input type="text" id="calAddTitle" placeholder="e.g. JAMB Registration Opens">
+            </div>
+            <div class="form-group">
+              <label>Category *</label>
+              <select id="calAddCategory">
+                <option value="">— Select —</option>
+                <option value="jamb">JAMB</option>
+                <option value="exam">Exam</option>
+                <option value="admission">Admission</option>
+                <option value="school">School</option>
+                <option value="scholarship">Scholarship</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date *</label>
+              <input type="date" id="calAddDate">
+            </div>
+            <div class="form-group">
+              <label>Badge Colour</label>
+              <select id="calAddColor">
+                <option value="#1a3fa8">Blue (JAMB)</option>
+                <option value="#7c3aed">Purple (Exam)</option>
+                <option value="#dc2626">Red (Deadline)</option>
+                <option value="#16a34a">Green (Admission)</option>
+                <option value="#f97316">Orange (General)</option>
+                <option value="#0891b2">Teal (School)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Short Description *</label>
+            <textarea id="calAddDesc" style="min-height:80px;" placeholder="Brief description of the event…"></textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addCalEvent()" id="addCalBtn">Add Event</button>
+            <button class="btn btn-ghost" onclick="clearCalForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- EDIT DYK MODAL -->
+<div class="modal-overlay" id="editDykModal" onclick="handleOverlay(event,'editDykModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Item</h3><button class="modal-close" onclick="closeModal('editDykModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editDykIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Title *</label><input type="text" id="dETitle"></div>
+        <div class="form-group"><label>Category *</label>
+          <select id="dECategory"><option>DYK Fact</option><option>Today in History</option><option>Current Affairs</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-row">
+        <div class="form-group"><label>Date</label><input type="text" id="dEDate"></div>
+        <div class="form-group"><label>Author</label><input type="text" id="dEAuthor" placeholder="BIG QUAMS MEDIA"></div>
+      </div>
+        <div class="form-group"><label>Author</label><input type="text" id="dEAuthor" placeholder="BIG QUAMS MEDIA"></div>
+      </div>
+      <div class="form-group"><label>Short Summary *</label><textarea id="dESummary" style="min-height:75px;"></textarea></div>
+      <div class="form-group"><label>Full Content *</label><textarea id="dEContent"></textarea></div>
+      <div class="form-group">
+        <label>Cover Image</label>
+        <div class="img-upload-box" onclick="document.getElementById('dEImgFile').click()">
+          <input type="file" id="dEImgFile" accept="image/*" onchange="previewImg(this,'dEImgPreview','dEImgClear','dEImgB64')">
+          <div class="upload-label"><span>🖼️</span>Tap to replace image</div>
+        </div>
+        <img id="dEImgPreview" class="img-preview" alt="preview">
+        <span id="dEImgClear" class="img-clear" onclick="clearImg('dEImgFile','dEImgPreview','dEImgClear','dEImgB64')">✕ Remove</span>
+        <input type="hidden" id="dEImgB64">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveEditDyk()" id="saveDykBtn">Save Changes</button>
+        <button class="btn btn-ghost" onclick="closeModal('editDykModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT SPOTLIGHT MODAL -->
+<div class="modal-overlay" id="editSpotlightModal" onclick="handleOverlay(event,'editSpotlightModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Spotlight</h3><button class="modal-close" onclick="closeModal('editSpotlightModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editSpotlightIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Title *</label><input type="text" id="spETitle"></div>
+        <div class="form-group"><label>Category *</label>
+          <select id="spECategory"><option>Student Achievement</option><option>Birthday</option><option>Celebration</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Date</label><input type="text" id="spEDate"></div>
+      <div class="form-group"><label>Short Summary *</label><textarea id="spESummary" style="min-height:75px;"></textarea></div>
+      <div class="form-group"><label>Full Details</label><textarea id="spEContent"></textarea></div>
+      <div class="form-group">
+        <label>Photo / Image</label>
+        <div class="img-upload-box" onclick="document.getElementById('spEImgFile').click()">
+          <input type="file" id="spEImgFile" accept="image/*" onchange="previewImg(this,'spEImgPreview','spEImgClear','spEImgB64')">
+          <div class="upload-label"><span>🖼️</span>Tap to replace photo</div>
+        </div>
+        <img id="spEImgPreview" class="img-preview" alt="preview">
+        <span id="spEImgClear" class="img-clear" onclick="clearImg('spEImgFile','spEImgPreview','spEImgClear','spEImgB64')">✕ Remove</span>
+        <input type="hidden" id="spEImgB64">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveEditSpotlight()" id="saveSpotlightBtn">Save Changes</button>
+        <button class="btn btn-ghost" onclick="closeModal('editSpotlightModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT CALENDAR MODAL -->
+<div class="modal-overlay" id="editCalModal" onclick="handleOverlay(event,'editCalModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Calendar Event</h3><button class="modal-close" onclick="closeModal('editCalModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editCalIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Event Title *</label><input type="text" id="calETitle"></div>
+        <div class="form-group"><label>Category *</label>
+          <select id="calECategory">
+            <option value="jamb">JAMB</option>
+            <option value="exam">Exam</option>
+            <option value="admission">Admission</option>
+            <option value="school">School</option>
+            <option value="scholarship">Scholarship</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Date *</label><input type="date" id="calEDate"></div>
+        <div class="form-group"><label>Badge Colour</label>
+          <select id="calEColor">
+            <option value="#1a3fa8">Blue (JAMB)</option>
+            <option value="#7c3aed">Purple (Exam)</option>
+            <option value="#dc2626">Red (Deadline)</option>
+            <option value="#16a34a">Green (Admission)</option>
+            <option value="#f97316">Orange (General)</option>
+            <option value="#0891b2">Teal (School)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label>Short Description *</label><textarea id="calEDesc" style="min-height:80px;"></textarea></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveEditCal()" id="saveCalBtn">Save Changes</button>
+        <button class="btn btn-ghost" onclick="closeModal('editCalModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div><!-- end admin-body-legacy -->
+    </div><!-- end admin-content -->
+  </div><!-- end admin-layout -->
+</div><!-- end adminApp -->
+
+<!-- EDIT NEWS MODAL -->
+<div class="modal-overlay" id="editNewsModal" onclick="handleOverlay(event,'editNewsModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Article</h3><button class="modal-close" onclick="closeModal('editNewsModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editNewsIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Headline *</label><input type="text" id="eTitle"></div>
+        <div class="form-group"><label>Category *</label><select id="eCategory"><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Date</label><input type="text" id="eDate"></div>
+        <div class="form-group">
+          <label>Cover Image</label>
+          <div class="img-upload-box" onclick="document.getElementById('eImageFile').click()">
+            <input type="file" id="eImageFile" accept="image/*" onchange="previewImg(this,'eImgPreview','eImgClear','eImageB64')">
+            <div class="upload-label"><span>🖼️</span>Tap to replace image</div>
+          </div>
+          <img id="eImgPreview" class="img-preview" alt="preview">
+          <span id="eImgClear" class="img-clear" onclick="clearImg('eImageFile','eImgPreview','eImgClear','eImageB64')">✕ Remove image</span>
+          <input type="hidden" id="eImageB64">
+        </div>
+      </div>
+      <div class="form-group"><label>Short Summary *</label><textarea id="eSummary" style="min-height:75px;"></textarea></div>
+      <div class="form-group"><label>Full Article Content *</label><textarea id="eFullContent"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Pin to Top?</label><select id="ePinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top</option></select></div>
+        <div class="form-group"><label>Author</label><input type="text" id="eAuthor" placeholder="BIG QUAMS MEDIA"></div>
+      </div>
+      <div class="form-group"><label>WhatsApp / Read More Link</label><input type="url" id="eLink"></div>
+      <div class="form-group">
+        <label>Action Buttons</label>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;"><input type="checkbox" id="eActShare"> Share</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;"><input type="checkbox" id="eActView"> View link</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.84rem;font-weight:400;cursor:pointer;"><input type="checkbox" id="eActDownload"> Download link</label>
+        </div>
+        <div id="eViewUrlWrap" style="display:none;margin-top:8px;"><input type="url" id="eViewUrl" placeholder="View URL"></div>
+        <div id="eDownUrlWrap" style="display:none;margin-top:8px;"><input type="url" id="eDownUrl" placeholder="Download URL"></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="saveEditNews()" id="saveNewsBtn">Save Changes</button><button class="btn btn-ghost" onclick="closeModal('editNewsModal')">Cancel</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT BOOK MODAL -->
+<div class="modal-overlay" id="editBookModal" onclick="handleOverlay(event,'editBookModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Book</h3><button class="modal-close" onclick="closeModal('editBookModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editBookIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Book Title *</label><input type="text" id="bETitle"></div>
+        <div class="form-group"><label>Author</label><input type="text" id="bEAuthor"></div>
+      </div>
+      <div class="form-group"><label>Category *</label><select id="bECategory"><option>JAMB (UTME & DE)</option><option>University</option><option>Novels & Fiction</option><option>Secondary School</option><option>Scholarship</option><option>Professional</option></select></div>
+      <div class="form-group"><label>Short Description *</label><textarea id="bEDesc" style="min-height:75px;"></textarea></div>
+      <div class="form-group">
+        <label>Cover Image</label>
+        <div class="img-upload-box" onclick="document.getElementById('bECoverFile').click()">
+          <input type="file" id="bECoverFile" accept="image/*" onchange="previewImg(this,'bECoverPreview','bECoverClear','bECoverB64')">
+          <div class="upload-label"><span>🖼️</span>Tap to replace cover</div>
+        </div>
+        <img id="bECoverPreview" class="img-preview" alt="preview">
+        <span id="bECoverClear" class="img-clear" onclick="clearImg('bECoverFile','bECoverPreview','bECoverClear','bECoverB64')">✕ Remove image</span>
+        <input type="hidden" id="bECoverB64">
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Google Drive File ID</label><input type="text" id="bEDriveId"></div>
+        <div class="form-group"><label>Direct Read URL</label><input type="url" id="bEReadUrl"></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="saveEditBook()" id="saveBookBtn">Save Changes</button><button class="btn btn-ghost" onclick="closeModal('editBookModal')">Cancel</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// ── DARK MODE SYNC FROM HOMEPAGE ──
+(function syncDarkMode() {
+  const theme = localStorage.getItem('bqm-theme');
+  if (theme === 'dark') {
+    document.body.classList.add('dark');
+  } else {
+    document.body.classList.remove('dark');
+  }
+})();
+
+// ── CONFIG ──
+const GH_USER='big-quams-educational-hub', GH_REPO='big-quams-educational-hub.github.io', GH_BRANCH='main';
+const NEWS_FILE='news.json', BOOKS_FILE='books.json', DYK_FILE='dyk.json';
+const SPOTLIGHT_FILE='spotlight.json', REVIEWS_FILE='reviews.json', QA_FILE='qa.json', CAL_FILE='calendar.json';
+const ADMIN_USER = btoa('bigquams');
+
+// ── AUTH ──
+let ghToken = sessionStorage.getItem('bqm_token') || '';
+
+function doLogin(){
+  const user  = document.getElementById('loginUser').value.trim();
+  const token = document.getElementById('loginPass').value.trim();
+  if(btoa(user) !== ADMIN_USER || !token.startsWith('ghp_')) {
+    document.getElementById('loginError').style.display='block';
+    document.getElementById('loginPass').value='';
+    return;
+  }
+  ghToken = token;
+  sessionStorage.setItem('bqm_token', token);
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('adminApp').style.display='block';
+  sessionStorage.setItem('bqm_auth','1');
+  init();
+}
+function doLogout(){ sessionStorage.clear(); location.reload(); }
+if(sessionStorage.getItem('bqm_auth')==='1' && sessionStorage.getItem('bqm_token')){
+  ghToken = sessionStorage.getItem('bqm_token');
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('adminApp').style.display='block';
+  // Auto-init with restored session
+  setTimeout(init, 200);
+}
+document.getElementById('tokenSetup').style.display='none';
+
+// ── GITHUB API ──
+function ghAPI(f){ return `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${f}`; }
+function ghH(){ return { Authorization:'token '+ghToken, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' }; }
+
+async function ghFetch(file){
+  try {
+    const res = await fetch(ghAPI(file)+'?ref='+GH_BRANCH, {headers:ghH()});
+    if(res.status === 401) throw new Error('Invalid token — check your GitHub token');
+    if(res.status === 403) throw new Error('Token lacks permissions — ensure "repo" scope is enabled');
+    if(res.status === 404) return {sha:'', data:[]};  // File doesn't exist yet
+    if(!res.ok) {
+      const errJson = await res.json().catch(()=>({message:'Unknown error'}));
+      throw new Error(errJson.message || 'GitHub error ' + res.status + ' for ' + file);
+    }
+    const j = await res.json();
+    if(!j.content) return {sha: j.sha||'', data:[]};
+    // Decode base64 — handle large files and special characters
+    let text = '';
+    try {
+      text = decodeURIComponent(escape(atob(j.content.replace(/\s/g,''))));
+    } catch {
+      text = atob(j.content.replace(/\s/g,''));
+    }
+    text = text.trim();
+    if(!text || text === 'null') return {sha: j.sha, data:[]};
+    let parsed;
+    try { parsed = JSON.parse(text); } catch(pe) {
+      console.warn('JSON parse error for', file, pe.message);
+      return {sha: j.sha, data:[]};
+    }
+    return {sha: j.sha, data: Array.isArray(parsed) ? parsed : []};
+  } catch(e) {
+    if(e.message.includes('token') || e.message.includes('permission')) throw e;
+    console.warn('ghFetch failed for', file, e.message);
+    return {sha:'', data:[]};  // Gracefully return empty for missing files
+  }
+}
+async function ghPush(file, sha, data, msg){
+  const json = JSON.stringify(data, null, 2);
+  // Robust base64 encoding for Unicode content
+  const b64 = btoa(unescape(encodeURIComponent(json)));
+  const body = {message: msg, content: b64, branch: GH_BRANCH};
+  if(sha) body.sha = sha;
+  const res = await fetch(ghAPI(file), {method:'PUT', headers:ghH(), body:JSON.stringify(body)});
+  if(!res.ok){
+    const errText = await res.text();
+    let errMsg = 'Push failed';
+    try { errMsg = JSON.parse(errText).message || errMsg; } catch {}
+    if(res.status === 409) errMsg = 'File conflict — please refresh the page and try again.';
+    if(res.status === 422) errMsg = 'Invalid data format. Check your inputs.';
+    throw new Error(errMsg);
+  }
+  const result = await res.json();
+  return result.content.sha;
+}
+
+// ── DATA ──
+let newsSha='', newsData=[], booksSha='', booksData=[], dykSha='', dykData=[];
+let spotlightSha='', spotlightData=[], reviewsSha='', reviewsData=[], qaSha='', qaData=[], calSha='', calData=[];
+
+// ── LOAD ALL ──
+async function loadAll(){
+  if(!ghToken){ showStatus('error','No GitHub token found. Please log out and log back in.'); return; }
+  showStatus('loading','Loading from GitHub… please wait');
+  const files = [
+    {name:NEWS_FILE,      onDone:(r)=>{newsSha=r.sha; newsData=r.data;}},
+    {name:BOOKS_FILE,     onDone:(r)=>{booksSha=r.sha; booksData=r.data;}},
+    {name:DYK_FILE,       onDone:(r)=>{dykSha=r.sha; dykData=r.data;}},
+    {name:SPOTLIGHT_FILE, onDone:(r)=>{spotlightSha=r.sha; spotlightData=r.data;}},
+    {name:REVIEWS_FILE,   onDone:(r)=>{reviewsSha=r.sha; reviewsData=r.data;}},
+    {name:QA_FILE,        onDone:(r)=>{qaSha=r.sha; qaData=r.data;}},
+    {name:CAL_FILE,       onDone:(r)=>{calSha=r.sha; calData=r.data;}},
+  ];
+  let hasError = false;
+  for(const f of files){
+    try{
+      const result = await ghFetch(f.name);
+      f.onDone(result);
+    } catch(e){
+      hasError = true;
+      showStatus('error', '❌ Failed loading ' + f.name + ': ' + e.message);
+      return; // Stop on critical error (usually token issue)
+    }
+  }
+  renderNews(); renderBooks(); renderDyk(); renderSpotlights();
+  renderReviews(); renderQA(); renderCalendar(); updateBadge();
+  if(!hasError) showStatus('success','✅ All data loaded successfully! Welcome to the admin panel.');
+}
+
+// ── UI ──
+function showStatus(type,msg){
+  const b=document.getElementById('statusBar');
+  b.className='status-bar show '+type;
+  b.innerHTML=(type==='loading'?'<div class="spinner"></div>':(type==='success'?'✅':'❌'))+' '+msg;
+  if(type!=='loading') setTimeout(()=>b.classList.remove('show'), type==='success'?8000:5000);
+}
+function openModal(id){ document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+function handleOverlay(e,id){ if(e.target===document.getElementById(id)) closeModal(id); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')) });
+
+function updateBadge(){
+  document.getElementById('topBadge').textContent=newsData.length+' News · '+booksData.length+' Books';
+  const m={'cnt-news':newsData.length,'cnt-lib':booksData.length,'cnt-dyk':dykData.length,
+    'cnt-sp':spotlightData.length,'cnt-rev':reviewsData.length,'cnt-qa':qaData.length,'cnt-cal':calData.length};
+  Object.entries(m).forEach(([id,v])=>{const el=document.getElementById(id);if(el) el.textContent=v;});
+}
+
+// ── SECTION SWITCHING ──
+const NAV_ORDER = ['news','library','dyk','spotlight','reviews','qa','calendar'];
+function switchSection(name){
+  document.querySelectorAll('.section-tab').forEach((t,i)=>t.classList.toggle('active', NAV_ORDER[i]===name));
+  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+  const m={news:'section-news',library:'section-library',dyk:'section-dyk',spotlight:'section-spotlight',
+    reviews:'section-reviews',qa:'section-qa',calendar:'section-calendar'};
+  const el=document.getElementById(m[name]||'section-news');
+  if(el) el.classList.add('active');
+  if(window.innerWidth<=640) window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function switchTab(sec,tab){
+  const sMap={news:'section-news',lib:'section-library',dyk:'section-dyk',spotlight:'section-spotlight',rev:'section-reviews',qa:'section-qa',cal:'section-calendar'};
+  const prefix=sec;
+  const secEl=document.getElementById(sMap[sec]||(sec==='news'?'section-news':'section-library'));
+  if(!secEl) return;
+  secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));
+  secEl.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
+  const panel=document.getElementById(`${prefix}-tab-${tab}`);
+  if(panel) panel.classList.add('active');
+}
+
+// ── IMAGE HELPERS ──
+function previewImg(input,prevId,clearId,hiddenId){
+  const file=input.files[0]; if(!file) return;
+  if(file.size>500000){showStatus('error','Image too large. Max 500KB.');input.value='';return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const b64=e.target.result;
+    document.getElementById(hiddenId).value=b64;
+    const prev=document.getElementById(prevId); prev.src=b64; prev.classList.add('show');
+    document.getElementById(clearId).classList.add('show');
+  };
+  reader.readAsDataURL(file);
+}
+function clearImg(inputId,prevId,clearId,hiddenId){
+  document.getElementById(inputId).value='';
+  document.getElementById(hiddenId).value='';
+  const prev=document.getElementById(prevId); prev.src=''; prev.classList.remove('show');
+  document.getElementById(clearId).classList.remove('show');
+}
+
+// ── ACTION CHECKBOXES ──
+function toggleActionUrl(chkId,urlId){const url=document.getElementById(urlId);if(url) url.classList.toggle('show',document.getElementById(chkId).checked);}
+function getActions(p){
+  const acts={};
+  const share=document.getElementById(p+'ChkShare'), view=document.getElementById(p+'ChkView'), dl=document.getElementById(p+'ChkDownload');
+  if(share&&share.checked) acts.share=true;
+  if(view&&view.checked){const u=document.getElementById(p+'UrlView').value.trim();if(u) acts.viewUrl=u;}
+  if(dl&&dl.checked){const u=document.getElementById(p+'UrlDownload').value.trim();if(u) acts.downloadUrl=u;}
+  return Object.keys(acts).length?acts:null;
+}
+function setActions(p,acts){
+  const a=acts||{};
+  const chkShare=document.getElementById(p+'ChkShare'),chkView=document.getElementById(p+'ChkView'),chkDl=document.getElementById(p+'ChkDownload');
+  const urlView=document.getElementById(p+'UrlView'),urlDl=document.getElementById(p+'UrlDownload');
+  if(chkShare) chkShare.checked=!!a.share;
+  if(chkView){chkView.checked=!!a.viewUrl;if(urlView){urlView.value=a.viewUrl||'';urlView.classList.toggle('show',!!a.viewUrl);}}
+  if(chkDl){chkDl.checked=!!a.downloadUrl;if(urlDl){urlDl.value=a.downloadUrl||'';urlDl.classList.toggle('show',!!a.downloadUrl);}}
+}
+
+// ════════════ NEWS ════════════
+function renderNews(){
+  const el=document.getElementById('newsList'); if(!el) return;
+  if(!newsData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No articles yet.</p></div>';return;}
+  const sorted=[...newsData.filter(n=>n.pinned),...newsData.filter(n=>!n.pinned)];
+  el.innerHTML='<div class="news-list">'+sorted.map(item=>{
+    const idx=newsData.indexOf(item), pin=!!item.pinned;
+    return `<div class="news-item${pin?' pinned':''}">
+      ${pin?'<div class="pin-badge">📌 PINNED</div>':''}
+      <div class="item-num">${idx+1}</div>
+      <div class="item-body">
+        <div class="item-title">${item.title}</div>
+        <div class="item-meta"><span class="item-cat">${item.category||'News'}</span>${item.date||''}</div>
+        <div class="item-preview">${(item.summary||item.description||'').slice(0,100)}…</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditNews(${idx})">✏️ Edit</button>
+          <button class="btn ${pin?'btn-warning':'btn-ghost'} btn-sm" onclick="togglePin(${idx})">${pin?'Unpin':'📌 Pin'}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteNews(${idx})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+async function addNews(){
+  const title=document.getElementById('addTitle').value.trim();
+  const category=document.getElementById('addCategory').value;
+  const date=document.getElementById('addDate').value.trim();
+  const image=document.getElementById('addImageB64').value;
+  const summary=document.getElementById('addSummary').value.trim();
+  const fullContent=document.getElementById('addFullContent').value.trim();
+  const pinned=document.getElementById('addPinned').value==='true';
+  const author=document.getElementById('addAuthor').value.trim()||'BIG QUAMS MEDIA';
+  const actions=getActions('');
+  if(!title||!category||!summary||!fullContent){showStatus('error','Fill in Title, Category, Summary and Full Content.');return;}
+  if(pinned&&newsData.filter(n=>n.pinned).length>=3){showStatus('error','Max 3 pinned articles. Unpin one first.');return;}
+  const item={title,category,date,author,summary,fullContent,link:'https://wa.me/message/OVCVEDHU3I2PH1'};
+  if(image) item.image=image; if(pinned) item.pinned=true; if(actions) item.actions=actions;
+  newsData.unshift(item);
+  const btn=document.getElementById('addNewsBtn'); btn.disabled=true;
+  try{newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Add: '+title);showStatus('success','🎉 Article published! It is now live on your website.');clearNewsForm();renderNews();updateBadge();switchTab('news','list');}
+  catch(e){newsData.shift();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+function clearNewsForm(){
+  ['addTitle','addSummary','addFullContent'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('addCategory').value=''; document.getElementById('addPinned').value='false';
+  document.getElementById('addAuthor').value='BIG QUAMS MEDIA';
+  document.getElementById('addDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  ['chkShare','chkView','chkDownload'].forEach(id=>{const el=document.getElementById(id);if(el) el.checked=false;});
+  ['urlView','urlDownload'].forEach(id=>{const el=document.getElementById(id);if(el){el.value='';el.classList.remove('show');}});
+  clearImg('addImageFile','addImgPreview','addImgClear','addImageB64');
+}
+async function togglePin(idx){
+  const item=newsData[idx], willPin=!item.pinned;
+  if(willPin&&newsData.filter(n=>n.pinned).length>=3){showStatus('error','Max 3 pinned.');return;}
+  const old=item.pinned;
+  if(willPin) newsData[idx].pinned=true; else delete newsData[idx].pinned;
+  try{newsSha=await ghPush(NEWS_FILE,newsSha,newsData,(willPin?'Pin: ':'Unpin: ')+item.title);showStatus('success',willPin?'📌 Article pinned!':'✅ Article unpinned.');renderNews();}
+  catch(e){if(old) newsData[idx].pinned=old; else delete newsData[idx].pinned; showStatus('error',e.message);}
+}
+async function deleteNews(idx){
+  if(!confirm(`Delete "${newsData[idx].title}"?\n\nThis cannot be undone.`)) return;
+  const removed=newsData.splice(idx,1);
+  try{newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Delete: '+removed[0].title);showStatus('success','🗑️ Article deleted.');renderNews();updateBadge();}
+  catch(e){newsData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+function openEditNews(idx){
+  const item=newsData[idx];
+  document.getElementById('editNewsIdx').value=idx;
+  document.getElementById('eTitle').value=item.title||''; document.getElementById('eCategory').value=item.category||'';
+  document.getElementById('eDate').value=item.date||''; document.getElementById('eSummary').value=item.summary||item.description||'';
+  document.getElementById('eFullContent').value=item.fullContent||'';
+  document.getElementById('ePinned').value=item.pinned?'true':'false';
+  document.getElementById('eAuthor').value=item.author||'BIG QUAMS MEDIA';
+  setActions('e',item.actions||null);
+  if(item.image){document.getElementById('eImageB64').value=item.image;const p=document.getElementById('eImgPreview');p.src=item.image;p.classList.add('show');document.getElementById('eImgClear').classList.add('show');}
+  else clearImg('eImageFile','eImgPreview','eImgClear','eImageB64');
+  openModal('editNewsModal');
+}
+async function saveEditNews(){
+  const idx=parseInt(document.getElementById('editNewsIdx').value);
+  const title=document.getElementById('eTitle').value.trim(), category=document.getElementById('eCategory').value;
+  const date=document.getElementById('eDate').value.trim(), summary=document.getElementById('eSummary').value.trim();
+  const fullContent=document.getElementById('eFullContent').value.trim(), pinned=document.getElementById('ePinned').value==='true';
+  const author=document.getElementById('eAuthor').value.trim()||'BIG QUAMS MEDIA';
+  const image=document.getElementById('eImageB64').value||(newsData[idx]||{}).image||'';
+  const actions=getActions('e');
+  if(!title||!category||!summary||!fullContent){showStatus('error','All required fields must be filled.');return;}
+  if(pinned&&newsData.filter((n,i)=>n.pinned&&i!==idx).length>=3){showStatus('error','Max 3 pinned.');return;}
+  const old={...newsData[idx]};
+  newsData[idx]={title,category,date,author,summary,fullContent,link:old.link||'https://wa.me/message/OVCVEDHU3I2PH1'};
+  if(image) newsData[idx].image=image; if(pinned) newsData[idx].pinned=true; if(actions) newsData[idx].actions=actions;
+  const btn=document.getElementById('saveNewsBtn'); btn.disabled=true;
+  try{newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Edit: '+title);showStatus('success','✅ Article updated successfully!');closeModal('editNewsModal');renderNews();}
+  catch(e){newsData[idx]=old;showStatus('error',e.message);}
+  btn.disabled=false;
+}
+
+// ════════════ BOOKS ════════════
+function renderBooks(){
+  const el=document.getElementById('bookList'); if(!el) return;
+  if(!booksData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No books yet.</p></div>';return;}
+  el.innerHTML='<div class="book-list">'+booksData.map((book,i)=>`
+    <div class="book-item">
+      <div class="book-cover-th">${book.cover?`<img src="${book.cover}" alt="${book.title}">`:'📖'}</div>
+      <div class="item-body">
+        <div class="item-title">${book.title}</div>
+        <div class="item-meta"><span class="item-cat book-cat">${book.category||'General'}</span>${book.author?'by '+book.author:''}</div>
+        <div class="item-preview">${(book.description||'').slice(0,90)}…</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditBook(${i})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteBook(${i})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+async function addBook(){
+  const title=document.getElementById('bAddTitle').value.trim(), author=document.getElementById('bAddAuthor').value.trim();
+  const category=document.getElementById('bAddCategory').value, description=document.getElementById('bAddDesc').value.trim();
+  const cover=document.getElementById('bAddCoverB64').value, driveId=document.getElementById('bAddDriveId').value.trim(), readUrl=document.getElementById('bAddReadUrl').value.trim();
+  if(!title||!category||!description){showStatus('error','Fill in Title, Category and Description.');return;}
+  if(!driveId&&!readUrl){showStatus('error','Provide a Google Drive File ID or Direct Read URL.');return;}
+  const item={title,author,category,description};
+  if(cover) item.cover=cover; if(driveId) item.driveId=driveId; if(readUrl) item.readUrl=readUrl;
+  booksData.unshift(item);
+  const btn=document.getElementById('addBookBtn'); btn.disabled=true;
+  try{booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Add book: '+title);showStatus('success','🎉 Book added to eLibrary! Students can now access it.');clearBookForm();renderBooks();updateBadge();switchTab('lib','list');}
+  catch(e){booksData.shift();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+function clearBookForm(){
+  ['bAddTitle','bAddAuthor','bAddDesc','bAddDriveId','bAddReadUrl'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('bAddCategory').value='';
+  clearImg('bAddCoverFile','bAddCoverPreview','bAddCoverClear','bAddCoverB64');
+}
+function openEditBook(idx){
+  const b=booksData[idx];
+  document.getElementById('editBookIdx').value=idx;
+  document.getElementById('bETitle').value=b.title||''; document.getElementById('bEAuthor').value=b.author||'';
+  document.getElementById('bECategory').value=b.category||''; document.getElementById('bEDesc').value=b.description||'';
+  document.getElementById('bEDriveId').value=b.driveId||''; document.getElementById('bEReadUrl').value=b.readUrl||'';
+  if(b.cover){document.getElementById('bECoverB64').value=b.cover;const p=document.getElementById('bECoverPreview');p.src=b.cover;p.classList.add('show');document.getElementById('bECoverClear').classList.add('show');}
+  else clearImg('bECoverFile','bECoverPreview','bECoverClear','bECoverB64');
+  openModal('editBookModal');
+}
+async function saveEditBook(){
+  const idx=parseInt(document.getElementById('editBookIdx').value);
+  const title=document.getElementById('bETitle').value.trim(), author=document.getElementById('bEAuthor').value.trim();
+  const category=document.getElementById('bECategory').value, description=document.getElementById('bEDesc').value.trim();
+  const cover=document.getElementById('bECoverB64').value||(booksData[idx]||{}).cover||'';
+  const driveId=document.getElementById('bEDriveId').value.trim(), readUrl=document.getElementById('bEReadUrl').value.trim();
+  if(!title||!category||!description){showStatus('error','Title, Category and Description are required.');return;}
+  const old={...booksData[idx]};
+  booksData[idx]={title,author,category,description};
+  if(cover) booksData[idx].cover=cover; if(driveId) booksData[idx].driveId=driveId; if(readUrl) booksData[idx].readUrl=readUrl;
+  const btn=document.getElementById('saveBookBtn'); btn.disabled=true;
+  try{booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Edit book: '+title);showStatus('success','✅ Book updated successfully!');closeModal('editBookModal');renderBooks();}
+  catch(e){booksData[idx]=old;showStatus('error',e.message);}
+  btn.disabled=false;
+}
+async function deleteBook(idx){
+  if(!confirm(`Delete "${booksData[idx].title}"?`)) return;
+  const removed=booksData.splice(idx,1);
+  try{booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Delete book: '+removed[0].title);showStatus('success','🗑️ Book deleted.');renderBooks();updateBadge();}
+  catch(e){booksData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
+// ════════════ DYK ════════════
+function renderDyk(){
+  const el=document.getElementById('dykList'); if(!el) return;
+  if(!dykData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No items yet.</p></div>';return;}
+  const catColor={'DYK Fact':'#dbeafe','Today in History':'#fef9c3','Current Affairs':'#dcfce7'};
+  const catText={'DYK Fact':'#1a3fa8','Today in History':'#854d0e','Current Affairs':'#15803d'};
+  el.innerHTML='<div class="news-list">'+dykData.map((item,i)=>`
+    <div class="news-item">
+      <div class="item-num">${i+1}</div>
+      <div class="item-body">
+        <div class="item-title">${item.title}</div>
+        <div class="item-meta"><span class="item-cat" style="background:${catColor[item.category]||'#dbeafe'};color:${catText[item.category]||'#1a3fa8'}">${item.category||'DYK'}</span>${item.date||''}</div>
+        <div class="item-preview">${(item.summary||'').slice(0,100)}…</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditDyk(${i})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteDyk(${i})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+async function addDyk(){
+  const title=document.getElementById('dAddTitle').value.trim(), category=document.getElementById('dAddCategory').value;
+  const date=document.getElementById('dAddDate').value.trim(), summary=document.getElementById('dAddSummary').value.trim();
+  const content=document.getElementById('dAddContent').value.trim(), image=document.getElementById('dAddImgB64').value;
+  const author=document.getElementById('dAddAuthor')?document.getElementById('dAddAuthor').value.trim()||'BIG QUAMS MEDIA':'BIG QUAMS MEDIA';
+  if(!title||!category||!summary||!content){showStatus('error','Fill in Title, Category, Summary and Content.');return;}
+  const item={title,category,date,author,summary,content}; if(image) item.image=image;
+  dykData.unshift(item);
+  const btn=document.getElementById('addDykBtn'); btn.disabled=true;
+  try{dykSha=await ghPush(DYK_FILE,dykSha,dykData,'Add DYK: '+title);showStatus('success','🎉 DYK item published!');clearDykForm();renderDyk();updateBadge();switchTab('dyk','list');}
+  catch(e){dykData.shift();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+function clearDykForm(){
+  ['dAddTitle','dAddSummary','dAddContent'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('dAddCategory').value='';
+  document.getElementById('dAddDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  if(document.getElementById('dAddAuthor')) document.getElementById('dAddAuthor').value='BIG QUAMS MEDIA';
+  clearImg('dAddImgFile','dAddImgPreview','dAddImgClear','dAddImgB64');
+}
+function openEditDyk(idx){
+  const item=dykData[idx];
+  document.getElementById('editDykIdx').value=idx;
+  document.getElementById('dETitle').value=item.title||''; document.getElementById('dECategory').value=item.category||'';
+  document.getElementById('dEDate').value=item.date||''; document.getElementById('dESummary').value=item.summary||'';
+  document.getElementById('dEContent').value=item.content||'';
+  if(document.getElementById('dEAuthor')) document.getElementById('dEAuthor').value=item.author||'BIG QUAMS MEDIA';
+  if(item.image){document.getElementById('dEImgB64').value=item.image;const p=document.getElementById('dEImgPreview');p.src=item.image;p.classList.add('show');document.getElementById('dEImgClear').classList.add('show');}
+  else clearImg('dEImgFile','dEImgPreview','dEImgClear','dEImgB64');
+  openModal('editDykModal');
+}
+async function saveEditDyk(){
+  const idx=parseInt(document.getElementById('editDykIdx').value);
+  const title=document.getElementById('dETitle').value.trim(), category=document.getElementById('dECategory').value;
+  const date=document.getElementById('dEDate').value.trim(), summary=document.getElementById('dESummary').value.trim();
+  const content=document.getElementById('dEContent').value.trim(), image=document.getElementById('dEImgB64').value;
+  const author=document.getElementById('dEAuthor')?document.getElementById('dEAuthor').value.trim()||'BIG QUAMS MEDIA':'BIG QUAMS MEDIA';
+  if(!title||!category||!summary||!content){showStatus('error','All required fields must be filled.');return;}
+  const old={...dykData[idx]};
+  dykData[idx]={title,category,date,author,summary,content}; if(image) dykData[idx].image=image;
+  const btn=document.getElementById('saveDykBtn'); btn.disabled=true;
+  try{dykSha=await ghPush(DYK_FILE,dykSha,dykData,'Edit DYK: '+title);showStatus('success','✅ DYK item updated!');closeModal('editDykModal');renderDyk();}
+  catch(e){dykData[idx]=old;showStatus('error',e.message);}
+  btn.disabled=false;
+}
+async function deleteDyk(idx){
+  if(!confirm(`Delete "${dykData[idx].title}"?`)) return;
+  const removed=dykData.splice(idx,1);
+  try{dykSha=await ghPush(DYK_FILE,dykSha,dykData,'Delete DYK: '+removed[0].title);showStatus('success','🗑️ Deleted.');renderDyk();updateBadge();}
+  catch(e){dykData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
+// ════════════ SPOTLIGHT ════════════
+function renderSpotlights(){
+  const el=document.getElementById('spotlightList'); if(!el) return;
+  if(!spotlightData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No spotlights yet.</p></div>';return;}
+  el.innerHTML='<div class="news-list">'+spotlightData.map((item,i)=>`
+    <div class="news-item">
+      <div class="item-num">${i+1}</div>
+      <div class="item-body">
+        <div class="item-title">${item.title}</div>
+        <div class="item-meta"><span class="item-cat" style="background:#fef9c3;color:#854d0e">${item.category||'Spotlight'}</span>${item.date||''}</div>
+        <div class="item-preview">${(item.summary||'').slice(0,100)}…</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditSpotlight(${i})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteSpotlight(${i})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+async function addSpotlight(){
+  const title=document.getElementById('spAddTitle').value.trim(), category=document.getElementById('spAddCategory').value;
+  const date=document.getElementById('spAddDate').value.trim(), summary=document.getElementById('spAddSummary').value.trim();
+  const content=document.getElementById('spAddContent').value.trim(), image=document.getElementById('spAddImgB64').value;
+  if(!title||!category||!summary){showStatus('error','Fill in Title, Category and Summary.');return;}
+  const item={title,category,date,summary,content}; if(image) item.image=image;
+  spotlightData.unshift(item);
+  const btn=document.getElementById('addSpotlightBtn'); btn.disabled=true;
+  try{spotlightSha=await ghPush(SPOTLIGHT_FILE,spotlightSha,spotlightData,'Add spotlight: '+title);showStatus('success','🌟 Spotlight published!');clearSpotlightForm();renderSpotlights();updateBadge();switchTab('spotlight','list');}
+  catch(e){spotlightData.shift();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+function clearSpotlightForm(){
+  ['spAddTitle','spAddSummary','spAddContent'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('spAddCategory').value='';
+  document.getElementById('spAddDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  clearImg('spAddImgFile','spAddImgPreview','spAddImgClear','spAddImgB64');
+}
+function openEditSpotlight(idx){
+  const item=spotlightData[idx];
+  document.getElementById('editSpotlightIdx').value=idx;
+  document.getElementById('spETitle').value=item.title||''; document.getElementById('spECategory').value=item.category||'';
+  document.getElementById('spEDate').value=item.date||''; document.getElementById('spESummary').value=item.summary||'';
+  document.getElementById('spEContent').value=item.content||'';
+  if(item.image){document.getElementById('spEImgB64').value=item.image;const p=document.getElementById('spEImgPreview');p.src=item.image;p.classList.add('show');document.getElementById('spEImgClear').classList.add('show');}
+  else clearImg('spEImgFile','spEImgPreview','spEImgClear','spEImgB64');
+  openModal('editSpotlightModal');
+}
+async function saveEditSpotlight(){
+  const idx=parseInt(document.getElementById('editSpotlightIdx').value);
+  const title=document.getElementById('spETitle').value.trim(), category=document.getElementById('spECategory').value;
+  const date=document.getElementById('spEDate').value.trim(), summary=document.getElementById('spESummary').value.trim();
+  const content=document.getElementById('spEContent').value.trim(), image=document.getElementById('spEImgB64').value||(spotlightData[idx]||{}).image||'';
+  if(!title||!category||!summary){showStatus('error','Title, Category and Summary are required.');return;}
+  const old={...spotlightData[idx]};
+  spotlightData[idx]={title,category,date,summary,content}; if(image) spotlightData[idx].image=image;
+  const btn=document.getElementById('saveSpotlightBtn'); btn.disabled=true;
+  try{spotlightSha=await ghPush(SPOTLIGHT_FILE,spotlightSha,spotlightData,'Edit spotlight: '+title);showStatus('success','✅ Spotlight updated!');closeModal('editSpotlightModal');renderSpotlights();}
+  catch(e){spotlightData[idx]=old;showStatus('error',e.message);}
+  btn.disabled=false;
+}
+async function deleteSpotlight(idx){
+  if(!confirm(`Delete "${spotlightData[idx].title}"?`)) return;
+  const removed=spotlightData.splice(idx,1);
+  try{spotlightSha=await ghPush(SPOTLIGHT_FILE,spotlightSha,spotlightData,'Delete spotlight: '+removed[0].title);showStatus('success','🗑️ Deleted.');renderSpotlights();updateBadge();}
+  catch(e){spotlightData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
+// ════════════ REVIEWS ════════════
+function renderReviews(){
+  const el=document.getElementById('reviewsList'); if(!el) return;
+  if(!reviewsData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No reviews yet.</p></div>';return;}
+  const stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
+  el.innerHTML='<div class="news-list">'+reviewsData.map((r,i)=>`
+    <div class="news-item">
+      <div class="item-num">${i+1}</div>
+      <div class="item-body">
+        <div class="item-title">${r.name} — ${stars(r.stars||5)}</div>
+        <div class="item-meta">${r.location||''}</div>
+        <div class="item-preview">${r.message}</div>
+        <div class="item-actions"><button class="btn btn-danger btn-sm" onclick="deleteReview(${i})">🗑 Delete</button></div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+async function addReview(){
+  const name=document.getElementById('rAddName').value.trim(), location=document.getElementById('rAddLocation').value.trim();
+  const stars=parseInt(document.getElementById('rAddStars').value), message=document.getElementById('rAddMessage').value.trim();
+  if(!name||!message){showStatus('error','Name and Message are required.');return;}
+  reviewsData.push({name,location,stars,message});
+  const btn=document.getElementById('addReviewBtn'); btn.disabled=true;
+  try{reviewsSha=await ghPush(REVIEWS_FILE,reviewsSha,reviewsData,'Add review: '+name);showStatus('success','⭐ Review added to homepage!');clearReviewForm();renderReviews();}
+  catch(e){reviewsData.pop();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+function clearReviewForm(){
+  ['rAddName','rAddLocation','rAddMessage'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('rAddStars').value='5';
+}
+async function deleteReview(idx){
+  if(!confirm('Delete this review?')) return;
+  const removed=reviewsData.splice(idx,1);
+  try{reviewsSha=await ghPush(REVIEWS_FILE,reviewsSha,reviewsData,'Delete review');showStatus('success','🗑️ Review deleted.');renderReviews();}
+  catch(e){reviewsData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
+// ════════════ Q&A ════════════
+function renderQA(){
+  const el=document.getElementById('qaAdminList'); if(!el) return;
+  if(!qaData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No Q&As yet.</p></div>';return;}
+  el.innerHTML='<div class="news-list">'+qaData.map((qa,i)=>`
+    <div class="news-item">
+      <div class="item-num">${i+1}</div>
+      <div class="item-body">
+        <div class="item-title">❓ ${qa.question}</div>
+        <div class="item-preview">✅ ${(qa.answer||'').slice(0,100)}…</div>
+        <div class="item-actions"><button class="btn btn-danger btn-sm" onclick="deleteQA(${i})">🗑 Delete</button></div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+async function addQA(){
+  const question=document.getElementById('qaAddQ').value.trim(), answer=document.getElementById('qaAddA').value.trim();
+  if(!question||!answer){showStatus('error','Both question and answer are required.');return;}
+  qaData.unshift({question,answer});
+  const btn=document.getElementById('addQABtn'); btn.disabled=true;
+  try{qaSha=await ghPush(QA_FILE,qaSha,qaData,'Add Q&A');showStatus('success','✅ Q&A published!');document.getElementById('qaAddQ').value='';document.getElementById('qaAddA').value='';renderQA();switchTab('qa','list');}
+  catch(e){qaData.shift();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+async function deleteQA(idx){
+  if(!confirm('Delete this Q&A?')) return;
+  const removed=qaData.splice(idx,1);
+  try{qaSha=await ghPush(QA_FILE,qaSha,qaData,'Delete Q&A');showStatus('success','🗑️ Deleted.');renderQA();}
+  catch(e){qaData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
+// ════════════ CALENDAR ════════════
+const CAL_BADGE_LABELS={jamb:'JAMB',exam:'Exam',admission:'Admission',school:'School',scholarship:'Scholarship'};
+function renderCalendar(){
+  const el=document.getElementById('calList'); if(!el) return;
+  if(!calData.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No events yet.</p></div>';return;}
+  const sorted=[...calData].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  el.innerHTML='<div class="news-list">'+sorted.map(item=>{
+    const idx=calData.indexOf(item), d=new Date(item.date);
+    const month=d.toLocaleString('en-US',{month:'short'}), day=d.getDate();
+    return `<div class="news-item">
+      <div style="background:${item.color||'#1a3fa8'};color:white;border-radius:8px;min-width:44px;padding:8px 4px;text-align:center;flex-shrink:0;">
+        <div style="font-size:0.58rem;font-weight:700;text-transform:uppercase;opacity:0.85;">${month}</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:1.3rem;font-weight:800;line-height:1;">${day}</div>
+      </div>
+      <div class="item-body">
+        <div class="item-title">${item.title}</div>
+        <div class="item-meta"><span class="item-cat">${CAL_BADGE_LABELS[item.category]||item.category||'Event'}</span>${item.date||''}</div>
+        <div class="item-preview">${(item.description||'').slice(0,100)}</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditCal(${idx})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteCal(${idx})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+async function addCalEvent(){
+  const title=document.getElementById('calAddTitle').value.trim(), category=document.getElementById('calAddCategory').value;
+  const date=document.getElementById('calAddDate').value, color=document.getElementById('calAddColor').value;
+  const description=document.getElementById('calAddDesc').value.trim();
+  if(!title||!category||!date||!description){showStatus('error','All fields are required.');return;}
+  calData.push({title,category,date,color,description});
+  const btn=document.getElementById('addCalBtn'); btn.disabled=true;
+  try{calSha=await ghPush(CAL_FILE,calSha,calData,'Add calendar: '+title);showStatus('success','📅 Calendar event added!');clearCalForm();renderCalendar();switchTab('cal','list');}
+  catch(e){calData.pop();showStatus('error',e.message);}
+  btn.disabled=false;
+}
+function clearCalForm(){
+  ['calAddTitle','calAddDesc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('calAddCategory').value=''; document.getElementById('calAddDate').value='';
+  document.getElementById('calAddColor').value='#1a3fa8';
+}
+function openEditCal(idx){
+  const item=calData[idx];
+  document.getElementById('editCalIdx').value=idx;
+  document.getElementById('calETitle').value=item.title||''; document.getElementById('calECategory').value=item.category||'';
+  document.getElementById('calEDate').value=item.date||''; document.getElementById('calEColor').value=item.color||'#1a3fa8';
+  document.getElementById('calEDesc').value=item.description||'';
+  openModal('editCalModal');
+}
+async function saveEditCal(){
+  const idx=parseInt(document.getElementById('editCalIdx').value);
+  const title=document.getElementById('calETitle').value.trim(), category=document.getElementById('calECategory').value;
+  const date=document.getElementById('calEDate').value, color=document.getElementById('calEColor').value;
+  const description=document.getElementById('calEDesc').value.trim();
+  if(!title||!category||!date||!description){showStatus('error','All fields required.');return;}
+  const old={...calData[idx]};
+  calData[idx]={title,category,date,color,description};
+  const btn=document.getElementById('saveCalBtn'); btn.disabled=true;
+  try{calSha=await ghPush(CAL_FILE,calSha,calData,'Edit calendar: '+title);showStatus('success','✅ Event updated!');closeModal('editCalModal');renderCalendar();}
+  catch(e){calData[idx]=old;showStatus('error',e.message);}
+  btn.disabled=false;
+}
+async function deleteCal(idx){
+  if(!confirm(`Delete "${calData[idx].title}"?`)) return;
+  const removed=calData.splice(idx,1);
+  try{calSha=await ghPush(CAL_FILE,calSha,calData,'Delete calendar: '+removed[0].title);showStatus('success','🗑️ Event deleted.');renderCalendar();}
+  catch(e){calData.splice(idx,0,removed[0]);showStatus('error',e.message);}
+}
+
+// ════════════ INIT ════════════
+function init(){
+  const today=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  ['addDate','dAddDate','spAddDate'].forEach(id=>{const el=document.getElementById(id);if(el) el.value=today;});
+  if(document.getElementById('addAuthor')) document.getElementById('addAuthor').value='BIG QUAMS MEDIA';
+  if(ghToken) loadAll();
+}
+if(sessionStorage.getItem('bqm_auth')==='1') init();
+</script>
+
+<!-- EDIT REVIEW MODAL -->
+<div class="modal-overlay" id="editReviewModal" onclick="handleOverlay(event,'editReviewModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Review</h3><button class="modal-close" onclick="closeModal('editReviewModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editRevIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Student Name *</label><input type="text" id="eRevName"></div>
+        <div class="form-group"><label>Location</label><input type="text" id="eRevLocation"></div>
+      </div>
+      <div class="form-group"><label>Star Rating *</label>
+        <select id="eRevStars">
+          <option value="5">★★★★★ (5 stars)</option>
+          <option value="4">★★★★☆ (4 stars)</option>
+          <option value="3">★★★☆☆ (3 stars)</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Message *</label>
+        <textarea id="eRevMessage" style="min-height:90px;"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveEditReview()" id="saveRevBtn">Save Changes</button>
+        <button class="btn btn-ghost" onclick="closeModal('editReviewModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
