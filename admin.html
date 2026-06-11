@@ -1013,11 +1013,12 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     <div class="admin-section" id="section-cbt">
       <div class="section-header">
         <h2 class="section-title-h2">🎯 JAMB CBT Practice</h2>
-        <button class="btn btn-success btn-sm" onclick="switchTab('cbt','add')">+ Add Question</button>
+        <button class="btn btn-success btn-sm" onclick="switchTab('cbt','bulk')">📂 Bulk Upload</button>
       </div>
       <div class="admin-tabs">
         <button class="admin-tab active" onclick="switchTab('cbt','list')">All Questions</button>
         <button class="admin-tab" onclick="switchTab('cbt','add')">Add Question</button>
+        <button class="admin-tab" onclick="switchTab('cbt','bulk')">📂 Bulk Upload CSV</button>
       </div>
       <div id="cbt-list">
         <div class="section-card">
@@ -1088,6 +1089,116 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           </div>
         </div>
       </div>
+
+      <!-- BULK UPLOAD PANEL -->
+      <div id="cbt-bulk" style="display:none">
+        <div class="section-card">
+          <div class="card-title">📂 Bulk Upload Questions via CSV</div>
+          <div class="nelfund-highlight">
+            <h4>ℹ️ How Bulk Upload works</h4>
+            <p>Prepare your questions in a CSV file using the correct format, then upload here. All valid rows are saved to Firebase at once. Invalid rows are skipped and shown in the error log.</p>
+          </div>
+
+          <!-- CSV Format Guide -->
+          <div style="background:var(--light);border-radius:10px;padding:16px;margin-bottom:16px">
+            <div style="font-family:'Montserrat',sans-serif;font-size:0.82rem;font-weight:800;color:var(--blue-dk);margin-bottom:10px">📋 Required CSV Column Order</div>
+            <div style="overflow-x:auto">
+              <table style="width:100%;border-collapse:collapse;font-size:0.76rem">
+                <thead>
+                  <tr style="background:var(--blue);color:#fff">
+                    <th style="padding:7px 10px;text-align:left">Column</th>
+                    <th style="padding:7px 10px;text-align:left">Field</th>
+                    <th style="padding:7px 10px;text-align:left">Required</th>
+                    <th style="padding:7px 10px;text-align:left">Example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 10px">1</td><td style="padding:6px 10px;font-weight:700">subject</td><td style="padding:6px 10px;color:#16a34a">✅ Yes</td><td style="padding:6px 10px;color:var(--muted)">english, maths, physics…</td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 10px">2</td><td style="padding:6px 10px;font-weight:700">question</td><td style="padding:6px 10px;color:#16a34a">✅ Yes</td><td style="padding:6px 10px;color:var(--muted)">Which of these is correct?</td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 10px">3</td><td style="padding:6px 10px;font-weight:700">optA</td><td style="padding:6px 10px;color:#16a34a">✅ Yes</td><td style="padding:6px 10px;color:var(--muted)">Option A text</td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 10px">4</td><td style="padding:6px 10px;font-weight:700">optB</td><td style="padding:6px 10px;color:#16a34a">✅ Yes</td><td style="padding:6px 10px;color:var(--muted)">Option B text</td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 10px">5</td><td style="padding:6px 10px;font-weight:700">optC</td><td style="padding:6px 10px;color:#16a34a">✅ Yes</td><td style="padding:6px 10px;color:var(--muted)">Option C text</td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 10px">6</td><td style="padding:6px 10px;font-weight:700">optD</td><td style="padding:6px 10px;color:#16a34a">✅ Yes</td><td style="padding:6px 10px;color:var(--muted)">Option D text</td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 10px">7</td><td style="padding:6px 10px;font-weight:700">answer</td><td style="padding:6px 10px;color:#16a34a">✅ Yes</td><td style="padding:6px 10px;color:var(--muted)">A, B, C or D</td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 10px">8</td><td style="padding:6px 10px;font-weight:700">difficulty</td><td style="padding:6px 10px;color:#f59e0b">⚠️ Optional</td><td style="padding:6px 10px;color:var(--muted)">easy, medium or hard</td></tr>
+                  <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 10px">9</td><td style="padding:6px 10px;font-weight:700">year</td><td style="padding:6px 10px;color:#f59e0b">⚠️ Optional</td><td style="padding:6px 10px;color:var(--muted)">2022</td></tr>
+                  <tr><td style="padding:6px 10px">10</td><td style="padding:6px 10px;font-weight:700">explanation</td><td style="padding:6px 10px;color:#f59e0b">⚠️ Optional</td><td style="padding:6px 10px;color:var(--muted)">Why this answer is correct</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Subject codes -->
+          <div style="background:var(--light);border-radius:10px;padding:14px;margin-bottom:16px">
+            <div style="font-family:'Montserrat',sans-serif;font-size:0.78rem;font-weight:800;color:var(--blue-dk);margin-bottom:8px">📚 Valid Subject Codes</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:0.72rem">
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">english</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">maths</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">physics</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">chemistry</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">biology</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">economics</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">gov</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">literature</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">geography</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">agric</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">crk</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">accounts</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">commerce</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">history</span>
+              <span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-weight:700">ict</span>
+            </div>
+          </div>
+
+          <!-- Download template button -->
+          <div style="margin-bottom:20px">
+            <button class="btn btn-outline" onclick="downloadCSVTemplate()" style="display:inline-flex;align-items:center;gap:7px">
+              📥 Download CSV Template
+            </button>
+            <span style="font-size:0.72rem;color:var(--muted);margin-left:10px">Fill this in Excel, Google Sheets or any text editor</span>
+          </div>
+
+          <!-- File Upload -->
+          <div class="form-group">
+            <label>Upload CSV File *</label>
+            <div style="border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;background:var(--light);cursor:pointer;position:relative;transition:.2s" id="csvDropZone" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border)'">
+              <input type="file" id="csvFileInput" accept=".csv,.txt" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%" onchange="handleCSVFile(this)">
+              <div style="font-size:2rem;margin-bottom:8px">📂</div>
+              <div style="font-family:'Montserrat',sans-serif;font-size:0.84rem;font-weight:700;color:var(--text)">Tap to select CSV file</div>
+              <div style="font-size:0.72rem;color:var(--muted);margin-top:4px">Supports .csv files — max 5MB</div>
+            </div>
+          </div>
+
+          <!-- Preview table -->
+          <div id="csvPreviewWrap" style="display:none;margin-bottom:16px">
+            <div style="font-family:'Montserrat',sans-serif;font-size:0.84rem;font-weight:800;color:var(--text);margin-bottom:10px">
+              📋 Preview — <span id="csvValidCount" style="color:#16a34a">0 valid</span> · <span id="csvInvalidCount" style="color:#dc2626">0 invalid</span>
+            </div>
+            <div style="overflow-x:auto;max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+              <table style="width:100%;border-collapse:collapse;font-size:0.74rem" id="csvPreviewTable"></table>
+            </div>
+          </div>
+
+          <!-- Error log -->
+          <div id="csvErrorLog" style="display:none;background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:12px;margin-bottom:16px;font-size:0.76rem;color:#b91c1c;max-height:150px;overflow-y:auto"></div>
+
+          <!-- Upload progress -->
+          <div id="bulkProgressWrap" style="display:none;margin-bottom:16px">
+            <div style="font-size:0.78rem;font-weight:700;color:var(--text);margin-bottom:6px" id="bulkProgressLabel">Uploading 0 of 0…</div>
+            <div style="background:var(--border);border-radius:20px;height:10px;overflow:hidden">
+              <div id="bulkProgressBar" style="height:100%;background:linear-gradient(90deg,var(--blue),#10b981);border-radius:20px;width:0%;transition:width .3s"></div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-success" id="bulkUploadBtn" onclick="startBulkUpload()" disabled style="opacity:.5">
+              🚀 Upload All Questions to Firebase
+            </button>
+            <button class="btn btn-ghost" onclick="clearBulkUpload()">Clear</button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ══ POST-UTME CALCULATOR ══ -->
@@ -2179,7 +2290,8 @@ function switchTab(sec,tab){
   if(sec==='cbt'){
     document.getElementById('cbt-list').style.display=tab==='list'?'block':'none';
     document.getElementById('cbt-add').style.display=tab==='add'?'block':'none';
-    secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')));
+    const bulkEl=document.getElementById('cbt-bulk');if(bulkEl) bulkEl.style.display=tab==='bulk'?'block':'none';
+    secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')||(i===2&&tab==='bulk')));
     return;
   }
   secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')||(i===2&&tab==='settings')));
@@ -3391,6 +3503,191 @@ async function saveSocialsConfig(){
   }catch(e){ showStatus('error','❌ '+e.message); }
 }
 window.saveSocialsConfig=saveSocialsConfig;
+
+
+// ════════════════════════════════════
+// ══ BULK CSV UPLOAD ══
+// ════════════════════════════════════
+const VALID_SUBJECTS=['english','maths','physics','chemistry','biology','economics','gov','literature','geography','agric','crk','accounts','commerce','history','ict'];
+const ANS_MAP={A:0,B:1,C:2,D:3,a:0,b:1,c:2,d:3};
+const DIFF_VALID=['easy','medium','hard'];
+
+let csvParsed=[];
+
+function downloadCSVTemplate(){
+  const rows=[
+    ['subject','question','optA','optB','optC','optD','answer','difficulty','year','explanation'],
+    ['english','Which of the following sentences is grammatically correct?','He go to school','He goes to school','He gone to school','He going to school','B','easy','2022','Subject-verb agreement requires "goes" for third person singular'],
+    ['maths','What is the value of x if 2x + 4 = 10?','2','3','4','5','B','easy','2021','2x = 10 - 4 = 6, therefore x = 3'],
+    ['physics','Which of the following is a scalar quantity?','Velocity','Force','Speed','Acceleration','C','medium','2023','Speed has magnitude only (no direction), making it a scalar quantity'],
+    ['chemistry','What is the atomic number of Carbon?','4','6','8','12','B','easy','2022','Carbon has 6 protons in its nucleus, giving it an atomic number of 6'],
+    ['biology','Photosynthesis takes place in which part of the plant cell?','Mitochondria','Nucleus','Chloroplast','Ribosome','C','medium','2022','Chloroplasts contain chlorophyll which captures sunlight for photosynthesis'],
+    ['economics','Which of the following is an example of a free good?','Rice','Water from a tap','Sunlight','Electricity','C','easy','2021','Free goods are available in unlimited supply without cost — like sunlight'],
+  ];
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='BQM_CBT_Questions_Template.csv';a.click();
+  URL.revokeObjectURL(url);
+  showStatus('success','📥 Template downloaded! Fill it in and upload back here.');
+}
+window.downloadCSVTemplate=downloadCSVTemplate;
+
+function handleCSVFile(input){
+  const file=input.files[0];
+  if(!file){return;}
+  if(file.size>5*1024*1024){showStatus('error','File too large — max 5MB.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const text=e.target.result;
+    parseCSV(text);
+  };
+  reader.readAsText(file);
+}
+window.handleCSVFile=handleCSVFile;
+
+function parseCSV(text){
+  const lines=text.split(/\r?\n/).filter(l=>l.trim());
+  if(lines.length<2){showStatus('error','CSV file is empty or has only headers.');return;}
+  // Detect separator
+  const sep=lines[0].includes('\t')?'\t':',';
+  const headers=splitCSVLine(lines[0],sep).map(h=>h.trim().toLowerCase().replace(/[^a-z]/g,''));
+  const rows=lines.slice(1);
+  const valid=[],invalid=[];
+  const errors=[];
+
+  rows.forEach((line,i)=>{
+    if(!line.trim()) return;
+    const cols=splitCSVLine(line,sep);
+    // Support both header-based and positional
+    const get=(name,pos)=>{
+      const idx=headers.indexOf(name);
+      return (idx>-1?cols[idx]:cols[pos]||'').trim().replace(/^"|"$/g,'');
+    };
+    const subject=(get('subject',0)||'').toLowerCase().trim();
+    const question=get('question',1)||'';
+    const optA=get('opta',2)||'';
+    const optB=get('optb',3)||'';
+    const optC=get('optc',4)||'';
+    const optD=get('optd',5)||'';
+    const ansRaw=(get('answer',6)||'').trim().toUpperCase();
+    const difficulty=(get('difficulty',7)||'medium').toLowerCase().trim();
+    const year=get('year',8)||'';
+    const explanation=get('explanation',9)||'';
+
+    const rowErrors=[];
+    if(!VALID_SUBJECTS.includes(subject)) rowErrors.push('Invalid subject: "'+subject+'"');
+    if(!question) rowErrors.push('Question is empty');
+    if(!optA||!optB||!optC||!optD) rowErrors.push('One or more options are empty');
+    if(ANS_MAP[ansRaw]===undefined) rowErrors.push('Answer must be A, B, C or D (got: "'+ansRaw+'")')
+    if(rowErrors.length){
+      invalid.push({row:i+2,errors:rowErrors,line:line.slice(0,80)});
+      errors.push('Row '+(i+2)+': '+rowErrors.join('; '));
+    } else {
+      valid.push({subject,q:question,opts:[optA,optB,optC,optD],ans:ANS_MAP[ansRaw],difficulty:DIFF_VALID.includes(difficulty)?difficulty:'medium',year,exp:explanation});
+    }
+  });
+
+  csvParsed=valid;
+  renderCSVPreview(valid,invalid,errors);
+}
+
+function splitCSVLine(line,sep){
+  if(sep!==',') return line.split(sep).map(c=>c.replace(/^"|"$/g,'').replace(/""/g,'"'));
+  const result=[];let cur='',inQ=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"'&&!inQ){inQ=true;}
+    else if(c==='"'&&inQ&&line[i+1]==='"'){cur+='"';i++;}
+    else if(c==='"'&&inQ){inQ=false;}
+    else if(c===','&&!inQ){result.push(cur);cur='';}
+    else cur+=c;
+  }
+  result.push(cur);
+  return result;
+}
+
+function renderCSVPreview(valid,invalid,errors){
+  const wrap=document.getElementById('csvPreviewWrap');
+  const errLog=document.getElementById('csvErrorLog');
+  const btn=document.getElementById('bulkUploadBtn');
+
+  document.getElementById('csvValidCount').textContent=valid.length+' valid';
+  document.getElementById('csvInvalidCount').textContent=invalid.length+' invalid';
+
+  if(valid.length){
+    const SUBJ_LABELS={english:'English',maths:'Maths',physics:'Physics',chemistry:'Chemistry',biology:'Biology',economics:'Economics',gov:'Government',literature:'Literature',geography:'Geography',agric:'Agriculture',crk:'CRK',accounts:'Accounting',commerce:'Commerce',history:'History',ict:'ICT'};
+    const headers=['#','Subject','Question','Options','Answer','Difficulty','Year'];
+    const rows=valid.slice(0,20).map((q,i)=>`
+      <tr style="border-bottom:1px solid var(--border);${i%2===0?'background:var(--light)':''}">
+        <td style="padding:6px 8px;font-size:0.7rem;color:var(--muted)">${i+1}</td>
+        <td style="padding:6px 8px"><span style="background:#dbeafe;color:#1d4ed8;font-size:0.64rem;font-weight:700;padding:2px 7px;border-radius:20px">${SUBJ_LABELS[q.subject]||q.subject}</span></td>
+        <td style="padding:6px 8px;font-size:0.76rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${q.q}</td>
+        <td style="padding:6px 8px;font-size:0.7rem;color:var(--muted)">A/B/C/D</td>
+        <td style="padding:6px 8px"><span style="background:#dcfce7;color:#15803d;font-size:0.7rem;font-weight:800;padding:2px 8px;border-radius:20px">${['A','B','C','D'][q.ans]}</span></td>
+        <td style="padding:6px 8px;font-size:0.7rem;text-transform:capitalize">${q.difficulty}</td>
+        <td style="padding:6px 8px;font-size:0.7rem;color:var(--muted)">${q.year||'—'}</td>
+      </tr>`).join('');
+    document.getElementById('csvPreviewTable').innerHTML=`
+      <thead><tr style="background:var(--blue);color:#fff">${headers.map(h=>`<th style="padding:7px 8px;text-align:left;font-size:0.72rem">${h}</th>`).join('')}</tr></thead>
+      <tbody>${rows}${valid.length>20?`<tr><td colspan="7" style="padding:8px;text-align:center;font-size:0.72rem;color:var(--muted)">… and ${valid.length-20} more questions</td></tr>`:''}</tbody>`;
+    wrap.style.display='block';
+    btn.disabled=false;
+    btn.style.opacity='1';
+    btn.textContent=`🚀 Upload ${valid.length} Question${valid.length>1?'s':''} to Firebase`;
+  } else {
+    wrap.style.display='none';
+    btn.disabled=true;btn.style.opacity='.5';
+  }
+
+  if(errors.length){
+    errLog.style.display='block';
+    errLog.innerHTML='<strong>⚠️ '+errors.length+' row'+( errors.length>1?'s':'')+' skipped:</strong><br>'+errors.map(e=>'• '+e).join('<br>');
+  } else { errLog.style.display='none'; }
+}
+
+async function startBulkUpload(){
+  if(!csvParsed.length){showStatus('error','No valid questions to upload.');return;}
+  if(!window.db){showStatus('error','Firebase not ready. Please refresh.');return;}
+  const btn=document.getElementById('bulkUploadBtn');
+  btn.disabled=true;btn.textContent='Uploading…';
+  const progressWrap=document.getElementById('bulkProgressWrap');
+  const progressBar=document.getElementById('bulkProgressBar');
+  const progressLabel=document.getElementById('bulkProgressLabel');
+  progressWrap.style.display='block';
+  const total=csvParsed.length;
+  let done=0,failed=0;
+  for(const q of csvParsed){
+    try{
+      await window.addDoc(window.collection(window.db,'cbt_questions'),{...q,createdAt:window.serverTimestamp()});
+      done++;
+    }catch(e){failed++;console.warn('Failed row:',e.message);}
+    const pct=Math.round((done+failed)/total*100);
+    progressBar.style.width=pct+'%';
+    progressLabel.textContent=`Uploading ${done+failed} of ${total}… (${done} saved${failed?' · '+failed+' failed':''})`;
+  }
+  // Refresh CBT list
+  await loadCBTQuestions();
+  progressLabel.textContent=`✅ Done! ${done} question${done>1?'s':''} uploaded${failed?' · '+failed+' failed':''}`;
+  progressBar.style.background=failed?'linear-gradient(90deg,#10b981,#f59e0b)':'linear-gradient(90deg,#10b981,#059669)';
+  showStatus('success',`🎉 ${done} question${done>1?'s':''} uploaded to Firebase!${failed?' '+failed+' rows failed — check CSV.':''}`);
+  btn.textContent=`✅ ${done} Uploaded`;
+  csvParsed=[];
+}
+window.startBulkUpload=startBulkUpload;
+
+function clearBulkUpload(){
+  csvParsed=[];
+  document.getElementById('csvFileInput').value='';
+  document.getElementById('csvPreviewWrap').style.display='none';
+  document.getElementById('csvErrorLog').style.display='none';
+  document.getElementById('bulkProgressWrap').style.display='none';
+  document.getElementById('bulkProgressBar').style.width='0%';
+  const btn=document.getElementById('bulkUploadBtn');
+  btn.disabled=true;btn.style.opacity='.5';btn.textContent='🚀 Upload All Questions to Firebase';
+}
+window.clearBulkUpload=clearBulkUpload;
 
 </script>
 </body>
