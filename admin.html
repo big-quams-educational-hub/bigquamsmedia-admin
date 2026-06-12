@@ -43,8 +43,37 @@ body.dark .stat-card{background:#1e293b;border-color:#334155}
 
 /* ─── LOGIN ─── */
 #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#080f20 0%,#102880 50%,#1d4ed8 100%)}
-.login-card{background:white;border-radius:20px;padding:28px 22px;width:100%;max-width:400px;box-shadow:0 40px 100px rgba(0,0,0,0.35)}
-@media(min-width:480px){.login-card{padding:40px 32px}}
+.login-card{background:white;border-radius:20px;padding:28px 22px;width:100%;max-width:420px;box-shadow:0 40px 100px rgba(0,0,0,0.35)}
+@media(min-width:480px){.login-card{padding:36px 32px}}
+body.dark .login-card{background:#1e293b}
+.login-step{display:none}
+.login-step.active{display:block}
+.login-tabs{display:flex;gap:0;margin-bottom:22px;border-radius:10px;overflow:hidden;border:1.5px solid var(--border)}
+.login-tab-btn{flex:1;padding:10px;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;border:none;cursor:pointer;background:var(--surface-alt);color:var(--text-muted);transition:.2s}
+.login-tab-btn.active{background:var(--blue-main);color:#fff}
+body.dark .login-tab-btn{background:#1a2236;color:#94a3b8}
+body.dark .login-tab-btn.active{background:var(--blue-main);color:#fff}
+.login-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--text-muted);font-size:.72rem}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.google-login-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.88rem;color:#1e2749;cursor:pointer;transition:.2s;margin-bottom:12px}
+body.dark .google-login-btn{background:#1a2236;border-color:#334155;color:#e2e8f0}
+.google-login-btn:hover{border-color:#4285F4;box-shadow:0 2px 12px rgba(66,133,244,.2)}
+.step-indicator{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+.step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0;border:2px solid var(--border);color:var(--text-muted);background:var(--surface-alt)}
+body.dark .step-dot{background:#1a2236;border-color:#334155}
+.step-dot.done{background:var(--green);border-color:var(--green);color:#fff}
+.step-dot.active{background:var(--blue-main);border-color:var(--blue-main);color:#fff}
+.step-line{flex:1;height:2px;background:var(--border);border-radius:2px}
+.step-line.done{background:var(--green)}
+.admin-badge{display:inline-flex;align-items:center;gap:8px;background:#dbeafe;border:1px solid #bfdbfe;border-radius:10px;padding:10px 14px;margin-bottom:16px;width:100%}
+body.dark .admin-badge{background:#1e3a5f;border-color:#1d4ed8}
+.admin-badge img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--blue-main)}
+.admin-badge-name{font-family:'Montserrat',sans-serif;font-size:.84rem;font-weight:800;color:var(--blue-dk)}
+body.dark .admin-badge-name{color:#93c5fd}
+.admin-badge-email{font-size:.68rem;color:var(--text-muted)}
+.pin-hint{font-size:.68rem;color:var(--text-muted);margin-top:4px;line-height:1.5}
+.back-btn{background:none;border:none;color:var(--text-muted);font-size:.78rem;cursor:pointer;display:flex;align-items:center;gap:4px;margin-bottom:16px;padding:0;font-family:'Roboto',sans-serif}
+.back-btn:hover{color:var(--blue-main)}
 .login-logo{width:80px;height:80px;border-radius:50%;border:3px solid var(--orange);margin:0 auto 20px;overflow:hidden}
 .login-logo img{width:100%;height:100%;object-fit:cover}
 .login-card h2{font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;color:var(--blue-dk);margin-bottom:4px;text-align:center}
@@ -333,15 +362,73 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- ══════════════ LOGIN ══════════════ -->
 <div id="loginScreen">
   <div class="login-card">
-    <div class="login-logo"><img src="https://i.imgur.com/lYJXUyY.jpeg" alt="BQM Logo"></div>
+    <div class="login-logo"><img src="https://big-quams-educational-hub.github.io/file_000000000370724698997662ddbee6b5.png" alt="BQM Logo"></div>
     <h2>BIG QUAMS MEDIA®</h2>
-    <p class="login-sub">Admin Panel — Authorised Access Only<br><span style="color:#dc2626;font-weight:700">🔒 Restricted</span></p>
-    <label class="login-field-label">Username</label>
-    <input class="login-input" type="text" id="loginUser" placeholder="e.g. bigquams" autocomplete="username" onkeydown="if(event.key==='Enter') document.getElementById('loginPass').focus()">
-    <label class="login-field-label">Password (GitHub Token)</label>
-    <input class="login-input" type="password" id="loginPass" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()">
-    <button class="login-btn" onclick="doLogin()">Sign In →</button>
-    <div class="login-error" id="loginError">❌ Invalid username or password.</div>
+    <p class="login-sub">Admin Panel — Authorised Team Members Only<br><span style="color:#dc2626;font-weight:700">🔒 Restricted Access</span></p>
+
+    <!-- STEP INDICATOR -->
+    <div class="step-indicator" id="stepIndicator">
+      <div class="step-dot active" id="sdot1">1</div>
+      <div class="step-line" id="sline1"></div>
+      <div class="step-dot" id="sdot2">2</div>
+    </div>
+
+    <!-- STEP 1: Firebase Auth -->
+    <div class="login-step active" id="loginStep1">
+      <!-- AUTH TABS -->
+      <div class="login-tabs">
+        <button class="login-tab-btn active" onclick="switchAuthTab('signin',this)">Sign In</button>
+        <button class="login-tab-btn" onclick="switchAuthTab('register',this)">Create Account</button>
+      </div>
+
+      <!-- GOOGLE SIGN IN -->
+      <button class="google-login-btn" onclick="signInWithGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.1 0 5.8 1.1 8 2.9l6-6C34.5 3.1 29.6 1 24 1 14.8 1 7 6.7 3.7 14.6l7 5.4C12.5 13.8 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.4c-.5 2.8-2.1 5.2-4.5 6.8l7 5.4C43.1 36.8 46.1 31.1 46.1 24.5z"/><path fill="#FBBC05" d="M10.7 28.6c-.5-1.4-.8-2.9-.8-4.6s.3-3.2.8-4.6l-7-5.4C2.2 17.1 1 20.4 1 24s1.2 6.9 3.7 9.9l7-5.3z"/><path fill="#34A853" d="M24 47c5.6 0 10.4-1.9 13.8-5.1l-7-5.4c-1.9 1.3-4.2 2-6.8 2-6.2 0-11.5-4.3-13.3-10l-7 5.4C7 41.3 14.8 47 24 47z"/></svg>
+        Continue with Google
+      </button>
+      <div class="login-divider">or use email</div>
+
+      <!-- SIGN IN FORM -->
+      <div id="signinForm">
+        <label class="login-field-label">Email Address</label>
+        <input class="login-input" type="email" id="authEmail" placeholder="your@email.com" autocomplete="email" onkeydown="if(event.key==='Enter') document.getElementById('authPassword').focus()">
+        <label class="login-field-label">Password</label>
+        <input class="login-input" type="password" id="authPassword" placeholder="Enter your password" autocomplete="current-password" onkeydown="if(event.key==='Enter') signInWithEmail()">
+        <button class="login-btn" onclick="signInWithEmail()">Sign In →</button>
+        <button style="width:100%;background:none;border:none;color:var(--blue-main);font-size:.76rem;font-weight:700;margin-top:10px;cursor:pointer;padding:4px" onclick="forgotPassword()">Forgot password?</button>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="registerForm" style="display:none">
+        <label class="login-field-label">Full Name</label>
+        <input class="login-input" type="text" id="regName" placeholder="e.g. Abdulraheem" autocomplete="name">
+        <label class="login-field-label">Email Address</label>
+        <input class="login-input" type="email" id="regEmail" placeholder="your@email.com" autocomplete="email">
+        <label class="login-field-label">Password</label>
+        <input class="login-input" type="password" id="regPassword" placeholder="Min 6 characters" autocomplete="new-password">
+        <label class="login-field-label">Confirm Password</label>
+        <input class="login-input" type="password" id="regConfirm" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter') createAccount()">
+        <button class="login-btn" onclick="createAccount()">Create Account →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Team Access PIN -->
+    <div class="login-step" id="loginStep2">
+      <button class="back-btn" onclick="goBackToStep1()">← Back</button>
+      <div class="admin-badge" id="adminBadgeWrap">
+        <div style="width:36px;height:36px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">👤</div>
+        <div>
+          <div class="admin-badge-name" id="adminBadgeName">Loading…</div>
+          <div class="admin-badge-email" id="adminBadgeEmail"></div>
+        </div>
+      </div>
+      <label class="login-field-label">Team Access PIN (GitHub Token)</label>
+      <input class="login-input" type="password" id="teamPIN" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" onkeydown="if(event.key==='Enter') verifyTeamPIN()">
+      <div class="pin-hint">🔑 This is the GitHub personal access token shared with your team. Contact the site owner if you don't have it.</div>
+      <button class="login-btn" onclick="verifyTeamPIN()" style="margin-top:14px">Enter Admin Panel →</button>
+    </div>
+
+    <div class="login-error" id="loginError">❌ Error occurred.</div>
   </div>
 </div>
 
@@ -2029,6 +2116,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, sendPasswordResetEmail, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const fbConfig = {
   apiKey:'AIzaSyCRrp0cGK-hlBy8Ez8blesCsWn3FP7I-lQ',
@@ -2041,7 +2129,11 @@ const fbConfig = {
 };
 const app = initializeApp(fbConfig);
 const db  = getFirestore(app);
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
 window.db  = db;
+window.auth = auth;
+window.googleProvider = googleProvider;
 window.collection   = collection;
 window.getDocs      = getDocs;
 window.addDoc       = addDoc;
@@ -2051,6 +2143,12 @@ window.doc          = doc;
 window.serverTimestamp = serverTimestamp;
 window.query        = query;
 window.orderBy      = orderBy;
+window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+window.signInWithPopup = signInWithPopup;
+window.signOutFB = signOut;
+window.sendPasswordResetEmail = sendPasswordResetEmail;
+window.updateProfile = updateProfile;
 </script>
 
 <script>
@@ -2092,31 +2190,167 @@ const SUBJECT_LABELS = {
   commerce:'Commerce',agric:'Agricultural Science',ict:'ICT/Computer'
 };
 
-// ── AUTH ──
+// ── AUTH — Two-Step ──
 ghToken = sessionStorage.getItem('bqm_token') || '';
-function doLogin(){
-  const user  = document.getElementById('loginUser').value.trim();
-  const token = document.getElementById('loginPass').value.trim();
-  if(btoa(user) !== ADMIN_USER || !token.startsWith('ghp_')){
-    document.getElementById('loginError').style.display='block';
-    document.getElementById('loginPass').value='';
-    return;
-  }
-  ghToken = token;
-  sessionStorage.setItem('bqm_token', token);
-  sessionStorage.setItem('bqm_auth','1');
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('adminApp').style.display='block';
-  init();
+let firebaseUser = null;
+
+// ── Helper: show login error ──
+function showLoginError(msg){
+  const el=document.getElementById('loginError');
+  el.textContent='❌ '+msg; el.style.display='block';
+  setTimeout(()=>el.style.display='none',5000);
 }
-window.doLogin = doLogin;
-function doLogout(){ sessionStorage.clear(); location.reload(); }
-window.doLogout = doLogout;
-if(sessionStorage.getItem('bqm_auth')==='1' && sessionStorage.getItem('bqm_token')){
-  ghToken = sessionStorage.getItem('bqm_token');
+
+// ── Auth tab switch ──
+function switchAuthTab(tab, btn){
+  document.querySelectorAll('.login-tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('signinForm').style.display=tab==='signin'?'block':'none';
+  document.getElementById('registerForm').style.display=tab==='register'?'block':'none';
+  document.getElementById('loginError').style.display='none';
+}
+window.switchAuthTab=switchAuthTab;
+
+// ── Go to step 2 after Firebase auth ──
+function goToStep2(user){
+  firebaseUser=user;
+  document.getElementById('loginStep1').classList.remove('active');
+  document.getElementById('loginStep2').classList.add('active');
+  // Update step indicator
+  document.getElementById('sdot1').className='step-dot done';
+  document.getElementById('sdot1').textContent='✓';
+  document.getElementById('sline1').className='step-line done';
+  document.getElementById('sdot2').className='step-dot active';
+  // Show user info
+  document.getElementById('adminBadgeName').textContent=user.displayName||user.email.split('@')[0];
+  document.getElementById('adminBadgeEmail').textContent=user.email;
+  const badge=document.getElementById('adminBadgeWrap');
+  if(user.photoURL) badge.querySelector('div').innerHTML=`<img src="${user.photoURL}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--blue-main)">`;
+}
+
+function goBackToStep1(){
+  document.getElementById('loginStep2').classList.remove('active');
+  document.getElementById('loginStep1').classList.add('active');
+  document.getElementById('sdot1').className='step-dot active';
+  document.getElementById('sdot1').textContent='1';
+  document.getElementById('sline1').className='step-line';
+  document.getElementById('sdot2').className='step-dot';
+  document.getElementById('teamPIN').value='';
+  // Sign out of Firebase
+  if(window.auth&&window.signOutFB) window.signOutFB(window.auth).catch(()=>{});
+  firebaseUser=null;
+}
+window.goBackToStep1=goBackToStep1;
+
+// ── Sign in with email ──
+async function signInWithEmail(){
+  const email=document.getElementById('authEmail').value.trim();
+  const pass=document.getElementById('authPassword').value;
+  if(!email||!pass){showLoginError('Enter your email and password.');return;}
+  const btn=document.querySelector('#signinForm .login-btn');btn.disabled=true;btn.textContent='Signing in…';
+  try{
+    if(!window.auth) throw new Error('Auth not ready — wait a moment and try again.');
+    const cred=await window.signInWithEmailAndPassword(window.auth,email,pass);
+    goToStep2(cred.user);
+  }catch(e){
+    showLoginError(e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'?'Incorrect email or password.':e.code==='auth/user-not-found'?'No account found with this email.':e.code==='auth/too-many-requests'?'Too many attempts. Try again later.':e.message);
+  }
+  btn.disabled=false;btn.textContent='Sign In →';
+}
+window.signInWithEmail=signInWithEmail;
+
+// ── Create account ──
+async function createAccount(){
+  const name=document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pass=document.getElementById('regPassword').value;
+  const conf=document.getElementById('regConfirm').value;
+  if(!name||!email||!pass){showLoginError('Fill in all fields.');return;}
+  if(pass!==conf){showLoginError('Passwords do not match.');return;}
+  if(pass.length<6){showLoginError('Password must be at least 6 characters.');return;}
+  const btn=document.querySelector('#registerForm .login-btn');btn.disabled=true;btn.textContent='Creating account…';
+  try{
+    if(!window.auth) throw new Error('Auth not ready — wait a moment and try again.');
+    const cred=await window.createUserWithEmailAndPassword(window.auth,email,pass);
+    await window.updateProfile(cred.user,{displayName:name});
+    goToStep2(cred.user);
+  }catch(e){
+    showLoginError(e.code==='auth/email-already-in-use'?'An account with this email already exists.':e.code==='auth/weak-password'?'Password is too weak.':e.message);
+  }
+  btn.disabled=false;btn.textContent='Create Account →';
+}
+window.createAccount=createAccount;
+
+// ── Google sign in ──
+async function signInWithGoogle(){
+  try{
+    if(!window.auth||!window.googleProvider) throw new Error('Auth not ready.');
+    const cred=await window.signInWithPopup(window.auth,window.googleProvider);
+    goToStep2(cred.user);
+  }catch(e){
+    if(e.code!=='auth/popup-closed-by-user') showLoginError(e.message);
+  }
+}
+window.signInWithGoogle=signInWithGoogle;
+
+// ── Forgot password ──
+async function forgotPassword(){
+  const email=document.getElementById('authEmail').value.trim();
+  if(!email){showLoginError('Enter your email address first.');return;}
+  try{
+    await window.sendPasswordResetEmail(window.auth,email);
+    const el=document.getElementById('loginError');
+    el.textContent='✅ Password reset email sent to '+email;
+    el.style.color='#15803d';el.style.background='#dcfce7';el.style.borderColor='#bbf7d0';
+    el.style.display='block';
+    setTimeout(()=>{el.style.display='none';el.style.color='';el.style.background='';el.style.borderColor='';},6000);
+  }catch(e){showLoginError(e.message);}
+}
+window.forgotPassword=forgotPassword;
+
+// ── Step 2: Verify team PIN (GitHub token) ──
+async function verifyTeamPIN(){
+  const pin=document.getElementById('teamPIN').value.trim();
+  if(!pin.startsWith('ghp_')){showLoginError('Invalid team access PIN. Must start with ghp_');return;}
+  const btn=document.querySelector('#loginStep2 .login-btn');btn.disabled=true;btn.textContent='Verifying…';
+  // Verify token works by testing GitHub API
+  try{
+    const test=await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}`,{headers:{Authorization:'token '+pin,Accept:'application/vnd.github.v3+json'}});
+    if(!test.ok) throw new Error('Token rejected');
+    ghToken=pin;
+    sessionStorage.setItem('bqm_token',pin);
+    sessionStorage.setItem('bqm_auth','1');
+    sessionStorage.setItem('bqm_user',JSON.stringify({name:firebaseUser?.displayName||'Admin',email:firebaseUser?.email||'',photo:firebaseUser?.photoURL||''}));
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminApp').style.display='block';
+    // Update topbar with user info
+    const u=firebaseUser;
+    if(u){
+      const badge=document.getElementById('topBadge');
+      if(badge) badge.textContent=(u.displayName||u.email.split('@')[0])+' · Admin';
+    }
+    init();
+  }catch(e){showLoginError('Team access PIN is invalid or expired. Check with the site owner.');}
+  btn.disabled=false;btn.textContent='Enter Admin Panel →';
+}
+window.verifyTeamPIN=verifyTeamPIN;
+
+// ── Logout ──
+function doLogout(){
+  if(window.auth&&window.signOutFB) window.signOutFB(window.auth).catch(()=>{});
+  sessionStorage.clear();
+  location.reload();
+}
+window.doLogout=doLogout;
+
+// ── Auto-restore session ──
+if(sessionStorage.getItem('bqm_auth')==='1'&&sessionStorage.getItem('bqm_token')){
+  ghToken=sessionStorage.getItem('bqm_token');
+  const savedUser=sessionStorage.getItem('bqm_user');
+  if(savedUser){try{const u=JSON.parse(savedUser);const b=document.getElementById('topBadge');if(b)b.textContent=(u.name||'Admin')+' · Admin';}catch(e){}}
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminApp').style.display='block';
-  setTimeout(()=>{ if(ghToken) init(); }, 300);
+  setTimeout(()=>{if(ghToken)init();},300);
 }
 
 // ── GITHUB API ──
