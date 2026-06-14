@@ -342,6 +342,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <button class="tab-btn" onclick="switchTab('admins',this)">👥 Admin Profiles</button>
       <button class="tab-btn" onclick="switchTab('timeline',this)">🕐 Live Timeline</button>
       <button class="tab-btn" onclick="switchTab('analytics',this)">📊 Analytics</button>
+      <button class="tab-btn" onclick="switchTab('referrals',this)">🔗 Referrals</button>
     </div>
 
     <!-- ── TAB: FULL LOG ── -->
@@ -447,13 +448,58 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
         </div>
       </div>
     </div>
+
+    <!-- ── TAB: REFERRALS ── -->
+    <div class="tab-panel" id="tab-referrals">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadReferrals()"><span id="refRefreshIcon">🔄</span> Load Referral Data</button>
+        <div class="refresh-info" id="refRefreshInfo">Click to load referral data</div>
+      </div>
+      <!-- Top referrers -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <div class="card-title">🏆 Top Referrers</div>
+          <span style="font-size:.72rem;color:var(--muted)">Students who've referred the most classmates</span>
+        </div>
+        <div class="card-body-flush">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Student</th>
+                <th>Email</th>
+                <th>Referral Code</th>
+                <th>People Referred</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody id="topReferrersBody">
+              <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted)">Click Load to view referral data</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- All referral connections -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔗 All Referral Connections</div>
+          <span style="font-size:.72rem;color:var(--muted)">Who referred who</span>
+        </div>
+        <div class="card-body-flush">
+          <div style="max-height:460px;overflow-y:auto" id="refConnectionsList">
+            <div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Load to view connections</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
 <!-- Firebase -->
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import{getFirestore,collection,getDocs,orderBy,query,limit}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import{getFirestore,collection,getDocs,doc,getDoc,orderBy,query,limit}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,signOut}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const cfg={apiKey:'AIzaSyCRrp0cGK-hlBy8Ez8blesCsWn3FP7I-lQ',authDomain:'big-quams-media.firebaseapp.com',projectId:'big-quams-media',storageBucket:'big-quams-media.firebasestorage.app',messagingSenderId:'383186323859',appId:'1:383186323859:web:826d6b9977cfa947730066'};
@@ -463,6 +509,7 @@ const auth=getAuth(app);
 const gp=new GoogleAuthProvider();
 window._db=db;window._auth=auth;
 window._getDocs=getDocs;window._collection=collection;
+window._doc=doc;window._getDoc=getDoc;
 window._query=query;window._orderBy=orderBy;window._limit=limit;
 window._signInEmail=(e,p)=>signInWithEmailAndPassword(auth,e,p);
 window._signInGoogle=()=>signInWithPopup(auth,gp);
@@ -793,6 +840,65 @@ function buildAnalytics(){
       <div class="bar-val">${count}</div>
     </div>`).join('');
 }
+
+// ── REFERRALS ──
+async function loadReferrals(){
+  const icon=document.getElementById('refRefreshIcon');
+  const info=document.getElementById('refRefreshInfo');
+  icon.classList.add('spinning');
+  info.textContent='Loading referral data…';
+  try{
+    if(!window._db){await new Promise(r=>setTimeout(r,1000));}
+    const snap=await window._getDocs(window._collection(window._db,'cbt_users'));
+    const users=snap.docs.map(d=>d.data());
+
+    // Top referrers — sorted by referralCount desc
+    const referrers=users.filter(u=>(u.referralCount||0)>0).sort((a,b)=>(b.referralCount||0)-(a.referralCount||0));
+    const medals=['🥇','🥈','🥉'];
+    document.getElementById('topReferrersBody').innerHTML=referrers.length
+      ? referrers.map((u,i)=>`<tr>
+          <td style="font-size:.8rem;font-weight:800;color:var(--muted)">${medals[i]||('#'+(i+1))}</td>
+          <td><div style="font-size:.78rem;font-weight:700;color:var(--text)">${u.nickname||u.displayName||'Student'}</div></td>
+          <td style="font-size:.68rem;color:var(--muted)">${u.email||'—'}</td>
+          <td><span style="background:rgba(26,63,168,.15);color:#60a5fa;font-size:.68rem;font-weight:800;padding:3px 8px;border-radius:8px;font-family:monospace">${u.referralCode||'—'}</span></td>
+          <td><span style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--green)">${u.referralCount||0}</span></td>
+          <td style="font-size:.68rem;color:var(--muted)">${u.joinDate?new Date(u.joinDate).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'}):'—'}</td>
+        </tr>`)
+        .join('')
+      : '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted)">No referrals recorded yet</td></tr>';
+
+    // All referral connections — everyone with a referredBy value
+    const connections=users.filter(u=>u.referredBy).sort((a,b)=>new Date(b.joinDate||0)-new Date(a.joinDate||0));
+    // Build referralCode → name map for lookup
+    const codeToName={};
+    users.forEach(u=>{if(u.referralCode) codeToName[u.referralCode]=u.nickname||u.displayName||u.email||'Unknown';});
+
+    document.getElementById('refConnectionsList').innerHTML=connections.length
+      ? connections.map(u=>{
+          const referrerName=codeToName[u.referredBy]||`Code: ${u.referredBy}`;
+          const joined=u.joinDate?new Date(u.joinDate).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'}):'—';
+          return`<div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid rgba(42,53,80,.5)">
+            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1a3fa8,#3b62d4);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0">👤</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:.8rem;font-weight:700;color:var(--text)">${u.nickname||u.displayName||'Student'}</div>
+              <div style="font-size:.65rem;color:var(--muted)">${u.email||''}</div>
+            </div>
+            <div style="text-align:center;padding:0 12px;font-size:.72rem;color:var(--muted)">referred by</div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-size:.8rem;font-weight:700;color:#f59e0b">🔗 ${referrerName}</div>
+              <div style="font-size:.62rem;color:var(--muted)">📅 ${joined}</div>
+            </div>
+          </div>`;
+        }).join('')
+      : '<div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">No referral connections yet</div>';
+
+    info.textContent=`${referrers.length} referrers · ${connections.length} connections loaded`;
+  }catch(e){
+    info.textContent='Error: '+e.message;
+  }
+  icon.classList.remove('spinning');
+}
+window.loadReferrals=loadReferrals;
 
 // ── EXPORT ──
 function exportCSV(){
