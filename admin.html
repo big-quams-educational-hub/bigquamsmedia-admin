@@ -556,6 +556,9 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <button class="section-tab" onclick="switchSection('socials')">
         <span class="nav-icon">🔗</span><span class="nav-label">Social Links</span>
       </button>
+      <button class="section-tab" onclick="switchSection('activitylog')" style="border-top:1px solid var(--border);margin-top:6px;color:#b91c1c">
+        <span class="nav-icon">🕵️</span><span class="nav-label">Activity Log</span>
+      </button>
     </nav>
 
     <!-- MAIN CONTENT -->
@@ -753,6 +756,13 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="dm-title">Social Links</div>
           <div class="dm-desc">Manage Facebook, Instagram and Telegram URLs in the footer.</div>
           <div class="dm-count" style="background:#dbeafe;color:#1d4ed8">3 Platforms</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('activitylog')" style="border:1.5px solid #fee2e2">
+          <div class="dm-icon" style="background:#fee2e2">🕵️</div>
+          <div class="dm-title">Admin Activity Log</div>
+          <div class="dm-desc">Track every admin action — who did what and when. Full audit trail for CEO oversight.</div>
+          <div class="dm-count" style="background:#fee2e2;color:#b91c1c" id="dm-cnt-actlog">CEO Only</div>
         </div>
 
       </div>
@@ -1950,6 +1960,60 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       </div>
     </div>
 
+    <!-- ══ ACTIVITY LOG (CEO ONLY) ══ -->
+    <div class="admin-section" id="section-activitylog">
+      <div class="section-header">
+        <h2 class="section-title-h2">🕵️ Admin Activity Log</h2>
+        <button class="btn btn-ghost btn-sm" onclick="refreshActivityLog()">🔄 Refresh</button>
+      </div>
+      <div id="actLogCeoOnly" style="display:none">
+        <div style="background:#fef9c3;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:.82rem;color:#92400e">
+          🔒 <strong>CEO-only view.</strong> This log shows all admin actions across the platform. Only your account can see this.
+        </div>
+        <div class="section-card" style="padding:0;overflow:hidden">
+          <div style="padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <input type="text" id="actLogSearch" placeholder="🔍 Search by admin, action or section…" style="flex:1;min-width:180px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:'Roboto',sans-serif;color:var(--text);background:var(--light)" oninput="filterActivityLog()">
+            <select id="actLogFilter" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:'Roboto',sans-serif;color:var(--text);background:var(--light)" onchange="filterActivityLog()">
+              <option value="">All Actions</option>
+              <option value="add">Add</option>
+              <option value="edit">Edit</option>
+              <option value="delete">Delete</option>
+              <option value="login">Login</option>
+              <option value="logout">Logout</option>
+              <option value="save">Save</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" onclick="exportActivityLog()" style="white-space:nowrap">📥 Export CSV</button>
+          </div>
+          <div id="actLogStats" style="display:flex;gap:0;border-bottom:1px solid var(--border)">
+            <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
+              <div style="font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:800;color:var(--blue-main)" id="als-total">0</div>
+              <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Total Actions</div>
+            </div>
+            <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
+              <div style="font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:800;color:#10b981" id="als-today">0</div>
+              <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Today</div>
+            </div>
+            <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
+              <div style="font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:800;color:#f59e0b" id="als-admins">0</div>
+              <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Admins Active</div>
+            </div>
+            <div style="flex:1;padding:14px;text-align:center">
+              <div style="font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:800;color:#ef4444" id="als-deletes">0</div>
+              <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Deletions</div>
+            </div>
+          </div>
+          <div id="actLogList" style="max-height:540px;overflow-y:auto">
+            <div style="text-align:center;padding:40px;color:var(--muted);font-size:.84rem">Loading activity log…</div>
+          </div>
+        </div>
+      </div>
+      <div id="actLogNotCeo" style="display:none;text-align:center;padding:60px 20px">
+        <div style="font-size:3rem;margin-bottom:12px">🔒</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">CEO Access Only</div>
+        <div style="font-size:.8rem;color:var(--muted)">The Activity Log is only visible to the platform owner account.</div>
+      </div>
+    </div>
+
     </div><!-- /admin-main -->
   </div><!-- /admin-shell -->
 </div><!-- /adminApp -->
@@ -2321,6 +2385,8 @@ async function verifyTeamPIN(){
     sessionStorage.setItem('bqm_token',pin);
     sessionStorage.setItem('bqm_auth','1');
     sessionStorage.setItem('bqm_user',JSON.stringify({name:firebaseUser?.displayName||'Admin',email:firebaseUser?.email||'',photo:firebaseUser?.photoURL||''}));
+    // Log admin login
+    setTimeout(()=>logAdminActivity('login','Session','Admin logged in'),600);
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('adminApp').style.display='block';
     // Update topbar with user info
@@ -2337,11 +2403,147 @@ window.verifyTeamPIN=verifyTeamPIN;
 
 // ── Logout ──
 function doLogout(){
-  if(window.auth&&window.signOutFB) window.signOutFB(window.auth).catch(()=>{});
-  sessionStorage.clear();
-  location.reload();
+  const confirmed=confirm('⚠️ Are you sure you want to log out?\n\nYou will be signed out of the admin panel and will need to log in again.');
+  if(!confirmed) return;
+  logAdminActivity('logout','Session','Admin logged out');
+  setTimeout(()=>{
+    if(window.auth&&window.signOutFB) window.signOutFB(window.auth).catch(()=>{});
+    sessionStorage.clear();
+    location.reload();
+  },400);
 }
 window.doLogout=doLogout;
+
+// ══════════════════════════════════════════════
+// ── ADMIN ACTIVITY LOG ──
+// ══════════════════════════════════════════════
+const CEO_EMAIL='abdulraheemfawehinmi@gmail.com'; // ← your Gmail
+let _allActivityLogs=[];
+
+function getCurrentAdminInfo(){
+  try{
+    const u=JSON.parse(sessionStorage.getItem('bqm_user')||'{}');
+    return {name:u.name||'Unknown Admin',email:u.email||'Unknown'};
+  }catch(e){return {name:'Unknown Admin',email:'Unknown'};}
+}
+
+async function logAdminActivity(actionType,section,detail){
+  if(!window._db) return;
+  try{
+    const admin=getCurrentAdminInfo();
+    const entry={
+      adminEmail:admin.email,
+      adminName:admin.name,
+      actionType:actionType.toLowerCase(), // login,logout,add,edit,delete,save
+      section:section,
+      detail:detail,
+      timestamp:new Date().toISOString(),
+      date:new Date().toLocaleDateString('en-NG'),
+      time:new Date().toLocaleTimeString('en-NG'),
+      userAgent:navigator.userAgent.substring(0,80),
+    };
+    const logRef=window._doc(window._collection(window._db,'admin_activity_log'),Date.now()+'_'+Math.random().toString(36).substring(2,7));
+    await window._setDoc(logRef,entry);
+  }catch(e){console.warn('Activity log error:',e);}
+}
+window.logAdminActivity=logAdminActivity;
+
+function isCeoAdmin(){
+  try{
+    const u=JSON.parse(sessionStorage.getItem('bqm_user')||'{}');
+    return u.email===CEO_EMAIL;
+  }catch(e){return false;}
+}
+
+async function refreshActivityLog(){
+  const listEl=document.getElementById('actLogList');
+  if(listEl) listEl.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:.84rem">⏳ Loading…</div>';
+  if(!isCeoAdmin()){
+    document.getElementById('actLogCeoOnly').style.display='none';
+    document.getElementById('actLogNotCeo').style.display='block';
+    return;
+  }
+  document.getElementById('actLogCeoOnly').style.display='block';
+  document.getElementById('actLogNotCeo').style.display='none';
+  if(!window._db){setTimeout(refreshActivityLog,800);return;}
+  try{
+    const snap=await window._getDocs(window._collection(window._db,'admin_activity_log'));
+    _allActivityLogs=snap.docs.map(d=>d.data()).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+    renderActivityLog(_allActivityLogs);
+  }catch(e){
+    if(listEl) listEl.innerHTML='<div style="text-align:center;padding:40px;color:#ef4444;font-size:.84rem">Error loading log: '+e.message+'</div>';
+  }
+}
+window.refreshActivityLog=refreshActivityLog;
+
+function renderActivityLog(logs){
+  const today=new Date().toLocaleDateString('en-NG');
+  const todayLogs=logs.filter(l=>l.date===today);
+  const admins=new Set(logs.map(l=>l.adminEmail)).size;
+  const deletes=logs.filter(l=>l.actionType==='delete').length;
+  document.getElementById('als-total').textContent=logs.length;
+  document.getElementById('als-today').textContent=todayLogs.length;
+  document.getElementById('als-admins').textContent=admins;
+  document.getElementById('als-deletes').textContent=deletes;
+  const listEl=document.getElementById('actLogList');
+  if(!logs.length){
+    listEl.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:.84rem">No activity recorded yet.</div>';
+    return;
+  }
+  const actionColors={login:'#10b981',logout:'#6b7280',add:'#3b82f6',edit:'#f59e0b',delete:'#ef4444',save:'#8b5cf6',upload:'#06b6d4'};
+  const actionIcons={login:'🔓',logout:'🔒',add:'➕',edit:'✏️',delete:'🗑️',save:'💾',upload:'📤'};
+  listEl.innerHTML=logs.map((l,i)=>{
+    const color=actionColors[l.actionType]||'#64748b';
+    const icon=actionIcons[l.actionType]||'⚡';
+    const isCeo=l.adminEmail===CEO_EMAIL;
+    return`<div style="display:flex;align-items:flex-start;gap:12px;padding:13px 18px;border-bottom:1px solid var(--border);transition:.15s;${i%2===0?'background:var(--light)':''}" onmouseover="this.style.background='rgba(26,63,168,0.04)'" onmouseout="this.style.background='${i%2===0?'var(--light)':'transparent'}'">
+      <div style="width:32px;height:32px;border-radius:50%;background:${color}22;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:1px">${icon}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:3px">
+          <span style="font-size:.78rem;font-weight:700;color:var(--text)">${l.adminName||'Admin'}</span>
+          ${isCeo?'<span style="background:#f59e0b22;color:#b45309;font-size:.58rem;font-weight:800;padding:2px 6px;border-radius:10px">👑 CEO</span>':''}
+          <span style="font-size:.64rem;color:var(--muted)">${l.adminEmail}</span>
+        </div>
+        <div style="font-size:.82rem;color:var(--text);margin-bottom:4px">
+          <span style="background:${color}22;color:${color};font-size:.64rem;font-weight:800;padding:2px 7px;border-radius:10px;margin-right:6px;text-transform:uppercase">${l.actionType}</span>
+          <strong>${l.section}</strong>${l.detail?' — '+l.detail:''}
+        </div>
+        <div style="font-size:.64rem;color:var(--muted)">📅 ${l.date} &nbsp;⏱ ${l.time}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterActivityLog(){
+  const q=(document.getElementById('actLogSearch').value||'').toLowerCase();
+  const type=(document.getElementById('actLogFilter').value||'').toLowerCase();
+  const filtered=_allActivityLogs.filter(l=>{
+    const matchType=!type||l.actionType===type;
+    const matchQ=!q||(l.adminEmail||'').toLowerCase().includes(q)||(l.adminName||'').toLowerCase().includes(q)||(l.section||'').toLowerCase().includes(q)||(l.detail||'').toLowerCase().includes(q)||(l.actionType||'').toLowerCase().includes(q);
+    return matchType&&matchQ;
+  });
+  renderActivityLog(filtered);
+}
+window.filterActivityLog=filterActivityLog;
+
+function exportActivityLog(){
+  if(!_allActivityLogs.length){alert('No activity to export.');return;}
+  const rows=[['Admin Name','Admin Email','Action','Section','Detail','Date','Time']];
+  _allActivityLogs.forEach(l=>rows.push([l.adminName||'',l.adminEmail||'',l.actionType||'',l.section||'',l.detail||'',l.date||'',l.time||'']));
+  const csv=rows.map(r=>r.map(v=>'"'+(v||'').replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='bqm-admin-activity-'+new Date().toISOString().substring(0,10)+'.csv';
+  a.click();
+}
+window.exportActivityLog=exportActivityLog;
+
+// Patch switchSection to auto-load activity log when opened
+const _origSwitchSection=window.switchSection;
+window.switchSection=function(s){
+  if(typeof _origSwitchSection==='function') _origSwitchSection(s);
+  if(s==='activitylog') setTimeout(refreshActivityLog,100);
+};
 
 // ── Auto-restore session ──
 if(sessionStorage.getItem('bqm_auth')==='1'&&sessionStorage.getItem('bqm_token')){
@@ -2391,6 +2593,18 @@ async function ghPush(file,sha,data,msg){
     throw new Error(errMsg);
   }
   const result=await res.json();
+  // ── Auto-log every GitHub write ──
+  try{
+    const msgLower=(msg||'').toLowerCase();
+    let actionType='save';
+    if(msgLower.startsWith('add')||msgLower.startsWith('add:')) actionType='add';
+    else if(msgLower.startsWith('delete')||msgLower.startsWith('del')) actionType='delete';
+    else if(msgLower.startsWith('edit')||msgLower.startsWith('edit:')) actionType='edit';
+    else if(msgLower.startsWith('pin')||msgLower.startsWith('unpin')) actionType='edit';
+    else if(msgLower.startsWith('bulk')||msgLower.startsWith('upload')) actionType='upload';
+    const section=file.replace('data/','').replace('.json','').replace(/-/g,' ');
+    logAdminActivity(actionType, section, msg||'');
+  }catch(e){}
   return result.content.sha;
 }
 
@@ -2485,7 +2699,7 @@ window.openModal=openModal; window.closeModal=closeModal; window.handleOverlay=h
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
 
 // ── SECTION & TAB SWITCHING ──
-const ALL_SECTIONS=['dashboard','news','newsroom','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','subjectcombo','results','gpa','postutmeprep','reviews','qa','calendar','siteconfig','herostats','ticker','successticker','topbar','contactchannels','socials'];
+const ALL_SECTIONS=['dashboard','news','newsroom','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','subjectcombo','results','gpa','postutmeprep','reviews','qa','calendar','siteconfig','herostats','ticker','successticker','topbar','contactchannels','socials','activitylog'];
 function switchSection(name){
   ALL_SECTIONS.forEach(s=>{
     const el=document.getElementById('section-'+s);
@@ -3436,6 +3650,7 @@ async function addCBTQuestion(){
     document.getElementById('cnt-cbt').textContent=cbtAllQuestions.length;
     clearCBTForm(); renderCBTList(); switchTab('cbt','list');
     showStatus('success',`🎯 Question added! (${SUBJECT_LABELS[subject]} — ${diff})`);
+    logAdminActivity('add','CBT Questions',`Added ${SUBJECT_LABELS[subject]||subject} question — ${diff}`);
   }catch(e){showStatus('error','❌ Failed: '+e.message);}
   btn.disabled=false; btn.textContent='🎯 Add Question';
 }
@@ -3484,11 +3699,13 @@ window.saveEditCBT=saveEditCBT;
 async function deleteCBT(docId){
   if(!confirm('Delete this question? Cannot be undone.')) return;
   try{
+    const q=cbtAllQuestions.find(x=>x.id===docId);
     await window.deleteDoc(window.doc(window.db,'cbt_questions',docId));
     cbtAllQuestions=cbtAllQuestions.filter(x=>x.id!==docId);
     window.cbtAllQuestions=cbtAllQuestions;
     document.getElementById('cnt-cbt').textContent=cbtAllQuestions.length;
     renderCBTList(); showStatus('success','🗑️ Question deleted.');
+    logAdminActivity('delete','CBT Questions',`Deleted question: ${q?q.q.substring(0,60)+'…':docId}`);
   }catch(e){showStatus('error','❌ '+e.message);}
 }
 window.deleteCBT=deleteCBT;
