@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CEO Dashboard — Big Quams Media®</title>
+<link rel="icon" type="image/jpeg" href="https://big-quams-educational-hub.github.io/file_000000000370724698997662ddbee6b5.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1117;--surface:#161b27;--surface2:#1e2736;--border:#2a3550;
+  --blue:#1a3fa8;--blue-light:#3b62d4;--orange:#f97316;--green:#10b981;
+  --red:#ef4444;--yellow:#f59e0b;--purple:#8b5cf6;--cyan:#06b6d4;
+  --text:#e6edf3;--muted:#8b949e;--radius:12px;
+  --shadow:0 8px 32px rgba(0,0,0,.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit}
+
+/* ── LOGIN GATE ── */
+#loginGate{
+  position:fixed;inset:0;background:linear-gradient(135deg,#060d1f,#0c1a3a,#101f50);
+  display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;
+}
+.login-card{
+  background:#161b27;border:1.5px solid #2a3550;border-radius:20px;
+  padding:36px 28px;width:100%;max-width:380px;text-align:center;
+  box-shadow:0 32px 80px rgba(0,0,0,.6);
+  animation:pop .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.login-logo{width:70px;height:70px;border-radius:50%;border:3px solid var(--orange);margin:0 auto 14px;overflow:hidden}
+.login-logo img{width:100%;height:100%;object-fit:cover}
+.login-title{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:800;color:var(--text);margin-bottom:4px}
+.login-sub{font-size:.76rem;color:var(--muted);margin-bottom:22px;line-height:1.5}
+.google-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+  background:#fff;border:none;border-radius:10px;padding:13px;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:.88rem;color:#1e2749;
+  cursor:pointer;transition:.2s;margin-bottom:12px;
+}
+.google-btn:hover{opacity:.92;transform:translateY(-1px);box-shadow:0 4px 16px rgba(255,255,255,.15)}
+.email-input{
+  width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:9px;
+  font-size:.9rem;font-family:'Roboto',sans-serif;color:var(--text);
+  background:#0d1117;margin-bottom:10px;transition:.2s;
+}
+.email-input:focus{outline:none;border-color:var(--blue-light);box-shadow:0 0 0 3px rgba(59,98,212,.12)}
+.login-btn{
+  width:100%;padding:13px;background:linear-gradient(135deg,#0c1f6e,#1a3fa8);
+  color:#fff;border:none;border-radius:9px;font-family:'Montserrat',sans-serif;
+  font-weight:800;font-size:.9rem;cursor:pointer;transition:.2s;
+}
+.login-btn:hover{opacity:.9}
+.login-btn:disabled{opacity:.5;cursor:not-allowed}
+.login-divider{display:flex;align-items:center;gap:8px;margin:8px 0;color:var(--muted);font-size:.7rem}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.login-err{color:#fca5a5;font-size:.76rem;background:rgba(239,68,68,.1);border-radius:7px;padding:8px 12px;margin-top:8px;display:none}
+.access-denied{color:#fca5a5;font-size:.82rem;text-align:center;margin-top:10px;display:none}
+
+/* ── APP SHELL ── */
+#app{display:none}
+header{
+  background:#161b27;border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:200;
+}
+.header-inner{
+  max-width:1400px;margin:0 auto;padding:0 20px;
+  display:flex;align-items:center;height:58px;gap:12px;
+}
+.header-brand{display:flex;align-items:center;gap:10px;margin-right:auto}
+.header-brand img{width:36px;height:36px;border-radius:50%;border:2px solid var(--orange)}
+.brand-name{font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:800;color:var(--text)}
+.brand-sub{font-size:.55rem;color:var(--muted);display:block}
+.header-badge{
+  background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.3);
+  color:var(--orange);font-size:.7rem;font-weight:800;padding:5px 12px;border-radius:20px;
+  display:flex;align-items:center;gap:6px;
+}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hdr-avatar{width:34px;height:34px;border-radius:50%;border:2px solid var(--border);object-fit:cover}
+.logout-hdr-btn{
+  background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);
+  color:#fca5a5;font-size:.72rem;font-weight:700;padding:6px 12px;border-radius:7px;cursor:pointer;
+  transition:.18s;white-space:nowrap;
+}
+.logout-hdr-btn:hover{background:rgba(239,68,68,.22)}
+
+/* ── MAIN LAYOUT ── */
+main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
+
+/* ── PAGE HEADER ── */
+.page-header{margin-bottom:24px}
+.page-title{font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:4px}
+.page-sub{font-size:.82rem;color:var(--muted)}
+.page-sub span{color:var(--green);font-weight:700}
+
+/* ── TABS ── */
+.tab-bar{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+.tab-btn{
+  padding:9px 18px;border-radius:9px;border:1.5px solid var(--border);
+  background:var(--surface);color:var(--muted);font-family:'Montserrat',sans-serif;
+  font-size:.78rem;font-weight:700;cursor:pointer;transition:.18s;
+  display:flex;align-items:center;gap:7px;
+}
+.tab-btn:hover{border-color:var(--blue-light);color:var(--text)}
+.tab-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px}
+@media(min-width:600px){.stats-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.stats-grid{grid-template-columns:repeat(6,1fr)}}
+.stat-card{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:18px 16px;position:relative;overflow:hidden;transition:.2s;
+}
+.stat-card:hover{border-color:var(--blue-light);transform:translateY(-2px)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat-card.blue::before{background:linear-gradient(90deg,var(--blue),var(--blue-light))}
+.stat-card.green::before{background:linear-gradient(90deg,var(--green),#34d399)}
+.stat-card.orange::before{background:linear-gradient(90deg,var(--orange),#fb923c)}
+.stat-card.red::before{background:linear-gradient(90deg,var(--red),#f87171)}
+.stat-card.purple::before{background:linear-gradient(90deg,var(--purple),#a78bfa)}
+.stat-card.cyan::before{background:linear-gradient(90deg,var(--cyan),#22d3ee)}
+.stat-num{font-family:'Montserrat',sans-serif;font-size:1.6rem;font-weight:800;color:var(--text);margin-bottom:4px}
+.stat-lbl{font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.stat-icon{position:absolute;right:12px;top:16px;font-size:1.4rem;opacity:.3}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px}
+.card-header{
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.card-title{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:800;color:var(--text);flex:1}
+.card-body{padding:20px}
+.card-body-flush{padding:0}
+
+/* ── LOG TABLE ── */
+.log-controls{
+  padding:14px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.log-search{
+  flex:1;min-width:180px;padding:9px 13px;border:1.5px solid var(--border);
+  border-radius:8px;font-size:.82rem;font-family:'Roboto',sans-serif;
+  color:var(--text);background:#0d1117;transition:.2s;
+}
+.log-search:focus{outline:none;border-color:var(--blue-light)}
+.log-select{
+  padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;
+  font-size:.82rem;font-family:'Roboto',sans-serif;color:var(--text);background:#0d1117;
+}
+.btn-sm{
+  padding:8px 14px;border-radius:8px;border:1.5px solid var(--border);
+  background:var(--surface2);color:var(--muted);font-family:'Montserrat',sans-serif;
+  font-size:.72rem;font-weight:700;cursor:pointer;transition:.18s;white-space:nowrap;
+}
+.btn-sm:hover{border-color:var(--blue-light);color:var(--text)}
+.btn-primary-sm{
+  padding:8px 16px;border-radius:8px;border:none;
+  background:var(--blue);color:#fff;font-family:'Montserrat',sans-serif;
+  font-size:.72rem;font-weight:800;cursor:pointer;transition:.18s;white-space:nowrap;
+}
+.btn-primary-sm:hover{background:var(--blue-light)}
+.log-table-wrap{max-height:520px;overflow-y:auto}
+.log-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.log-table th{
+  position:sticky;top:0;background:#1e2736;padding:11px 16px;
+  text-align:left;font-family:'Montserrat',sans-serif;font-size:.65rem;
+  font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;
+  border-bottom:1px solid var(--border);white-space:nowrap;
+}
+.log-table td{padding:11px 16px;border-bottom:1px solid rgba(42,53,80,.5);vertical-align:middle;color:var(--text)}
+.log-table tr:hover td{background:rgba(26,63,168,.06)}
+.action-badge{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 9px;
+  border-radius:20px;font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.3px;
+}
+.ab-login{background:rgba(16,185,129,.15);color:#34d399}
+.ab-logout{background:rgba(107,114,128,.15);color:#9ca3af}
+.ab-add{background:rgba(59,130,246,.15);color:#60a5fa}
+.ab-edit{background:rgba(245,158,11,.15);color:#fbbf24}
+.ab-delete{background:rgba(239,68,68,.15);color:#f87171}
+.ab-save{background:rgba(139,92,246,.15);color:#c4b5fd}
+.ab-upload{background:rgba(6,182,212,.15);color:#22d3ee}
+.ceo-pill{
+  background:rgba(245,158,11,.15);color:#fbbf24;
+  font-size:.6rem;font-weight:800;padding:2px 6px;border-radius:10px;margin-left:5px;
+}
+
+/* ── ADMIN CARDS GRID ── */
+.admins-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.admin-card{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:18px;transition:.2s;
+}
+.admin-card:hover{border-color:var(--blue-light)}
+.admin-card-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.admin-avatar{
+  width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;
+  border:2px solid var(--border);
+}
+.admin-avatar-ph{
+  width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-light));
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;
+  border:2px solid var(--border);
+}
+.admin-info{flex:1;min-width:0}
+.admin-name{font-family:'Montserrat',sans-serif;font-size:.84rem;font-weight:800;color:var(--text);margin-bottom:2px;display:flex;align-items:center;flex-wrap:wrap;gap:5px}
+.admin-email{font-size:.66rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.online-dot{width:8px;height:8px;border-radius:50%;background:#6b7280;flex-shrink:0}
+.online-dot.active{background:var(--green);animation:pulse 1.5s ease infinite}
+.admin-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.admin-stat{background:var(--surface2);border-radius:8px;padding:9px;text-align:center}
+.admin-stat-num{font-family:'Montserrat',sans-serif;font-size:.95rem;font-weight:800;color:var(--text)}
+.admin-stat-lbl{font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.last-seen{font-size:.66rem;color:var(--muted);margin-top:10px;display:flex;align-items:center;gap:5px}
+
+/* ── TIMELINE ── */
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;gap:14px;padding:14px 20px;border-bottom:1px solid rgba(42,53,80,.5);transition:.15s}
+.tl-item:hover{background:rgba(26,63,168,.05)}
+.tl-dot-wrap{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.tl-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.tl-line{width:2px;background:var(--border);flex:1;margin-top:4px;min-height:20px}
+.tl-content{flex:1;min-width:0;padding-bottom:6px}
+.tl-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.tl-admin{font-size:.78rem;font-weight:700;color:var(--text)}
+.tl-time{font-size:.65rem;color:var(--muted);margin-left:auto}
+.tl-detail{font-size:.8rem;color:var(--muted);line-height:1.5}
+.tl-section{font-size:.64rem;background:var(--surface2);color:var(--muted);padding:2px 8px;border-radius:10px}
+
+/* ── CHARTS ── */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+@media(max-width:700px){.charts-grid{grid-template-columns:1fr}}
+.mini-chart-wrap{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:18px}
+.mini-chart-title{font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:800;color:var(--text);margin-bottom:14px}
+.bar-chart{display:flex;flex-direction:column;gap:8px}
+.bar-row{display:flex;align-items:center;gap:10px;font-size:.74rem}
+.bar-lbl{width:80px;color:var(--muted);flex-shrink:0;text-align:right;font-size:.66rem}
+.bar-track{flex:1;height:8px;background:var(--surface2);border-radius:10px;overflow:hidden}
+.bar-fill{height:100%;border-radius:10px;transition:width .6s ease}
+.bar-val{width:32px;color:var(--text);font-weight:700;font-size:.68rem;text-align:right}
+.donut-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.donut-legend{display:flex;flex-direction:column;gap:7px;flex:1}
+.legend-item{display:flex;align-items:center;gap:7px;font-size:.72rem;color:var(--muted)}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty-icon{font-size:2.5rem;margin-bottom:10px}
+.empty-title{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:800;color:var(--text);margin-bottom:4px}
+.empty-sub{font-size:.76rem;line-height:1.5}
+
+/* ── ALERT BANNER ── */
+.alert-banner{
+  background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);
+  border-radius:10px;padding:12px 16px;margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;font-size:.8rem;color:#fca5a5;
+}
+.warning-banner{
+  background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);
+  border-radius:10px;padding:12px 16px;margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;font-size:.8rem;color:#fbbf24;
+}
+
+/* ── MISC ── */
+.refresh-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.refresh-info{font-size:.72rem;color:var(--muted);margin-left:auto}
+.spinning{animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.62rem;font-weight:700}
+.tag-ceo{background:rgba(245,158,11,.15);color:#fbbf24}
+.tag-admin{background:rgba(26,63,168,.15);color:#60a5fa}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN GATE ══ -->
+<div id="loginGate">
+  <div class="login-card">
+    <div class="login-logo"><img src="https://big-quams-educational-hub.github.io/file_000000000370724698997662ddbee6b5.png" alt="BQM"></div>
+    <div class="login-title">CEO Dashboard</div>
+    <div class="login-sub">This panel is exclusively for the platform owner.<br>Sign in with your registered CEO account.</div>
+    <button class="google-btn" onclick="loginGoogle()">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.1 0 5.8 1.1 8 2.9l6-6C34.5 3.1 29.6 1 24 1 14.8 1 7 6.7 3.7 14.6l7 5.4C12.5 13.8 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.4c-.5 2.8-2.1 5.2-4.5 6.8l7 5.4C43.1 36.8 46.1 31.1 46.1 24.5z"/><path fill="#FBBC05" d="M10.7 28.6c-.5-1.4-.8-2.9-.8-4.6s.3-3.2.8-4.6l-7-5.4C2.2 17.1 1 20.4 1 24s1.2 6.9 3.7 9.9l7-5.3z"/><path fill="#34A853" d="M24 47c5.6 0 10.4-1.9 13.8-5.1l-7-5.4c-1.9 1.3-4.2 2-6.8 2-6.2 0-11.5-4.3-13.3-10l-7 5.4C7 41.3 14.8 47 24 47z"/></svg>
+      Sign in with Google
+    </button>
+    <div class="login-divider">or email</div>
+    <input class="email-input" type="email" id="loginEmail" placeholder="CEO email address" autocomplete="email">
+    <input class="email-input" type="password" id="loginPw" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')loginEmail_pw()">
+    <button class="login-btn" id="loginBtn" onclick="loginEmail_pw()">Sign In →</button>
+    <div class="login-err" id="loginErr"></div>
+    <div class="access-denied" id="accessDenied">🚫 Access denied. This dashboard is restricted to the CEO account only.</div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+  <header>
+    <div class="header-inner">
+      <div class="header-brand">
+        <img src="https://big-quams-educational-hub.github.io/file_000000000370724698997662ddbee6b5.png" alt="BQM">
+        <div>
+          <div class="brand-name">Big Quams Media® — CEO Dashboard</div>
+          <span class="brand-sub">Admin Activity Monitor · Platform Overview</span>
+        </div>
+      </div>
+      <div class="header-badge"><div class="live-dot"></div> LIVE</div>
+      <img class="hdr-avatar" id="hdrAvatar" src="" alt="" style="display:none">
+      <button class="logout-hdr-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <div class="page-title">👑 CEO Control Centre</div>
+      <div class="page-sub">Welcome back. Last refreshed: <span id="lastRefreshed">—</span></div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stats-grid">
+      <div class="stat-card blue"><div class="stat-icon">⚡</div><div class="stat-num" id="sc-total">—</div><div class="stat-lbl">Total Actions</div></div>
+      <div class="stat-card green"><div class="stat-icon">📅</div><div class="stat-num" id="sc-today">—</div><div class="stat-lbl">Today</div></div>
+      <div class="stat-card orange"><div class="stat-icon">👥</div><div class="stat-num" id="sc-admins">—</div><div class="stat-lbl">Admins Active</div></div>
+      <div class="stat-card red"><div class="stat-icon">🗑️</div><div class="stat-num" id="sc-deletes">—</div><div class="stat-lbl">Deletions</div></div>
+      <div class="stat-card purple"><div class="stat-icon">🔐</div><div class="stat-num" id="sc-logins">—</div><div class="stat-lbl">Logins</div></div>
+      <div class="stat-card cyan"><div class="stat-icon">✏️</div><div class="stat-num" id="sc-edits">—</div><div class="stat-lbl">Edits/Saves</div></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('log',this)">📋 Full Activity Log</button>
+      <button class="tab-btn" onclick="switchTab('admins',this)">👥 Admin Profiles</button>
+      <button class="tab-btn" onclick="switchTab('timeline',this)">🕐 Live Timeline</button>
+      <button class="tab-btn" onclick="switchTab('analytics',this)">📊 Analytics</button>
+    </div>
+
+    <!-- ── TAB: FULL LOG ── -->
+    <div class="tab-panel active" id="tab-log">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadAll()"><span id="refreshIcon">🔄</span> Refresh</button>
+        <button class="btn-sm" onclick="exportCSV()">📥 Export CSV</button>
+        <button class="btn-sm" onclick="exportJSON()">📄 Export JSON</button>
+        <div class="refresh-info" id="refreshInfo">Click refresh to load data</div>
+      </div>
+      <div class="card">
+        <div class="log-controls">
+          <input class="log-search" type="text" id="logSearch" placeholder="🔍 Search admin, action, section, detail…" oninput="applyFilters()">
+          <select class="log-select" id="filterAction" onchange="applyFilters()">
+            <option value="">All Actions</option>
+            <option value="login">🔓 Login</option>
+            <option value="logout">🔒 Logout</option>
+            <option value="add">➕ Add</option>
+            <option value="edit">✏️ Edit</option>
+            <option value="delete">🗑️ Delete</option>
+            <option value="save">💾 Save</option>
+            <option value="upload">📤 Upload</option>
+          </select>
+          <select class="log-select" id="filterAdmin" onchange="applyFilters()">
+            <option value="">All Admins</option>
+          </select>
+          <select class="log-select" id="filterDate" onchange="applyFilters()">
+            <option value="">All Time</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+          </select>
+        </div>
+        <div class="card-body-flush">
+          <div class="log-table-wrap">
+            <table class="log-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Time</th>
+                  <th>Admin</th>
+                  <th>Action</th>
+                  <th>Section</th>
+                  <th>Detail</th>
+                </tr>
+              </thead>
+              <tbody id="logTableBody">
+                <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted)">Click Refresh to load activity log →</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div id="logCount" style="font-size:.74rem;color:var(--muted);text-align:right;margin-top:-12px"></div>
+    </div>
+
+    <!-- ── TAB: ADMIN PROFILES ── -->
+    <div class="tab-panel" id="tab-admins">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadAll()">🔄 Refresh</button>
+        <div class="refresh-info">Showing all admins who have logged in at least once</div>
+      </div>
+      <div id="adminsGrid" class="admins-grid">
+        <div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">No data yet</div><div class="empty-sub">Click Refresh to load admin profiles</div></div>
+      </div>
+    </div>
+
+    <!-- ── TAB: LIVE TIMELINE ── -->
+    <div class="tab-panel" id="tab-timeline">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadAll()">🔄 Refresh</button>
+        <div class="refresh-info">Shows the 50 most recent actions in chronological order</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">🕐 Recent Activity Timeline</div></div>
+        <div class="timeline" id="timelineList">
+          <div class="empty-state"><div class="empty-icon">🕐</div><div class="empty-title">No activity yet</div><div class="empty-sub">Click Refresh to load timeline</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: ANALYTICS ── -->
+    <div class="tab-panel" id="tab-analytics">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadAll()">🔄 Refresh</button>
+      </div>
+      <div class="charts-grid">
+        <div class="mini-chart-wrap">
+          <div class="mini-chart-title">Actions by Type</div>
+          <div class="bar-chart" id="chartByType"></div>
+        </div>
+        <div class="mini-chart-wrap">
+          <div class="mini-chart-title">Actions by Admin</div>
+          <div class="bar-chart" id="chartByAdmin"></div>
+        </div>
+        <div class="mini-chart-wrap">
+          <div class="mini-chart-title">Actions by Section</div>
+          <div class="bar-chart" id="chartBySection"></div>
+        </div>
+        <div class="mini-chart-wrap">
+          <div class="mini-chart-title">Activity Last 7 Days</div>
+          <div class="bar-chart" id="chartByDay"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import{getFirestore,collection,getDocs,orderBy,query,limit}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,signOut}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+const cfg={apiKey:'AIzaSyCRrp0cGK-hlBy8Ez8blesCsWn3FP7I-lQ',authDomain:'big-quams-media.firebaseapp.com',projectId:'big-quams-media',storageBucket:'big-quams-media.firebasestorage.app',messagingSenderId:'383186323859',appId:'1:383186323859:web:826d6b9977cfa947730066'};
+const app=initializeApp(cfg);
+const db=getFirestore(app);
+const auth=getAuth(app);
+const gp=new GoogleAuthProvider();
+window._db=db;window._auth=auth;
+window._getDocs=getDocs;window._collection=collection;
+window._query=query;window._orderBy=orderBy;window._limit=limit;
+window._signInEmail=(e,p)=>signInWithEmailAndPassword(auth,e,p);
+window._signInGoogle=()=>signInWithPopup(auth,gp);
+window._signOut=()=>signOut(auth);
+window._onAuthStateChanged=(cb)=>onAuthStateChanged(auth,cb);
+</script>
+
+<script>
+const CEO_EMAIL='bigquamsmedia024@gmail.com';
+let _allLogs=[];
+let _currentUser=null;
+
+// ── AUTH ──
+setTimeout(()=>{
+  if(window._onAuthStateChanged){
+    window._onAuthStateChanged(user=>{
+      _currentUser=user;
+      if(user){
+        if(user.email!==CEO_EMAIL){
+          showAccessDenied();
+          window._signOut().catch(()=>{});
+          return;
+        }
+        showApp(user);
+      } else {
+        document.getElementById('loginGate').style.display='flex';
+        document.getElementById('app').style.display='none';
+      }
+    });
+  }
+},500);
+
+function showApp(user){
+  document.getElementById('loginGate').style.display='none';
+  document.getElementById('app').style.display='block';
+  const av=document.getElementById('hdrAvatar');
+  if(user.photoURL){av.src=user.photoURL;av.style.display='block';}
+  loadAll();
+}
+
+function showAccessDenied(){
+  document.getElementById('loginErr').style.display='none';
+  document.getElementById('accessDenied').style.display='block';
+}
+
+async function loginGoogle(){
+  try{
+    const cred=await window._signInGoogle();
+    if(cred.user.email!==CEO_EMAIL){
+      await window._signOut();
+      showAccessDenied();
+    }
+  }catch(e){
+    if(e.code!=='auth/popup-closed-by-user') showLoginErr(e.message);
+  }
+}
+window.loginGoogle=loginGoogle;
+
+async function loginEmail_pw(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pw=document.getElementById('loginPw').value;
+  if(!email||!pw){showLoginErr('Enter your email and password.');return;}
+  const btn=document.getElementById('loginBtn');
+  btn.disabled=true;btn.textContent='Signing in…';
+  try{
+    const cred=await window._signInEmail(email,pw);
+    if(cred.user.email!==CEO_EMAIL){
+      await window._signOut();
+      showAccessDenied();
+    }
+  }catch(e){
+    showLoginErr(
+      e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'?'Incorrect email or password.':
+      e.code==='auth/too-many-requests'?'Too many attempts. Try again later.':e.message
+    );
+  }
+  btn.disabled=false;btn.textContent='Sign In →';
+}
+window.loginEmail_pw=loginEmail_pw;
+
+function showLoginErr(msg){
+  const el=document.getElementById('loginErr');
+  el.textContent='❌ '+msg;el.style.display='block';
+  setTimeout(()=>el.style.display='none',5000);
+}
+
+function doLogout(){
+  if(!confirm('Sign out of CEO Dashboard?')) return;
+  window._signOut().then(()=>{location.reload();}).catch(()=>location.reload());
+}
+window.doLogout=doLogout;
+
+// ── LOAD DATA ──
+async function loadAll(){
+  const icon=document.getElementById('refreshIcon');
+  icon.classList.add('spinning');
+  document.getElementById('refreshInfo').textContent='Loading…';
+  try{
+    if(!window._db){await new Promise(r=>setTimeout(r,1000));}
+    const snap=await window._getDocs(window._collection(window._db,'admin_activity_log'));
+    _allLogs=snap.docs.map(d=>d.data()).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+    document.getElementById('lastRefreshed').textContent=new Date().toLocaleTimeString('en-NG');
+    document.getElementById('refreshInfo').textContent=`${_allLogs.length} total records loaded`;
+    updateStats();
+    applyFilters();
+    buildAdminProfiles();
+    buildTimeline();
+    buildAnalytics();
+    populateAdminFilter();
+  }catch(e){
+    document.getElementById('refreshInfo').textContent='Error: '+e.message;
+  }
+  icon.classList.remove('spinning');
+}
+window.loadAll=loadAll;
+
+// ── STATS ──
+function updateStats(){
+  const today=new Date().toLocaleDateString('en-NG');
+  const todayLogs=_allLogs.filter(l=>l.date===today);
+  const admins=new Set(_allLogs.map(l=>l.adminEmail)).size;
+  const deletes=_allLogs.filter(l=>l.actionType==='delete').length;
+  const logins=_allLogs.filter(l=>l.actionType==='login').length;
+  const edits=_allLogs.filter(l=>['edit','save','upload','add'].includes(l.actionType)).length;
+  document.getElementById('sc-total').textContent=_allLogs.length;
+  document.getElementById('sc-today').textContent=todayLogs.length;
+  document.getElementById('sc-admins').textContent=admins;
+  document.getElementById('sc-deletes').textContent=deletes;
+  document.getElementById('sc-logins').textContent=logins;
+  document.getElementById('sc-edits').textContent=edits;
+}
+
+// ── FILTERS ──
+function applyFilters(){
+  const q=(document.getElementById('logSearch').value||'').toLowerCase();
+  const action=document.getElementById('filterAction').value;
+  const admin=document.getElementById('filterAdmin').value;
+  const dateF=document.getElementById('filterDate').value;
+  const now=new Date();
+  const filtered=_allLogs.filter(l=>{
+    if(action&&l.actionType!==action) return false;
+    if(admin&&l.adminEmail!==admin) return false;
+    if(dateF){
+      const d=new Date(l.timestamp);
+      if(dateF==='today'&&d.toDateString()!==now.toDateString()) return false;
+      if(dateF==='week'){const diff=(now-d)/(1000*60*60*24);if(diff>7) return false;}
+      if(dateF==='month'){const diff=(now-d)/(1000*60*60*24);if(diff>30) return false;}
+    }
+    if(q){
+      const hay=[(l.adminEmail||''),(l.adminName||''),(l.actionType||''),(l.section||''),(l.detail||'')].join(' ').toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  renderLogTable(filtered);
+  document.getElementById('logCount').textContent=`Showing ${filtered.length} of ${_allLogs.length} records`;
+}
+window.applyFilters=applyFilters;
+
+function populateAdminFilter(){
+  const emails=[...new Set(_allLogs.map(l=>l.adminEmail).filter(Boolean))];
+  const sel=document.getElementById('filterAdmin');
+  sel.innerHTML='<option value="">All Admins</option>'+emails.map(e=>`<option value="${e}">${e}</option>`).join('');
+}
+
+// ── LOG TABLE ──
+function renderLogTable(logs){
+  const ACTION_ICONS={login:'🔓',logout:'🔒',add:'➕',edit:'✏️',delete:'🗑️',save:'💾',upload:'📤'};
+  const tbody=document.getElementById('logTableBody');
+  if(!logs.length){
+    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted)">No records match your filters</td></tr>';
+    return;
+  }
+  tbody.innerHTML=logs.map((l,i)=>{
+    const isCeo=l.adminEmail===CEO_EMAIL;
+    const cls='ab-'+(l.actionType||'save');
+    const icon=ACTION_ICONS[l.actionType]||'⚡';
+    const dt=l.timestamp?new Date(l.timestamp):null;
+    const timeStr=dt?dt.toLocaleString('en-NG',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):(l.date+' '+l.time);
+    return`<tr>
+      <td style="color:var(--muted);font-size:.7rem">${i+1}</td>
+      <td style="font-size:.72rem;color:var(--muted);white-space:nowrap">${timeStr}</td>
+      <td>
+        <div style="font-size:.78rem;font-weight:700;color:var(--text)">${l.adminName||'Unknown'}</div>
+        <div style="font-size:.64rem;color:var(--muted)">${l.adminEmail||''}${isCeo?'<span class="ceo-pill">👑 CEO</span>':''}</div>
+      </td>
+      <td><span class="action-badge ${cls}">${icon} ${l.actionType||'—'}</span></td>
+      <td style="font-size:.76rem;color:var(--text)">${l.section||'—'}</td>
+      <td style="font-size:.74rem;color:var(--muted);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(l.detail||'').replace(/"/g,'&quot;')}">${l.detail||'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── ADMIN PROFILES ──
+function buildAdminProfiles(){
+  const byEmail={};
+  _allLogs.forEach(l=>{
+    const e=l.adminEmail||'unknown';
+    if(!byEmail[e]) byEmail[e]={email:e,name:l.adminName||'Admin',actions:0,deletes:0,adds:0,edits:0,logins:0,lastSeen:null,dates:new Set()};
+    byEmail[e].actions++;
+    if(l.actionType==='delete') byEmail[e].deletes++;
+    if(l.actionType==='add') byEmail[e].adds++;
+    if(['edit','save'].includes(l.actionType)) byEmail[e].edits++;
+    if(l.actionType==='login') byEmail[e].logins++;
+    const ts=l.timestamp?new Date(l.timestamp):null;
+    if(ts&&(!byEmail[e].lastSeen||ts>byEmail[e].lastSeen)) byEmail[e].lastSeen=ts;
+    if(l.date) byEmail[e].dates.add(l.date);
+  });
+  const admins=Object.values(byEmail).sort((a,b)=>b.actions-a.actions);
+  if(!admins.length){
+    document.getElementById('adminsGrid').innerHTML='<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">No admins recorded yet</div><div class="empty-sub">Activity will appear here once admins start logging in</div></div>';
+    return;
+  }
+  const now=new Date();
+  document.getElementById('adminsGrid').innerHTML=admins.map(a=>{
+    const isCeo=a.email===CEO_EMAIL;
+    const lastSeenStr=a.lastSeen?timeSince(a.lastSeen):'Never';
+    const recentMins=a.lastSeen?((now-a.lastSeen)/60000):999;
+    const isOnline=recentMins<30;
+    return`<div class="admin-card">
+      <div class="admin-card-top">
+        <div class="admin-avatar-ph">👤</div>
+        <div class="admin-info">
+          <div class="admin-name">
+            ${a.name}
+            <span class="tag ${isCeo?'tag-ceo':'tag-admin'}">${isCeo?'👑 CEO':'Admin'}</span>
+          </div>
+          <div class="admin-email" title="${a.email}">${a.email}</div>
+        </div>
+        <div class="online-dot${isOnline?' active':''}" title="${isOnline?'Active in last 30 min':'Offline'}"></div>
+      </div>
+      <div class="admin-stats">
+        <div class="admin-stat"><div class="admin-stat-num">${a.actions}</div><div class="admin-stat-lbl">Actions</div></div>
+        <div class="admin-stat"><div class="admin-stat-num" style="color:#fbbf24">${a.edits}</div><div class="admin-stat-lbl">Edits</div></div>
+        <div class="admin-stat"><div class="admin-stat-num" style="color:#f87171">${a.deletes}</div><div class="admin-stat-lbl">Deletes</div></div>
+        <div class="admin-stat"><div class="admin-stat-num" style="color:#60a5fa">${a.adds}</div><div class="admin-stat-lbl">Adds</div></div>
+        <div class="admin-stat"><div class="admin-stat-num" style="color:#34d399">${a.logins}</div><div class="admin-stat-lbl">Logins</div></div>
+        <div class="admin-stat"><div class="admin-stat-num">${a.dates.size}</div><div class="admin-stat-lbl">Active Days</div></div>
+      </div>
+      <div class="last-seen">🕐 Last seen: <strong>${lastSeenStr}</strong></div>
+    </div>`;
+  }).join('');
+}
+
+// ── TIMELINE ──
+function buildTimeline(){
+  const recent=_allLogs.slice(0,50);
+  const ACTION_ICONS={login:'🔓',logout:'🔒',add:'➕',edit:'✏️',delete:'🗑️',save:'💾',upload:'📤'};
+  const ACTION_COLORS={login:'var(--green)',logout:'var(--muted)',add:'var(--blue-light)',edit:'var(--yellow)',delete:'var(--red)',save:'var(--purple)',upload:'var(--cyan)'};
+  if(!recent.length){
+    document.getElementById('timelineList').innerHTML='<div class="empty-state"><div class="empty-icon">🕐</div><div class="empty-title">No activity yet</div><div class="empty-sub">Actions will appear here once admins start working</div></div>';
+    return;
+  }
+  document.getElementById('timelineList').innerHTML=recent.map((l,i)=>{
+    const color=ACTION_COLORS[l.actionType]||'var(--muted)';
+    const icon=ACTION_ICONS[l.actionType]||'⚡';
+    const isCeo=l.adminEmail===CEO_EMAIL;
+    const ts=l.timestamp?new Date(l.timestamp):null;
+    const timeStr=ts?ts.toLocaleString('en-NG',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):((l.date||'')+(l.time?' · '+l.time:''));
+    return`<div class="tl-item">
+      <div class="tl-dot-wrap">
+        <div class="tl-dot" style="background:${color}22">${icon}</div>
+        ${i<recent.length-1?'<div class="tl-line"></div>':''}
+      </div>
+      <div class="tl-content">
+        <div class="tl-top">
+          <span class="tl-admin">${l.adminName||'Admin'}${isCeo?'<span class="ceo-pill">👑</span>':''}</span>
+          <span class="tl-section">${l.section||'—'}</span>
+          <span class="tl-time">${timeStr}</span>
+        </div>
+        <div class="tl-detail">${l.detail||'—'} <span style="color:var(--muted);font-size:.66rem">(${l.adminEmail||''})</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ANALYTICS ──
+function buildAnalytics(){
+  const COLORS={login:'#34d399',logout:'#9ca3af',add:'#60a5fa',edit:'#fbbf24',delete:'#f87171',save:'#c4b5fd',upload:'#22d3ee'};
+
+  // By action type
+  const byType={};
+  _allLogs.forEach(l=>{const t=l.actionType||'other';byType[t]=(byType[t]||0)+1;});
+  const maxType=Math.max(...Object.values(byType),1);
+  document.getElementById('chartByType').innerHTML=Object.entries(byType).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+    <div class="bar-row">
+      <div class="bar-lbl">${k}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v/maxType*100).toFixed(1)}%;background:${COLORS[k]||'var(--blue-light)'}"></div></div>
+      <div class="bar-val">${v}</div>
+    </div>`).join('');
+
+  // By admin
+  const byAdmin={};
+  _allLogs.forEach(l=>{const n=l.adminName||l.adminEmail||'Unknown';byAdmin[n]=(byAdmin[n]||0)+1;});
+  const maxAdmin=Math.max(...Object.values(byAdmin),1);
+  document.getElementById('chartByAdmin').innerHTML=Object.entries(byAdmin).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>`
+    <div class="bar-row">
+      <div class="bar-lbl" style="font-size:.6rem">${k.length>12?k.substring(0,12)+'…':k}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v/maxAdmin*100).toFixed(1)}%;background:var(--blue-light)"></div></div>
+      <div class="bar-val">${v}</div>
+    </div>`).join('');
+
+  // By section
+  const bySection={};
+  _allLogs.forEach(l=>{const s=l.section||'other';bySection[s]=(bySection[s]||0)+1;});
+  const maxSec=Math.max(...Object.values(bySection),1);
+  document.getElementById('chartBySection').innerHTML=Object.entries(bySection).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>`
+    <div class="bar-row">
+      <div class="bar-lbl" style="font-size:.6rem">${k.length>12?k.substring(0,12)+'…':k}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v/maxSec*100).toFixed(1)}%;background:var(--orange)"></div></div>
+      <div class="bar-val">${v}</div>
+    </div>`).join('');
+
+  // Last 7 days
+  const last7={};
+  for(let i=6;i>=0;i--){
+    const d=new Date(Date.now()-i*86400000);
+    const key=d.toLocaleDateString('en-NG');
+    const label=i===0?'Today':i===1?'Yesterday':d.toLocaleDateString('en-NG',{weekday:'short'});
+    last7[key]={label,count:0};
+  }
+  _allLogs.forEach(l=>{if(l.date&&last7[l.date]) last7[l.date].count++;});
+  const maxDay=Math.max(...Object.values(last7).map(x=>x.count),1);
+  document.getElementById('chartByDay').innerHTML=Object.values(last7).map(({label,count})=>`
+    <div class="bar-row">
+      <div class="bar-lbl">${label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(count/maxDay*100).toFixed(1)}%;background:var(--green)"></div></div>
+      <div class="bar-val">${count}</div>
+    </div>`).join('');
+}
+
+// ── EXPORT ──
+function exportCSV(){
+  if(!_allLogs.length){alert('No data to export.');return;}
+  const rows=[['#','Timestamp','Admin Name','Admin Email','Action','Section','Detail','Date','Time']];
+  _allLogs.forEach((l,i)=>rows.push([i+1,l.timestamp||'',l.adminName||'',l.adminEmail||'',l.actionType||'',l.section||'',l.detail||'',l.date||'',l.time||'']));
+  const csv=rows.map(r=>r.map(v=>'"'+(String(v)).replace(/"/g,'""')+'"').join(',')).join('\n');
+  dl('bqm-activity-'+new Date().toISOString().substring(0,10)+'.csv','data:text/csv;charset=utf-8,'+encodeURIComponent(csv));
+}
+window.exportCSV=exportCSV;
+
+function exportJSON(){
+  if(!_allLogs.length){alert('No data to export.');return;}
+  dl('bqm-activity-'+new Date().toISOString().substring(0,10)+'.json','data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(_allLogs,null,2)));
+}
+window.exportJSON=exportJSON;
+
+function dl(name,href){const a=document.createElement('a');a.href=href;a.download=name;a.click();}
+
+// ── TABS ──
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+window.switchTab=switchTab;
+
+// ── UTILS ──
+function timeSince(date){
+  const secs=Math.floor((new Date()-date)/1000);
+  if(secs<60) return 'Just now';
+  if(secs<3600) return Math.floor(secs/60)+'m ago';
+  if(secs<86400) return Math.floor(secs/3600)+'h ago';
+  return Math.floor(secs/86400)+'d ago';
+}
+</script>
+</body>
+</html>
