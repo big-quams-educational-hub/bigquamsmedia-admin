@@ -402,6 +402,9 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div id="registerForm" style="display:none">
         <label class="login-field-label">Full Name</label>
         <input class="login-input" type="text" id="regName" placeholder="e.g. Abdulraheem" autocomplete="name">
+        <label class="login-field-label">Your Tag / Nickname <span style="color:#dc2626">*</span></label>
+        <input class="login-input" type="text" id="regNickname" placeholder="e.g. QuamsJr, TechAdmin, NewsGuru…" maxlength="24" autocomplete="off">
+        <div style="font-size:.68rem;color:#64748b;margin:-8px 0 10px;padding:0 2px">This tag will appear on every article you publish e.g. "Posted by QuamsJr"</div>
         <label class="login-field-label">Email Address</label>
         <input class="login-input" type="email" id="regEmail" placeholder="your@email.com" autocomplete="email">
         <label class="login-field-label">Password</label>
@@ -2179,7 +2182,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, sendPasswordResetEmail, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const fbConfig = {
@@ -2204,6 +2207,8 @@ window.addDoc       = addDoc;
 window.updateDoc    = updateDoc;
 window.deleteDoc    = deleteDoc;
 window.doc          = doc;
+window.getDoc       = getDoc;
+window.setDoc       = setDoc;
 window.serverTimestamp = serverTimestamp;
 window.query        = query;
 window.orderBy      = orderBy;
@@ -2326,10 +2331,13 @@ window.signInWithEmail=signInWithEmail;
 // ── Create account ──
 async function createAccount(){
   const name=document.getElementById('regName').value.trim();
+  const nickname=document.getElementById('regNickname').value.trim();
   const email=document.getElementById('regEmail').value.trim();
   const pass=document.getElementById('regPassword').value;
   const conf=document.getElementById('regConfirm').value;
   if(!name||!email||!pass){showLoginError('Fill in all fields.');return;}
+  if(!nickname){showLoginError('Please enter your tag/nickname — it will appear on your articles.');return;}
+  if(nickname.length<2){showLoginError('Nickname must be at least 2 characters.');return;}
   if(pass!==conf){showLoginError('Passwords do not match.');return;}
   if(pass.length<6){showLoginError('Password must be at least 6 characters.');return;}
   const btn=document.querySelector('#registerForm .login-btn');btn.disabled=true;btn.textContent='Creating account…';
@@ -2337,6 +2345,15 @@ async function createAccount(){
     if(!window.auth) throw new Error('Auth not ready — wait a moment and try again.');
     const cred=await window.createUserWithEmailAndPassword(window.auth,email,pass);
     await window.updateProfile(cred.user,{displayName:name});
+    // Save admin profile with nickname to Firestore
+    await window.setDoc(window.doc(window.db,'admin_profiles',cred.user.uid),{
+      uid:cred.user.uid,
+      name:name,
+      nickname:nickname,
+      email:email,
+      createdAt:new Date().toISOString(),
+      role:'admin',
+    });
     goToStep2(cred.user);
   }catch(e){
     showLoginError(e.code==='auth/email-already-in-use'?'An account with this email already exists.':e.code==='auth/weak-password'?'Password is too weak.':e.message);
@@ -2377,24 +2394,52 @@ async function verifyTeamPIN(){
   const pin=document.getElementById('teamPIN').value.trim();
   if(!pin.startsWith('ghp_')){showLoginError('Invalid team access PIN. Must start with ghp_');return;}
   const btn=document.querySelector('#loginStep2 .login-btn');btn.disabled=true;btn.textContent='Verifying…';
-  // Verify token works by testing GitHub API
   try{
     const test=await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}`,{headers:{Authorization:'token '+pin,Accept:'application/vnd.github.v3+json'}});
     if(!test.ok) throw new Error('Token rejected');
     ghToken=pin;
     sessionStorage.setItem('bqm_token',pin);
     sessionStorage.setItem('bqm_auth','1');
-    sessionStorage.setItem('bqm_user',JSON.stringify({name:firebaseUser?.displayName||'Admin',email:firebaseUser?.email||'',photo:firebaseUser?.photoURL||''}));
+
+    // ── Resolve nickname ──
+    const isCEO=firebaseUser?.email==='bigquamsmedia024@gmail.com';
+    let resolvedNickname='';
+    if(isCEO){
+      resolvedNickname='Quams';
+    } else if(firebaseUser){
+      // Try Firestore admin_profiles first
+      try{
+        const profDoc=await window.getDoc(window.doc(window.db,'admin_profiles',firebaseUser.uid));
+        if(profDoc.exists()&&profDoc.data().nickname){
+          resolvedNickname=profDoc.data().nickname;
+        }
+      }catch(e){}
+      // Fallback to displayName
+      if(!resolvedNickname) resolvedNickname=firebaseUser.displayName||firebaseUser.email.split('@')[0];
+    }
+
+    sessionStorage.setItem('bqm_user',JSON.stringify({
+      name:firebaseUser?.displayName||'Admin',
+      email:firebaseUser?.email||'',
+      photo:firebaseUser?.photoURL||'',
+      nickname:resolvedNickname,
+      isCEO:isCEO,
+    }));
+
     // Log admin login
     setTimeout(()=>logAdminActivity('login','Session','Admin logged in'),600);
+
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('adminApp').style.display='block';
-    // Update topbar with user info
-    const u=firebaseUser;
-    if(u){
-      const badge=document.getElementById('topBadge');
-      if(badge) badge.textContent=(u.displayName||u.email.split('@')[0])+' · Admin';
-    }
+
+    // Update topbar
+    const badge=document.getElementById('topBadge');
+    if(badge) badge.textContent=(isCEO?'👑 Quams':resolvedNickname)+' · '+(isCEO?'CEO':'Admin');
+
+    // Auto-fill author field with nickname
+    const authorField=document.getElementById('addAuthor');
+    if(authorField) authorField.value=isCEO?'BIG QUAMS MEDIA':resolvedNickname;
+
     init();
   }catch(e){showLoginError('Team access PIN is invalid or expired. Check with the site owner.');}
   btn.disabled=false;btn.textContent='Enter Admin Panel →';
@@ -2549,7 +2594,7 @@ window.switchSection=function(s){
 if(sessionStorage.getItem('bqm_auth')==='1'&&sessionStorage.getItem('bqm_token')){
   ghToken=sessionStorage.getItem('bqm_token');
   const savedUser=sessionStorage.getItem('bqm_user');
-  if(savedUser){try{const u=JSON.parse(savedUser);const b=document.getElementById('topBadge');if(b)b.textContent=(u.name||'Admin')+' · Admin';}catch(e){}}
+  if(savedUser){try{const u=JSON.parse(savedUser);const nick=u.nickname||(u.isCEO?'Quams':u.name||'Admin');const b=document.getElementById('topBadge');if(b)b.textContent=(u.isCEO?'👑 Quams':nick)+' · '+(u.isCEO?'CEO':'Admin');setTimeout(()=>{const af=document.getElementById('addAuthor');if(af)af.value=u.isCEO?'BIG QUAMS MEDIA':(nick||'BIG QUAMS MEDIA');},400);}catch(e){}}
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminApp').style.display='block';
   setTimeout(()=>{if(ghToken)init();},300);
@@ -2798,16 +2843,33 @@ function renderNews(){
       ${item.image?`<img src="${item.image}" style="width:100%;max-height:70px;object-fit:cover;" alt="">`:''}
       <div class="item-body">
         <div class="item-title">${item.title}</div>
-        <div class="item-meta"><span class="item-cat">${item.category||'News'}</span> ${item.date||''} ${item.author?'· ✍️ '+item.author:''}</div>
+        <div class="item-meta"><span class="item-cat">${item.category||'News'}</span> ${item.date||''} ${item.author?'· ✍️ Posted by <strong>'+item.author+'</strong>':''}</div>
         <div class="item-preview">${(item.summary||'').slice(0,120)}…</div>
         <div class="item-actions">
           <button class="btn btn-outline btn-sm" onclick="openEditNews(${idx})">✏️ Edit</button>
           <button class="btn ${pin?'btn-warning':'btn-ghost'} btn-sm" onclick="togglePin(${idx})">${pin?'📌 Unpin':'📌 Pin'}</button>
+          <button class="btn btn-ghost btn-sm" id="copyBtn-${idx}" onclick="copyArticleLink(${idx},'copyBtn-${idx}')">🔗 Copy Link</button>
           <button class="btn btn-danger btn-sm" onclick="deleteNews(${idx})">🗑 Delete</button>
         </div>
       </div></div>`;
   }).join('')+'</div>';
 }
+
+function copyArticleLink(idx,btnId){
+  const item=newsData[idx]; if(!item) return;
+  const articleLink=item.link||'https://wa.me/message/OVCVEDHU3I2PH1';
+  const text=item.title+'\n\nRead more: '+articleLink;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById(btnId);
+    if(btn){btn.textContent='✅ Copied!';btn.style.color='#16a34a';}
+    setTimeout(()=>{if(btn){btn.textContent='🔗 Copy Link';btn.style.color='';}},2500);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    const btn=document.getElementById(btnId);
+    if(btn){btn.textContent='✅ Copied!';setTimeout(()=>btn.textContent='🔗 Copy Link',2500);}
+  });
+}
+window.copyArticleLink=copyArticleLink;
 
 async function addNews(){
   const title=document.getElementById('addTitle').value.trim();
@@ -2817,7 +2879,9 @@ async function addNews(){
   const summary=document.getElementById('addSummary').value.trim();
   const fullContent=document.getElementById('addFullContent').value.trim();
   const pinned=document.getElementById('addPinned').value==='true';
-  const author=document.getElementById('addAuthor').value.trim()||'BIG QUAMS MEDIA';
+  // Author: always use session nickname, never editable manually
+  let author='BIG QUAMS MEDIA';
+  try{const u=JSON.parse(sessionStorage.getItem('bqm_user')||'{}');author=u.isCEO?'BIG QUAMS MEDIA':(u.nickname||u.name||'BIG QUAMS MEDIA');}catch(e){}
   if(!title||!category||!summary||!fullContent){showStatus('error','Fill in Title, Category, Summary and Content.');return;}
   if(pinned&&newsData.filter(n=>n.pinned).length>=3){showStatus('error','Max 3 pinned articles. Unpin one first.');return;}
   const item={title,category,date,author,summary,fullContent,link:'https://wa.me/message/OVCVEDHU3I2PH1'};

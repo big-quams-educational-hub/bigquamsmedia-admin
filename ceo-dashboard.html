@@ -9,11 +9,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0d1117;--surface:#161b27;--surface2:#1e2736;--border:#2a3550;
+  --bg:#f5f7ff;--surface:#ffffff;--surface2:#f0f4ff;--border:#e2e8f4;
   --blue:#1a3fa8;--blue-light:#3b62d4;--orange:#f97316;--green:#10b981;
   --red:#ef4444;--yellow:#f59e0b;--purple:#8b5cf6;--cyan:#06b6d4;
-  --text:#e6edf3;--muted:#8b949e;--radius:12px;
-  --shadow:0 8px 32px rgba(0,0,0,.4);
+  --text:#1e2749;--muted:#64748b;--radius:12px;
+  --shadow:0 8px 28px rgba(26,63,168,.10);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -23,13 +23,13 @@ button{cursor:pointer;font-family:inherit}
 
 /* ── LOGIN GATE ── */
 #loginGate{
-  position:fixed;inset:0;background:linear-gradient(135deg,#060d1f,#0c1a3a,#101f50);
+  position:fixed;inset:0;background:linear-gradient(135deg,#0c1f6e,#1a3fa8,#2563eb);
   display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;
 }
 .login-card{
-  background:#161b27;border:1.5px solid #2a3550;border-radius:20px;
+  background:#ffffff;border:1.5px solid #e2e8f4;border-radius:20px;
   padding:36px 28px;width:100%;max-width:380px;text-align:center;
-  box-shadow:0 32px 80px rgba(0,0,0,.6);
+  box-shadow:0 32px 80px rgba(26,63,168,.15);
   animation:pop .4s cubic-bezier(.34,1.56,.64,1);
 }
 @keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
@@ -47,9 +47,9 @@ button{cursor:pointer;font-family:inherit}
 .email-input{
   width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:9px;
   font-size:.9rem;font-family:'Roboto',sans-serif;color:var(--text);
-  background:#0d1117;margin-bottom:10px;transition:.2s;
+  background:#f8faff;margin-bottom:10px;transition:.2s;
 }
-.email-input:focus{outline:none;border-color:var(--blue-light);box-shadow:0 0 0 3px rgba(59,98,212,.12)}
+.email-input:focus{outline:none;border-color:var(--blue-light);box-shadow:0 0 0 3px rgba(59,98,212,.08)}
 .login-btn{
   width:100%;padding:13px;background:linear-gradient(135deg,#0c1f6e,#1a3fa8);
   color:#fff;border:none;border-radius:9px;font-family:'Montserrat',sans-serif;
@@ -65,8 +65,8 @@ button{cursor:pointer;font-family:inherit}
 /* ── APP SHELL ── */
 #app{display:none}
 header{
-  background:#161b27;border-bottom:1px solid var(--border);
-  position:sticky;top:0;z-index:200;
+  background:linear-gradient(135deg,#0c1f6e,#1a3fa8);border-bottom:none;
+  position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(12,31,110,.25);
 }
 .header-inner{
   max-width:1400px;margin:0 auto;padding:0 20px;
@@ -74,8 +74,8 @@ header{
 }
 .header-brand{display:flex;align-items:center;gap:10px;margin-right:auto}
 .header-brand img{width:36px;height:36px;border-radius:50%;border:2px solid var(--orange)}
-.brand-name{font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:800;color:var(--text)}
-.brand-sub{font-size:.55rem;color:var(--muted);display:block}
+.brand-name{font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:800;color:#fff}
+.brand-sub{font-size:.55rem;color:rgba(255,255,255,.55);display:block}
 .header-badge{
   background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.3);
   color:var(--orange);font-size:.7rem;font-weight:800;padding:5px 12px;border-radius:20px;
@@ -101,12 +101,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 .page-sub span{color:var(--green);font-weight:700}
 
 /* ── TABS ── */
-.tab-bar{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+.tab-bar{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;overflow-x:auto;padding-bottom:4px}
 .tab-btn{
-  padding:9px 18px;border-radius:9px;border:1.5px solid var(--border);
+  padding:9px 14px;border-radius:9px;border:1.5px solid var(--border);
   background:var(--surface);color:var(--muted);font-family:'Montserrat',sans-serif;
-  font-size:.78rem;font-weight:700;cursor:pointer;transition:.18s;
-  display:flex;align-items:center;gap:7px;
+  font-size:.76rem;font-weight:700;cursor:pointer;transition:.18s;
+  display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0;
 }
 .tab-btn:hover{border-color:var(--blue-light);color:var(--text)}
 .tab-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
@@ -151,12 +151,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 .log-search{
   flex:1;min-width:180px;padding:9px 13px;border:1.5px solid var(--border);
   border-radius:8px;font-size:.82rem;font-family:'Roboto',sans-serif;
-  color:var(--text);background:#0d1117;transition:.2s;
+  color:var(--text);background:#f8faff;transition:.2s;
 }
 .log-search:focus{outline:none;border-color:var(--blue-light)}
 .log-select{
   padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;
-  font-size:.82rem;font-family:'Roboto',sans-serif;color:var(--text);background:#0d1117;
+  font-size:.82rem;font-family:'Roboto',sans-serif;color:var(--text);background:#f8faff;
 }
 .btn-sm{
   padding:8px 14px;border-radius:8px;border:1.5px solid var(--border);
@@ -173,7 +173,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 .log-table-wrap{max-height:520px;overflow-y:auto}
 .log-table{width:100%;border-collapse:collapse;font-size:.8rem}
 .log-table th{
-  position:sticky;top:0;background:#1e2736;padding:11px 16px;
+  position:sticky;top:0;background:#eef2ff;padding:11px 16px;
   text-align:left;font-family:'Montserrat',sans-serif;font-size:.65rem;
   font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;
   border-bottom:1px solid var(--border);white-space:nowrap;
@@ -200,9 +200,9 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 .admins-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
 .admin-card{
   background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);
-  padding:18px;transition:.2s;
+  padding:18px;transition:.2s;box-shadow:0 2px 12px rgba(26,63,168,.06);
 }
-.admin-card:hover{border-color:var(--blue-light)}
+.admin-card:hover{border-color:var(--blue-light);box-shadow:0 6px 20px rgba(26,63,168,.10)}
 .admin-card-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .admin-avatar{
   width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;
@@ -280,6 +280,32 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 .tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.62rem;font-weight:700}
 .tag-ceo{background:rgba(245,158,11,.15);color:#fbbf24}
 .tag-admin{background:rgba(26,63,168,.15);color:#60a5fa}
+
+/* ── MOBILE RESPONSIVE ── */
+@media(max-width:600px){
+  main{padding:16px 12px 50px}
+  .page-title{font-size:1.1rem}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .stat-num{font-size:1.2rem}
+  .log-controls{flex-direction:column;gap:8px}
+  .log-search{min-width:unset;width:100%}
+  .log-select{width:100%}
+  .log-table{font-size:.72rem}
+  .log-table th,.log-table td{padding:8px 10px}
+  .admins-grid{grid-template-columns:1fr}
+  .charts-grid{grid-template-columns:1fr}
+  .card-header{flex-direction:column;align-items:flex-start;gap:4px}
+  .refresh-row{flex-direction:column;align-items:flex-start;gap:8px}
+  .refresh-info{margin-left:0}
+  .header-inner{padding:0 12px;gap:8px}
+  .brand-sub{display:none}
+  .logout-hdr-btn{padding:5px 9px;font-size:.66rem}
+  .header-badge{display:none}
+}
+@media(max-width:400px){
+  .log-table th:nth-child(6),.log-table td:nth-child(6){display:none}
+  .log-table th:nth-child(1),.log-table td:nth-child(1){display:none}
+}
 </style>
 </head>
 <body>
@@ -615,7 +641,7 @@ async function loadAll(){
     document.getElementById('refreshInfo').textContent=`${_allLogs.length} total records loaded`;
     updateStats();
     applyFilters();
-    buildAdminProfiles();
+    await buildAdminProfiles();
     buildTimeline();
     buildAnalytics();
     populateAdminFilter();
@@ -704,11 +730,12 @@ function renderLogTable(logs){
 }
 
 // ── ADMIN PROFILES ──
-function buildAdminProfiles(){
+async function buildAdminProfiles(){
+  // Build activity stats from logs
   const byEmail={};
   _allLogs.forEach(l=>{
     const e=l.adminEmail||'unknown';
-    if(!byEmail[e]) byEmail[e]={email:e,name:l.adminName||'Admin',actions:0,deletes:0,adds:0,edits:0,logins:0,lastSeen:null,dates:new Set()};
+    if(!byEmail[e]) byEmail[e]={email:e,name:l.adminName||'Admin',nickname:'',actions:0,deletes:0,adds:0,edits:0,logins:0,lastSeen:null,dates:new Set()};
     byEmail[e].actions++;
     if(l.actionType==='delete') byEmail[e].deletes++;
     if(l.actionType==='add') byEmail[e].adds++;
@@ -718,6 +745,19 @@ function buildAdminProfiles(){
     if(ts&&(!byEmail[e].lastSeen||ts>byEmail[e].lastSeen)) byEmail[e].lastSeen=ts;
     if(l.date) byEmail[e].dates.add(l.date);
   });
+
+  // Fetch nicknames from admin_profiles Firestore collection
+  try{
+    const snap=await window._getDocs(window._collection(window._db,'admin_profiles'));
+    snap.forEach(d=>{
+      const p=d.data();
+      if(p.email&&byEmail[p.email]){
+        byEmail[p.email].nickname=p.nickname||'';
+        byEmail[p.email].name=p.name||byEmail[p.email].name;
+      }
+    });
+  }catch(e){ console.warn('Could not load admin_profiles',e); }
+
   const admins=Object.values(byEmail).sort((a,b)=>b.actions-a.actions);
   if(!admins.length){
     document.getElementById('adminsGrid').innerHTML='<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">No admins recorded yet</div><div class="empty-sub">Activity will appear here once admins start logging in</div></div>';
@@ -726,30 +766,34 @@ function buildAdminProfiles(){
   const now=new Date();
   document.getElementById('adminsGrid').innerHTML=admins.map(a=>{
     const isCeo=a.email===CEO_EMAIL;
+    const displayNick=isCeo?'Quams':(a.nickname||a.name||'Admin');
     const lastSeenStr=a.lastSeen?timeSince(a.lastSeen):'Never';
     const recentMins=a.lastSeen?((now-a.lastSeen)/60000):999;
     const isOnline=recentMins<30;
+    const initial=displayNick.charAt(0).toUpperCase();
+    const avatarBg=isCeo?'linear-gradient(135deg,#f97316,#ea6c00)':'linear-gradient(135deg,#1a3fa8,#3b62d4)';
     return`<div class="admin-card">
       <div class="admin-card-top">
-        <div class="admin-avatar-ph">👤</div>
+        <div class="admin-avatar-ph" style="background:${avatarBg}">${initial}</div>
         <div class="admin-info">
           <div class="admin-name">
-            ${a.name}
-            <span class="tag ${isCeo?'tag-ceo':'tag-admin'}">${isCeo?'👑 CEO':'Admin'}</span>
+            ${isCeo?'👑':''} <span style="font-size:1rem">${displayNick}</span>
+            <span class="tag ${isCeo?'tag-ceo':'tag-admin'}">${isCeo?'CEO':'Admin'}</span>
           </div>
           <div class="admin-email" title="${a.email}">${a.email}</div>
+          ${!isCeo&&a.name&&a.name!==displayNick?'<div style="font-size:.62rem;color:#94a3b8;margin-top:1px">'+a.name+'</div>':''}
         </div>
         <div class="online-dot${isOnline?' active':''}" title="${isOnline?'Active in last 30 min':'Offline'}"></div>
       </div>
       <div class="admin-stats">
         <div class="admin-stat"><div class="admin-stat-num">${a.actions}</div><div class="admin-stat-lbl">Actions</div></div>
-        <div class="admin-stat"><div class="admin-stat-num" style="color:#fbbf24">${a.edits}</div><div class="admin-stat-lbl">Edits</div></div>
-        <div class="admin-stat"><div class="admin-stat-num" style="color:#f87171">${a.deletes}</div><div class="admin-stat-lbl">Deletes</div></div>
-        <div class="admin-stat"><div class="admin-stat-num" style="color:#60a5fa">${a.adds}</div><div class="admin-stat-lbl">Adds</div></div>
-        <div class="admin-stat"><div class="admin-stat-num" style="color:#34d399">${a.logins}</div><div class="admin-stat-lbl">Logins</div></div>
+        <div class="admin-stat"><div class="admin-stat-num" style="color:#f59e0b">${a.edits}</div><div class="admin-stat-lbl">Edits</div></div>
+        <div class="admin-stat"><div class="admin-stat-num" style="color:#ef4444">${a.deletes}</div><div class="admin-stat-lbl">Deletes</div></div>
+        <div class="admin-stat"><div class="admin-stat-num" style="color:#3b82f6">${a.adds}</div><div class="admin-stat-lbl">Adds</div></div>
+        <div class="admin-stat"><div class="admin-stat-num" style="color:#10b981">${a.logins}</div><div class="admin-stat-lbl">Logins</div></div>
         <div class="admin-stat"><div class="admin-stat-num">${a.dates.size}</div><div class="admin-stat-lbl">Active Days</div></div>
       </div>
-      <div class="last-seen">🕐 Last seen: <strong>${lastSeenStr}</strong></div>
+      <div class="last-seen">🕐 Last seen: <strong>${lastSeenStr}</strong> ${isOnline?'<span style="color:#10b981;font-weight:700">● Online</span>':''}</div>
     </div>`;
   }).join('');
 }
