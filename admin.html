@@ -2854,9 +2854,7 @@ async function sendPushNotification(){
     snap.forEach(d=>{if(d.data().token&&d.data().active!==false) tokens.push(d.data().token);});
     if(!tokens.length){showPushStatus('error','❌ No subscribed devices found. Students need to enable notifications first.');btn.disabled=false;btn.textContent='📢 Send to All Students';return;}
     showPushStatus('info',`⏳ Sending to ${tokens.length} devices via service worker broadcast…`);
-    // Use sw.js postMessage broadcast for each token via FCM V1 API
-    // We send via Firestore trigger doc that sw.js picks up, OR direct FCM HTTP V1
-    // Store broadcast record in Firestore — sw.js onMessage will handle delivery
+    // Save broadcast record to Firestore
     const broadcastRef=window.doc(window.db,'push_broadcasts',Date.now().toString());
     await window.setDoc(broadcastRef,{
       title,body,link,icon,
@@ -2866,6 +2864,15 @@ async function sendPushNotification(){
       sentAt:new Date().toISOString(),
       status:'sent',
     });
+    // Broadcast to all open service worker clients immediately
+    if('serviceWorker' in navigator && navigator.serviceWorker.controller){
+      navigator.serviceWorker.controller.postMessage({
+        type:'BROADCAST_NOTIFICATION',
+        title,body,icon,
+        url:link,
+        tag:'bqm-broadcast-'+Date.now(),
+      });
+    }
     // Save to local history
     const hist=JSON.parse(localStorage.getItem(PUSH_HISTORY_KEY)||'[]');
     hist.unshift({title,body,link,tokens:tokens.length,sentAt:new Date().toISOString()});
