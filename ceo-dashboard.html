@@ -369,6 +369,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <button class="tab-btn" onclick="switchTab('timeline',this)">🕐 Live Timeline</button>
       <button class="tab-btn" onclick="switchTab('analytics',this)">📊 Analytics</button>
       <button class="tab-btn" onclick="switchTab('referrals',this)">🔗 Referrals</button>
+      <button class="tab-btn" onclick="switchTab('cbtanalytics',this)">📊 CBT Analytics</button>
     </div>
 
     <!-- ── TAB: FULL LOG ── -->
@@ -519,6 +520,82 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       </div>
     </div>
 
+    <!-- ── TAB: CBT ANALYTICS ── -->
+    <div class="tab-panel" id="tab-cbtanalytics">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadCBTAnalytics()"><span id="cbtaRefreshIcon">🔄</span> Load CBT Data</button>
+        <div class="refresh-info" id="cbtaRefreshInfo">Click to load student analytics</div>
+      </div>
+
+      <!-- Top stat cards -->
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card blue"><div class="stat-icon">👥</div><div class="stat-num" id="cbta-students">—</div><div class="stat-lbl">Total Students</div></div>
+        <div class="stat-card green"><div class="stat-icon">📝</div><div class="stat-num" id="cbta-sessions">—</div><div class="stat-lbl">Total Sessions</div></div>
+        <div class="stat-card orange"><div class="stat-icon">🎯</div><div class="stat-num" id="cbta-avgscore">—</div><div class="stat-lbl">Avg Best Score</div></div>
+        <div class="stat-card purple"><div class="stat-icon">🔥</div><div class="stat-num" id="cbta-streaks">—</div><div class="stat-lbl">Active Streaks</div></div>
+        <div class="stat-card cyan"><div class="stat-icon">🏆</div><div class="stat-num" id="cbta-achievements">—</div><div class="stat-lbl">Achievements Earned</div></div>
+        <div class="stat-card red"><div class="stat-icon">🔗</div><div class="stat-num" id="cbta-referrals">—</div><div class="stat-lbl">Total Referrals</div></div>
+      </div>
+
+      <!-- Charts row -->
+      <div class="charts-grid" style="margin-bottom:20px">
+        <div class="mini-chart-wrap">
+          <div class="mini-chart-title">🏆 Most Practised Subjects</div>
+          <div class="bar-chart" id="cbta-chart-subjects"></div>
+        </div>
+        <div class="mini-chart-wrap">
+          <div class="mini-chart-title">📊 Score Distribution</div>
+          <div class="bar-chart" id="cbta-chart-scores"></div>
+        </div>
+        <div class="mini-chart-wrap">
+          <div class="mini-chart-title">📅 Joined Last 7 Days</div>
+          <div class="bar-chart" id="cbta-chart-joins"></div>
+        </div>
+        <div class="mini-chart-wrap">
+          <div class="mini-chart-title">🎖️ Top Achievements Unlocked</div>
+          <div class="bar-chart" id="cbta-chart-ach"></div>
+        </div>
+      </div>
+
+      <!-- Top students leaderboard -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <div class="card-title">🥇 Top Students by Best Score</div>
+          <button class="btn-sm" onclick="exportStudentsCSV()">📥 Export CSV</button>
+        </div>
+        <div class="card-body-flush">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Nickname</th>
+                <th>Email</th>
+                <th>Best Score</th>
+                <th>Sessions</th>
+                <th>Streak</th>
+                <th>Referrals</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody id="cbta-leaderboard">
+              <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">Click Load to view leaderboard</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Recently active students -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🕐 Recently Active Students</div>
+          <span style="font-size:.72rem;color:var(--muted)">Last 10 students who practised</span>
+        </div>
+        <div style="max-height:420px;overflow-y:auto" id="cbta-recent">
+          <div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Load to view</div>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -573,7 +650,8 @@ function showApp(user){
   document.getElementById('app').style.display='block';
   const av=document.getElementById('hdrAvatar');
   if(user.photoURL){av.src=user.photoURL;av.style.display='block';}
-  loadAll();
+  // Auto-load activity log immediately on login
+  setTimeout(loadAll, 800);
 }
 
 function showAccessDenied(){
@@ -631,24 +709,28 @@ window.doLogout=doLogout;
 // ── LOAD DATA ──
 async function loadAll(){
   const icon=document.getElementById('refreshIcon');
-  icon.classList.add('spinning');
-  document.getElementById('refreshInfo').textContent='Loading…';
+  if(icon) icon.classList.add('spinning');
+  const info=document.getElementById('refreshInfo');
+  if(info) info.textContent='Loading…';
   try{
-    if(!window._db){await new Promise(r=>setTimeout(r,1000));}
+    let retries=0;
+    while(!window._db&&retries<10){await new Promise(r=>setTimeout(r,500));retries++;}
+    if(!window._db) throw new Error('Firebase not ready. Please refresh the page.');
     const snap=await window._getDocs(window._collection(window._db,'admin_activity_log'));
     _allLogs=snap.docs.map(d=>d.data()).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
     document.getElementById('lastRefreshed').textContent=new Date().toLocaleTimeString('en-NG');
-    document.getElementById('refreshInfo').textContent=`${_allLogs.length} total records loaded`;
+    if(info) info.textContent=_allLogs.length+' total records loaded';
     updateStats();
     applyFilters();
-    await buildAdminProfiles();
+    try{ await buildAdminProfiles(); }catch(e){ console.warn('Admin profiles error:',e.message); }
     buildTimeline();
     buildAnalytics();
     populateAdminFilter();
   }catch(e){
-    document.getElementById('refreshInfo').textContent='Error: '+e.message;
+    if(info) info.textContent='Error: '+e.message;
+    console.error('loadAll error:',e);
   }
-  icon.classList.remove('spinning');
+  if(icon) icon.classList.remove('spinning');
 }
 window.loadAll=loadAll;
 
@@ -944,6 +1026,169 @@ async function loadReferrals(){
 }
 window.loadReferrals=loadReferrals;
 
+// ── CBT ANALYTICS ──
+let _cbtStudents=[];
+
+async function loadCBTAnalytics(){
+  const icon=document.getElementById('cbtaRefreshIcon');
+  const info=document.getElementById('cbtaRefreshInfo');
+  icon.classList.add('spinning');
+  info.textContent='Loading student data…';
+  try{
+    if(!window._db){await new Promise(r=>setTimeout(r,1000));}
+    const snap=await window._getDocs(window._collection(window._db,'cbt_users'));
+    _cbtStudents=snap.docs.map(d=>d.data());
+    const total=_cbtStudents.length;
+    const totalSessions=_cbtStudents.reduce((s,u)=>s+(u.sessions||0),0);
+    const avgBest=total?Math.round(_cbtStudents.reduce((s,u)=>s+(u.bestScore||0),0)/total):0;
+    const activeStreaks=_cbtStudents.filter(u=>(u.streak||0)>=2).length;
+    const totalAch=_cbtStudents.reduce((s,u)=>s+(u.achievements||[]).length,0);
+    const totalRefs=_cbtStudents.reduce((s,u)=>s+(u.referralCount||0),0);
+
+    // Stat cards
+    document.getElementById('cbta-students').textContent=total;
+    document.getElementById('cbta-sessions').textContent=totalSessions;
+    document.getElementById('cbta-avgscore').textContent=avgBest+'%';
+    document.getElementById('cbta-streaks').textContent=activeStreaks;
+    document.getElementById('cbta-achievements').textContent=totalAch;
+    document.getElementById('cbta-referrals').textContent=totalRefs;
+
+    // Chart: subjects
+    const subjCount={};
+    _cbtStudents.forEach(u=>{
+      Object.keys(u.subjectHistory||{}).forEach(s=>{
+        subjCount[s]=(subjCount[s]||0)+(u.subjectHistory[s].sessions||0);
+      });
+    });
+    const SLABELS={english:'English',maths:'Maths',physics:'Physics',chemistry:'Chemistry',biology:'Biology',economics:'Economics',gov:'Government',literature:'Literature',geography:'Geography',agric:'Agriculture',crk:'CRK',accounts:'Accounting'};
+    const maxSubj=Math.max(...Object.values(subjCount),1);
+    document.getElementById('cbta-chart-subjects').innerHTML=
+      Object.entries(subjCount).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>`
+        <div class="bar-row">
+          <div class="bar-lbl">${SLABELS[k]||k}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${(v/maxSubj*100).toFixed(1)}%;background:var(--blue-light)"></div></div>
+          <div class="bar-val">${v}</div>
+        </div>`).join('') || '<div style="color:var(--muted);font-size:.78rem;padding:8px">No data yet</div>';
+
+    // Chart: score distribution
+    const bands={'0–20':0,'21–40':0,'41–60':0,'61–80':0,'81–100':0};
+    _cbtStudents.forEach(u=>{
+      const s=u.bestScore||0;
+      if(s<=20) bands['0–20']++;
+      else if(s<=40) bands['21–40']++;
+      else if(s<=60) bands['41–60']++;
+      else if(s<=80) bands['61–80']++;
+      else bands['81–100']++;
+    });
+    const bandColors={'0–20':'#ef4444','21–40':'#f97316','41–60':'#f59e0b','61–80':'#3b82f6','81–100':'#10b981'};
+    const maxBand=Math.max(...Object.values(bands),1);
+    document.getElementById('cbta-chart-scores').innerHTML=
+      Object.entries(bands).map(([k,v])=>`
+        <div class="bar-row">
+          <div class="bar-lbl">${k}%</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${(v/maxBand*100).toFixed(1)}%;background:${bandColors[k]}"></div></div>
+          <div class="bar-val">${v}</div>
+        </div>`).join('');
+
+    // Chart: joins last 7 days
+    const joinsByDay={};
+    for(let i=6;i>=0;i--){
+      const d=new Date(Date.now()-i*86400000);
+      const key=d.toISOString().substring(0,10);
+      const label=i===0?'Today':i===1?'Yest':d.toLocaleDateString('en-NG',{weekday:'short'});
+      joinsByDay[key]={label,count:0};
+    }
+    _cbtStudents.forEach(u=>{
+      if(u.joinDate){
+        const day=u.joinDate.substring(0,10);
+        if(joinsByDay[day]) joinsByDay[day].count++;
+      }
+    });
+    const maxJoin=Math.max(...Object.values(joinsByDay).map(x=>x.count),1);
+    document.getElementById('cbta-chart-joins').innerHTML=
+      Object.values(joinsByDay).map(({label,count})=>`
+        <div class="bar-row">
+          <div class="bar-lbl">${label}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${(count/maxJoin*100).toFixed(1)}%;background:var(--green)"></div></div>
+          <div class="bar-val">${count}</div>
+        </div>`).join('');
+
+    // Chart: top achievements
+    const achCount={};
+    const ACH_NAMES={first_session:'First Step',score_80:'Star Performer',score_100:'Perfect Score',sessions_5:'On Fire',sessions_10:'Dedicated',sessions_25:'JAMB Champion',streak_3:'3-Day Streak',streak_7:'Weekly Warrior',referral_1:'Team Player',referral_5:'Ambassador',multi_subj:'All-Rounder',night_owl:'Night Owl'};
+    _cbtStudents.forEach(u=>(u.achievements||[]).forEach(a=>{achCount[a]=(achCount[a]||0)+1;}));
+    const maxAch=Math.max(...Object.values(achCount),1);
+    document.getElementById('cbta-chart-ach').innerHTML=
+      Object.entries(achCount).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>`
+        <div class="bar-row">
+          <div class="bar-lbl" style="font-size:.6rem">${ACH_NAMES[k]||k}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${(v/maxAch*100).toFixed(1)}%;background:var(--yellow)"></div></div>
+          <div class="bar-val">${v}</div>
+        </div>`).join('') || '<div style="color:var(--muted);font-size:.78rem;padding:8px">No achievements yet</div>';
+
+    // Leaderboard
+    const medals=['🥇','🥈','🥉'];
+    const top=[..._cbtStudents].sort((a,b)=>(b.bestScore||0)-(a.bestScore||0)).slice(0,20);
+    document.getElementById('cbta-leaderboard').innerHTML=top.length
+      ? top.map((u,i)=>{
+          const scoreColor=(u.bestScore||0)>=80?'#10b981':(u.bestScore||0)>=60?'#3b82f6':'#f59e0b';
+          return`<tr>
+            <td style="font-weight:800;font-size:.8rem">${medals[i]||('#'+(i+1))}</td>
+            <td><div style="font-size:.78rem;font-weight:700;color:var(--text)">${u.nickname||u.displayName||'Student'}</div></td>
+            <td style="font-size:.66rem;color:var(--muted)">${u.email||'—'}</td>
+            <td><span style="font-family:'Montserrat',sans-serif;font-size:.95rem;font-weight:800;color:${scoreColor}">${u.bestScore||0}%</span></td>
+            <td style="font-size:.78rem">${u.sessions||0}</td>
+            <td style="font-size:.78rem">${u.streak||0}🔥</td>
+            <td style="font-size:.78rem">${u.referralCount||0}</td>
+            <td style="font-size:.66rem;color:var(--muted)">${u.joinDate?new Date(u.joinDate).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'}):'—'}</td>
+          </tr>`;
+        }).join('')
+      : '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">No students yet</td></tr>';
+
+    // Recently active
+    const recent=[..._cbtStudents]
+      .filter(u=>u.lastPracticeDate)
+      .sort((a,b)=>new Date(b.lastPracticeDate)-new Date(a.lastPracticeDate))
+      .slice(0,10);
+    document.getElementById('cbta-recent').innerHTML=recent.length
+      ? recent.map(u=>{
+          const scoreColor=(u.bestScore||0)>=80?'#10b981':(u.bestScore||0)>=60?'#3b82f6':'#f59e0b';
+          return`<div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border)">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1a3fa8,#3b62d4);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;color:#fff;font-weight:800">${(u.nickname||u.displayName||'S').charAt(0).toUpperCase()}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:.8rem;font-weight:700;color:var(--text)">${u.nickname||u.displayName||'Student'}</div>
+              <div style="font-size:.64rem;color:var(--muted)">${u.email||''} · ${u.sessions||0} sessions · ${u.streak||0}🔥 streak</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:800;color:${scoreColor}">${u.bestScore||0}%</div>
+              <div style="font-size:.62rem;color:var(--muted)">${u.lastPracticeDate||''}</div>
+            </div>
+          </div>`;
+        }).join('')
+      : '<div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">No active students yet</div>';
+
+    info.textContent=`${total} students · ${totalSessions} total sessions loaded`;
+  }catch(e){
+    info.textContent='Error: '+e.message;
+  }
+  icon.classList.remove('spinning');
+}
+window.loadCBTAnalytics=loadCBTAnalytics;
+
+function exportStudentsCSV(){
+  if(!_cbtStudents.length){alert('Load data first.');return;}
+  const rows=[['Nickname','Email','Best Score','Sessions','Streak','Referrals','Achievements','Joined']];
+  _cbtStudents.sort((a,b)=>(b.bestScore||0)-(a.bestScore||0)).forEach(u=>{
+    rows.push([u.nickname||u.displayName||'',u.email||'',u.bestScore||0,u.sessions||0,u.streak||0,u.referralCount||0,(u.achievements||[]).length,u.joinDate?new Date(u.joinDate).toLocaleDateString('en-NG'):'']);
+  });
+  const csv=rows.map(r=>r.map(v=>'"'+(String(v)).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='bqm-students-'+new Date().toISOString().substring(0,10)+'.csv';
+  a.click();
+}
+window.exportStudentsCSV=exportStudentsCSV;
+
 // ── EXPORT ──
 function exportCSV(){
   if(!_allLogs.length){alert('No data to export.');return;}
@@ -968,6 +1213,12 @@ function switchTab(name,btn){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   if(btn) btn.classList.add('active');
   document.getElementById('tab-'+name).classList.add('active');
+  // Auto-load data for tabs that need it
+  if(name==='log'||name==='admins'||name==='timeline'||name==='analytics'){
+    if(!_allLogs.length) loadAll();
+  }
+  if(name==='referrals') loadReferrals();
+  if(name==='cbtanalytics') loadCBTAnalytics();
 }
 window.switchTab=switchTab;
 
