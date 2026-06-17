@@ -1287,10 +1287,10 @@ async function loadWhitelist(){
 window.loadWhitelist=loadWhitelist;
 
 async function addToWhitelist(){
-  const email=document.getElementById('wlEmailInput').value.trim().toLowerCase();
+  const raw=document.getElementById('wlEmailInput').value.trim().toLowerCase();
   const name=document.getElementById('wlNameInput').value.trim();
   const status=document.getElementById('wlStatus');
-  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+  if(!raw||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw)){
     status.style.display='block';status.style.background='#fee2e2';status.style.color='#b91c1c';
     status.textContent='❌ Enter a valid email address.';return;
   }
@@ -1300,14 +1300,15 @@ async function addToWhitelist(){
     const ref=window._doc(window._db,'admin_whitelist','approved');
     const snap=await window._getDoc(ref);
     const existing=snap.exists()?(snap.data().entries||[]):[];
-    if(existing.find(e=>e.email===email)){
+    if(existing.find(e=>e.email===raw)){
       status.style.background='#fef9c3';status.style.color='#92400e';
       status.textContent='⚠️ This email is already approved.';return;
     }
-    existing.push({email,name:name||email.split('@')[0],addedAt:new Date().toISOString()});
+    existing.push({email:raw,name:name||raw.split('@')[0],addedAt:new Date().toISOString()});
+    // Always save both formats: entries[] for CEO dashboard, emails[] for admin panel
     await window._setDoc(ref,{emails:existing.map(e=>e.email),entries:existing},{merge:false});
     status.style.background='#dcfce7';status.style.color='#15803d';
-    status.textContent=`✅ ${email} approved. They can now sign in to the admin panel.`;
+    status.textContent=`✅ ${raw} approved. They can now sign in to the admin panel.`;
     document.getElementById('wlEmailInput').value='';
     document.getElementById('wlNameInput').value='';
     loadWhitelist();
@@ -1325,6 +1326,7 @@ async function removeFromWhitelist(email){
     const snap=await window._getDoc(ref);
     if(!snap.exists()) return;
     const remaining=(snap.data().entries||[]).filter(e=>e.email!==email);
+    // Always save both formats in sync
     await window._setDoc(ref,{emails:remaining.map(e=>e.email),entries:remaining},{merge:false});
     loadWhitelist();
   }catch(e){alert('Error: '+e.message);}

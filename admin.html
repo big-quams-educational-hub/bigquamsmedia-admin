@@ -49,11 +49,11 @@ body.dark .login-card{background:#1e293b}
 .login-step{display:none}
 .login-step.active{display:block}
 .login-tabs{display:flex;gap:0;margin-bottom:22px;border-radius:10px;overflow:hidden;border:1.5px solid var(--border)}
-.login-tab-btn{flex:1;padding:10px;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;border:none;cursor:pointer;background:var(--surface-alt);color:var(--text-muted);transition:.2s}
-.login-tab-btn.active{background:var(--blue-main);color:#fff}
+.login-tab-btn{flex:1;padding:10px;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;border:none;cursor:pointer;background:var(--light);color:var(--muted);transition:.2s}
+.login-tab-btn.active{background:var(--blue);color:#fff}
 body.dark .login-tab-btn{background:#1a2236;color:#94a3b8}
-body.dark .login-tab-btn.active{background:var(--blue-main);color:#fff}
-.login-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--text-muted);font-size:.72rem}
+body.dark .login-tab-btn.active{background:var(--blue);color:#fff}
+.login-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:.72rem}
 .login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
 .google-login-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.88rem;color:#1e2749;cursor:pointer;transition:.2s;margin-bottom:12px}
 body.dark .google-login-btn{background:#1a2236;border-color:#334155;color:#e2e8f0}
@@ -2570,7 +2570,6 @@ function goBackToStep1(){
   document.getElementById('sline2').className='step-line';
   document.getElementById('sdot3').className='step-dot';
   document.getElementById('sdot3').textContent='3';
-}
   document.getElementById('teamPIN').value='';
   if(window.auth&&window.signOutFB) window.signOutFB(window.auth).catch(()=>{});
   firebaseUser=null;
@@ -2607,14 +2606,20 @@ async function signInWithEmail(){
 window.signInWithEmail=signInWithEmail;
 
 // Check if email is on CEO-approved whitelist
+// Reads both 'emails' (flat array) and 'entries' (object array) formats for compatibility
 async function isAdminAllowed(email){
   try{
     if(!window.db) return false;
     const snap=await window.getDoc(window.doc(window.db,'admin_whitelist','approved'));
     if(!snap.exists()) return false;
     const data=snap.data();
-    const list=(data.emails||[]).map(e=>e.toLowerCase().trim());
-    return list.includes(email.toLowerCase().trim());
+    const normalised=email.toLowerCase().trim();
+    // Check flat emails array
+    const fromEmails=(data.emails||[]).map(e=>e.toLowerCase().trim());
+    if(fromEmails.includes(normalised)) return true;
+    // Also check entries object array (saved by CEO dashboard)
+    const fromEntries=(data.entries||[]).map(e=>(e.email||'').toLowerCase().trim());
+    return fromEntries.includes(normalised);
   }catch(e){ return false; }
 }
 
