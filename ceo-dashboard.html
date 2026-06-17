@@ -370,6 +370,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <button class="tab-btn" onclick="switchTab('analytics',this)">📊 Analytics</button>
       <button class="tab-btn" onclick="switchTab('referrals',this)">🔗 Referrals</button>
       <button class="tab-btn" onclick="switchTab('cbtanalytics',this)">📊 CBT Analytics</button>
+      <button class="tab-btn" onclick="switchTab('whitelist',this)" style="border-color:#dc2626;color:#dc2626">🔐 Admin Access</button>
     </div>
 
     <!-- ── TAB: FULL LOG ── -->
@@ -596,13 +597,46 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       </div>
     </div>
 
+    <!-- ── TAB: ADMIN WHITELIST ── -->
+    <div class="tab-panel" id="tab-whitelist">
+      <div style="background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);border-radius:12px;padding:16px;margin-bottom:20px;font-size:.82rem;color:#b91c1c;line-height:1.6">
+        🔐 <strong>CEO Only.</strong> Only emails you approve here can sign in to the admin panel. The CEO email is always allowed and cannot be removed.
+      </div>
+
+      <!-- Add new admin -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">➕ Approve New Admin Email</div></div>
+        <div class="card-body">
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <input type="email" id="wlEmailInput" placeholder="admin@email.com" style="flex:1;min-width:200px;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Roboto',sans-serif;color:var(--text);background:var(--surface2)">
+            <input type="text" id="wlNameInput" placeholder="Admin name (optional)" style="flex:1;min-width:160px;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Roboto',sans-serif;color:var(--text);background:var(--surface2)">
+            <button class="btn-primary-sm" onclick="addToWhitelist()" style="padding:10px 18px">✅ Approve</button>
+          </div>
+          <div id="wlStatus" style="display:none;margin-top:10px;padding:8px 12px;border-radius:7px;font-size:.78rem;font-weight:700"></div>
+        </div>
+      </div>
+
+      <!-- Approved list -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">👥 Approved Admin Emails</div>
+          <button class="btn-sm" onclick="loadWhitelist()">🔄 Refresh</button>
+        </div>
+        <div class="card-body-flush">
+          <div id="wlList" style="min-height:80px">
+            <div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Refresh to load approved admins</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
 <!-- Firebase -->
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import{getFirestore,collection,getDocs,doc,getDoc,orderBy,query,limit}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import{getFirestore,collection,getDocs,doc,getDoc,setDoc,orderBy,query,limit}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,signOut}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const cfg={apiKey:'AIzaSyCRrp0cGK-hlBy8Ez8blesCsWn3FP7I-lQ',authDomain:'big-quams-media.firebaseapp.com',projectId:'big-quams-media',storageBucket:'big-quams-media.firebasestorage.app',messagingSenderId:'383186323859',appId:'1:383186323859:web:826d6b9977cfa947730066'};
@@ -612,7 +646,7 @@ const auth=getAuth(app);
 const gp=new GoogleAuthProvider();
 window._db=db;window._auth=auth;
 window._getDocs=getDocs;window._collection=collection;
-window._doc=doc;window._getDoc=getDoc;
+window._doc=doc;window._getDoc=getDoc;window._setDoc=(ref,data,opts)=>setDoc(ref,data,opts||{});
 window._query=query;window._orderBy=orderBy;window._limit=limit;
 window._signInEmail=(e,p)=>signInWithEmailAndPassword(auth,e,p);
 window._signInGoogle=()=>signInWithPopup(auth,gp);
@@ -1213,14 +1247,89 @@ function switchTab(name,btn){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   if(btn) btn.classList.add('active');
   document.getElementById('tab-'+name).classList.add('active');
-  // Auto-load data for tabs that need it
   if(name==='log'||name==='admins'||name==='timeline'||name==='analytics'){
     if(!_allLogs.length) loadAll();
   }
   if(name==='referrals') loadReferrals();
   if(name==='cbtanalytics') loadCBTAnalytics();
+  if(name==='whitelist') loadWhitelist();
 }
 window.switchTab=switchTab;
+
+// ── ADMIN WHITELIST ──
+async function loadWhitelist(){
+  const el=document.getElementById('wlList');
+  if(!el) return;
+  el.innerHTML='<div style="text-align:center;padding:24px;color:var(--muted);font-size:.8rem">⏳ Loading…</div>';
+  try{
+    let retries=0;
+    while(!window._db&&retries<10){await new Promise(r=>setTimeout(r,400));retries++;}
+    const snap=await window._getDoc(window._doc(window._db,'admin_whitelist','approved'));
+    const entries=snap.exists()?(snap.data().entries||[]):[];
+    if(!entries.length){
+      el.innerHTML='<div style="text-align:center;padding:24px;color:var(--muted);font-size:.8rem">No admins approved yet. Add one above.</div>';
+      return;
+    }
+    el.innerHTML=entries.map((e,i)=>`
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border)">
+        <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1a3fa8,#3b62d4);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;color:#fff;font-weight:800">${(e.name||e.email||'A').charAt(0).toUpperCase()}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.8rem;font-weight:700;color:var(--text)">${e.name||'Admin'}</div>
+          <div style="font-size:.68rem;color:var(--muted)">${e.email}</div>
+          <div style="font-size:.62rem;color:var(--muted);margin-top:2px">Added: ${e.addedAt?new Date(e.addedAt).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'}):'—'}</div>
+        </div>
+        ${e.email!=='bigquamsmedia024@gmail.com'?`<button onclick="removeFromWhitelist('${e.email}')" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#ef4444;font-size:.68rem;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer">Remove</button>`:'<span style="font-size:.62rem;color:#f59e0b;font-weight:700">👑 CEO</span>'}
+      </div>`).join('');
+  }catch(e){
+    el.innerHTML='<div style="padding:16px;color:#ef4444;font-size:.78rem">Error: '+e.message+'</div>';
+  }
+}
+window.loadWhitelist=loadWhitelist;
+
+async function addToWhitelist(){
+  const email=document.getElementById('wlEmailInput').value.trim().toLowerCase();
+  const name=document.getElementById('wlNameInput').value.trim();
+  const status=document.getElementById('wlStatus');
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    status.style.display='block';status.style.background='#fee2e2';status.style.color='#b91c1c';
+    status.textContent='❌ Enter a valid email address.';return;
+  }
+  status.style.display='block';status.style.background='#ede9fe';status.style.color='#7c3aed';
+  status.textContent='⏳ Saving…';
+  try{
+    const ref=window._doc(window._db,'admin_whitelist','approved');
+    const snap=await window._getDoc(ref);
+    const existing=snap.exists()?(snap.data().entries||[]):[];
+    if(existing.find(e=>e.email===email)){
+      status.style.background='#fef9c3';status.style.color='#92400e';
+      status.textContent='⚠️ This email is already approved.';return;
+    }
+    existing.push({email,name:name||email.split('@')[0],addedAt:new Date().toISOString()});
+    await window._setDoc(ref,{emails:existing.map(e=>e.email),entries:existing},{merge:false});
+    status.style.background='#dcfce7';status.style.color='#15803d';
+    status.textContent=`✅ ${email} approved. They can now sign in to the admin panel.`;
+    document.getElementById('wlEmailInput').value='';
+    document.getElementById('wlNameInput').value='';
+    loadWhitelist();
+  }catch(e){
+    status.style.background='#fee2e2';status.style.color='#b91c1c';
+    status.textContent='❌ Error: '+e.message;
+  }
+}
+window.addToWhitelist=addToWhitelist;
+
+async function removeFromWhitelist(email){
+  if(!confirm(`Remove ${email} from the admin whitelist?\n\nThey will no longer be able to sign in.`)) return;
+  try{
+    const ref=window._doc(window._db,'admin_whitelist','approved');
+    const snap=await window._getDoc(ref);
+    if(!snap.exists()) return;
+    const remaining=(snap.data().entries||[]).filter(e=>e.email!==email);
+    await window._setDoc(ref,{emails:remaining.map(e=>e.email),entries:remaining},{merge:false});
+    loadWhitelist();
+  }catch(e){alert('Error: '+e.message);}
+}
+window.removeFromWhitelist=removeFromWhitelist;
 
 // ── UTILS ──
 function timeSince(date){

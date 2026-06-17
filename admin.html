@@ -2586,13 +2586,37 @@ async function signInWithEmail(){
   try{
     if(!window.auth) throw new Error('Auth not ready — wait a moment and try again.');
     const cred=await window.signInWithEmailAndPassword(window.auth,email,pass);
-    goToStep2(cred.user);
+    const user=cred.user;
+    const isCEO=user.email==='bigquamsmedia024@gmail.com';
+    if(!isCEO){
+      // Check if this email is on the CEO-approved whitelist
+      const allowed=await isAdminAllowed(user.email);
+      if(!allowed){
+        await window.signOutFB(window.auth).catch(()=>{});
+        showLoginError('❌ Access denied. Your email has not been approved by the CEO. Contact bigquamsmedia024@gmail.com to request access.');
+        btn.disabled=false;btn.textContent='Sign In →';
+        return;
+      }
+    }
+    goToStep2(user);
   }catch(e){
     showLoginError(e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'?'Incorrect email or password.':e.code==='auth/user-not-found'?'No account found with this email.':e.code==='auth/too-many-requests'?'Too many attempts. Try again later.':e.message);
   }
   btn.disabled=false;btn.textContent='Sign In →';
 }
 window.signInWithEmail=signInWithEmail;
+
+// Check if email is on CEO-approved whitelist
+async function isAdminAllowed(email){
+  try{
+    if(!window.db) return false;
+    const snap=await window.getDoc(window.doc(window.db,'admin_whitelist','approved'));
+    if(!snap.exists()) return false;
+    const data=snap.data();
+    const list=(data.emails||[]).map(e=>e.toLowerCase().trim());
+    return list.includes(email.toLowerCase().trim());
+  }catch(e){ return false; }
+}
 
 // ── Create account ──
 async function createAccount(){
@@ -2636,8 +2660,14 @@ async function signInWithGoogle(){
     const user=cred.user;
     const isCEO=user.email==='bigquamsmedia024@gmail.com';
     if(isCEO){
-      // CEO never needs nickname prompt
       goToStep2(user);
+      return;
+    }
+    // Check whitelist first
+    const allowed=await isAdminAllowed(user.email);
+    if(!allowed){
+      await window.signOutFB(window.auth).catch(()=>{});
+      showLoginError('❌ Access denied. Your email has not been approved by the CEO. Contact bigquamsmedia024@gmail.com to request access.');
       return;
     }
     // Check if this Google user already has an admin profile with a nickname
@@ -2651,7 +2681,6 @@ async function signInWithGoogle(){
     if(hasProfile){
       goToStep2(user);
     } else {
-      // New Google user — must set nickname before proceeding
       goToNickStep(user);
     }
   }catch(e){
