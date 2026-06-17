@@ -660,7 +660,8 @@ let _allLogs=[];
 let _currentUser=null;
 
 // ── AUTH ──
-setTimeout(()=>{
+// Retry until Firebase module has loaded (avoids 500ms race condition)
+(function waitForAuth(attempts){
   if(window._onAuthStateChanged){
     window._onAuthStateChanged(user=>{
       _currentUser=user;
@@ -676,8 +677,12 @@ setTimeout(()=>{
         document.getElementById('app').style.display='none';
       }
     });
+  } else if(attempts<20){
+    setTimeout(()=>waitForAuth(attempts+1),250);
+  } else {
+    console.error('Firebase Auth failed to load after 5s. Please refresh.');
   }
-},500);
+})(0);
 
 function showApp(user){
   document.getElementById('loginGate').style.display='none';
@@ -1008,7 +1013,9 @@ async function loadReferrals(){
   icon.classList.add('spinning');
   info.textContent='Loading referral data…';
   try{
-    if(!window._db){await new Promise(r=>setTimeout(r,1000));}
+    let _retries=0;
+    while(!window._db&&_retries<10){await new Promise(r=>setTimeout(r,500));_retries++;}
+    if(!window._db) throw new Error('Firebase not ready. Please refresh the page.');
     const snap=await window._getDocs(window._collection(window._db,'cbt_users'));
     const users=snap.docs.map(d=>d.data());
 
@@ -1069,7 +1076,9 @@ async function loadCBTAnalytics(){
   icon.classList.add('spinning');
   info.textContent='Loading student data…';
   try{
-    if(!window._db){await new Promise(r=>setTimeout(r,1000));}
+    let _retries=0;
+    while(!window._db&&_retries<10){await new Promise(r=>setTimeout(r,500));_retries++;}
+    if(!window._db) throw new Error('Firebase not ready. Please refresh the page.');
     const snap=await window._getDocs(window._collection(window._db,'cbt_users'));
     _cbtStudents=snap.docs.map(d=>d.data());
     const total=_cbtStudents.length;
@@ -1264,8 +1273,18 @@ async function loadWhitelist(){
   try{
     let retries=0;
     while(!window._db&&retries<10){await new Promise(r=>setTimeout(r,400));retries++;}
+    if(!window._db) throw new Error('Firebase not ready. Please refresh the page.');
     const snap=await window._getDoc(window._doc(window._db,'admin_whitelist','approved'));
-    const entries=snap.exists()?(snap.data().entries||[]):[];
+    // Read 'entries' (object array) first; fall back to rebuilding from flat 'emails' array
+    let entries=[];
+    if(snap.exists()){
+      const data=snap.data();
+      if(data.entries&&data.entries.length){
+        entries=data.entries;
+      } else if(data.emails&&data.emails.length){
+        entries=data.emails.map(e=>({email:e,name:e.split('@')[0],addedAt:null}));
+      }
+    }
     if(!entries.length){
       el.innerHTML='<div style="text-align:center;padding:24px;color:var(--muted);font-size:.8rem">No admins approved yet. Add one above.</div>';
       return;
@@ -1287,10 +1306,10 @@ async function loadWhitelist(){
 window.loadWhitelist=loadWhitelist;
 
 async function addToWhitelist(){
-  const raw=document.getElementById('wlEmailInput').value.trim().toLowerCase();
+  const email=document.getElementById('wlEmailInput').value.trim().toLowerCase();
   const name=document.getElementById('wlNameInput').value.trim();
   const status=document.getElementById('wlStatus');
-  if(!raw||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw)){
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
     status.style.display='block';status.style.background='#fee2e2';status.style.color='#b91c1c';
     status.textContent='❌ Enter a valid email address.';return;
   }
@@ -1300,15 +1319,14 @@ async function addToWhitelist(){
     const ref=window._doc(window._db,'admin_whitelist','approved');
     const snap=await window._getDoc(ref);
     const existing=snap.exists()?(snap.data().entries||[]):[];
-    if(existing.find(e=>e.email===raw)){
+    if(existing.find(e=>e.email===email)){
       status.style.background='#fef9c3';status.style.color='#92400e';
       status.textContent='⚠️ This email is already approved.';return;
     }
-    existing.push({email:raw,name:name||raw.split('@')[0],addedAt:new Date().toISOString()});
-    // Always save both formats: entries[] for CEO dashboard, emails[] for admin panel
+    existing.push({email,name:name||email.split('@')[0],addedAt:new Date().toISOString()});
     await window._setDoc(ref,{emails:existing.map(e=>e.email),entries:existing},{merge:false});
     status.style.background='#dcfce7';status.style.color='#15803d';
-    status.textContent=`✅ ${raw} approved. They can now sign in to the admin panel.`;
+    status.textContent=`✅ ${email} approved. They can now sign in to the admin panel.`;
     document.getElementById('wlEmailInput').value='';
     document.getElementById('wlNameInput').value='';
     loadWhitelist();
@@ -1326,7 +1344,6 @@ async function removeFromWhitelist(email){
     const snap=await window._getDoc(ref);
     if(!snap.exists()) return;
     const remaining=(snap.data().entries||[]).filter(e=>e.email!==email);
-    // Always save both formats in sync
     await window._setDoc(ref,{emails:remaining.map(e=>e.email),entries:remaining},{merge:false});
     loadWhitelist();
   }catch(e){alert('Error: '+e.message);}
