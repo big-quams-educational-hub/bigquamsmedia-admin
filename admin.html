@@ -587,6 +587,12 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <span class="nav-icon">🧠</span><span class="nav-label">Post-UTME CBT</span>
         <span class="nav-count" id="cnt-pucbt">0</span>
       </button>
+      <button class="section-tab" onclick="switchSection('dailyhub')" style="color:#92400e">
+        <span class="nav-icon">📅</span><span class="nav-label">Daily Hub</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('campuslife')" style="color:#9d174d">
+        <span class="nav-icon">🎮</span><span class="nav-label">Campus Life</span>
+      </button>
     </nav>
 
     <!-- MAIN CONTENT -->
@@ -798,6 +804,20 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="dm-title">Push Broadcast</div>
           <div class="dm-desc">Send instant push notifications to all students — news alerts, scholarship updates, announcements.</div>
           <div class="dm-count" style="background:#ede9fe;color:#7c3aed">Broadcast</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('dailyhub')" style="border:1.5px solid #fef9c3">
+          <div class="dm-icon" style="background:#fef9c3">📅</div>
+          <div class="dm-title">Daily Hub</div>
+          <div class="dm-desc">Manage daily challenge questions and DYK content. Add new questions to keep students engaged.</div>
+          <div class="dm-count" style="background:#fef9c3;color:#92400e" id="dm-cnt-daily">Daily</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('campuslife')" style="border:1.5px solid #fce7f3">
+          <div class="dm-icon" style="background:#fce7f3">🎮</div>
+          <div class="dm-title">Campus Life</div>
+          <div class="dm-desc">Add campus gist stories, create polls and manage Would You Rather questions.</div>
+          <div class="dm-count" style="background:#fce7f3;color:#9d174d">Fun Content</div>
         </div>
 
       </div>
@@ -2248,6 +2268,101 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <button class="btn btn-ghost" onclick="document.getElementById('pucbtBulkJson').value=''">Clear</button>
           </div>
           <div id="bulkPUCBTStatus" style="display:none;margin-top:10px;padding:10px 14px;border-radius:8px;font-size:.8rem;font-weight:700"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DAILY HUB MANAGEMENT ══ -->
+    <div class="admin-section" id="section-dailyhub">
+      <div class="section-header">
+        <h2 class="section-title-h2">📅 Daily Hub Management</h2>
+      </div>
+      <div class="section-card" style="margin-bottom:16px">
+        <div class="card-title" style="margin-bottom:10px">ℹ️ How Daily Hub Works</div>
+        <p style="font-size:.8rem;color:var(--muted);line-height:1.6;margin-bottom:12px">The Daily Hub page (<strong>daily.html</strong>) automatically rotates 30 built-in challenge questions by day of year — everyone gets the same question daily. The DYK facts pull from your existing <strong>dyk.json</strong> file. To add more content:</p>
+        <ul style="font-size:.8rem;color:var(--muted);line-height:1.8;padding-left:18px">
+          <li>Add new <strong>Did You Know</strong> facts via the <strong>DYK section</strong> in this admin panel</li>
+          <li>The challenges auto-rotate — 30 questions cover a full month cycle</li>
+          <li>Students earn <strong>5 coins</strong> per correct answer, tracked in their CBT profile</li>
+          <li>Daily streaks are saved to Firestore for signed-in students</li>
+        </ul>
+      </div>
+      <div class="section-card">
+        <div class="card-title" style="margin-bottom:14px">📊 Daily Hub Stats</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          <div style="background:var(--light);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;color:var(--blue-main)">30</div>
+            <div style="font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Challenge Questions</div>
+          </div>
+          <div style="background:var(--light);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;color:var(--success,#16a34a)">5 🪙</div>
+            <div style="font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Coins Per Correct Answer</div>
+          </div>
+          <div style="background:var(--light);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;color:var(--orange)">Daily</div>
+            <div style="font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Auto-Rotation</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+          <div class="card-title" style="margin-bottom:10px">Quick Links</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" onclick="switchSection('dyk')">💡 Manage DYK Facts</button>
+            <a href="https://bigquamsmedia.com.ng/daily.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm">🔗 View Daily Hub Page</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CAMPUS LIFE MANAGEMENT ══ -->
+    <div class="admin-section" id="section-campuslife">
+      <div class="section-header">
+        <h2 class="section-title-h2">🎮 Campus Life Management</h2>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('cl','gist')">Campus Gist</button>
+        <button class="admin-tab" onclick="switchTab('cl','polls')">Polls</button>
+        <button class="admin-tab" onclick="switchTab('cl','wyr')">Would You Rather</button>
+      </div>
+
+      <!-- GIST -->
+      <div class="admin-panel active" id="cl-tab-gist">
+        <div class="section-card" style="margin-bottom:14px">
+          <p style="font-size:.8rem;color:var(--muted);line-height:1.6;margin-bottom:14px">Campus gist stories are currently built into <strong>campus-life.html</strong>. To add a new story, send it to the WhatsApp submission link or update the GISTS array directly in campus-life.html. Future versions will allow admin management here.</p>
+          <div class="card-title" style="margin-bottom:12px">📤 Student Submissions</div>
+          <p style="font-size:.8rem;color:var(--muted);margin-bottom:12px">Students submit gist via WhatsApp to <strong>+2349049871643</strong>. Review and add the best ones to campus-life.html GISTS array.</p>
+          <a href="https://wa.me/2349049871643" target="_blank" rel="noopener" class="btn btn-success btn-sm">💬 Check WhatsApp Submissions</a>
+        </div>
+        <div class="section-card">
+          <div class="card-title" style="margin-bottom:12px">Current Gist Count</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--blue-main)">6</div>
+          <div style="font-size:.72rem;color:var(--muted)">stories in campus-life.html</div>
+          <div style="margin-top:12px">
+            <a href="https://bigquamsmedia.com.ng/campus-life.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm">🔗 View Campus Life Page</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- POLLS -->
+      <div class="admin-panel" id="cl-tab-polls">
+        <div class="section-card">
+          <div class="card-title" style="margin-bottom:12px">🗳️ Current Polls (4)</div>
+          <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;line-height:1.6">Polls currently rotate daily by day of year from the POLLS array in campus-life.html. To add a new poll, add it to the POLLS array in campus-life.html with this format:</p>
+          <pre style="background:var(--light);border-radius:8px;padding:12px;font-size:.72rem;overflow-x:auto;color:var(--text)">{id:'p5',q:'Your poll question here?',opts:['Option A','Option B','Option C','Option D'],votes:[0,0,0,0],label:'Category'}</pre>
+          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+            <a href="https://bigquamsmedia.com.ng/campus-life.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm">🔗 View Polls</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- WOULD YOU RATHER -->
+      <div class="admin-panel" id="cl-tab-wyr">
+        <div class="section-card">
+          <div class="card-title" style="margin-bottom:12px">🤔 Would You Rather (10 questions)</div>
+          <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;line-height:1.6">WYR questions are in the WYR array in campus-life.html. To add a new one, append to the array with this format:</p>
+          <pre style="background:var(--light);border-radius:8px;padding:12px;font-size:.72rem;overflow-x:auto;color:var(--text)">{a:'First option here',b:'Second option here'}</pre>
+          <div style="margin-top:14px">
+            <a href="https://bigquamsmedia.com.ng/campus-life.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm">🔗 View Would You Rather</a>
+          </div>
         </div>
       </div>
     </div>
