@@ -2889,6 +2889,7 @@ async function enterAdminPanel(){
   setTimeout(()=>logAdminActivity('login','Session','Admin logged in via Firebase'),600);
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminApp').style.display='block';
+  if(window._checkMobile) window._checkMobile();
   const badge=document.getElementById('topBadge');
   if(badge) badge.textContent=(isCEO?'👑 Quams':resolvedNickname)+' · '+(isCEO?'CEO':'Admin');
   const authorField=document.getElementById('addAuthor');
@@ -4488,11 +4489,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Sync dark mode toggle button state
   const btn=document.getElementById('darkToggleBtn');
   if(btn) btn.textContent=document.body.classList.contains('dark')?'☀️':'🌙';
-  // Show mobile bottom nav on small screens
+  // Show mobile bottom nav on small screens — only when logged in
   function checkMobile(){
     const mob=document.getElementById('mobileQuickNav');
-    if(mob) mob.style.display=window.innerWidth<=560?'flex':'none';
+    const loggedIn=document.getElementById('adminApp')&&document.getElementById('adminApp').style.display!=='none';
+    if(mob) mob.style.display=(window.innerWidth<=560&&loggedIn)?'flex':'none';
   }
+  window._checkMobile=checkMobile;
   checkMobile();
   window.addEventListener('resize',checkMobile);
 });
