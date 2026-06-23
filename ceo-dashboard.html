@@ -41,9 +41,16 @@ button{cursor:pointer;font-family:inherit}
   width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
   background:#fff;border:none;border-radius:10px;padding:13px;
   font-family:'Montserrat',sans-serif;font-weight:800;font-size:.88rem;color:#1e2749;
-  cursor:pointer;transition:.2s;margin-bottom:12px;
+  cursor:pointer;transition:.2s;margin-bottom:10px;
 }
 .google-btn:hover{opacity:.92;transform:translateY(-1px);box-shadow:0 4px 16px rgba(255,255,255,.15)}
+.apple-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+  background:#000;border:none;border-radius:10px;padding:13px;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:.88rem;color:#fff;
+  cursor:pointer;transition:.2s;margin-bottom:12px;
+}
+.apple-btn:hover{background:#1a1a1a;transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
 .email-input{
   width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:9px;
   font-size:.9rem;font-family:'Roboto',sans-serif;color:var(--text);
@@ -274,6 +281,17 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 
 /* ── MISC ── */
 .refresh-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+/* ── SKELETON LOADERS ── */
+.sk-grid{display:flex;flex-direction:column;gap:10px;padding:4px 0}
+.sk-card{background:var(--card,#fff);border:1.5px solid var(--border,#e2e8f0);border-radius:10px;padding:14px 16px;overflow:hidden}
+.sk-row{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.sk-avatar{width:36px;height:36px;border-radius:50%;flex-shrink:0}
+.sk-line{height:11px;border-radius:5px;margin-bottom:7px}
+.sk-w90{width:90%}.sk-w70{width:70%}.sk-w50{width:50%}.sk-w30{width:30%}
+.sk-tag{height:20px;width:55px;border-radius:20px;display:inline-block}
+.sk-tags{display:flex;gap:6px;margin-top:4px}
+.skeleton{background:linear-gradient(90deg,var(--border,#e2e8f0) 25%,var(--surface-alt,#f0f4ff) 50%,var(--border,#e2e8f0) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:5px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .refresh-info{font-size:.72rem;color:var(--muted);margin-left:auto}
 .spinning{animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -315,10 +333,14 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
   <div class="login-card">
     <div class="login-logo"><img src="https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png" alt="BQM"></div>
     <div class="login-title">CEO Dashboard</div>
-    <div class="login-sub">This panel is exclusively for the platform owner.<br>Sign in with your registered CEO account.</div>
+    <div class="login-sub">This panel is exclusively for authorised CEO accounts.<br>Sign in with your registered CEO email.</div>
     <button class="google-btn" onclick="loginGoogle()">
-      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.1 0 5.8 1.1 8 2.9l6-6C34.5 3.1 29.6 1 24 1 14.8 1 7 6.7 3.7 14.6l7 5.4C12.5 13.8 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.4c-.5 2.8-2.1 5.2-4.5 6.8l7 5.4C43.1 36.8 46.1 31.1 46.1 24.5z"/><path fill="#FBBC05" d="M10.7 28.6c-.5-1.4-.8-2.9-.8-4.6s.3-3.2.8-4.6l-7-5.4C2.2 17.1 1 20.4 1 24s1.2 6.9 3.7 9.9l7-5.3z"/><path fill="#34A853" d="M24 47c5.6 0 10.4-1.9 13.8-5.1l-7-5.4c-1.9 1.3-4.2 2-6.8 2-6.2 0-11.5-4.3-13.3-10l-7 5.4C7 41.3 14.8 47 24 47z"/></svg>
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.1 0 5.8 1.1 8 2.9l6-6C34.5 3.1 29.6 1 24 1 14.8 1 7 6.7 3.7 14.6l7 5.4C12.5 13.8 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.4c-.5 2.8-2.1 5.2-4.5 6.8l7 5.4C43.1 36.8 46.1 31.1 46.1 24.5z"/><path fill="#FBBC05" d="M10.7 28.6c-.5-1.4-.8-2.9-.8-4.6l-7-5.4C2.2 17.1 1 20.4 1 24s1.2 6.9 3.7 9.9l7-5.3z"/><path fill="#34A853" d="M24 47c5.6 0 10.4-1.9 13.8-5.1l-7-5.4c-1.9 1.3-4.2 2-6.8 2-6.2 0-11.5-4.3-13.3-10l-7 5.4C7 41.3 14.8 47 24 47z"/></svg>
       Sign in with Google
+    </button>
+    <button class="apple-btn" onclick="loginApple()">
+      <svg width="18" height="18" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-37.6-155.5-127.4C46.7 790.7 0 663 0 541.8c0-207.8 165.5-317.3 328.4-317.3 85.5 0 156.6 47.6 212.4 47.6 52.3 0 135.9-50.5 211.1-50.5l43.1 1.6zm-131.5-190c38.8-45.5 69.6-109.3 69.6-173.1 0-8.9-.9-17.7-2.5-26.4-65.3 2.5-144.3 43.7-191.2 95.7-38.8 41.9-75.2 105.7-75.2 170.5 0 9.6 1.6 19.2 2.5 22.3 4.5.6 11.6 1.9 18.7 1.9 59.2 0 132.5-39.8 177.3-90.9z"/></svg>
+      Sign in with Apple
     </button>
     <div class="login-divider">or email</div>
     <input class="email-input" type="email" id="loginEmail" placeholder="CEO email address" autocomplete="email">
@@ -337,7 +359,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
         <img src="https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png" alt="BQM">
         <div>
           <div class="brand-name">Big Quams Media® — CEO Dashboard</div>
-          <span class="brand-sub">Admin Activity Monitor · Platform Overview</span>
+          <span class="brand-sub">Admin Activity Monitor · Content Manager · Platform Overview</span>
         </div>
       </div>
       <div class="header-badge"><div class="live-dot"></div> LIVE</div>
@@ -364,13 +386,20 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 
     <!-- TABS -->
     <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('log',this)">📋 Full Activity Log</button>
+      <button class="tab-btn active" onclick="switchTab('log',this)">📋 Activity Log</button>
       <button class="tab-btn" onclick="switchTab('admins',this)">👥 Admin Profiles</button>
-      <button class="tab-btn" onclick="switchTab('timeline',this)">🕐 Live Timeline</button>
+      <button class="tab-btn" onclick="switchTab('timeline',this)">🕐 Timeline</button>
       <button class="tab-btn" onclick="switchTab('analytics',this)">📊 Analytics</button>
       <button class="tab-btn" onclick="switchTab('referrals',this)">🔗 Referrals</button>
-      <button class="tab-btn" onclick="switchTab('cbtanalytics',this)">📊 CBT Analytics</button>
+      <button class="tab-btn" onclick="switchTab('cbtanalytics',this)">🎯 CBT Analytics</button>
       <button class="tab-btn" onclick="switchTab('whitelist',this)" style="border-color:#dc2626;color:#dc2626">🔐 Admin Access</button>
+      <button class="tab-btn" onclick="switchTab('fs_books',this)" style="border-color:#f59e0b;color:#92400e">📚 eLibrary</button>
+      <button class="tab-btn" onclick="switchTab('fs_scholarships',this)" style="border-color:#10b981;color:#065f46">💰 Scholarships</button>
+      <button class="tab-btn" onclick="switchTab('fs_nelfund',this)" style="border-color:#8b5cf6;color:#5b21b6">💳 NELFUND</button>
+      <button class="tab-btn" onclick="switchTab('fs_dyk',this)" style="border-color:#f59e0b;color:#92400e">💡 DYK</button>
+      <button class="tab-btn" onclick="switchTab('fs_spotlight',this)" style="border-color:#ec4899;color:#9d174d">🌟 Spotlight</button>
+      <button class="tab-btn" onclick="switchTab('postutme',this)" style="border-color:#3b82f6;color:#1d4ed8">🧮 Post-UTME</button>
+      <button class="tab-btn" onclick="switchTab('combo',this)" style="border-color:#10b981;color:#065f46">📋 Subject Combo</button>
     </div>
 
     <!-- ── TAB: FULL LOG ── -->
@@ -630,24 +659,233 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       </div>
     </div>
 
+    <!-- ══ eLibrary TAB ══ -->
+    <div class="tab-panel" id="tab-library">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadLibrary()">🔄 Refresh</button>
+        <button class="btn-sm" onclick="showAddLibrary()">➕ Add Book</button>
+        <div class="refresh-info" id="libInfo">Click Refresh to load books</div>
+      </div>
+      <div id="libAddForm" style="display:none;margin-bottom:16px" class="card">
+        <div class="card-header"><div class="card-title">➕ Add New Book</div></div>
+        <div style="padding:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Title *</label><input class="log-search" type="text" id="libTitle" placeholder="Book title"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Category *</label><input class="log-search" type="text" id="libCat" placeholder="e.g. Engineering, Law"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Author</label><input class="log-search" type="text" id="libAuthor" placeholder="Author name"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Year</label><input class="log-search" type="text" id="libYear" placeholder="e.g. 2024"></div>
+          </div>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Download URL *</label><input class="log-search" type="url" id="libDownload" placeholder="https://drive.google.com/..." style="width:100%"></div>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">View URL</label><input class="log-search" type="url" id="libView" placeholder="https://..." style="width:100%"></div>
+          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Description *</label><textarea id="libDesc" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:80px" placeholder="Brief description…"></textarea></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-primary-sm" onclick="addLibraryItem()">📚 Add Book</button>
+            <button class="btn-sm" onclick="document.getElementById('libAddForm').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-body-flush"><div id="libList" style="padding:16px"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div></div></div></div></div>
+    </div>
+
+    <!-- ══ SCHOLARSHIPS TAB ══ -->
+    <div class="tab-panel" id="tab-scholarships">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadScholarships()">🔄 Refresh</button>
+        <button class="btn-sm" onclick="showAddScholarship()">➕ Add Scholarship</button>
+        <div class="refresh-info" id="schInfoCeo">Click Refresh to load scholarships</div>
+      </div>
+      <div id="schAddForm" style="display:none;margin-bottom:16px" class="card">
+        <div class="card-header"><div class="card-title">➕ Add New Scholarship</div></div>
+        <div style="padding:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Name *</label><input class="log-search" type="text" id="schName" placeholder="e.g. MTN Foundation Scholarship"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Organisation *</label><input class="log-search" type="text" id="schOrg" placeholder="e.g. MTN Nigeria Foundation"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Type</label>
+              <select id="schType" class="log-select"><option value="federal">Federal Government</option><option value="state">State Government</option><option value="corporate">Corporate / NGO</option><option value="international">International</option><option value="university">University-Based</option></select>
+            </div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Status</label>
+              <select id="schStatus" class="log-select"><option value="open">🟢 Open</option><option value="soon">🟡 Opening Soon</option><option value="ongoing">🔵 Ongoing</option><option value="closed">🔴 Closed</option></select>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Deadline</label><input class="log-search" type="text" id="schDeadline" placeholder="e.g. June–August annually"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Amount</label><input class="log-search" type="text" id="schAmount" placeholder="e.g. ₦200,000/year"></div>
+          </div>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Description *</label><textarea id="schDesc" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:80px" placeholder="Eligibility, coverage…"></textarea></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Application Link</label><input class="log-search" type="url" id="schLink" placeholder="https://"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Icon Emoji</label><input class="log-search" type="text" id="schIcon" placeholder="e.g. 📡" maxlength="8"></div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-primary-sm" onclick="addScholarshipItem()">💰 Add Scholarship</button>
+            <button class="btn-sm" onclick="document.getElementById('schAddForm').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-body-flush"><div id="schListCeo" style="padding:16px"><div class="sk-grid"><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div></div></div></div></div>
+    </div>
+
+    <!-- ══ NELFUND TAB ══ -->
+    <div class="tab-panel" id="tab-nelfund">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadNelfund()">🔄 Refresh</button>
+        <button class="btn-sm" onclick="showAddNelfund()">➕ Add Update</button>
+        <div class="refresh-info" id="nelfundInfo">Click Refresh to load NELFUND updates</div>
+      </div>
+      <div id="nelfundAddForm" style="display:none;margin-bottom:16px" class="card">
+        <div class="card-header"><div class="card-title">➕ Add NELFUND Update</div></div>
+        <div style="padding:16px">
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Title *</label><input class="log-search" type="text" id="nelfTitle" placeholder="Update title" style="width:100%"></div>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Content *</label><textarea id="nelfContent" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:100px" placeholder="Full update content…"></textarea></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Category</label><input class="log-search" type="text" id="nelfCat" placeholder="e.g. Application, Eligibility"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Date</label><input class="log-search" type="text" id="nelfDate" placeholder="e.g. June 2026"></div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-primary-sm" onclick="addNelfundItem()">💳 Add Update</button>
+            <button class="btn-sm" onclick="document.getElementById('nelfundAddForm').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-body-flush"><div id="nelfundList" style="padding:16px"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div></div></div></div></div>
+    </div>
+
+    <!-- ══ DYK TAB ══ -->
+    <div class="tab-panel" id="tab-dyk">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadDyk()">🔄 Refresh</button>
+        <button class="btn-sm" onclick="showAddDyk()">➕ Add Fact</button>
+        <div class="refresh-info" id="dykInfo">Click Refresh to load DYK facts</div>
+      </div>
+      <div id="dykAddForm" style="display:none;margin-bottom:16px" class="card">
+        <div class="card-header"><div class="card-title">➕ Add Did You Know Fact</div></div>
+        <div style="padding:16px">
+          <div style="display:grid;grid-template-columns:80px 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Emoji</label><input class="log-search" type="text" id="dykEmoji" placeholder="🧠" maxlength="5"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Category</label><input class="log-search" type="text" id="dykCat" placeholder="e.g. JAMB, History"></div>
+          </div>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Fact Headline *</label><input class="log-search" type="text" id="dykFact" placeholder="Short fact headline" style="width:100%"></div>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Full Explanation *</label><textarea id="dykBody" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:80px" placeholder="Expand on the fact…"></textarea></div>
+          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Source</label><input class="log-search" type="text" id="dykSource" placeholder="e.g. JAMB 2024 Statistics" style="width:100%"></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-primary-sm" onclick="addDykItem()">💡 Add Fact</button>
+            <button class="btn-sm" onclick="document.getElementById('dykAddForm').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-body-flush"><div id="dykList" style="padding:16px"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div></div></div></div></div>
+    </div>
+
+    <!-- ══ SPOTLIGHT TAB ══ -->
+    <div class="tab-panel" id="tab-spotlight">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadSpotlight()">🔄 Refresh</button>
+        <button class="btn-sm" onclick="showAddSpotlight()">➕ Add Story</button>
+        <div class="refresh-info" id="spotlightInfo">Click Refresh to load spotlights</div>
+      </div>
+      <div id="spotlightAddForm" style="display:none;margin-bottom:16px" class="card">
+        <div class="card-header"><div class="card-title">➕ Add Student Spotlight</div></div>
+        <div style="padding:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Student Name *</label><input class="log-search" type="text" id="spName" placeholder="e.g. Chidera Okonkwo"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Achievement *</label><input class="log-search" type="text" id="spTitle" placeholder="e.g. Scored 320 JAMB"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">State</label><input class="log-search" type="text" id="spState" placeholder="e.g. Anambra"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Year</label><input class="log-search" type="text" id="spYear" placeholder="e.g. 2026"></div>
+          </div>
+          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Story *</label><textarea id="spStory" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:100px" placeholder="Tell their story…"></textarea></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-primary-sm" onclick="addSpotlightItem()">🌟 Add Story</button>
+            <button class="btn-sm" onclick="document.getElementById('spotlightAddForm').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-body-flush"><div id="spotlightList" style="padding:16px"><div class="sk-grid"><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div></div></div></div></div>
+    </div>
+
+    <!-- ══ POST-UTME TAB ══ -->
+    <div class="tab-panel" id="tab-postutme">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadPostUtme()">🔄 Refresh</button>
+        <button class="btn-sm" onclick="showAddPostUtme()">➕ Add School</button>
+        <div class="refresh-info" id="postutmeInfo">Click Refresh to load Post-UTME schools</div>
+      </div>
+      <div id="postutmeAddForm" style="display:none;margin-bottom:16px" class="card">
+        <div class="card-header"><div class="card-title">➕ Add Post-UTME School</div></div>
+        <div style="padding:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">School Name *</label><input class="log-search" type="text" id="puSchool" placeholder="e.g. University of Lagos"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Abbreviation</label><input class="log-search" type="text" id="puAbbr" placeholder="e.g. UNILAG"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">JAMB Weight (%)</label><input class="log-search" type="number" id="puJamb" placeholder="50" min="0" max="100"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Post-UTME Weight (%)</label><input class="log-search" type="number" id="puPost" placeholder="50" min="0" max="100"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Cut-off Mark</label><input class="log-search" type="number" id="puCutoff" placeholder="200" min="0"></div>
+          </div>
+          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Notes</label><input class="log-search" type="text" id="puNotes" placeholder="e.g. JAMB ÷ 8, Post-UTME ÷ 2" style="width:100%"></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-primary-sm" onclick="addPostUtmeItem()">🧮 Add School</button>
+            <button class="btn-sm" onclick="document.getElementById('postutmeAddForm').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-body-flush"><div id="postutmeList" style="padding:16px"><div class="sk-grid"><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div></div></div></div></div>
+    </div>
+
+    <!-- ══ SUBJECT COMBO TAB ══ -->
+    <div class="tab-panel" id="tab-combo">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadCombo()">🔄 Refresh</button>
+        <button class="btn-sm" onclick="showAddCombo()">➕ Add Course</button>
+        <div class="refresh-info" id="comboInfo">Click Refresh to load subject combinations</div>
+      </div>
+      <div id="comboAddForm" style="display:none;margin-bottom:16px" class="card">
+        <div class="card-header"><div class="card-title">➕ Add Subject Combination</div></div>
+        <div style="padding:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Course Name *</label><input class="log-search" type="text" id="comboCourseName" placeholder="e.g. Medicine and Surgery"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Department/Faculty</label><input class="log-search" type="text" id="comboDept" placeholder="e.g. Medical Sciences"></div>
+          </div>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">JAMB Subjects * (comma separated)</label><input class="log-search" type="text" id="comboSubjects" placeholder="e.g. english, biology, chemistry, physics" style="width:100%"></div>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">O'Level Requirements</label><input class="log-search" type="text" id="comboOlevel" placeholder="e.g. 5 credits including Math, English" style="width:100%"></div>
+          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Notes</label><input class="log-search" type="text" id="comboNotes" placeholder="Additional requirements" style="width:100%"></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-primary-sm" onclick="addComboItem()">📋 Add Course</button>
+            <button class="btn-sm" onclick="document.getElementById('comboAddForm').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-body-flush"><div id="comboList" style="padding:16px"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div></div></div></div></div>
+    </div>
+
   </main>
 </div>
 
 <!-- Firebase -->
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import{getFirestore,collection,getDocs,doc,getDoc,setDoc,orderBy,query,limit}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,signOut}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import{getFirestore,collection,getDocs,addDoc,updateDoc,deleteDoc,doc,getDoc,setDoc,orderBy,query,limit,serverTimestamp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,OAuthProvider,signOut}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const cfg={apiKey:'AIzaSyCRrp0cGK-hlBy8Ez8blesCsWn3FP7I-lQ',authDomain:'big-quams-media.firebaseapp.com',projectId:'big-quams-media',storageBucket:'big-quams-media.firebasestorage.app',messagingSenderId:'383186323859',appId:'1:383186323859:web:826d6b9977cfa947730066'};
 const app=initializeApp(cfg);
 const db=getFirestore(app);
 const auth=getAuth(app);
 const gp=new GoogleAuthProvider();
+const ap=new OAuthProvider('apple.com');
+ap.addScope('email');ap.addScope('name');
+window._signInApple=()=>signInWithPopup(auth,ap);
 window._db=db;window._auth=auth;
 window._getDocs=getDocs;window._collection=collection;
+window._addDoc=addDoc;window._updateDoc=updateDoc;window._deleteDoc=deleteDoc;
 window._doc=doc;window._getDoc=getDoc;window._setDoc=(ref,data,opts)=>setDoc(ref,data,opts||{});
 window._query=query;window._orderBy=orderBy;window._limit=limit;
+window._serverTimestamp=serverTimestamp;
 window._signInEmail=(e,p)=>signInWithEmailAndPassword(auth,e,p);
 window._signInGoogle=()=>signInWithPopup(auth,gp);
 window._signOut=()=>signOut(auth);
@@ -655,7 +893,9 @@ window._onAuthStateChanged=(cb)=>onAuthStateChanged(auth,cb);
 </script>
 
 <script>
-const CEO_EMAIL='bigquamsmedia024@gmail.com';
+const CEO_EMAILS=['bigquamsmedia024@gmail.com','abdulrasqquwamdeen@gmail.com'];
+const CEO_EMAIL=CEO_EMAILS[0]; // primary for legacy references
+function isCEOEmail(email){ return CEO_EMAILS.includes(email); }
 let _allLogs=[];
 let _currentUser=null;
 
@@ -666,7 +906,7 @@ let _currentUser=null;
     window._onAuthStateChanged(user=>{
       _currentUser=user;
       if(user){
-        if(user.email!==CEO_EMAIL){
+        if(!isCEOEmail(user.email)){
           showAccessDenied();
           window._signOut().catch(()=>{});
           return;
@@ -701,15 +941,43 @@ function showAccessDenied(){
 async function loginGoogle(){
   try{
     const cred=await window._signInGoogle();
-    if(cred.user.email!==CEO_EMAIL){
+    if(!isCEOEmail(cred.user.email)){
       await window._signOut();
       showAccessDenied();
+      return;
     }
+    showApp(cred.user);
   }catch(e){
     if(e.code!=='auth/popup-closed-by-user') showLoginErr(e.message);
   }
 }
 window.loginGoogle=loginGoogle;
+
+async function loginApple(){
+  try{
+    const cred=await window._signInApple();
+    if(!isCEOEmail(cred.user.email)){
+      await window._signOut();
+      showAccessDenied();
+      return;
+    }
+    showApp(cred.user);
+  }catch(e){
+    if(e.code==='auth/popup-closed-by-user'||e.code==='auth/cancelled-popup-request') return;
+    showLoginErr('Apple sign-in failed: '+e.message);
+  }
+}
+window.loginApple=loginApple;
+
+function showApp(user){
+  document.getElementById('loginGate').style.display='none';
+  document.getElementById('app').style.display='block';
+  if(user&&user.photoURL){
+    document.getElementById('hdrAvatar').src=user.photoURL;
+    document.getElementById('hdrAvatar').style.display='block';
+  }
+  loadAll();
+}
 
 async function loginEmail_pw(){
   const email=document.getElementById('loginEmail').value.trim();
@@ -719,7 +987,7 @@ async function loginEmail_pw(){
   btn.disabled=true;btn.textContent='Signing in…';
   try{
     const cred=await window._signInEmail(email,pw);
-    if(cred.user.email!==CEO_EMAIL){
+    if(cred.!isCEOEmail(user.email)){
       await window._signOut();
       showAccessDenied();
     }
@@ -831,7 +1099,7 @@ function renderLogTable(logs){
     return;
   }
   tbody.innerHTML=logs.map((l,i)=>{
-    const isCeo=l.adminEmail===CEO_EMAIL;
+    const isCeo=isCEOEmail(l.adminEmail);
     const cls='ab-'+(l.actionType||'save');
     const icon=ACTION_ICONS[l.actionType]||'⚡';
     const dt=l.timestamp?new Date(l.timestamp):null;
@@ -886,7 +1154,7 @@ async function buildAdminProfiles(){
   }
   const now=new Date();
   document.getElementById('adminsGrid').innerHTML=admins.map(a=>{
-    const isCeo=a.email===CEO_EMAIL;
+    const isCeo=isCEOEmail(a.email);
     const displayNick=isCeo?'Quams':(a.nickname||a.name||'Admin');
     const lastSeenStr=a.lastSeen?timeSince(a.lastSeen):'Never';
     const recentMins=a.lastSeen?((now-a.lastSeen)/60000):999;
@@ -931,7 +1199,7 @@ function buildTimeline(){
   document.getElementById('timelineList').innerHTML=recent.map((l,i)=>{
     const color=ACTION_COLORS[l.actionType]||'var(--muted)';
     const icon=ACTION_ICONS[l.actionType]||'⚡';
-    const isCeo=l.adminEmail===CEO_EMAIL;
+    const isCeo=isCEOEmail(l.adminEmail);
     const ts=l.timestamp?new Date(l.timestamp):null;
     const timeStr=ts?ts.toLocaleString('en-NG',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):((l.date||'')+(l.time?' · '+l.time:''));
     return`<div class="tl-item">
@@ -1269,7 +1537,7 @@ window.switchTab=switchTab;
 async function loadWhitelist(){
   const el=document.getElementById('wlList');
   if(!el) return;
-  el.innerHTML='<div style="text-align:center;padding:24px;color:var(--muted);font-size:.8rem">⏳ Loading…</div>';
+  el.innerHTML='<div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div></div>';
   try{
     let retries=0;
     while(!window._db&&retries<10){await new Promise(r=>setTimeout(r,400));retries++;}
@@ -1358,6 +1626,309 @@ function timeSince(date){
   if(secs<86400) return Math.floor(secs/3600)+'h ago';
   return Math.floor(secs/86400)+'d ago';
 }
+</script>
+</body>
+</html>
+<script>
+// ══════════════════════════════════════════════════════
+// ── CEO CONTENT MANAGEMENT — Firebase Firestore ──
+// ══════════════════════════════════════════════════════
+
+function ceoShowStatus(msg, type){
+  const el=document.getElementById('refreshInfo')||document.createElement('div');
+  el.textContent=msg;
+  console.log('[CEO]',msg);
+}
+
+function renderItemList(containerId, items, fields, collection){
+  const el=document.getElementById(containerId);
+  if(!el) return;
+  if(!items.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">No items yet</div></div>';return;}
+  el.innerHTML=items.map((item,i)=>`
+    <div style="border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.88rem;color:var(--text);margin-bottom:3px">${item[fields[0]]||'—'}</div>
+        ${fields[1]?'<div style="font-size:.74rem;color:var(--muted)">'+(item[fields[1]]||'')+'</div>':''}
+        ${fields[2]?'<div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+(item[fields[2]]||'')+'</div>':''}
+      </div>
+      <button onclick="deleteContentItem('${collection}','${item._id}')" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#ef4444;font-size:.68rem;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer;flex-shrink:0">🗑 Delete</button>
+    </div>`).join('');
+}
+
+async function deleteContentItem(col, id){
+  if(!id||!confirm('Delete this item? This cannot be undone.')) return;
+  try{
+    await window._deleteDoc(window._doc(window._db,col,id));
+    console.log('Deleted from',col,id);
+    // Refresh the right list
+    if(col==='fs_books') loadLibrary();
+    else if(col==='fs_scholarships') loadScholarships();
+    else if(col==='fs_nelfund') loadNelfund();
+    else if(col==='fs_dyk') loadDyk();
+    else if(col==='fs_spotlight') loadSpotlight();
+    else if(col==='fs_postutme_schools') loadPostUtme();
+    else if(col==='fs_subject_combo') loadCombo();
+  }catch(e){alert('Delete failed: '+e.message);}
+}
+window.deleteContentItem=deleteContentItem;
+
+// ── eLIBRARY ──
+async function loadLibrary(){
+  const el=document.getElementById('libList'); const info=document.getElementById('libInfo');
+  if(info) info.textContent='Loading…';
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_books'),window._orderBy('createdAt','desc')));
+    const items=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    if(info) info.textContent=items.length+' books loaded';
+    renderItemList('libList',items,['title','category','author'],'fs_books');
+  }catch(e){if(info) info.textContent='Error: '+e.message;}
+}
+window.loadLibrary=loadLibrary;
+
+function showAddLibrary(){ document.getElementById('libAddForm').style.display='block'; }
+window.showAddLibrary=showAddLibrary;
+
+async function addLibraryItem(){
+  const title=document.getElementById('libTitle').value.trim();
+  const cat=document.getElementById('libCat').value.trim();
+  const desc=document.getElementById('libDesc').value.trim();
+  const download=document.getElementById('libDownload').value.trim();
+  if(!title||!cat||!desc||!download){alert('Fill in Title, Category, Description and Download URL.');return;}
+  try{
+    await window._addDoc(window._collection(window._db,'fs_books'),{
+      title,category:cat,description:desc,downloadUrl:download,
+      author:document.getElementById('libAuthor').value.trim(),
+      year:document.getElementById('libYear').value.trim(),
+      viewUrl:document.getElementById('libView').value.trim(),
+      createdAt:window._serverTimestamp()
+    });
+    document.getElementById('libAddForm').style.display='none';
+    ['libTitle','libCat','libDesc','libDownload','libAuthor','libYear','libView'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    loadLibrary();
+  }catch(e){alert('Firebase error: '+e.message);}
+}
+window.addLibraryItem=addLibraryItem;
+
+// ── SCHOLARSHIPS ──
+async function loadScholarships(){
+  const el=document.getElementById('schListCeo'); const info=document.getElementById('schInfoCeo');
+  if(info) info.textContent='Loading…';
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_scholarships'),window._orderBy('createdAt','desc')));
+    const items=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    if(info) info.textContent=items.length+' scholarships loaded';
+    renderItemList('schListCeo',items,['name','organization','status'],'fs_scholarships');
+  }catch(e){if(info) info.textContent='Error: '+e.message;}
+}
+window.loadScholarships=loadScholarships;
+
+function showAddScholarship(){ document.getElementById('schAddForm').style.display='block'; }
+window.showAddScholarship=showAddScholarship;
+
+async function addScholarshipItem(){
+  const name=document.getElementById('schName').value.trim();
+  const org=document.getElementById('schOrg').value.trim();
+  const desc=document.getElementById('schDesc').value.trim();
+  if(!name||!org||!desc){alert('Fill in Name, Organisation and Description.');return;}
+  try{
+    await window._addDoc(window._collection(window._db,'fs_scholarships'),{
+      name,organization:org,description:desc,
+      type:document.getElementById('schType').value,
+      status:document.getElementById('schStatus').value,
+      deadline:document.getElementById('schDeadline').value.trim(),
+      amount:document.getElementById('schAmount').value.trim(),
+      link:document.getElementById('schLink').value.trim(),
+      icon:document.getElementById('schIcon').value.trim(),
+      createdAt:window._serverTimestamp()
+    });
+    document.getElementById('schAddForm').style.display='none';
+    ['schName','schOrg','schDesc','schDeadline','schAmount','schLink','schIcon'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    loadScholarships();
+  }catch(e){alert('Firebase error: '+e.message);}
+}
+window.addScholarshipItem=addScholarshipItem;
+
+// ── NELFUND ──
+async function loadNelfund(){
+  const info=document.getElementById('nelfundInfo');
+  if(info) info.textContent='Loading…';
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_nelfund'),window._orderBy('createdAt','desc')));
+    const items=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    if(info) info.textContent=items.length+' NELFUND updates loaded';
+    renderItemList('nelfundList',items,['title','category','date'],'fs_nelfund');
+  }catch(e){if(info) info.textContent='Error: '+e.message;}
+}
+window.loadNelfund=loadNelfund;
+
+function showAddNelfund(){ document.getElementById('nelfundAddForm').style.display='block'; }
+window.showAddNelfund=showAddNelfund;
+
+async function addNelfundItem(){
+  const title=document.getElementById('nelfTitle').value.trim();
+  const content=document.getElementById('nelfContent').value.trim();
+  if(!title||!content){alert('Fill in Title and Content.');return;}
+  try{
+    await window._addDoc(window._collection(window._db,'fs_nelfund'),{
+      title,content,
+      category:document.getElementById('nelfCat').value.trim(),
+      date:document.getElementById('nelfDate').value.trim(),
+      createdAt:window._serverTimestamp()
+    });
+    document.getElementById('nelfundAddForm').style.display='none';
+    ['nelfTitle','nelfContent','nelfCat','nelfDate'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    loadNelfund();
+  }catch(e){alert('Firebase error: '+e.message);}
+}
+window.addNelfundItem=addNelfundItem;
+
+// ── DYK ──
+async function loadDyk(){
+  const info=document.getElementById('dykInfo');
+  if(info) info.textContent='Loading…';
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_dyk'),window._orderBy('createdAt','desc')));
+    const items=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    if(info) info.textContent=items.length+' DYK facts loaded';
+    renderItemList('dykList',items,['fact','category','source'],'fs_dyk');
+  }catch(e){if(info) info.textContent='Error: '+e.message;}
+}
+window.loadDyk=loadDyk;
+
+function showAddDyk(){ document.getElementById('dykAddForm').style.display='block'; }
+window.showAddDyk=showAddDyk;
+
+async function addDykItem(){
+  const fact=document.getElementById('dykFact').value.trim();
+  const body=document.getElementById('dykBody').value.trim();
+  if(!fact||!body){alert('Fill in Fact Headline and Explanation.');return;}
+  try{
+    await window._addDoc(window._collection(window._db,'fs_dyk'),{
+      fact,body,
+      emoji:document.getElementById('dykEmoji').value.trim(),
+      category:document.getElementById('dykCat').value.trim(),
+      source:document.getElementById('dykSource').value.trim(),
+      createdAt:window._serverTimestamp()
+    });
+    document.getElementById('dykAddForm').style.display='none';
+    ['dykFact','dykBody','dykEmoji','dykCat','dykSource'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    loadDyk();
+  }catch(e){alert('Firebase error: '+e.message);}
+}
+window.addDykItem=addDykItem;
+
+// ── SPOTLIGHT ──
+async function loadSpotlight(){
+  const info=document.getElementById('spotlightInfo');
+  if(info) info.textContent='Loading…';
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_spotlight'),window._orderBy('createdAt','desc')));
+    const items=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    if(info) info.textContent=items.length+' spotlights loaded';
+    renderItemList('spotlightList',items,['name','achievement','state'],'fs_spotlight');
+  }catch(e){if(info) info.textContent='Error: '+e.message;}
+}
+window.loadSpotlight=loadSpotlight;
+
+function showAddSpotlight(){ document.getElementById('spotlightAddForm').style.display='block'; }
+window.showAddSpotlight=showAddSpotlight;
+
+async function addSpotlightItem(){
+  const name=document.getElementById('spName').value.trim();
+  const title=document.getElementById('spTitle').value.trim();
+  const story=document.getElementById('spStory').value.trim();
+  if(!name||!title||!story){alert('Fill in Name, Achievement and Story.');return;}
+  try{
+    await window._addDoc(window._collection(window._db,'fs_spotlight'),{
+      name,achievement:title,story,
+      state:document.getElementById('spState').value.trim(),
+      year:document.getElementById('spYear').value.trim(),
+      createdAt:window._serverTimestamp()
+    });
+    document.getElementById('spotlightAddForm').style.display='none';
+    ['spName','spTitle','spStory','spState','spYear'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    loadSpotlight();
+  }catch(e){alert('Firebase error: '+e.message);}
+}
+window.addSpotlightItem=addSpotlightItem;
+
+// ── POST-UTME SCHOOLS ──
+async function loadPostUtme(){
+  const info=document.getElementById('postutmeInfo');
+  if(info) info.textContent='Loading…';
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_postutme_schools'),window._orderBy('school','asc')));
+    const items=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    if(info) info.textContent=items.length+' schools loaded';
+    renderItemList('postutmeList',items,['school','abbreviation','notes'],'fs_postutme_schools');
+  }catch(e){if(info) info.textContent='Error: '+e.message;}
+}
+window.loadPostUtme=loadPostUtme;
+
+function showAddPostUtme(){ document.getElementById('postutmeAddForm').style.display='block'; }
+window.showAddPostUtme=showAddPostUtme;
+
+async function addPostUtmeItem(){
+  const school=document.getElementById('puSchool').value.trim();
+  if(!school){alert('School name is required.');return;}
+  try{
+    await window._addDoc(window._collection(window._db,'fs_postutme_schools'),{
+      school,
+      abbreviation:document.getElementById('puAbbr').value.trim(),
+      jambWeight:parseFloat(document.getElementById('puJamb').value)||50,
+      postWeight:parseFloat(document.getElementById('puPost').value)||50,
+      cutoff:parseFloat(document.getElementById('puCutoff').value)||200,
+      notes:document.getElementById('puNotes').value.trim(),
+      createdAt:window._serverTimestamp()
+    });
+    document.getElementById('postutmeAddForm').style.display='none';
+    ['puSchool','puAbbr','puJamb','puPost','puCutoff','puNotes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    loadPostUtme();
+  }catch(e){alert('Firebase error: '+e.message);}
+}
+window.addPostUtmeItem=addPostUtmeItem;
+
+// ── SUBJECT COMBO ──
+async function loadCombo(){
+  const info=document.getElementById('comboInfo');
+  if(info) info.textContent='Loading…';
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_subject_combo'),window._orderBy('course','asc')));
+    const items=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    if(info) info.textContent=items.length+' courses loaded';
+    renderItemList('comboList',items,['course','dept','olevel'],'fs_subject_combo');
+  }catch(e){if(info) info.textContent='Error: '+e.message;}
+}
+window.loadCombo=loadCombo;
+
+function showAddCombo(){ document.getElementById('comboAddForm').style.display='block'; }
+window.showAddCombo=showAddCombo;
+
+async function addComboItem(){
+  const course=document.getElementById('comboCourseName').value.trim();
+  const subjects=document.getElementById('comboSubjects').value.trim();
+  if(!course||!subjects){alert('Course name and subjects are required.');return;}
+  try{
+    await window._addDoc(window._collection(window._db,'fs_subject_combo'),{
+      course,
+      dept:document.getElementById('comboDept').value.trim(),
+      subjects:subjects.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean),
+      olevel:document.getElementById('comboOlevel').value.trim(),
+      notes:document.getElementById('comboNotes').value.trim(),
+      createdAt:window._serverTimestamp()
+    });
+    document.getElementById('comboAddForm').style.display='none';
+    ['comboCourseName','comboDept','comboSubjects','comboOlevel','comboNotes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    loadCombo();
+  }catch(e){alert('Firebase error: '+e.message);}
+}
+window.addComboItem=addComboItem;
+
+// ── Extend switchTab to handle new tabs ──
+const _origSwitchTab=window.switchTab;
+window.switchTab=function(name,btn){
+  if(_origSwitchTab) _origSwitchTab(name,btn);
+};
 </script>
 </body>
 </html>

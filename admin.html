@@ -55,9 +55,13 @@ body.dark .login-tab-btn{background:#1a2236;color:#94a3b8}
 body.dark .login-tab-btn.active{background:var(--blue);color:#fff}
 .login-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:.72rem}
 .login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.google-login-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.88rem;color:#1e2749;cursor:pointer;transition:.2s;margin-bottom:12px}
+.google-login-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.88rem;color:#1e2749;cursor:pointer;transition:.2s;margin-bottom:10px}
 body.dark .google-login-btn{background:#1a2236;border-color:#334155;color:#e2e8f0}
 .google-login-btn:hover{border-color:#4285F4;box-shadow:0 2px 12px rgba(66,133,244,.2)}
+.apple-login-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#000;border:1.5px solid #000;border-radius:10px;padding:12px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.88rem;color:#fff;cursor:pointer;transition:.2s;margin-bottom:12px}
+.apple-login-btn:hover{background:#1a1a1a}
+body.dark .apple-login-btn{background:#fff;color:#000;border-color:#fff}
+body.dark .apple-login-btn:hover{background:#f0f0f0}
 .step-indicator{display:flex;align-items:center;gap:8px;margin-bottom:20px}
 .step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0;border:2px solid var(--border);color:var(--muted);background:var(--light)}
 body.dark .step-dot{background:#1a2236;border-color:#334155}
@@ -148,6 +152,19 @@ body.dark .admin-badge-name{color:#93c5fd}
 .status-bar.error{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca}
 .status-bar.loading{background:#dbeafe;color:var(--blue);border:1px solid #bfdbfe}
 .spinner{width:14px;height:14px;border:2px solid rgba(26,63,168,0.2);border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0}
+/* ── SKELETON LOADERS ── */
+.sk-grid{display:flex;flex-direction:column;gap:10px;padding:4px 0}
+.sk-card{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;overflow:hidden}
+.sk-row{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.sk-avatar{width:36px;height:36px;border-radius:50%;flex-shrink:0}
+.sk-line{height:11px;border-radius:5px;margin-bottom:7px}
+.sk-w90{width:90%}.sk-w70{width:70%}.sk-w50{width:50%}.sk-w30{width:30%}.sk-w20{width:20%}
+.sk-tag{height:20px;width:55px;border-radius:20px;display:inline-block}
+.sk-tags{display:flex;gap:6px;margin-top:4px}
+.sk-img{height:120px;width:100%;border-radius:8px;margin-bottom:10px}
+.skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--surface-alt,#f0f4ff) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+body.dark .skeleton{background:linear-gradient(90deg,#2a3550 25%,#1a2236 50%,#2a3550 75%);background-size:200% 100%}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ─── SECTION ─── */
@@ -367,13 +384,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     <p class="login-sub">Admin Panel — Authorised Team Members Only<br><span style="color:#dc2626;font-weight:700">🔒 Restricted Access</span></p>
 
     <!-- STEP INDICATOR -->
-    <div class="step-indicator" id="stepIndicator">
-      <div class="step-dot active" id="sdot1">1</div>
-      <div class="step-line" id="sline1"></div>
-      <div class="step-dot" id="sdot2">2</div>
-      <div class="step-line" id="sline2"></div>
-      <div class="step-dot" id="sdot3">3</div>
-    </div>
+    <div class="step-indicator" id="stepIndicator" style="display:none"></div>
 
     <!-- STEP 1: Firebase Auth -->
     <div class="login-step active" id="loginStep1">
@@ -387,6 +398,10 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <button class="google-login-btn" onclick="signInWithGoogle()">
         <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.1 0 5.8 1.1 8 2.9l6-6C34.5 3.1 29.6 1 24 1 14.8 1 7 6.7 3.7 14.6l7 5.4C12.5 13.8 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.4c-.5 2.8-2.1 5.2-4.5 6.8l7 5.4C43.1 36.8 46.1 31.1 46.1 24.5z"/><path fill="#FBBC05" d="M10.7 28.6c-.5-1.4-.8-2.9-.8-4.6s.3-3.2.8-4.6l-7-5.4C2.2 17.1 1 20.4 1 24s1.2 6.9 3.7 9.9l7-5.3z"/><path fill="#34A853" d="M24 47c5.6 0 10.4-1.9 13.8-5.1l-7-5.4c-1.9 1.3-4.2 2-6.8 2-6.2 0-11.5-4.3-13.3-10l-7 5.4C7 41.3 14.8 47 24 47z"/></svg>
         Continue with Google
+      </button>
+      <button class="apple-login-btn" onclick="signInWithApple()">
+        <svg width="18" height="18" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-37.6-155.5-127.4C46.7 790.7 0 663 0 541.8c0-207.8 165.5-317.3 328.4-317.3 85.5 0 156.6 47.6 212.4 47.6 52.3 0 135.9-50.5 211.1-50.5l43.1 1.6zm-131.5-190c38.8-45.5 69.6-109.3 69.6-173.1 0-8.9-.9-17.7-2.5-26.4-65.3 2.5-144.3 43.7-191.2 95.7-38.8 41.9-75.2 105.7-75.2 170.5 0 9.6 1.6 19.2 2.5 22.3 4.5.6 11.6 1.9 18.7 1.9 59.2 0 132.5-39.8 177.3-90.9z"/></svg>
+        Continue with Apple
       </button>
       <div class="login-divider">or use email</div>
 
@@ -434,20 +449,8 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <button class="login-btn" onclick="saveGoogleNickname()">Continue →</button>
     </div>
 
-    <div class="login-step" id="loginStep2">
-      <button class="back-btn" onclick="goBackToStep1()">← Back</button>
-      <div class="admin-badge" id="adminBadgeWrap">
-        <div style="width:36px;height:36px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">👤</div>
-        <div>
-          <div class="admin-badge-name" id="adminBadgeName">Loading…</div>
-          <div class="admin-badge-email" id="adminBadgeEmail"></div>
-        </div>
-      </div>
-      <label class="login-field-label">Team Access PIN (GitHub Token)</label>
-      <input class="login-input" type="password" id="teamPIN" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" onkeydown="if(event.key==='Enter') verifyTeamPIN()">
-      <div class="pin-hint">🔑 This is the GitHub personal access token shared with your team. Contact the site owner if you don't have it.</div>
-      <button class="login-btn" onclick="verifyTeamPIN()" style="margin-top:14px">Enter Admin Panel →</button>
-    </div>
+    <!-- Step 2 removed — Firebase Auth is sufficient for admin panel -->
+    <div class="login-step" id="loginStep2" style="display:none"></div>
 
     <div class="login-error" id="loginError">❌ Error occurred.</div>
   </div>
@@ -460,7 +463,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
   <div class="topbar">
     <div class="topbar-logo">
       <img src="https://i.imgur.com/lYJXUyY.jpeg" alt="Logo">
-      <div><div class="topbar-brand">BIG QUAMS MEDIA®</div><span class="topbar-sub">Admin Panel</span></div>
+      <div><div class="topbar-brand">BIG QUAMS MEDIA®</div><span class="topbar-sub">News Admin Panel</span></div>
     </div>
     <div class="topbar-right">
       <span class="topbar-badge" id="topBadge">Loading…</span>
@@ -836,7 +839,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="admin-panel active" id="news-tab-list">
         <div class="section-card">
           <div class="card-title">📋 All Articles <span style="font-size:0.72rem;font-weight:400;color:var(--muted);">&nbsp;Max 3 pinned</span></div>
-          <div id="newsList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+          <div id="newsList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="sk-tags"><div class="skeleton sk-tag"></div><div class="skeleton sk-tag"></div></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="sk-tags"><div class="skeleton sk-tag"></div><div class="skeleton sk-tag"></div></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="sk-tags"><div class="skeleton sk-tag"></div><div class="skeleton sk-tag"></div></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="sk-tags"><div class="skeleton sk-tag"></div><div class="skeleton sk-tag"></div></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="sk-tags"><div class="skeleton sk-tag"></div><div class="skeleton sk-tag"></div></div></div></div></div>
         </div>
       </div>
       <div class="admin-panel" id="news-tab-add">
@@ -987,7 +990,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="admin-panel active" id="dyk-tab-list">
         <div class="section-card">
           <div class="card-title">💡 All DYK Facts</div>
-          <div id="dykList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+          <div id="dykList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div></div></div>
         </div>
       </div>
       <div class="admin-panel" id="dyk-tab-add">
@@ -1021,7 +1024,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="admin-panel active" id="spotlight-tab-list">
         <div class="section-card">
           <div class="card-title">🌟 All Student Spotlights</div>
-          <div id="spotlightList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+          <div id="spotlightList"><div class="sk-grid"><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div></div></div>
         </div>
       </div>
       <div class="admin-panel" id="spotlight-tab-add">
@@ -1067,7 +1070,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div id="sch-list">
         <div class="section-card">
           <div class="card-title">💰 All Scholarships</div>
-          <div id="schList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+          <div id="schList"><div class="sk-grid"><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div></div></div>
         </div>
       </div>
       <div id="sch-add" style="display:none">
@@ -1121,7 +1124,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="admin-panel active" id="nelfund-tab-list">
         <div class="section-card">
           <div class="card-title">💳 NELFUND Updates &amp; Articles</div>
-          <div id="nelfundList"><div class="empty"><div class="ei">⏳</div><p>Loading updates…</p></div></div>
+          <div id="nelfundList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div></div></div>
         </div>
       </div>
       <div class="admin-panel" id="nelfund-tab-add">
@@ -1370,7 +1373,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="admin-panel active" id="postutme-tab-list">
         <div class="section-card">
           <div class="card-title">🏫 Schools &amp; Formulas</div>
-          <div id="postutmeList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+          <div id="postutmeList"><div class="sk-grid"><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div></div></div>
         </div>
       </div>
       <div class="admin-panel" id="postutme-tab-add">
@@ -1441,7 +1444,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
               <option>Agriculture</option><option>Education</option><option>Law</option><option>Management</option>
             </select>
           </div>
-          <div id="comboList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+          <div id="comboList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div></div></div>
         </div>
       </div>
       <div class="admin-panel" id="combo-tab-add">
@@ -1697,7 +1700,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="admin-panel active" id="rev-tab-list">
         <div class="section-card">
           <div class="card-title">⭐ All Student Reviews</div>
-          <div id="reviewsList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+          <div id="reviewsList"><div class="sk-grid"><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div></div></div>
         </div>
       </div>
       <div class="admin-panel" id="rev-tab-add">
@@ -1735,7 +1738,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="admin-panel active" id="qa-tab-list">
         <div class="section-card">
           <div class="card-title">❓ All Q&amp;As</div>
-          <div id="qaList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
+          <div id="qaList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div></div></div>
         </div>
       </div>
       <div class="admin-panel" id="qa-tab-add">
@@ -2533,7 +2536,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, sendPasswordResetEmail, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider, signOut, sendPasswordResetEmail, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const fbConfig = {
   apiKey:'AIzaSyCRrp0cGK-hlBy8Ez8blesCsWn3FP7I-lQ',
@@ -2548,6 +2551,10 @@ const app = initializeApp(fbConfig);
 const db  = getFirestore(app);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+const appleProvider = new OAuthProvider('apple.com');
+appleProvider.addScope('email');
+appleProvider.addScope('name');
+window.appleProvider = appleProvider;
 window.db  = db;
 window.auth = auth;
 window.googleProvider = googleProvider;
@@ -2632,24 +2639,10 @@ function switchAuthTab(tab, btn){
 window.switchAuthTab=switchAuthTab;
 
 // ── Go to step 2 after Firebase auth ──
-function goToStep2(user){
+async function goToStep2(user){
+  // Skip PIN step — go directly to admin panel
   firebaseUser=user;
-  document.getElementById('loginStep1').classList.remove('active');
-  document.getElementById('loginStepNick').classList.remove('active');
-  document.getElementById('loginStep2').classList.add('active');
-  // Update step indicator to step 3 (PIN)
-  document.getElementById('sdot1').className='step-dot done';
-  document.getElementById('sdot1').textContent='✓';
-  document.getElementById('sline1').className='step-line done';
-  document.getElementById('sdot2').className='step-dot done';
-  document.getElementById('sdot2').textContent='✓';
-  document.getElementById('sline2').className='step-line done';
-  document.getElementById('sdot3').className='step-dot active';
-  // Show user info
-  document.getElementById('adminBadgeName').textContent=user.displayName||user.email.split('@')[0];
-  document.getElementById('adminBadgeEmail').textContent=user.email;
-  const badge=document.getElementById('adminBadgeWrap');
-  if(user.photoURL) badge.querySelector('div').innerHTML=`<img src="${user.photoURL}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--blue)">`;
+  await enterAdminPanel();
 }
 
 function goToNickStep(user){
@@ -2804,6 +2797,17 @@ async function signInWithGoogle(){
 }
 window.signInWithGoogle=signInWithGoogle;
 
+async function signInWithApple(){
+  try{
+    const cred=await window.signInWithPopup(window.auth,window.appleProvider);
+    await goToStep2(cred.user);
+  }catch(e){
+    if(e.code==='auth/popup-closed-by-user'||e.code==='auth/cancelled-popup-request') return;
+    showLoginError('Apple sign-in failed: '+e.message);
+  }
+}
+window.signInWithApple=signInWithApple;
+
 // ── Save Google nickname then proceed to PIN step ──
 async function saveGoogleNickname(){
   const nickname=document.getElementById('googleNickname').value.trim();
@@ -2848,62 +2852,44 @@ async function forgotPassword(){
 }
 window.forgotPassword=forgotPassword;
 
-// ── Step 2: Verify team PIN (GitHub token) ──
+// ── Auto-login: no GitHub PIN needed anymore ──
 async function verifyTeamPIN(){
-  const pin=document.getElementById('teamPIN').value.trim();
-  if(!pin.startsWith('ghp_')){showLoginError('Invalid team access PIN. Must start with ghp_');return;}
-  const btn=document.querySelector('#loginStep2 .login-btn');btn.disabled=true;btn.textContent='Verifying…';
-  try{
-    const test=await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}`,{headers:{Authorization:'token '+pin,Accept:'application/vnd.github.v3+json'}});
-    if(!test.ok) throw new Error('Token rejected');
-    ghToken=pin;
-    sessionStorage.setItem('bqm_token',pin);
-    sessionStorage.setItem('bqm_auth','1');
-
-    // ── Resolve nickname ──
-    const isCEO=firebaseUser?.email==='bigquamsmedia024@gmail.com';
-    let resolvedNickname='';
-    if(isCEO){
-      resolvedNickname='Quams';
-    } else if(firebaseUser){
-      // Try Firestore admin_profiles first
-      try{
-        const profDoc=await window.getDoc(window.doc(window.db,'admin_profiles',firebaseUser.uid));
-        if(profDoc.exists()&&profDoc.data().nickname){
-          resolvedNickname=profDoc.data().nickname;
-        }
-      }catch(e){}
-      // Fallback to displayName
-      if(!resolvedNickname) resolvedNickname=firebaseUser.displayName||firebaseUser.email.split('@')[0];
-    }
-
-    sessionStorage.setItem('bqm_user',JSON.stringify({
-      name:firebaseUser?.displayName||'Admin',
-      email:firebaseUser?.email||'',
-      photo:firebaseUser?.photoURL||'',
-      nickname:resolvedNickname,
-      isCEO:isCEO,
-    }));
-
-    // Log admin login
-    setTimeout(()=>logAdminActivity('login','Session','Admin logged in'),600);
-
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('adminApp').style.display='block';
-
-    // Update topbar
-    const badge=document.getElementById('topBadge');
-    if(badge) badge.textContent=(isCEO?'👑 Quams':resolvedNickname)+' · '+(isCEO?'CEO':'Admin');
-
-    // Auto-fill author field with nickname
-    const authorField=document.getElementById('addAuthor');
-    if(authorField) authorField.value=isCEO?'BIG QUAMS MEDIA':resolvedNickname;
-
-    init();
-  }catch(e){showLoginError('Team access PIN is invalid or expired. Check with the site owner.');}
-  btn.disabled=false;btn.textContent='Enter Admin Panel →';
+  // Legacy function kept for compatibility — now calls enterAdminPanel directly
+  await enterAdminPanel();
 }
 window.verifyTeamPIN=verifyTeamPIN;
+
+async function enterAdminPanel(){
+  if(!firebaseUser) return;
+  const isCEO=firebaseUser.email===CEO_EMAIL;
+  let resolvedNickname='';
+  if(isCEO){
+    resolvedNickname='Quams';
+  } else {
+    try{
+      const profDoc=await window.getDoc(window.doc(window.db,'admin_profiles',firebaseUser.uid));
+      if(profDoc.exists()&&profDoc.data().nickname) resolvedNickname=profDoc.data().nickname;
+    }catch(e){}
+    if(!resolvedNickname) resolvedNickname=firebaseUser.displayName||firebaseUser.email.split('@')[0];
+  }
+  sessionStorage.setItem('bqm_auth','1');
+  sessionStorage.setItem('bqm_user',JSON.stringify({
+    name:firebaseUser.displayName||'Admin',
+    email:firebaseUser.email||'',
+    photo:firebaseUser.photoURL||'',
+    nickname:resolvedNickname,
+    isCEO:isCEO,
+  }));
+  setTimeout(()=>logAdminActivity('login','Session','Admin logged in via Firebase'),600);
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('adminApp').style.display='block';
+  const badge=document.getElementById('topBadge');
+  if(badge) badge.textContent=(isCEO?'👑 Quams':resolvedNickname)+' · '+(isCEO?'CEO':'Admin');
+  const authorField=document.getElementById('addAuthor');
+  if(authorField) authorField.value=isCEO?'BIG QUAMS MEDIA':resolvedNickname;
+  init();
+}
+window.enterAdminPanel=enterAdminPanel;
 
 // ── Logout ──
 function doLogout(){
@@ -3353,11 +3339,27 @@ async function ghPush(file,sha,data,msg){
   return result.content.sha;
 }
 
+// ── LOAD NEWS FROM FIRESTORE ──
+async function loadNewsFromFirebase(){
+  try{
+    if(!window.db){showStatus('error','Firebase not ready.');return;}
+    const snap=await window.getDocs(window.query(window.collection(window.db,'fs_news'),window.orderBy('createdAt','desc')));
+    newsData=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    renderNews(); updateBadges();
+    document.getElementById('nr-total').textContent=newsData.length;
+    document.getElementById('nr-pinned').textContent=newsData.filter(n=>n.pinned).length;
+    const cats=new Set(newsData.map(n=>n.category).filter(Boolean));
+    document.getElementById('nr-cats').textContent=cats.size;
+  }catch(e){showStatus('error','Failed to load news: '+e.message);}
+}
+
 // ── INIT ──
 async function init(){
   showStatus('loading','Loading all data… please wait');
+  // Load news from Firebase
+  await loadNewsFromFirebase();
   const files=[
-    {name:NEWS_FILE,      onDone:r=>{newsSha=r.sha;newsData=r.data;}},
+    {name:BOOKS_FILE,     onDone:r=>{booksSha=r.sha;booksData=r.data;}},
     {name:BOOKS_FILE,     onDone:r=>{booksSha=r.sha;booksData=r.data;}},
     {name:DYK_FILE,       onDone:r=>{dykSha=r.sha;dykData=r.data;}},
     {name:SPOTLIGHT_FILE, onDone:r=>{spotlightSha=r.sha;spotlightData=r.data;}},
@@ -3377,7 +3379,7 @@ async function init(){
   }
   renderAll();
   updateBadges();
-  if(!hasError) showStatus('success',`✅ Loaded: ${newsData.length} news · ${booksData.length} books · ${schData.length} scholarships · ${postutmeData.length} schools · ${comboData.length} courses`);
+  if(!hasError) showStatus('success',`✅ Loaded: ${newsData.length} news articles · ${booksData.length} books · ${schData.length} scholarships`);
   // load CBT from Firebase
   loadCBTQuestions();
   // load site config files
@@ -3591,20 +3593,20 @@ async function addNews(){
   const summary=document.getElementById('addSummary').value.trim();
   const fullContent=document.getElementById('addFullContent').value.trim();
   const pinned=document.getElementById('addPinned').value==='true';
-  // Author: always use session nickname, never editable manually
   let author='BIG QUAMS MEDIA';
   try{const u=JSON.parse(sessionStorage.getItem('bqm_user')||'{}');author=u.isCEO?'BIG QUAMS MEDIA':(u.nickname||u.name||'BIG QUAMS MEDIA');}catch(e){}
   if(!title||!category||!summary||!fullContent){showStatus('error','Fill in Title, Category, Summary and Content.');return;}
   if(pinned&&newsData.filter(n=>n.pinned).length>=3){showStatus('error','Max 3 pinned articles. Unpin one first.');return;}
-  const item={title,category,date,author,summary,fullContent};
-  if(image) item.image=image; if(pinned) item.pinned=true;
-  newsData.unshift(item);
   const btn=document.getElementById('addNewsBtn'); btn.disabled=true; btn.textContent='Publishing…';
   try{
-    newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Add: '+title);
-    showStatus('success','🎉 Article published and live!');
-    clearNewsForm(); renderNews(); updateBadges(); switchTab('news','list');
-  }catch(e){newsData.shift();showStatus('error',e.message);}
+    const item={title,category,date,author,summary,fullContent,pinned:pinned||false,createdAt:window.serverTimestamp()};
+    if(image) item.image=image;
+    // Write to Firestore
+    await window.addDoc(window.collection(window.db,'fs_news'),item);
+    logAdminActivity('add','news','Add: '+title);
+    showStatus('success','🎉 Article published to Firebase!');
+    clearNewsForm(); await loadNewsFromFirebase(); switchTab('news','list');
+  }catch(e){showStatus('error','Firebase error: '+e.message);}
   btn.disabled=false; btn.textContent='🚀 Publish Article';
 }
 window.addNews=addNews;
@@ -3621,17 +3623,24 @@ window.clearNewsForm=clearNewsForm;
 async function togglePin(idx){
   const item=newsData[idx],willPin=!item.pinned;
   if(willPin&&newsData.filter(n=>n.pinned).length>=3){showStatus('error','Max 3 pinned.');return;}
-  if(willPin) newsData[idx].pinned=true; else delete newsData[idx].pinned;
-  try{ newsSha=await ghPush(NEWS_FILE,newsSha,newsData,(willPin?'Pin':'Unpin')+': '+item.title); renderNews(); updateBadges(); showStatus('success','📌 '+(willPin?'Article pinned!':'Article unpinned.')); }
-  catch(e){ if(willPin) delete newsData[idx].pinned; else newsData[idx].pinned=true; showStatus('error',e.message); }
+  try{
+    if(item._id) await window.updateDoc(window.doc(window.db,'news',item._id),{pinned:willPin});
+    logAdminActivity('edit','news',(willPin?'Pin':'Unpin')+': '+item.title);
+    await loadNewsFromFirebase();
+    showStatus('success','📌 '+(willPin?'Article pinned!':'Article unpinned.'));
+  }catch(e){showStatus('error','Firebase error: '+e.message);}
 }
 window.togglePin=togglePin;
 
 async function deleteNews(idx){
-  if(!confirm('Delete "'+newsData[idx].title+'"? This cannot be undone.')) return;
-  const removed=newsData.splice(idx,1)[0];
-  try{ newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Delete: '+removed.title); renderNews(); updateBadges(); showStatus('success','🗑 Article deleted.'); }
-  catch(e){ newsData.splice(idx,0,removed); showStatus('error',e.message); }
+  const item=newsData[idx];
+  if(!confirm('Delete "'+item.title+'"? This cannot be undone.')) return;
+  try{
+    if(item._id) await window.deleteDoc(window.doc(window.db,'news',item._id));
+    logAdminActivity('delete','news','Delete: '+item.title);
+    await loadNewsFromFirebase();
+    showStatus('success','🗑 Article deleted.');
+  }catch(e){showStatus('error','Firebase error: '+e.message);}
 }
 window.deleteNews=deleteNews;
 
@@ -3650,14 +3659,19 @@ window.openEditNews=openEditNews;
 
 async function saveEditNews(){
   const idx=parseInt(document.getElementById('editNewsIdx').value);
+  const item=newsData[idx];
   const t=document.getElementById('eNewsTitle').value.trim();
   const s=document.getElementById('eNewsSummary').value.trim();
   const f=document.getElementById('eNewsFullContent').value.trim();
   if(!t||!s||!f){showStatus('error','Fill in all required fields.');return;}
-  const old={...newsData[idx]};
-  Object.assign(newsData[idx],{title:t,category:document.getElementById('eNewsCategory').value,date:document.getElementById('eNewsDate').value,author:document.getElementById('eNewsAuthor').value.trim(),summary:s,fullContent:f});
-  try{ newsSha=await ghPush(NEWS_FILE,newsSha,newsData,'Edit: '+t); closeModal('editNewsModal'); renderNews(); showStatus('success','✅ Article updated!'); }
-  catch(e){ Object.assign(newsData[idx],old); showStatus('error',e.message); }
+  try{
+    const updates={title:t,category:document.getElementById('eNewsCategory').value,date:document.getElementById('eNewsDate').value,author:document.getElementById('eNewsAuthor').value.trim(),summary:s,fullContent:f};
+    if(item._id) await window.updateDoc(window.doc(window.db,'news',item._id),updates);
+    logAdminActivity('edit','news','Edit: '+t);
+    await loadNewsFromFirebase();
+    closeModal('editNewsModal');
+    showStatus('success','✅ Article updated!');
+  }catch(e){showStatus('error','Firebase error: '+e.message);}
 }
 window.saveEditNews=saveEditNews;
 
