@@ -2596,19 +2596,15 @@ function toggleDark(){
 window.toggleDark=toggleDark;
 
 // ── CONFIG ──
-const GH_USER='big-quams-educational-hub', GH_REPO='bigquamsmedia.com.ng', GH_BRANCH='main';
-const NEWS_FILE='news.json', BOOKS_FILE='books.json', DYK_FILE='dyk.json';
-const SPOTLIGHT_FILE='spotlight.json', REVIEWS_FILE='reviews.json', QA_FILE='qa.json', CAL_FILE='calendar.json';
-const SCH_FILE='scholarships.json', POSTUTME_FILE='postutme-schools.json', COMBO_FILE='subject-combo.json';
-const NELFUND_FILE='nelfund.json', PREP_FILE='postutme-prep.json';
 const ADMIN_USER = btoa('bigquams');
 
-// ── DATA ──
-let ghToken='', newsSha='', newsData=[], booksSha='', booksData=[], dykSha='', dykData=[];
-let spotlightSha='', spotlightData=[], reviewsSha='', reviewsData=[], qaSha='', qaData=[];
-let calSha='', calData=[], schSha='', schData=[];
-let postutmeSha='', postutmeData=[], comboSha='', comboData=[];
-let nelfundSha='', nelfundData=[], prepSha='', prepData=[];
+// ── DATA — all from Firestore ──
+let newsData=[], booksData=[], dykData=[];
+let spotlightData=[], reviewsData=[], qaData=[];
+let calData=[], schData=[];
+let postutmeData=[], comboData=[];
+let nelfundData=[], prepData=[];
+let tickerData=[], successData=[];
 
 const SUBJECT_LABELS = {
   english:'Use of English',maths:'Mathematics',physics:'Physics',chemistry:'Chemistry',
@@ -2617,8 +2613,7 @@ const SUBJECT_LABELS = {
   commerce:'Commerce',agric:'Agricultural Science',ict:'ICT/Computer'
 };
 
-// ── AUTH — Two-Step ──
-ghToken = sessionStorage.getItem('bqm_token') || '';
+// ── AUTH ──
 let firebaseUser = null;
 
 // ── Helper: show login error ──
@@ -3278,65 +3273,39 @@ window.exportActivityLog=exportActivityLog;
 
 // ── Auto-restore session ──
 if(sessionStorage.getItem('bqm_auth')==='1'&&sessionStorage.getItem('bqm_token')){
-  ghToken=sessionStorage.getItem('bqm_token');
+  // Firebase auth only
   const savedUser=sessionStorage.getItem('bqm_user');
   if(savedUser){try{const u=JSON.parse(savedUser);const nick=u.nickname||(u.isCEO?'Quams':u.name||'Admin');const b=document.getElementById('topBadge');if(b)b.textContent=(u.isCEO?'👑 Quams':nick)+' · '+(u.isCEO?'CEO':'Admin');setTimeout(()=>{const af=document.getElementById('addAuthor');if(af)af.value=u.isCEO?'BIG QUAMS MEDIA':(nick||'BIG QUAMS MEDIA');},400);}catch(e){}}
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminApp').style.display='block';
-  setTimeout(()=>{if(ghToken)init();},300);
+  setTimeout(()=>init(),300);
 }
 
-// ── GITHUB API ──
-function ghAPI(f){ return `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${f}`; }
-function ghH(){ return { Authorization:'token '+ghToken, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' }; }
-async function ghFetch(file){
-  try{
-    const res = await fetch(ghAPI(file)+'?ref='+GH_BRANCH,{headers:ghH()});
-    if(res.status===401) throw new Error('Invalid token');
-    if(res.status===403) throw new Error('Token lacks permissions — ensure "repo" scope is enabled');
-    if(res.status===404) return {sha:'',data:[]};
-    if(!res.ok){ const e=await res.json().catch(()=>({message:'Unknown error'})); throw new Error(e.message||'GitHub error '+res.status); }
-    const j=await res.json();
-    if(!j.content) return {sha:j.sha||'',data:[]};
-    let text='';
-    try{ text=decodeURIComponent(escape(atob(j.content.replace(/\s/g,'')))); } catch{ text=atob(j.content.replace(/\s/g,'')); }
-    text=text.trim();
-    if(!text||text==='null') return {sha:j.sha,data:[]};
-    let parsed;
-    try{ parsed=JSON.parse(text); } catch(pe){ console.warn('JSON parse error',file,pe.message); return {sha:j.sha,data:[]}; }
-    return {sha:j.sha,data:Array.isArray(parsed)?parsed:[]};
-  }catch(e){
-    if(e.message.includes('token')||e.message.includes('permission')) throw e;
-    console.warn('ghFetch failed',file,e.message);
-    return {sha:'',data:[]};
-  }
+// ── FIREBASE HELPERS ──
+async function fbLoad(col, orderField='createdAt', dir='desc'){
+  const snap = await window.getDocs(window.query(
+    window.collection(window.db, col),
+    window.orderBy(orderField, dir)
+  ));
+  return snap.docs.map(d=>({...d.data(), _id:d.id}));
 }
-async function ghPush(file,sha,data,msg){
-  const json=JSON.stringify(data,null,2);
-  const b64=btoa(unescape(encodeURIComponent(json)));
-  const body={message:msg,content:b64,branch:GH_BRANCH};
-  if(sha) body.sha=sha;
-  const res=await fetch(ghAPI(file),{method:'PUT',headers:ghH(),body:JSON.stringify(body)});
-  if(!res.ok){
-    const errText=await res.text(); let errMsg='Push failed';
-    try{ errMsg=JSON.parse(errText).message||errMsg; }catch{}
-    if(res.status===409) errMsg='File conflict — refresh and try again.';
-    throw new Error(errMsg);
-  }
-  const result=await res.json();
-  // ── Auto-log every GitHub write ──
-  try{
-    const msgLower=(msg||'').toLowerCase();
-    let actionType='save';
-    if(msgLower.startsWith('add')||msgLower.startsWith('add:')) actionType='add';
-    else if(msgLower.startsWith('delete')||msgLower.startsWith('del')) actionType='delete';
-    else if(msgLower.startsWith('edit')||msgLower.startsWith('edit:')) actionType='edit';
-    else if(msgLower.startsWith('pin')||msgLower.startsWith('unpin')) actionType='edit';
-    else if(msgLower.startsWith('bulk')||msgLower.startsWith('upload')) actionType='upload';
-    const section=file.replace('data/','').replace('.json','').replace(/-/g,' ');
-    logAdminActivity(actionType, section, msg||'');
-  }catch(e){}
-  return result.content.sha;
+
+async function fbAdd(col, data, logMsg){
+  const ref = await window.addDoc(window.collection(window.db, col), {
+    ...data, createdAt: window.serverTimestamp()
+  });
+  logAdminActivity('add', col.replace('fs_',''), logMsg||'Add item');
+  return ref.id;
+}
+
+async function fbUpdate(col, id, data, logMsg){
+  await window.updateDoc(window.doc(window.db, col, id), data);
+  logAdminActivity('edit', col.replace('fs_',''), logMsg||'Edit item');
+}
+
+async function fbDelete(col, id, logMsg){
+  await window.deleteDoc(window.doc(window.db, col, id));
+  logAdminActivity('delete', col.replace('fs_',''), logMsg||'Delete item');
 }
 
 // ── LOAD NEWS FROM FIRESTORE ──
@@ -3353,31 +3322,29 @@ async function loadNewsFromFirebase(){
   }catch(e){showStatus('error','Failed to load news: '+e.message);}
 }
 
-// ── INIT ──
+// ── INIT — load everything from Firestore ──
 async function init(){
-  showStatus('loading','Loading all data… please wait');
-  // Load news from Firebase
-  await loadNewsFromFirebase();
-  const files=[
-    {name:BOOKS_FILE,     onDone:r=>{booksSha=r.sha;booksData=r.data;}},
-    {name:BOOKS_FILE,     onDone:r=>{booksSha=r.sha;booksData=r.data;}},
-    {name:DYK_FILE,       onDone:r=>{dykSha=r.sha;dykData=r.data;}},
-    {name:SPOTLIGHT_FILE, onDone:r=>{spotlightSha=r.sha;spotlightData=r.data;}},
-    {name:REVIEWS_FILE,   onDone:r=>{reviewsSha=r.sha;reviewsData=r.data;}},
-    {name:QA_FILE,        onDone:r=>{qaSha=r.sha;qaData=r.data;}},
-    {name:CAL_FILE,       onDone:r=>{calSha=r.sha;calData=r.data;}},
-    {name:SCH_FILE,       onDone:r=>{schSha=r.sha;schData=r.data;}},
-    {name:POSTUTME_FILE,  onDone:r=>{postutmeSha=r.sha;postutmeData=r.data;}},
-    {name:COMBO_FILE,     onDone:r=>{comboSha=r.sha;comboData=r.data;}},
-    {name:NELFUND_FILE,   onDone:r=>{nelfundSha=r.sha;nelfundData=r.data;}},
-    {name:PREP_FILE,      onDone:r=>{prepSha=r.sha;prepData=r.data;}},
-  ];
-  let hasError=false;
-  for(const f of files){
-    try{ const r=await ghFetch(f.name); f.onDone(r); }
-    catch(e){ hasError=true; showStatus('error','❌ Failed loading '+f.name+': '+e.message); return; }
-  }
-  renderAll();
+  showStatus('loading','Loading all data from Firebase…');
+  try{
+    [newsData, booksData, dykData, spotlightData, reviewsData, qaData,
+     calData, schData, postutmeData, comboData, nelfundData, prepData,
+     tickerData, successData] = await Promise.all([
+      fbLoad('fs_news'),
+      fbLoad('fs_books'),
+      fbLoad('fs_dyk'),
+      fbLoad('fs_spotlight'),
+      fbLoad('fs_reviews'),
+      fbLoad('fs_qa'),
+      fbLoad('fs_calendar','title','asc'),
+      fbLoad('fs_scholarships'),
+      fbLoad('fs_postutme_schools','school','asc'),
+      fbLoad('fs_subject_combo','course','asc'),
+      fbLoad('fs_nelfund'),
+      fbLoad('fs_prep_guides'),
+      fbLoad('fs_ticker'),
+      fbLoad('fs_success_ticker'),
+    ]);
+    renderAll();
   updateBadges();
   if(!hasError) showStatus('success',`✅ Loaded: ${newsData.length} news articles · ${booksData.length} books · ${schData.length} scholarships`);
   // load CBT from Firebase
@@ -3722,7 +3689,7 @@ async function addBook(){
   if(view) item.viewUrl=view; if(cover) item.cover=cover; if(featured) item.featured=true;
   booksData.unshift(item);
   const btn=document.getElementById('addBookBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Add book: '+title); showStatus('success','📚 Book added!'); clearBookForm(); renderBooks(); updateBadges(); switchTab('lib','list'); }
+  try{ await fbAdd('fs_books',{title,category:document.getElementById('addBookCat').value,description:document.getElementById('addBookDesc').value.trim(),downloadUrl:document.getElementById('addBookDownload').value.trim(),viewUrl:document.getElementById('addBookView')?document.getElementById('addBookView').value.trim():'',author:document.getElementById('addBookAuthor')?document.getElementById('addBookAuthor').value.trim():'',year:document.getElementById('addBookYear')?document.getElementById('addBookYear').value.trim():''},'Add book: '+title); booksData=await fbLoad('fs_books'); showStatus('success','📚 Book added!'); clearBookForm(); renderBooks(); updateBadges(); switchTab('lib','list'); }
   catch(e){ booksData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='📚 Add Book';
 }
@@ -3739,7 +3706,7 @@ window.clearBookForm=clearBookForm;
 async function deleteBook(idx){
   if(!confirm('Delete "'+booksData[idx].title+'"?')) return;
   const removed=booksData.splice(idx,1)[0];
-  try{ booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Delete book: '+removed.title); renderBooks(); updateBadges(); showStatus('success','🗑 Book deleted.'); }
+  try{ if(removed._id) await fbDelete('fs_books',removed._id,'Delete book: '+removed.title); booksData=await fbLoad('fs_books'); renderBooks(); updateBadges(); showStatus('success','🗑 Book deleted.'); }
   catch(e){ booksData.splice(idx,0,removed); showStatus('error',e.message); }
 }
 window.deleteBook=deleteBook;
@@ -3763,7 +3730,7 @@ async function saveEditBook(){
   if(!t||!d){showStatus('error','Fill in Title and Description.');return;}
   const old={...booksData[idx]};
   Object.assign(booksData[idx],{title:t,author:document.getElementById('eBookAuthor').value.trim(),category:document.getElementById('eBookCategory').value,downloadUrl:document.getElementById('eBookDownload').value.trim(),description:d});
-  try{ booksSha=await ghPush(BOOKS_FILE,booksSha,booksData,'Edit book: '+t); closeModal('editBookModal'); renderBooks(); showStatus('success','✅ Book updated!'); }
+  try{ const item=booksData[parseInt(document.getElementById('editBookIdx').value)]; if(item&&item._id) await fbUpdate('fs_books',item._id,{title:t,category:document.getElementById('eBookCat').value,description:document.getElementById('eBookDesc').value.trim(),downloadUrl:document.getElementById('eBookDownload').value.trim()},'Edit book: '+t); booksData=await fbLoad('fs_books'); closeModal('editBookModal'); renderBooks(); showStatus('success','✅ Book updated!'); }
   catch(e){ Object.assign(booksData[idx],old); showStatus('error',e.message); }
 }
 window.saveEditBook=saveEditBook;
@@ -3800,7 +3767,7 @@ async function addDyk(){
   const item={fact,body,emoji:document.getElementById('dAddEmoji').value.trim()||'💡',category:document.getElementById('dAddCat').value.trim(),source:document.getElementById('dAddSource').value.trim()};
   dykData.unshift(item);
   const btn=document.getElementById('addDykBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ dykSha=await ghPush(DYK_FILE,dykSha,dykData,'Add DYK: '+fact.slice(0,40)); showStatus('success','💡 Fact added!'); clearDykForm(); renderDyk(); updateBadges(); switchTab('dyk','list'); }
+  try{ await fbAdd('fs_dyk',{fact,emoji:document.getElementById('addDykEmoji')?document.getElementById('addDykEmoji').value.trim():'💡',category:document.getElementById('addDykCat')?document.getElementById('addDykCat').value.trim():'',body:document.getElementById('addDykBody')?document.getElementById('addDykBody').value.trim():'',source:document.getElementById('addDykSource')?document.getElementById('addDykSource').value.trim():''},'Add DYK: '+fact.slice(0,40)); dykData=await fbLoad('fs_dyk'); showStatus('success','💡 Fact added!'); clearDykForm(); renderDyk(); updateBadges(); switchTab('dyk','list'); }
   catch(e){ dykData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='💡 Add Fact';
 }
@@ -3810,7 +3777,7 @@ window.clearDykForm=clearDykForm;
 async function deleteDyk(idx){
   if(!confirm('Delete this fact?')) return;
   const r=dykData.splice(idx,1)[0];
-  try{ dykSha=await ghPush(DYK_FILE,dykSha,dykData,'Delete DYK'); renderDyk(); updateBadges(); showStatus('success','🗑 Fact deleted.'); }
+  try{ const item=dykData[idx]; if(item&&item._id) await fbDelete('fs_dyk',item._id,'Delete DYK'); dykData=await fbLoad('fs_dyk'); renderDyk(); updateBadges(); showStatus('success','🗑 Fact deleted.'); }
   catch(e){ dykData.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deleteDyk=deleteDyk;
@@ -3850,7 +3817,7 @@ async function addSpotlight(){
   if(photo) item.photo=photo;
   spotlightData.unshift(item);
   const btn=document.getElementById('addSpBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ spotlightSha=await ghPush(SPOTLIGHT_FILE,spotlightSha,spotlightData,'Add spotlight: '+name); showStatus('success','🌟 Spotlight added!'); clearSpForm(); renderSpotlights(); updateBadges(); switchTab('spotlight','list'); }
+  try{ await fbAdd('fs_spotlight',{name,achievement:document.getElementById('addSpTitle')?document.getElementById('addSpTitle').value.trim():'',story:document.getElementById('addSpStory')?document.getElementById('addSpStory').value.trim():'',state:document.getElementById('addSpState')?document.getElementById('addSpState').value.trim():'',year:document.getElementById('addSpYear')?document.getElementById('addSpYear').value.trim():''},'Add spotlight: '+name); spotlightData=await fbLoad('fs_spotlight'); showStatus('success','🌟 Spotlight added!'); clearSpForm(); renderSpotlights(); updateBadges(); switchTab('spotlight','list'); }
   catch(e){ spotlightData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='🌟 Add Story';
 }
@@ -3860,7 +3827,7 @@ window.clearSpForm=clearSpForm;
 async function deleteSpotlight(idx){
   if(!confirm('Delete this spotlight?')) return;
   const r=spotlightData.splice(idx,1)[0];
-  try{ spotlightSha=await ghPush(SPOTLIGHT_FILE,spotlightSha,spotlightData,'Delete spotlight'); renderSpotlights(); updateBadges(); showStatus('success','🗑 Spotlight deleted.'); }
+  try{ const item=spotlightData[idx]; if(item&&item._id) await fbDelete('fs_spotlight',item._id,'Delete spotlight'); spotlightData=await fbLoad('fs_spotlight'); renderSpotlights(); updateBadges(); showStatus('success','🗑 Spotlight deleted.'); }
   catch(e){ spotlightData.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deleteSpotlight=deleteSpotlight;
@@ -3903,7 +3870,7 @@ async function addScholarship(){
   if(document.getElementById('sAddFeatured').value==='true') item.featured=true;
   schData.unshift(item);
   const btn=document.getElementById('addSchBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ schSha=await ghPush(SCH_FILE,schSha,schData,'Add scholarship: '+name); showStatus('success','💰 Scholarship added!'); clearSchForm(); renderScholarships(); updateBadges(); switchTab('sch','list'); document.getElementById('sch-list').style.display='block'; document.getElementById('sch-add').style.display='none'; }
+  try{ await fbAdd('fs_scholarships',{name,organization:document.getElementById('addSchOrg')?document.getElementById('addSchOrg').value.trim():'',description:document.getElementById('addSchDesc')?document.getElementById('addSchDesc').value.trim():'',type:document.getElementById('addSchType')?document.getElementById('addSchType').value:'corporate',status:document.getElementById('addSchStatus')?document.getElementById('addSchStatus').value:'open',deadline:document.getElementById('addSchDeadline')?document.getElementById('addSchDeadline').value.trim():'',amount:document.getElementById('addSchAmount')?document.getElementById('addSchAmount').value.trim():'',link:document.getElementById('addSchLink')?document.getElementById('addSchLink').value.trim():'',icon:document.getElementById('addSchIcon')?document.getElementById('addSchIcon').value.trim():'💰'},'Add scholarship: '+name); schData=await fbLoad('fs_scholarships'); showStatus('success','💰 Scholarship added!'); clearSchForm(); renderScholarships(); updateBadges(); switchTab('sch','list'); document.getElementById('sch-list').style.display='block'; document.getElementById('sch-add').style.display='none'; }
   catch(e){ schData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='💰 Add Scholarship';
 }
@@ -3913,7 +3880,7 @@ window.clearSchForm=clearSchForm;
 async function deleteScholarship(idx){
   if(!confirm('Delete "'+schData[idx].name+'"?')) return;
   const r=schData.splice(idx,1)[0];
-  try{ schSha=await ghPush(SCH_FILE,schSha,schData,'Delete scholarship: '+r.name); renderScholarships(); updateBadges(); showStatus('success','🗑 Scholarship deleted.'); }
+  try{ if(r._id) await fbDelete('fs_scholarships',r._id,'Delete scholarship: '+r.name); schData=await fbLoad('fs_scholarships'); renderScholarships(); updateBadges(); showStatus('success','🗑 Scholarship deleted.'); }
   catch(e){ schData.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deleteScholarship=deleteScholarship;
@@ -3950,7 +3917,7 @@ async function addNelfund(){
   const item={title,summary,body:document.getElementById('nfAddBody').value.trim(),category:document.getElementById('nfAddCat').value,date:document.getElementById('nfAddDate').value.trim()||new Date().toLocaleDateString(),link:document.getElementById('nfAddLink').value.trim()};
   nelfundData.unshift(item);
   const btn=document.getElementById('addNelfundBtn'); btn.disabled=true; btn.textContent='Publishing…';
-  try{ nelfundSha=await ghPush(NELFUND_FILE,nelfundSha,nelfundData,'Add NELFUND: '+title); showStatus('success','💳 NELFUND update published!'); clearNelfundForm(); renderNelfund(); updateBadges(); switchTab('nelfund','list'); }
+  try{ await fbAdd('fs_nelfund',{title,content:document.getElementById('addNelfContent')?document.getElementById('addNelfContent').value.trim():'',category:document.getElementById('addNelfCat')?document.getElementById('addNelfCat').value.trim():'',date:document.getElementById('addNelfDate')?document.getElementById('addNelfDate').value.trim():''},'Add NELFUND: '+title); nelfundData=await fbLoad('fs_nelfund'); showStatus('success','💳 NELFUND update published!'); clearNelfundForm(); renderNelfund(); updateBadges(); switchTab('nelfund','list'); }
   catch(e){ nelfundData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='💳 Publish Update';
 }
@@ -3960,7 +3927,7 @@ window.clearNelfundForm=clearNelfundForm;
 async function deleteNelfund(idx){
   if(!confirm('Delete this update?')) return;
   const r=nelfundData.splice(idx,1)[0];
-  try{ nelfundSha=await ghPush(NELFUND_FILE,nelfundSha,nelfundData,'Delete NELFUND'); renderNelfund(); updateBadges(); showStatus('success','🗑 Deleted.'); }
+  try{ const item=nelfundData[idx]; if(item&&item._id) await fbDelete('fs_nelfund',item._id,'Delete NELFUND'); nelfundData=await fbLoad('fs_nelfund'); renderNelfund(); updateBadges(); showStatus('success','🗑 Deleted.'); }
   catch(e){ nelfundData.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deleteNelfund=deleteNelfund;
@@ -4018,7 +3985,7 @@ async function addPostUtme(){
   postutmeData.push(item);
   postutmeData.sort((a,b)=>a.name.localeCompare(b.name));
   const btn=document.getElementById('addPuBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ postutmeSha=await ghPush(POSTUTME_FILE,postutmeSha,postutmeData,'Add school: '+name); showStatus('success','🏫 School added!'); clearPuForm(); renderPostUtme(); updateBadges(); switchTab('postutme','list'); }
+  try{ await fbAdd('fs_postutme_schools',{school:name,abbreviation:document.getElementById('addPuAbbr')?document.getElementById('addPuAbbr').value.trim():'',jambWeight:parseFloat(document.getElementById('addPuJamb')?document.getElementById('addPuJamb').value:50)||50,postWeight:parseFloat(document.getElementById('addPuPost')?document.getElementById('addPuPost').value:50)||50,cutoff:parseFloat(document.getElementById('addPuCutoff')?document.getElementById('addPuCutoff').value:200)||200,notes:document.getElementById('addPuNotes')?document.getElementById('addPuNotes').value.trim():''},'Add school: '+name); postutmeData=await fbLoad('fs_postutme_schools','school','asc'); showStatus('success','🏫 School added!'); clearPuForm(); renderPostUtme(); updateBadges(); switchTab('postutme','list'); }
   catch(e){ postutmeData=postutmeData.filter(s=>s.name!==name); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='🏫 Add School';
 }
@@ -4044,7 +4011,7 @@ async function saveEditSchool(){
   const idx=parseInt(document.getElementById('editSchoolIdx').value);
   const old={...postutmeData[idx]};
   Object.assign(postutmeData[idx],{name:document.getElementById('eSchName').value.trim(),abbr:document.getElementById('eSchAbbr').value.trim(),formula:document.getElementById('eSchFormula').value,cutoff:document.getElementById('eSchCutoff').value.trim(),notes:document.getElementById('eSchNotes').value.trim(),fees:document.getElementById('eSchFees').value.trim()});
-  try{ postutmeSha=await ghPush(POSTUTME_FILE,postutmeSha,postutmeData,'Edit school'); closeModal('editSchoolModal'); renderPostUtme(); showStatus('success','✅ School updated!'); }
+  try{ const item=postutmeData[parseInt(document.getElementById('editSchoolIdx').value)]; if(item&&item._id) await fbUpdate('fs_postutme_schools',item._id,{school:document.getElementById('ePuSchool').value.trim(),abbreviation:document.getElementById('ePuAbbr')?document.getElementById('ePuAbbr').value.trim():'',notes:document.getElementById('ePuNotes')?document.getElementById('ePuNotes').value.trim():''},'Edit school'); postutmeData=await fbLoad('fs_postutme_schools','school','asc'); closeModal('editSchoolModal'); renderPostUtme(); showStatus('success','✅ School updated!'); }
   catch(e){ Object.assign(postutmeData[idx],old); showStatus('error',e.message); }
 }
 window.saveEditSchool=saveEditSchool;
@@ -4052,7 +4019,7 @@ window.saveEditSchool=saveEditSchool;
 async function deleteSchool(idx){
   if(!confirm('Delete "'+postutmeData[idx].name+'"?')) return;
   const r=postutmeData.splice(idx,1)[0];
-  try{ postutmeSha=await ghPush(POSTUTME_FILE,postutmeSha,postutmeData,'Delete school: '+r.name); renderPostUtme(); updateBadges(); showStatus('success','🗑 School deleted.'); }
+  try{ if(r._id) await fbDelete('fs_postutme_schools',r._id,'Delete school: '+(r.name||r.school||'')); postutmeData=await fbLoad('fs_postutme_schools','school','asc'); renderPostUtme(); updateBadges(); showStatus('success','🗑 School deleted.'); }
   catch(e){ postutmeData.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deleteSchool=deleteSchool;
@@ -4109,7 +4076,7 @@ async function addCombo(){
   comboData.push(item);
   comboData.sort((a,b)=>a.course.localeCompare(b.course));
   const btn=document.getElementById('addComboBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ comboSha=await ghPush(COMBO_FILE,comboSha,comboData,'Add combo: '+course); showStatus('success','📋 Course added!'); clearComboForm(); renderComboList(); updateBadges(); switchTab('combo','list'); }
+  try{ await fbAdd('fs_subject_combo',{course,dept:document.getElementById('addComboDept')?document.getElementById('addComboDept').value.trim():'',subjects:(document.getElementById('addComboSubjects')?document.getElementById('addComboSubjects').value:'').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean),olevel:document.getElementById('addComboOlevel')?document.getElementById('addComboOlevel').value.trim():'',notes:document.getElementById('addComboNotes')?document.getElementById('addComboNotes').value.trim():''},'Add combo: '+course); comboData=await fbLoad('fs_subject_combo','course','asc'); showStatus('success','📋 Course added!'); clearComboForm(); renderComboList(); updateBadges(); switchTab('combo','list'); }
   catch(e){ comboData=comboData.filter(c=>c.course!==course); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='📋 Add Course';
 }
@@ -4136,7 +4103,7 @@ async function saveEditCombo(){
   const idx=parseInt(document.getElementById('editComboIdx').value);
   const old={...comboData[idx]};
   Object.assign(comboData[idx],{course:document.getElementById('eCbCourse').value.trim(),dept:document.getElementById('eCbDept').value,s2:document.getElementById('eCbS2').value.trim(),s3:document.getElementById('eCbS3').value.trim(),s4:document.getElementById('eCbS4').value.trim(),olevel:document.getElementById('eCbOlevel').value.trim(),notes:document.getElementById('eCbNotes').value.trim()});
-  try{ comboSha=await ghPush(COMBO_FILE,comboSha,comboData,'Edit combo'); closeModal('editComboModal'); renderComboList(); showStatus('success','✅ Course updated!'); }
+  try{ const item=comboData[parseInt(document.getElementById('editComboIdx').value)]; if(item&&item._id) await fbUpdate('fs_subject_combo',item._id,{course:document.getElementById('eComboName').value.trim(),notes:document.getElementById('eComboNotes')?document.getElementById('eComboNotes').value.trim():''},'Edit combo'); comboData=await fbLoad('fs_subject_combo','course','asc'); closeModal('editComboModal'); renderComboList(); showStatus('success','✅ Course updated!'); }
   catch(e){ Object.assign(comboData[idx],old); showStatus('error',e.message); }
 }
 window.saveEditCombo=saveEditCombo;
@@ -4144,7 +4111,7 @@ window.saveEditCombo=saveEditCombo;
 async function deleteCombo(idx){
   if(!confirm('Delete "'+comboData[idx].course+'"?')) return;
   const r=comboData.splice(idx,1)[0];
-  try{ comboSha=await ghPush(COMBO_FILE,comboSha,comboData,'Delete combo: '+r.course); renderComboList(); updateBadges(); showStatus('success','🗑 Course deleted.'); }
+  try{ if(r._id) await fbDelete('fs_subject_combo',r._id,'Delete combo: '+r.course); comboData=await fbLoad('fs_subject_combo','course','asc'); renderComboList(); updateBadges(); showStatus('success','🗑 Course deleted.'); }
   catch(e){ comboData.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deleteCombo=deleteCombo;
@@ -4189,7 +4156,7 @@ async function addPrepGuide(){
   if(document.getElementById('prepAddFeatured').value==='true') item.featured=true;
   prepData.unshift(item);
   const btn=document.getElementById('addPrepBtn'); btn.disabled=true; btn.textContent='Publishing…';
-  try{ prepSha=await ghPush(PREP_FILE,prepSha,prepData,'Add prep guide: '+title); showStatus('success','📖 Guide published!'); clearPrepForm(); renderPrepList(); updateBadges(); switchTab('prep','list'); }
+  try{ await fbAdd('fs_prep_guides',{title,content:document.getElementById('addPrepContent')?document.getElementById('addPrepContent').value.trim():'',category:document.getElementById('addPrepCat')?document.getElementById('addPrepCat').value.trim():''},'Add prep guide: '+title); prepData=await fbLoad('fs_prep_guides'); showStatus('success','📖 Guide published!'); clearPrepForm(); renderPrepList(); updateBadges(); switchTab('prep','list'); }
   catch(e){ prepData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='📖 Publish Guide';
 }
@@ -4199,7 +4166,7 @@ window.clearPrepForm=clearPrepForm;
 async function deletePrep(idx){
   if(!confirm('Delete this guide?')) return;
   const r=prepData.splice(idx,1)[0];
-  try{ prepSha=await ghPush(PREP_FILE,prepSha,prepData,'Delete prep guide'); renderPrepList(); updateBadges(); showStatus('success','🗑 Guide deleted.'); }
+  try{ const item=prepData[idx]; if(item&&item._id) await fbDelete('fs_prep_guides',item._id,'Delete prep guide'); prepData=await fbLoad('fs_prep_guides'); renderPrepList(); updateBadges(); showStatus('success','🗑 Guide deleted.'); }
   catch(e){ prepData.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deletePrep=deletePrep;
@@ -4236,7 +4203,7 @@ async function addReview(){
   const item={name,message,stars:parseInt(document.getElementById('rAddStars').value),location:document.getElementById('rAddLocation').value.trim(),date:document.getElementById('rAddDate').value.trim()||new Date().toLocaleDateString()};
   reviewsData.unshift(item);
   const btn=document.getElementById('addRevBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ reviewsSha=await ghPush(REVIEWS_FILE,reviewsSha,reviewsData,'Add review: '+name); showStatus('success','⭐ Review added!'); clearRevForm(); renderReviews(); updateBadges(); switchTab('rev','list'); }
+  try{ await fbAdd('fs_reviews',{name,rating:parseInt(document.getElementById('addRevRating')?document.getElementById('addRevRating').value:5)||5,review:document.getElementById('addRevText')?document.getElementById('addRevText').value.trim():'',school:document.getElementById('addRevSchool')?document.getElementById('addRevSchool').value.trim():''},'Add review: '+name); reviewsData=await fbLoad('fs_reviews'); showStatus('success','⭐ Review added!'); clearRevForm(); renderReviews(); updateBadges(); switchTab('rev','list'); }
   catch(e){ reviewsData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='⭐ Add Review';
 }
@@ -4246,7 +4213,7 @@ window.clearRevForm=clearRevForm;
 async function deleteReview(idx){
   if(!confirm('Delete this review?')) return;
   const r=reviewsData.splice(idx,1)[0];
-  try{ reviewsSha=await ghPush(REVIEWS_FILE,reviewsSha,reviewsData,'Delete review'); renderReviews(); updateBadges(); showStatus('success','🗑 Review deleted.'); }
+  try{ const item=reviewsData[idx]; if(item&&item._id) await fbDelete('fs_reviews',item._id,'Delete review'); reviewsData=await fbLoad('fs_reviews'); renderReviews(); updateBadges(); showStatus('success','🗑 Review deleted.'); }
   catch(e){ reviewsData.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deleteReview=deleteReview;
@@ -4283,7 +4250,7 @@ async function addQA(){
   const item={question,answer,category:document.getElementById('qaAddCat').value};
   qaData.unshift(item);
   const btn=document.getElementById('addQABtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ qaSha=await ghPush(QA_FILE,qaSha,qaData,'Add Q&A'); showStatus('success','❓ Q&A added!'); clearQAForm(); renderQA(); updateBadges(); switchTab('qa','list'); }
+  try{ await fbAdd('fs_qa',{question:document.getElementById('addQAQ')?document.getElementById('addQAQ').value.trim():'',answer:document.getElementById('addQAA')?document.getElementById('addQAA').value.trim():'',category:document.getElementById('addQACat')?document.getElementById('addQACat').value.trim():''},'Add Q&A'); qaData=await fbLoad('fs_qa'); showStatus('success','❓ Q&A added!'); clearQAForm(); renderQA(); updateBadges(); switchTab('qa','list'); }
   catch(e){ qaData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='❓ Add Q&A';
 }
@@ -4293,7 +4260,7 @@ window.clearQAForm=clearQAForm;
 async function deleteQA(idx){
   if(!confirm('Delete this Q&A?')) return;
   const r=qaData.splice(idx,1)[0];
-  try{ qaSha=await ghPush(QA_FILE,qaSha,qaData,'Delete Q&A'); renderQA(); updateBadges(); showStatus('success','🗑 Q&A deleted.'); }
+  try{ const item=qaData[idx]; if(item&&item._id) await fbDelete('fs_qa',item._id,'Delete Q&A'); qaData=await fbLoad('fs_qa'); renderQA(); updateBadges(); showStatus('success','🗑 Q&A deleted.'); }
   catch(e){ qaData.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deleteQA=deleteQA;
@@ -4338,7 +4305,7 @@ async function addCalEvent(){
   const item={title,date,category:document.getElementById('calAddCat').value,color:document.getElementById('calAddColor').value,description:document.getElementById('calAddDesc').value.trim(),dateObj:date};
   calData.push(item);
   const btn=document.getElementById('addCalBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ calSha=await ghPush(CAL_FILE,calSha,calData,'Add event: '+title); showStatus('success','📅 Event added!'); clearCalForm(); renderCalendar(); updateBadges(); switchTab('cal','list'); }
+  try{ await fbAdd('fs_calendar',{title,date:document.getElementById('addCalDate')?document.getElementById('addCalDate').value.trim():'',description:document.getElementById('addCalDesc')?document.getElementById('addCalDesc').value.trim():'',type:document.getElementById('addCalType')?document.getElementById('addCalType').value:'general'},'Add event: '+title); calData=await fbLoad('fs_calendar','title','asc'); showStatus('success','📅 Event added!'); clearCalForm(); renderCalendar(); updateBadges(); switchTab('cal','list'); }
   catch(e){ calData.pop(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='📅 Add Event';
 }
@@ -4348,7 +4315,7 @@ window.clearCalForm=clearCalForm;
 async function deleteCalEvent(idx){
   if(!confirm('Delete "'+calData[idx].title+'"?')) return;
   const r=calData.splice(idx,1)[0];
-  try{ calSha=await ghPush(CAL_FILE,calSha,calData,'Delete event: '+r.title); renderCalendar(); updateBadges(); showStatus('success','🗑 Event deleted.'); }
+  try{ if(r._id) await fbDelete('fs_calendar',r._id,'Delete event: '+r.title); calData=await fbLoad('fs_calendar','title','asc'); renderCalendar(); updateBadges(); showStatus('success','🗑 Event deleted.'); }
   catch(e){ calData.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deleteCalEvent=deleteCalEvent;
@@ -4536,13 +4503,13 @@ let successSha='', successItems=[];
 // ── Load ticker & success from GitHub (added to init) ──
 async function loadSiteConfigFiles(){
   try{
-    const t=await ghFetch(TICKER_FILE);
-    tickerSha=t.sha; tickerItems=t.data;
+    tickerData=await fbLoad('fs_ticker');
+    tickerItems=tickerData;
     renderTickerList(); updateBadges();
   }catch(e){ console.warn('ticker.json',e.message); }
   try{
-    const s=await ghFetch(SUCCESS_FILE);
-    successSha=s.sha; successItems=s.data;
+    successData=await fbLoad('fs_success_ticker');
+    successItems=successData;
     renderSuccessList(); updateBadges();
   }catch(e){ console.warn('success-ticker.json',e.message); }
 }
@@ -4562,8 +4529,8 @@ async function saveSiteConfig(){
     metaDesc:document.getElementById('sc_metaDesc').value.trim()
   };
   try{
-    const r=await ghFetch(SITECONFIG_FILE);
-    await ghPush(SITECONFIG_FILE,r.sha,[cfg],'Update site config');
+    const r={data:[{}]}; try{const sd=await window.getDoc(window.doc(window.db,'fs_config','site'));if(sd.exists())r.data=[sd.data()];}catch(e){}
+    await window.setDoc(window.doc(window.db,'fs_config','site'),cfg); logAdminActivity('edit','config','Update site config');
     showStatus('success','✅ Site settings saved to site-config.json!');
   }catch(e){ showStatus('error','❌ '+e.message); }
 }
@@ -4581,8 +4548,8 @@ async function saveHeroConfig(){
     cta3:{label:document.getElementById('hc_cta3').value.trim(),link:document.getElementById('hc_cta3link').value.trim()}
   };
   try{
-    const r=await ghFetch(HEROCONFIG_FILE);
-    await ghPush(HEROCONFIG_FILE,r.sha,[cfg],'Update hero config');
+    const r={data:[{}]}; try{const hd=await window.getDoc(window.doc(window.db,'fs_config','hero'));if(hd.exists())r.data=[hd.data()];}catch(e){}
+    await window.setDoc(window.doc(window.db,'fs_config','hero'),cfg); logAdminActivity('edit','config','Update hero config');
     showStatus('success','✅ Hero config saved!');
   }catch(e){ showStatus('error','❌ '+e.message); }
 }
@@ -4597,8 +4564,8 @@ async function saveStatsConfig(){
     community:parseInt(document.getElementById('st_community').value)||10000
   };
   try{
-    const r=await ghFetch('stats-config.json');
-    await ghPush('stats-config.json',r.sha,[stats],'Update stats config');
+    const r={data:[{}]}; try{const std=await window.getDoc(window.doc(window.db,'fs_config','stats'));if(std.exists())r.data=[std.data()];}catch(e){}
+    await window.setDoc(window.doc(window.db,'fs_config','stats'),stats); logAdminActivity('edit','config','Update stats config');
     showStatus('success','✅ Stats saved! Hero and About section counters will reflect these on next visit.');
   }catch(e){ showStatus('error','❌ '+e.message); }
 }
@@ -4624,7 +4591,7 @@ async function addTickerItem(){
   if(!text){showStatus('error','Enter the announcement text.');return;}
   tickerItems.push({emoji,text});
   const btn=document.getElementById('addTickerBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ tickerSha=await ghPush(TICKER_FILE,tickerSha,tickerItems,'Add ticker: '+text.slice(0,40)); showStatus('success','📢 Ticker item added!'); clearTickerForm(); renderTickerList(); switchTab('ticker','list'); }
+  try{ await fbAdd('fs_ticker',{text,link:document.getElementById('addTickerLink')?document.getElementById('addTickerLink').value.trim():'',type:document.getElementById('addTickerType')?document.getElementById('addTickerType').value:'info'},'Add ticker: '+text.slice(0,40)); tickerData=await fbLoad('fs_ticker'); showStatus('success','📢 Ticker item added!'); clearTickerForm(); renderTickerList(); switchTab('ticker','list'); }
   catch(e){ tickerItems.pop(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='📢 Add Item';
 }
@@ -4634,7 +4601,7 @@ window.clearTickerForm=clearTickerForm;
 async function deleteTickerItem(idx){
   if(!confirm('Delete this ticker item?')) return;
   const r=tickerItems.splice(idx,1)[0];
-  try{ tickerSha=await ghPush(TICKER_FILE,tickerSha,tickerItems,'Delete ticker item'); renderTickerList(); showStatus('success','🗑 Deleted.'); }
+  try{ const item=tickerData[idx]; if(item&&item._id) await fbDelete('fs_ticker',item._id,'Delete ticker item'); tickerData=await fbLoad('fs_ticker'); renderTickerList(); showStatus('success','🗑 Deleted.'); }
   catch(e){ tickerItems.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deleteTickerItem=deleteTickerItem;
@@ -4658,7 +4625,7 @@ async function addSuccessWin(){
   if(!text){showStatus('error','Enter the student win message.');return;}
   successItems.push({text});
   const btn=document.getElementById('addSuccessBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ successSha=await ghPush(SUCCESS_FILE,successSha,successItems,'Add win: '+text.slice(0,40)); showStatus('success','🎉 Win added!'); clearSuccessForm(); renderSuccessList(); switchTab('success','list'); }
+  try{ await fbAdd('fs_success_ticker',{text,student:document.getElementById('addSuccessStudent')?document.getElementById('addSuccessStudent').value.trim():'',school:document.getElementById('addSuccessSchool')?document.getElementById('addSuccessSchool').value.trim():''},'Add win: '+text.slice(0,40)); successData=await fbLoad('fs_success_ticker'); showStatus('success','🎉 Win added!'); clearSuccessForm(); renderSuccessList(); switchTab('success','list'); }
   catch(e){ successItems.pop(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='🎉 Add Win';
 }
@@ -4668,7 +4635,7 @@ window.clearSuccessForm=clearSuccessForm;
 async function deleteSuccessWin(idx){
   if(!confirm('Delete this win?')) return;
   const r=successItems.splice(idx,1)[0];
-  try{ successSha=await ghPush(SUCCESS_FILE,successSha,successItems,'Delete win'); renderSuccessList(); showStatus('success','🗑 Deleted.'); }
+  try{ const item=successData[idx]; if(item&&item._id) await fbDelete('fs_success_ticker',item._id,'Delete win'); successData=await fbLoad('fs_success_ticker'); renderSuccessList(); showStatus('success','🗑 Deleted.'); }
   catch(e){ successItems.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deleteSuccessWin=deleteSuccessWin;
@@ -4683,8 +4650,8 @@ async function saveTopBarConfig(){
     delaySeconds:parseInt(document.getElementById('tb_delay').value)||5
   };
   try{
-    const r=await ghFetch(TOPBAR_FILE);
-    await ghPush(TOPBAR_FILE,r.sha,[cfg],'Update top bar config');
+    const r={data:[{}]}; try{const tbd=await window.getDoc(window.doc(window.db,'fs_config','topbar'));if(tbd.exists())r.data=[tbd.data()];}catch(e){}
+    await window.setDoc(window.doc(window.db,'fs_config','topbar'),cfg); logAdminActivity('edit','config','Update top bar config');
     showStatus('success','✅ Top bar config saved!');
   }catch(e){ showStatus('error','❌ '+e.message); }
 }
@@ -4719,8 +4686,8 @@ async function saveContactConfig(){
     ]
   };
   try{
-    const r=await ghFetch(CONTACT_FILE);
-    await ghPush(CONTACT_FILE,r.sha,[cfg],'Update contact config');
+    const r={data:[{}]}; try{const ctd=await window.getDoc(window.doc(window.db,'fs_config','contact'));if(ctd.exists())r.data=[ctd.data()];}catch(e){}
+    await window.setDoc(window.doc(window.db,'fs_config','contact'),cfg); logAdminActivity('edit','config','Update contact config');
     showStatus('success','✅ Contact channels saved!');
   }catch(e){ showStatus('error','❌ '+e.message); }
 }
@@ -4738,8 +4705,8 @@ async function saveSocialsConfig(){
     linkedin:document.getElementById('sl_linkedin').value.trim()
   };
   try{
-    const r=await ghFetch(SOCIALS_FILE);
-    await ghPush(SOCIALS_FILE,r.sha,[cfg],'Update socials config');
+    const r={data:[{}]}; try{const sod=await window.getDoc(window.doc(window.db,'fs_config','socials'));if(sod.exists())r.data=[sod.data()];}catch(e){}
+    await window.setDoc(window.doc(window.db,'fs_config','socials'),cfg); logAdminActivity('edit','config','Update socials config');
     showStatus('success','✅ Social links saved!');
   }catch(e){ showStatus('error','❌ '+e.message); }
 }
