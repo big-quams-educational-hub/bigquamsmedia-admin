@@ -2656,13 +2656,6 @@ function goToNickStep(user){
   document.getElementById('loginStep1').classList.remove('active');
   document.getElementById('loginStep2').classList.remove('active');
   document.getElementById('loginStepNick').classList.add('active');
-  // Update step indicator to step 2 (nickname)
-  document.getElementById('sdot1').className='step-dot done';
-  document.getElementById('sdot1').textContent='✓';
-  document.getElementById('sline1').className='step-line done';
-  document.getElementById('sdot2').className='step-dot active';
-  document.getElementById('sline2').className='step-line';
-  document.getElementById('sdot3').className='step-dot';
   // Show user info in nick step
   document.getElementById('adminBadgeNameNick').textContent=user.displayName||user.email.split('@')[0];
   document.getElementById('adminBadgeEmailNick').textContent=user.email;
@@ -2677,15 +2670,6 @@ function goBackToStep1(){
   document.getElementById('loginStep2').classList.remove('active');
   document.getElementById('loginStepNick').classList.remove('active');
   document.getElementById('loginStep1').classList.add('active');
-  document.getElementById('sdot1').className='step-dot active';
-  document.getElementById('sdot1').textContent='1';
-  document.getElementById('sline1').className='step-line';
-  document.getElementById('sdot2').className='step-dot';
-  document.getElementById('sdot2').textContent='2';
-  document.getElementById('sline2').className='step-line';
-  document.getElementById('sdot3').className='step-dot';
-  document.getElementById('sdot3').textContent='3';
-  document.getElementById('teamPIN').value='';
   if(window.auth&&window.signOutFB) window.signOutFB(window.auth).catch(()=>{});
   firebaseUser=null;
 }
@@ -3357,17 +3341,17 @@ async function init(){
       fbLoad('fs_success_ticker'),
     ]);
     renderAll();
-  updateBadges();
-  if(!hasError) showStatus('success',`✅ Loaded: ${newsData.length} news articles · ${booksData.length} books · ${schData.length} scholarships`);
-  // load CBT from Firebase
-  loadCBTQuestions();
-  // load site config files
-  loadSiteConfigFiles();
-  // Update newsroom stats
-  document.getElementById('nr-total').textContent = newsData.length;
-  document.getElementById('nr-pinned').textContent = newsData.filter(n=>n.pinned).length;
-  const cats = new Set(newsData.map(n=>n.category).filter(Boolean));
-  document.getElementById('nr-cats').textContent = cats.size;
+    updateBadges();
+    showStatus('success',`✅ Loaded: ${newsData.length} news articles · ${booksData.length} books · ${schData.length} scholarships`);
+    loadCBTQuestions();
+    loadSiteConfigFiles();
+    document.getElementById('nr-total').textContent = newsData.length;
+    document.getElementById('nr-pinned').textContent = newsData.filter(n=>n.pinned).length;
+    const cats = new Set(newsData.map(n=>n.category).filter(Boolean));
+    document.getElementById('nr-cats').textContent = cats.size;
+  }catch(e){
+    showStatus('error','Failed to load data: '+e.message);
+  }
 }
 window.init = init;
 
