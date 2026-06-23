@@ -42,7 +42,17 @@ body.dark .section-title-h2{color:#bfdbfe}
 body.dark .stat-card{background:#1e293b;border-color:#334155}
 
 /* ─── LOGIN ─── */
-#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#080f20 0%,#102880 50%,#1d4ed8 100%)}
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:linear-gradient(135deg,rgba(8,15,32,0.92) 0%,rgba(16,40,128,0.89) 50%,rgba(29,78,216,0.87) 100%),
+             url('https://bigquamsmedia.com.ng/bigquamsmedia-admin/1001736174.png') center/cover no-repeat;
+  position:relative;
+}
+#loginScreen::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 15% 85%,rgba(249,115,22,0.10) 0%,transparent 50%),
+             radial-gradient(ellipse at 85% 15%,rgba(29,78,216,0.15) 0%,transparent 50%);
+  pointer-events:none;
+}
 .login-card{background:white;border-radius:20px;padding:28px 22px;width:100%;max-width:420px;box-shadow:0 40px 100px rgba(0,0,0,0.35)}
 @media(min-width:480px){.login-card{padding:36px 32px}}
 body.dark .login-card{background:#1e293b}

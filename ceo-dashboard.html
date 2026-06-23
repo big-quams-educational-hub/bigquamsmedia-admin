@@ -23,8 +23,16 @@ button{cursor:pointer;font-family:inherit}
 
 /* ── LOGIN GATE ── */
 #loginGate{
-  position:fixed;inset:0;background:linear-gradient(135deg,#0c1f6e,#1a3fa8,#2563eb);
+  position:fixed;inset:0;
+  background:linear-gradient(135deg,rgba(12,31,110,0.93),rgba(26,63,168,0.90),rgba(37,99,235,0.88)),
+             url('https://bigquamsmedia.com.ng/bigquamsmedia-admin/1001736174.png') center/cover no-repeat;
   display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;
+}
+#loginGate::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 80%,rgba(249,115,22,0.12) 0%,transparent 55%),
+             radial-gradient(ellipse at 80% 20%,rgba(37,99,235,0.18) 0%,transparent 55%);
+  pointer-events:none;
 }
 .login-card{
   background:#ffffff;border:1.5px solid #e2e8f4;border-radius:20px;
@@ -393,11 +401,11 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <button class="tab-btn" onclick="switchTab('referrals',this)">🔗 Referrals</button>
       <button class="tab-btn" onclick="switchTab('cbtanalytics',this)">🎯 CBT Analytics</button>
       <button class="tab-btn" onclick="switchTab('whitelist',this)" style="border-color:#dc2626;color:#dc2626">🔐 Admin Access</button>
-      <button class="tab-btn" onclick="switchTab('fs_books',this)" style="border-color:#f59e0b;color:#92400e">📚 eLibrary</button>
-      <button class="tab-btn" onclick="switchTab('fs_scholarships',this)" style="border-color:#10b981;color:#065f46">💰 Scholarships</button>
-      <button class="tab-btn" onclick="switchTab('fs_nelfund',this)" style="border-color:#8b5cf6;color:#5b21b6">💳 NELFUND</button>
-      <button class="tab-btn" onclick="switchTab('fs_dyk',this)" style="border-color:#f59e0b;color:#92400e">💡 DYK</button>
-      <button class="tab-btn" onclick="switchTab('fs_spotlight',this)" style="border-color:#ec4899;color:#9d174d">🌟 Spotlight</button>
+      <button class="tab-btn" onclick="switchTab('library',this)" style="border-color:#f59e0b;color:#92400e">📚 eLibrary</button>
+      <button class="tab-btn" onclick="switchTab('scholarships',this)" style="border-color:#10b981;color:#065f46">💰 Scholarships</button>
+      <button class="tab-btn" onclick="switchTab('nelfund',this)" style="border-color:#8b5cf6;color:#5b21b6">💳 NELFUND</button>
+      <button class="tab-btn" onclick="switchTab('dyk',this)" style="border-color:#f59e0b;color:#92400e">💡 DYK</button>
+      <button class="tab-btn" onclick="switchTab('spotlight',this)" style="border-color:#ec4899;color:#9d174d">🌟 Spotlight</button>
       <button class="tab-btn" onclick="switchTab('postutme',this)" style="border-color:#3b82f6;color:#1d4ed8">🧮 Post-UTME</button>
       <button class="tab-btn" onclick="switchTab('combo',this)" style="border-color:#10b981;color:#065f46">📋 Subject Combo</button>
     </div>
@@ -987,7 +995,7 @@ async function loginEmail_pw(){
   btn.disabled=true;btn.textContent='Signing in…';
   try{
     const cred=await window._signInEmail(email,pw);
-    if(cred.!isCEOEmail(user.email)){
+    if(!isCEOEmail(cred.user.email)){
       await window._signOut();
       showAccessDenied();
     }
