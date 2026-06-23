@@ -52,8 +52,9 @@ body.dark .stat-card{background:#1e293b;border-color:#334155}
   background:radial-gradient(ellipse at 15% 85%,rgba(249,115,22,0.10) 0%,transparent 50%),
              radial-gradient(ellipse at 85% 15%,rgba(29,78,216,0.15) 0%,transparent 50%);
   pointer-events:none;
+  z-index:0;
 }
-.login-card{background:white;border-radius:20px;padding:28px 22px;width:100%;max-width:420px;box-shadow:0 40px 100px rgba(0,0,0,0.35)}
+.login-card{background:white;border-radius:20px;padding:28px 22px;width:100%;max-width:420px;box-shadow:0 40px 100px rgba(0,0,0,0.35);position:relative;z-index:1;}
 @media(min-width:480px){.login-card{padding:36px 32px}}
 body.dark .login-card{background:#1e293b}
 .login-step{display:none}

@@ -33,12 +33,14 @@ button{cursor:pointer;font-family:inherit}
   background:radial-gradient(ellipse at 20% 80%,rgba(249,115,22,0.12) 0%,transparent 55%),
              radial-gradient(ellipse at 80% 20%,rgba(37,99,235,0.18) 0%,transparent 55%);
   pointer-events:none;
+  z-index:0;
 }
 .login-card{
   background:#ffffff;border:1.5px solid #e2e8f4;border-radius:20px;
   padding:36px 28px;width:100%;max-width:380px;text-align:center;
   box-shadow:0 32px 80px rgba(26,63,168,.15);
   animation:pop .4s cubic-bezier(.34,1.56,.64,1);
+  position:relative;z-index:1;
 }
 @keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 .login-logo{width:70px;height:70px;border-radius:50%;border:3px solid var(--orange);margin:0 auto 14px;overflow:hidden}
