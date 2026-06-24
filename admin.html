@@ -3510,11 +3510,12 @@ function makeSlug(title){
 }
 window.makeSlug=makeSlug;
 
-// Build stable article URL: /article/slug--firestoreDocId/
+// Build stable article URL using hash: /newsroom.html#slug--firestoreDocId
 function articleUrl(item){
   const slug=item.slug||makeSlug(item.title||'untitled');
   const id=item._id||'';
-  return SITE_BASE+'/article/'+slug+(id?'--'+id:'')+'/';
+  const hash=slug+(id?'--'+id:'');
+  return SITE_BASE+'/newsroom.html#'+hash;
 }
 window.articleUrl=articleUrl;
 
@@ -3538,7 +3539,7 @@ async function addNews(){
     // Update doc with its own Firestore ID so articleUrl stays stable
     await window.updateDoc(window.doc(window.db,'fs_news',ref.id),{_docId:ref.id});
     logAdminActivity('add','news','Add: '+title);
-    showStatus('success','🎉 Article published! Link: '+SITE_BASE+'/article/'+slug+'--'+ref.id+'/');
+    showStatus('success','🎉 Article published! Link: '+SITE_BASE+'/newsroom.html#'+slug+'--'+ref.id);
     clearNewsForm(); await loadNewsFromFirebase(); switchTab('news','list');
   }catch(e){showStatus('error','Firebase error: '+e.message);}
   btn.disabled=false; btn.textContent='🚀 Publish Article';
