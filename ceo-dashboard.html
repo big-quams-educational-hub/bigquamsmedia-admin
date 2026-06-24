@@ -410,6 +410,11 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <button class="tab-btn" onclick="switchTab('spotlight',this)" style="border-color:#ec4899;color:#9d174d">🌟 Spotlight</button>
       <button class="tab-btn" onclick="switchTab('postutme',this)" style="border-color:#3b82f6;color:#1d4ed8">🧮 Post-UTME</button>
       <button class="tab-btn" onclick="switchTab('combo',this)" style="border-color:#10b981;color:#065f46">📋 Subject Combo</button>
+      <button class="tab-btn" onclick="switchTab('reviews',this)" style="border-color:#f59e0b;color:#92400e">⭐ Reviews</button>
+      <button class="tab-btn" onclick="switchTab('qa',this)" style="border-color:#8b5cf6;color:#6d28d9">❓ Q&amp;A</button>
+      <button class="tab-btn" onclick="switchTab('calendar',this)" style="border-color:#06b6d4;color:#0e7490">📅 Calendar</button>
+      <button class="tab-btn" onclick="switchTab('newsroom',this)" style="border-color:#64748b;color:#334155">🗞️ Newsroom</button>
+      <button class="tab-btn" onclick="switchTab('siteconfig',this)" style="border-color:#dc2626;color:#991b1b">⚙️ Site Settings</button>
     </div>
 
     <!-- ── TAB: FULL LOG ── -->
@@ -871,6 +876,217 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
         </div>
       </div>
       <div class="card"><div class="card-body-flush"><div id="comboList" style="padding:16px"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div></div></div></div></div>
+    </div>
+
+
+    <!-- ══ REVIEWS TAB ══ -->
+    <div class="tab-panel" id="tab-reviews">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadReviews()">🔄 Refresh</button>
+        <div class="refresh-info" id="reviewsInfo">Click Refresh to load reviews</div>
+      </div>
+      <div class="card"><div class="card-body-flush"><div id="reviewsList" style="padding:16px">
+        <div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Refresh to load student reviews</div>
+      </div></div></div>
+    </div>
+
+    <!-- ══ Q&A TAB ══ -->
+    <div class="tab-panel" id="tab-qa">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadQA()">🔄 Refresh</button>
+        <div class="refresh-info" id="qaInfo">Click Refresh to load Q&amp;A</div>
+      </div>
+      <div class="card"><div class="card-body-flush"><div id="qaList" style="padding:16px">
+        <div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Refresh to load Q&amp;A items</div>
+      </div></div></div>
+    </div>
+
+    <!-- ══ CALENDAR TAB ══ -->
+    <div class="tab-panel" id="tab-calendar">
+      <div class="refresh-row">
+        <button class="btn-primary-sm" onclick="loadCalendar()">🔄 Refresh</button>
+        <button class="btn-sm" onclick="showAddCalendar()">➕ Add Event</button>
+        <div class="refresh-info" id="calendarInfo">Click Refresh to load events</div>
+      </div>
+      <div id="calendarAddForm" style="display:none;margin-bottom:16px" class="card">
+        <div class="card-header"><div class="card-title">➕ Add Academic Event</div></div>
+        <div style="padding:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Event Title *</label><input class="log-search" type="text" id="calTitle" placeholder="e.g. JAMB Registration Opens"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Date *</label><input class="log-search" type="text" id="calDate" placeholder="e.g. Jan 15, 2026"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Category</label>
+              <select id="calCat" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.84rem;font-family:inherit;background:var(--surface2);color:var(--text)">
+                <option value="jamb">JAMB</option><option value="waec">WAEC</option><option value="neco">NECO</option>
+                <option value="postutme">Post-UTME</option><option value="school">School</option><option value="nelfund">NELFUND</option><option value="other">Other</option>
+              </select>
+            </div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Icon (emoji)</label><input class="log-search" type="text" id="calIcon" placeholder="🎯" maxlength="4"></div>
+          </div>
+          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Description</label><input class="log-search" type="text" id="calDesc" placeholder="Short description…" style="width:100%"></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-primary-sm" onclick="addCalendarItem()">📅 Add Event</button>
+            <button class="btn-sm" onclick="document.getElementById('calendarAddForm').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-body-flush"><div id="calendarList" style="padding:16px">
+        <div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Refresh to load calendar events</div>
+      </div></div></div>
+    </div>
+
+    <!-- ══ NEWSROOM SETTINGS TAB ══ -->
+    <div class="tab-panel" id="tab-newsroom">
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">🗞️ Newsroom Page Configuration</div></div>
+        <div style="padding:16px">
+          <div style="background:rgba(37,99,235,.07);border:1.5px solid rgba(37,99,235,.15);border-radius:10px;padding:13px;margin-bottom:16px;font-size:.82rem;line-height:1.6">
+            ℹ️ The Newsroom page pulls from <strong>fs_news</strong> in Firestore. Settings below control display options on the newsroom page.
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Page Title</label><input class="log-search" type="text" id="nrTitle" placeholder="BQM Newsroom" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Subtitle / Tagline</label><input class="log-search" type="text" id="nrSubtitle" placeholder="Stay informed — latest student news" style="width:100%"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Articles Per Page</label>
+              <select id="nrPerPage" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.84rem;font-family:inherit;background:var(--surface2);color:var(--text)">
+                <option value="10">10</option><option value="15" selected>15</option><option value="20">20</option><option value="25">25</option>
+              </select>
+            </div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Default Sort</label>
+              <select id="nrSort" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.84rem;font-family:inherit;background:var(--surface2);color:var(--text)">
+                <option value="newest">Newest First</option><option value="pinned">Pinned First</option><option value="oldest">Oldest First</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Featured Banner Text</label>
+            <textarea id="nrBanner" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:65px" placeholder="e.g. 📢 JAMB 2026 results released — check yours now!"></textarea>
+          </div>
+          <button class="btn-primary-sm" onclick="saveNewsroomSettings()">💾 Save Settings</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 Newsroom Stats</div></div>
+        <div style="padding:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center"><div style="font-size:1.5rem;font-weight:800" id="nr-total">—</div><div style="font-size:.72rem;color:var(--muted);font-weight:600">Total Articles</div></div>
+          <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center"><div style="font-size:1.5rem;font-weight:800" id="nr-pinned">—</div><div style="font-size:.72rem;color:var(--muted);font-weight:600">Pinned</div></div>
+          <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center"><div style="font-size:1.5rem;font-weight:800" id="nr-cats">—</div><div style="font-size:.72rem;color:var(--muted);font-weight:600">Categories</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SITE SETTINGS TAB ══ -->
+    <div class="tab-panel" id="tab-siteconfig">
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">⚙️ Global Site Config</div></div>
+        <div style="padding:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Site Name</label><input class="log-search" type="text" id="cfg-siteName" placeholder="BIG QUAMS MEDIA" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Tagline</label><input class="log-search" type="text" id="cfg-tagline" placeholder="Nigeria's #1 Student Platform" style="width:100%"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">WhatsApp Number</label><input class="log-search" type="text" id="cfg-whatsapp" placeholder="2348XXXXXXXXX" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Contact Email</label><input class="log-search" type="email" id="cfg-email" placeholder="info@bigquamsmedia.com.ng" style="width:100%"></div>
+          </div>
+          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Formspree ID</label><input class="log-search" type="text" id="cfg-formspree" placeholder="Formspree form ID" style="width:100%"></div>
+          <button class="btn-primary-sm" onclick="saveSiteConfig()">💾 Save Config</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">🦸 Hero &amp; Stats</div></div>
+        <div style="padding:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Hero Badge</label><input class="log-search" type="text" id="hero-badge" placeholder="🔥 Nigeria's #1 Student Platform" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Hero Headline</label><input class="log-search" type="text" id="hero-headline" placeholder="Main headline text" style="width:100%"></div>
+          </div>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Hero Description</label><textarea id="hero-desc" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:65px" placeholder="Subheading text…"></textarea></div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 1 Value</label><input class="log-search" type="text" id="stat1-val" placeholder="50,000+" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 1 Label</label><input class="log-search" type="text" id="stat1-lbl" placeholder="Students Helped" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 2 Value</label><input class="log-search" type="text" id="stat2-val" placeholder="1,200+" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 2 Label</label><input class="log-search" type="text" id="stat2-lbl" placeholder="Books Available" style="width:100%"></div>
+          </div>
+          <button class="btn-primary-sm" onclick="saveHeroStats()">💾 Save Hero &amp; Stats</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">🔔 Top Bar Notification</div></div>
+        <div style="padding:16px">
+          <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Notification Message</label><input class="log-search" type="text" id="topbar-msg" placeholder="📢 JAMB registration closes soon — register now!" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Enabled?</label>
+              <select id="topbar-enabled" style="padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.84rem;font-family:inherit;background:var(--surface2);color:var(--text)">
+                <option value="true">Yes — Show</option><option value="false">No — Hide</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-primary-sm" onclick="saveTopBar()">💾 Save Top Bar</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <div class="card-title">📢 News Ticker</div>
+          <button class="btn-sm" onclick="loadNewsroomData()">🔄 Refresh</button>
+        </div>
+        <div style="padding:16px">
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Add Ticker Item</label>
+            <div style="display:flex;gap:8px">
+              <input class="log-search" type="text" id="ticker-new" placeholder="e.g. 📢 JAMB 2026 result is out — click to check!" style="flex:1">
+              <button class="btn-primary-sm" onclick="addTickerItem()">➕ Add</button>
+            </div>
+          </div>
+          <div id="tickerList" style="max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px">
+            <div style="text-align:center;padding:20px;color:var(--muted);font-size:.82rem">Click Refresh to load ticker items</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">🎉 Success Ticker</div></div>
+        <div style="padding:16px">
+          <div style="margin-bottom:12px">
+            <div style="display:flex;gap:8px">
+              <input class="log-search" type="text" id="successticker-new" placeholder="e.g. 🏆 Amaka scored 340 in JAMB — Medicine, UNILAG!" style="flex:1">
+              <button class="btn-primary-sm" onclick="addSuccessTickerItem()">➕ Add</button>
+            </div>
+          </div>
+          <div id="successTickerList" style="max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px">
+            <div style="text-align:center;padding:20px;color:var(--muted);font-size:.82rem">Click Refresh to load success ticker items</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">📞 Contact Channels</div></div>
+        <div style="padding:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">WhatsApp Group Link</label><input class="log-search" type="url" id="ch-wagroup" placeholder="https://chat.whatsapp.com/..." style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">WhatsApp Channel</label><input class="log-search" type="url" id="ch-wachannel" placeholder="https://whatsapp.com/channel/..." style="width:100%"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Telegram Group</label><input class="log-search" type="url" id="ch-telegram" placeholder="https://t.me/..." style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Email Address</label><input class="log-search" type="email" id="ch-email" placeholder="contact@bigquamsmedia.com.ng" style="width:100%"></div>
+          </div>
+          <button class="btn-primary-sm" onclick="saveContactChannels()">💾 Save Channels</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔗 Social Links</div></div>
+        <div style="padding:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Instagram</label><input class="log-search" type="url" id="soc-instagram" placeholder="https://instagram.com/bigquamsmedia" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">TikTok</label><input class="log-search" type="url" id="soc-tiktok" placeholder="https://tiktok.com/@bigquamsmedia" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">X / Twitter</label><input class="log-search" type="url" id="soc-twitter" placeholder="https://x.com/bigquamsmedia" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">LinkedIn</label><input class="log-search" type="url" id="soc-linkedin" placeholder="https://linkedin.com/company/bigquamsmedia" style="width:100%"></div>
+          </div>
+          <button class="btn-primary-sm" onclick="saveSocialLinks()">💾 Save Social Links</button>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -1934,10 +2150,277 @@ async function addComboItem(){
 }
 window.addComboItem=addComboItem;
 
-// ── Extend switchTab to handle new tabs ──
+
+// ── REVIEWS ──
+async function loadReviews(){
+  const el=document.getElementById('reviewsList');
+  const info=document.getElementById('reviewsInfo');
+  if(info) info.textContent='Loading…';
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_reviews'),window._orderBy('createdAt','desc')));
+    const items=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    if(info) info.textContent=items.length+' reviews loaded';
+    renderItemList('reviewsList',items,['name','rating','comment'],'fs_reviews');
+  }catch(e){if(info) info.textContent='Error: '+e.message;}
+}
+window.loadReviews=loadReviews;
+
+// ── Q&A ──
+async function loadQA(){
+  const el=document.getElementById('qaList');
+  const info=document.getElementById('qaInfo');
+  if(info) info.textContent='Loading…';
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_qa'),window._orderBy('createdAt','desc')));
+    const items=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    if(info) info.textContent=items.length+' Q&A items loaded';
+    renderItemList('qaList',items,['question','answer','category'],'fs_qa');
+  }catch(e){if(info) info.textContent='Error: '+e.message;}
+}
+window.loadQA=loadQA;
+
+// ── CALENDAR ──
+async function loadCalendar(){
+  const info=document.getElementById('calendarInfo');
+  if(info) info.textContent='Loading…';
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_calendar'),window._orderBy('title','asc')));
+    const items=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    if(info) info.textContent=items.length+' events loaded';
+    renderItemList('calendarList',items,['title','date','category'],'fs_calendar');
+  }catch(e){if(info) info.textContent='Error: '+e.message;}
+}
+window.loadCalendar=loadCalendar;
+
+function showAddCalendar(){ document.getElementById('calendarAddForm').style.display='block'; }
+window.showAddCalendar=showAddCalendar;
+
+async function addCalendarItem(){
+  const title=document.getElementById('calTitle').value.trim();
+  const date=document.getElementById('calDate').value.trim();
+  if(!title||!date){alert('Fill in Title and Date.');return;}
+  try{
+    await window._addDoc(window._collection(window._db,'fs_calendar'),{
+      title,date,
+      category:document.getElementById('calCat').value,
+      icon:document.getElementById('calIcon').value.trim()||'📅',
+      description:document.getElementById('calDesc').value.trim(),
+      createdAt:window._serverTimestamp()
+    });
+    document.getElementById('calendarAddForm').style.display='none';
+    ['calTitle','calDate','calIcon','calDesc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    loadCalendar();
+  }catch(e){alert('Firebase error: '+e.message);}
+}
+window.addCalendarItem=addCalendarItem;
+
+// ── NEWSROOM SETTINGS ──
+async function loadNewsroomData(){
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_news'),window._orderBy('createdAt','desc')));
+    const items=snap.docs.map(d=>d.data());
+    const tot=document.getElementById('nr-total');
+    const pin=document.getElementById('nr-pinned');
+    const cat=document.getElementById('nr-cats');
+    if(tot) tot.textContent=items.length;
+    if(pin) pin.textContent=items.filter(n=>n.pinned).length;
+    if(cat){const cats=new Set(items.map(n=>n.category).filter(Boolean));cat.textContent=cats.size;}
+    // Load ticker items too
+    loadTickerItems();
+    loadSuccessTickerItems();
+  }catch(e){console.warn(e);}
+}
+window.loadNewsroomData=loadNewsroomData;
+
+async function saveNewsroomSettings(){
+  const data={
+    title:document.getElementById('nrTitle').value.trim(),
+    subtitle:document.getElementById('nrSubtitle').value.trim(),
+    perPage:document.getElementById('nrPerPage').value,
+    sort:document.getElementById('nrSort').value,
+    banner:document.getElementById('nrBanner').value.trim(),
+    updatedAt:window._serverTimestamp()
+  };
+  try{
+    await window._setDoc(window._doc(window._db,'site_config','newsroom'),data,{merge:true});
+    showCEOStatus('success','✅ Newsroom settings saved!');
+  }catch(e){showCEOStatus('error','Error: '+e.message);}
+}
+window.saveNewsroomSettings=saveNewsroomSettings;
+
+// ── SITE CONFIG ──
+async function saveSiteConfig(){
+  const data={
+    siteName:document.getElementById('cfg-siteName').value.trim(),
+    tagline:document.getElementById('cfg-tagline').value.trim(),
+    whatsapp:document.getElementById('cfg-whatsapp').value.trim(),
+    email:document.getElementById('cfg-email').value.trim(),
+    formspree:document.getElementById('cfg-formspree').value.trim(),
+    updatedAt:window._serverTimestamp()
+  };
+  try{
+    await window._setDoc(window._doc(window._db,'site_config','global'),data,{merge:true});
+    showCEOStatus('success','✅ Site config saved!');
+  }catch(e){showCEOStatus('error','Error: '+e.message);}
+}
+window.saveSiteConfig=saveSiteConfig;
+
+async function saveHeroStats(){
+  const data={
+    badge:document.getElementById('hero-badge').value.trim(),
+    headline:document.getElementById('hero-headline').value.trim(),
+    description:document.getElementById('hero-desc').value.trim(),
+    stat1:{value:document.getElementById('stat1-val').value.trim(),label:document.getElementById('stat1-lbl').value.trim()},
+    stat2:{value:document.getElementById('stat2-val').value.trim(),label:document.getElementById('stat2-lbl').value.trim()},
+    updatedAt:window._serverTimestamp()
+  };
+  try{
+    await window._setDoc(window._doc(window._db,'site_config','hero'),data,{merge:true});
+    showCEOStatus('success','✅ Hero & Stats saved!');
+  }catch(e){showCEOStatus('error','Error: '+e.message);}
+}
+window.saveHeroStats=saveHeroStats;
+
+async function saveTopBar(){
+  const data={
+    message:document.getElementById('topbar-msg').value.trim(),
+    enabled:document.getElementById('topbar-enabled').value==='true',
+    updatedAt:window._serverTimestamp()
+  };
+  try{
+    await window._setDoc(window._doc(window._db,'site_config','topbar'),data,{merge:true});
+    showCEOStatus('success','✅ Top Bar saved!');
+  }catch(e){showCEOStatus('error','Error: '+e.message);}
+}
+window.saveTopBar=saveTopBar;
+
+async function saveContactChannels(){
+  const data={
+    waGroup:document.getElementById('ch-wagroup').value.trim(),
+    waChannel:document.getElementById('ch-wachannel').value.trim(),
+    telegram:document.getElementById('ch-telegram').value.trim(),
+    email:document.getElementById('ch-email').value.trim(),
+    updatedAt:window._serverTimestamp()
+  };
+  try{
+    await window._setDoc(window._doc(window._db,'site_config','channels'),data,{merge:true});
+    showCEOStatus('success','✅ Contact channels saved!');
+  }catch(e){showCEOStatus('error','Error: '+e.message);}
+}
+window.saveContactChannels=saveContactChannels;
+
+async function saveSocialLinks(){
+  const data={
+    instagram:document.getElementById('soc-instagram').value.trim(),
+    tiktok:document.getElementById('soc-tiktok').value.trim(),
+    twitter:document.getElementById('soc-twitter').value.trim(),
+    linkedin:document.getElementById('soc-linkedin').value.trim(),
+    updatedAt:window._serverTimestamp()
+  };
+  try{
+    await window._setDoc(window._doc(window._db,'site_config','socials'),data,{merge:true});
+    showCEOStatus('success','✅ Social links saved!');
+  }catch(e){showCEOStatus('error','Error: '+e.message);}
+}
+window.saveSocialLinks=saveSocialLinks;
+
+// ── TICKER ──
+let tickerItems=[], successTickerItems=[];
+
+async function loadTickerItems(){
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_ticker'),window._orderBy('createdAt','asc')));
+    tickerItems=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    renderTickerList('tickerList',tickerItems,'ticker-new',addTickerItem,deleteTickerItem);
+  }catch(e){console.warn(e);}
+}
+window.loadTickerItems=loadTickerItems;
+
+async function addTickerItem(){
+  const val=document.getElementById('ticker-new').value.trim();
+  if(!val) return;
+  try{
+    await window._addDoc(window._collection(window._db,'fs_ticker'),{text:val,createdAt:window._serverTimestamp()});
+    document.getElementById('ticker-new').value='';
+    loadTickerItems();
+    showCEOStatus('success','✅ Ticker item added!');
+  }catch(e){showCEOStatus('error','Error: '+e.message);}
+}
+window.addTickerItem=addTickerItem;
+
+async function deleteTickerItem(id){
+  if(!confirm('Delete this ticker item?')) return;
+  try{await window._deleteDoc(window._doc(window._db,'fs_ticker',id));loadTickerItems();}catch(e){showCEOStatus('error',e.message);}
+}
+window.deleteTickerItem=deleteTickerItem;
+
+async function loadSuccessTickerItems(){
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_success_ticker'),window._orderBy('createdAt','asc')));
+    successTickerItems=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    renderTickerList('successTickerList',successTickerItems,'successticker-new',addSuccessTickerItem,deleteSuccessTickerItem);
+  }catch(e){console.warn(e);}
+}
+window.loadSuccessTickerItems=loadSuccessTickerItems;
+
+async function addSuccessTickerItem(){
+  const val=document.getElementById('successticker-new').value.trim();
+  if(!val) return;
+  try{
+    await window._addDoc(window._collection(window._db,'fs_success_ticker'),{text:val,createdAt:window._serverTimestamp()});
+    document.getElementById('successticker-new').value='';
+    loadSuccessTickerItems();
+    showCEOStatus('success','✅ Success ticker item added!');
+  }catch(e){showCEOStatus('error','Error: '+e.message);}
+}
+window.addSuccessTickerItem=addSuccessTickerItem;
+
+async function deleteSuccessTickerItem(id){
+  if(!confirm('Delete this item?')) return;
+  try{await window._deleteDoc(window._doc(window._db,'fs_success_ticker',id));loadSuccessTickerItems();}catch(e){showCEOStatus('error',e.message);}
+}
+window.deleteSuccessTickerItem=deleteSuccessTickerItem;
+
+function renderTickerList(elId,items,inputId,addFn,delFn){
+  const el=document.getElementById(elId); if(!el) return;
+  if(!items.length){el.innerHTML='<div style="text-align:center;padding:16px;color:var(--muted);font-size:.82rem">No items yet. Add one above.</div>';return;}
+  el.innerHTML=items.map(t=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px solid var(--border)">
+      <span style="flex:1;font-size:.82rem">${t.text||''}</span>
+      <button onclick="${delFn.name}('${t._id}')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:.8rem;padding:2px 6px;border-radius:5px">🗑</button>
+    </div>`).join('');
+}
+
+// ── CEO status toast ──
+function showCEOStatus(type,msg){
+  let el=document.getElementById('ceoStatusToast');
+  if(!el){
+    el=document.createElement('div');
+    el.id='ceoStatusToast';
+    el.style.cssText='position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:10px;font-size:.84rem;font-weight:700;z-index:9999;max-width:320px;box-shadow:0 8px 28px rgba(0,0,0,.15);transition:opacity .3s';
+    document.body.appendChild(el);
+  }
+  el.style.background=type==='success'?'#10b981':type==='error'?'#ef4444':'#1a3fa8';
+  el.style.color='#fff';
+  el.style.opacity='1';
+  el.textContent=msg;
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>{el.style.opacity='0';},3000);
+}
+window.showCEOStatus=showCEOStatus;
+
+// ── Extend switchTab to load data on first visit ──
 const _origSwitchTab=window.switchTab;
+const _tabLoaded={};
 window.switchTab=function(name,btn){
   if(_origSwitchTab) _origSwitchTab(name,btn);
+  if(_tabLoaded[name]) return;
+  _tabLoaded[name]=true;
+  if(name==='reviews') loadReviews();
+  else if(name==='qa') loadQA();
+  else if(name==='calendar') loadCalendar();
+  else if(name==='newsroom') loadNewsroomData();
+  else if(name==='siteconfig') loadTickerItems(),loadSuccessTickerItems();
 };
 </script>
 </body>
