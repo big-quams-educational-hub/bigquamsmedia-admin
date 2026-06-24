@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BQM Card Printer</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1a3fa8;--blue-dk:#0e2470;--blue-lt:#dbeafe;
+  --orange:#f97316;--border:#e2e8f0;--text:#0f172a;
+  --muted:#64748b;--bg:#f0f4ff;--card:#fff;
+  --green:#16a34a;--red:#dc2626;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);min-height:100vh;color:var(--text)}
+
+/* ── HEADER ── */
+.header{background:linear-gradient(135deg,var(--blue-dk),var(--blue));padding:14px 24px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 20px rgba(0,0,0,.25)}
+.header-logo{width:44px;height:44px;border-radius:50%;border:2.5px solid var(--orange);overflow:hidden;flex-shrink:0}
+.header-logo img{width:100%;height:100%;object-fit:cover}
+.header-brand{color:#fff}
+.header-brand h1{font-size:1rem;font-weight:800;letter-spacing:.3px}
+.header-brand p{font-size:.68rem;color:#bfdbfe;margin-top:1px}
+.header-badge{margin-left:auto;background:rgba(249,115,22,.22);border:1px solid rgba(249,115,22,.5);color:#fed7aa;font-size:.66rem;font-weight:700;padding:5px 14px;border-radius:20px;letter-spacing:.4px;flex-shrink:0}
+
+/* ── LAYOUT ── */
+.page{max-width:680px;margin:0 auto;padding:28px 16px 80px}
+
+/* ── EXAM SELECTOR ── */
+.exam-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.exam-card{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:18px 14px;cursor:pointer;transition:.2s;text-align:center;user-select:none}
+.exam-card:hover{border-color:var(--blue);background:var(--blue-lt)}
+.exam-card.active{border-color:var(--blue);background:var(--blue-lt);box-shadow:0 0 0 3px rgba(26,63,168,.12)}
+.exam-ico{font-size:1.8rem;margin-bottom:8px}
+.exam-name{font-weight:800;font-size:.95rem;color:var(--blue)}
+.exam-sub{font-size:.72rem;color:var(--muted);margin-top:3px}
+
+/* ── NECO TYPE SELECTOR ── */
+.neco-types{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px;display:none}
+.neco-types.show{display:grid}
+.ntype-card{background:var(--card);border:2px solid var(--border);border-radius:11px;padding:13px 10px;cursor:pointer;transition:.2s;text-align:center;user-select:none}
+.ntype-card:hover{border-color:var(--blue)}
+.ntype-card.active{border-color:var(--blue);background:var(--blue-lt)}
+.ntype-label{font-size:.8rem;font-weight:700;color:var(--text)}
+.ntype-sub{font-size:.68rem;color:var(--muted);margin-top:3px;line-height:1.4}
+
+/* ── FORM CARD ── */
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 20px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:none}
+.form-card.show{display:block}
+.form-title{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.form-title span{font-size:.7rem;font-weight:600;background:var(--blue);color:#fff;padding:3px 10px;border-radius:20px}
+
+.field{margin-bottom:16px}
+.field label{display:block;font-size:.72rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.field input{width:100%;padding:13px 15px;border:1.5px solid var(--border);border-radius:10px;font-size:1rem;font-family:inherit;color:var(--text);background:#fafafa;transition:.2s;letter-spacing:.5px}
+.field input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,63,168,.1);background:#fff}
+.field input::placeholder{color:#b0bac7;font-size:.9rem;letter-spacing:0}
+
+.field-hint{font-size:.7rem;color:var(--muted);margin-top:5px;line-height:1.5}
+
+/* ── ACTIONS ── */
+.actions{display:flex;gap:10px;margin-top:20px}
+.btn{flex:1;padding:14px;border:none;border-radius:11px;font-family:inherit;font-weight:800;font-size:.9rem;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-primary{background:linear-gradient(135deg,var(--blue-dk),var(--blue));color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,63,168,.32)}
+.btn-primary:active{transform:none}
+.btn-ghost{background:var(--bg);color:var(--muted);border:1px solid var(--border);flex:0 0 auto;padding:14px 18px}
+.btn-ghost:hover{background:var(--border)}
+
+/* ── STATUS ── */
+.status{padding:12px 16px;border-radius:10px;font-size:.84rem;font-weight:600;margin-bottom:16px;display:none;align-items:center;gap:8px}
+.status.show{display:flex}
+.status.error{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca}
+.status.success{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
+
+/* ── PREVIEW SECTION ── */
+.preview-label{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:22px 0 10px}
+.preview-box{background:var(--card);border:1.5px dashed var(--border);border-radius:12px;padding:20px;font-size:.83rem;line-height:1.7;color:var(--text);display:none}
+.preview-box.show{display:block}
+.preview-field{display:flex;gap:8px;margin-bottom:4px}
+.preview-field .pf-label{color:var(--muted);width:110px;flex-shrink:0;font-size:.78rem}
+.preview-field .pf-val{font-weight:700;font-family:'Courier New',monospace;font-size:.88rem;letter-spacing:.8px;color:var(--blue)}
+.preview-divider{height:1px;background:var(--border);margin:10px 0}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">
+    <img src="https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png" alt="BQM" onerror="this.style.display='none'">
+  </div>
+  <div class="header-brand">
+    <h1>BIG QUAMS MEDIA®</h1>
+    <p>Internal Card Printer · Private Tool</p>
+  </div>
+  <div class="header-badge">ADMIN ONLY</div>
+</div>
+
+<div class="page">
+
+  <!-- STATUS -->
+  <div class="status" id="statusBar"></div>
+
+  <!-- EXAM SELECT -->
+  <div class="exam-selector">
+    <div class="exam-card" id="card-waec" onclick="selectExam('waec')">
+      <div class="exam-ico">📋</div>
+      <div class="exam-name">WAEC</div>
+      <div class="exam-sub">Scratch Card</div>
+    </div>
+    <div class="exam-card" id="card-neco" onclick="selectExam('neco')">
+      <div class="exam-ico">📄</div>
+      <div class="exam-name">NECO</div>
+      <div class="exam-sub">Token / e-Verification</div>
+    </div>
+  </div>
+
+  <!-- NECO TYPE -->
+  <div class="neco-types" id="necoTypes">
+    <div class="ntype-card" id="ntype-token" onclick="selectNecoType('token')">
+      <div class="ntype-label">🔑 Results Token</div>
+      <div class="ntype-sub">NECO result checking token</div>
+    </div>
+    <div class="ntype-card" id="ntype-everify" onclick="selectNecoType('everify')">
+      <div class="ntype-label">✅ e-Verification PIN</div>
+      <div class="ntype-sub">Certificate verification PIN</div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-card" id="formCard">
+    <div class="form-title" id="formTitle">Card Details <span id="formBadge">WAEC</span></div>
+
+    <!-- WAEC fields -->
+    <div id="waecFields">
+      <div class="field">
+        <label>Serial Number</label>
+        <input type="text" id="waecSerial" placeholder="e.g. WEC2025-1234567" autocomplete="off" oninput="updatePreview()">
+        <div class="field-hint">Enter exactly as printed on the scratch card</div>
+      </div>
+      <div class="field">
+        <label>PIN</label>
+        <input type="text" id="waecPin" placeholder="e.g. 1234567890123" autocomplete="off" oninput="updatePreview()">
+        <div class="field-hint">Scratch to reveal, then enter carefully</div>
+      </div>
+    </div>
+
+    <!-- NECO fields -->
+    <div id="necoFields" style="display:none">
+      <div class="field">
+        <label>PIN</label>
+        <input type="text" id="necoPin" placeholder="Enter NECO PIN" autocomplete="off" oninput="updatePreview()">
+        <div class="field-hint">Enter the PIN exactly as provided</div>
+      </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="preview-label" id="previewLabel" style="display:none">PDF Preview</div>
+    <div class="preview-box" id="previewBox"></div>
+
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="clearForm()">✕ Clear</button>
+      <button class="btn btn-primary" onclick="generatePDF()">⬇ Download PDF</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const { jsPDF } = window.jspdf;
+
+let examType   = null; // 'waec' | 'neco'
+let necoType   = null; // 'token' | 'everify'
+
+// ── Exam select ──
+function selectExam(type){
+  examType = type;
+  necoType = null;
+  document.querySelectorAll('.exam-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('card-'+type).classList.add('active');
+
+  const necoTypes = document.getElementById('necoTypes');
+  if(type==='neco'){
+    necoTypes.classList.add('show');
+    document.querySelectorAll('.ntype-card').forEach(c=>c.classList.remove('active'));
+    document.getElementById('formCard').classList.remove('show');
+  } else {
+    necoTypes.classList.remove('show');
+    showForm();
+  }
+  clearStatus();
+}
+
+// ── NECO type select ──
+function selectNecoType(type){
+  necoType = type;
+  document.querySelectorAll('.ntype-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('ntype-'+type).classList.add('active');
+  showForm();
+  clearStatus();
+}
+
+// ── Show form ──
+function showForm(){
+  const card = document.getElementById('formCard');
+  card.classList.add('show');
+
+  const waecF = document.getElementById('waecFields');
+  const necoF = document.getElementById('necoFields');
+  const badge = document.getElementById('formBadge');
+
+  if(examType==='waec'){
+    waecF.style.display='block';
+    necoF.style.display='none';
+    badge.textContent='WAEC';
+    badge.style.background='#1a3fa8';
+  } else {
+    waecF.style.display='none';
+    necoF.style.display='block';
+    badge.textContent = necoType==='token' ? 'NECO Token' : 'NECO e-Verification';
+    badge.style.background = necoType==='token' ? '#16a34a' : '#7c3aed';
+  }
+
+  clearForm(false);
+  document.getElementById('previewLabel').style.display='none';
+  document.getElementById('previewBox').classList.remove('show');
+}
+
+// ── Update live preview ──
+function updatePreview(){
+  const previewBox = document.getElementById('previewBox');
+  const previewLabel = document.getElementById('previewLabel');
+
+  let hasData = false;
+  let html = '';
+
+  if(examType==='waec'){
+    const serial = document.getElementById('waecSerial').value.trim();
+    const pin    = document.getElementById('waecPin').value.trim();
+    if(serial||pin){
+      hasData = true;
+      html += `<div class="preview-field"><span class="pf-label">Serial Number</span><span class="pf-val">${serial||'—'}</span></div>`;
+      html += `<div class="preview-field"><span class="pf-label">PIN</span><span class="pf-val">${pin||'—'}</span></div>`;
+    }
+  } else if(examType==='neco'){
+    const pin = document.getElementById('necoPin').value.trim();
+    if(pin){
+      hasData = true;
+      const heading = necoType==='token' ? 'NECO Token' : 'NECO e-Verification';
+      html += `<div class="preview-field"><span class="pf-label">${heading}</span><span class="pf-val">${pin}</span></div>`;
+    }
+  }
+
+  if(hasData){
+    previewLabel.style.display='block';
+    previewBox.classList.add('show');
+    previewBox.innerHTML = html;
+  } else {
+    previewLabel.style.display='none';
+    previewBox.classList.remove('show');
+  }
+}
+
+// ── Clear form ──
+function clearForm(clearPreview=true){
+  ['waecSerial','waecPin','necoPin'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  if(clearPreview){
+    document.getElementById('previewLabel').style.display='none';
+    document.getElementById('previewBox').classList.remove('show');
+    clearStatus();
+  }
+}
+
+// ── Status ──
+function showStatus(type, msg){
+  const b=document.getElementById('statusBar');
+  b.className='status show '+type;
+  b.innerHTML=(type==='error'?'❌ ':'✅ ')+msg;
+  if(type==='success') setTimeout(()=>b.classList.remove('show'),5000);
+}
+function clearStatus(){ document.getElementById('statusBar').classList.remove('show'); }
+
+// ── Generate PDF ──
+function generatePDF(){
+  clearStatus();
+
+  if(!examType){ showStatus('error','Select WAEC or NECO first.'); return; }
+  if(examType==='neco'&&!necoType){ showStatus('error','Select NECO type (Token or e-Verification).'); return; }
+
+  let serial='', pin='', docTitle='', docHeading='';
+
+  if(examType==='waec'){
+    serial = document.getElementById('waecSerial').value.trim();
+    pin    = document.getElementById('waecPin').value.trim();
+    if(!serial||!pin){ showStatus('error','Enter both Serial Number and PIN.'); return; }
+    docTitle   = 'WAEC Scratch Card';
+    docHeading = 'WAEC SCRATCH CARD DETAILS';
+  } else {
+    pin = document.getElementById('necoPin').value.trim();
+    if(!pin){ showStatus('error','Enter the NECO PIN.'); return; }
+    if(necoType==='token'){
+      docTitle   = 'NECO Token';
+      docHeading = 'NECO RESULT CHECKING TOKEN';
+    } else {
+      docTitle   = 'NECO e-Verification PIN';
+      docHeading = 'NECO E-VERIFICATION PIN';
+    }
+  }
+
+  // ── Build PDF ──
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const W=210, H=297;
+  const margin=22;
+  const contentW=W-(margin*2);
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('en-NG',{day:'numeric',month:'long',year:'numeric'});
+  const timeStr=now.toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'});
+
+  // ── BG ──
+  doc.setFillColor(240,244,255);
+  doc.rect(0,0,W,H,'F');
+  doc.setFillColor(255,255,255);
+  doc.roundedRect(margin-4,20,contentW+8,H-40,4,4,'F');
+
+  // ── TOP ACCENT BAR ──
+  doc.setFillColor(14,36,112);
+  doc.rect(margin-4,20,contentW+8,10,'F');
+  doc.setFillColor(249,115,22);
+  doc.rect(margin-4,28,contentW+8,2,'F');
+
+  // ── BQM BRANDING (header) ──
+  // Try to load logo image via canvas trick — fallback to text logo
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width=80; canvas.height=80;
+    const ctx=canvas.getContext('2d');
+    const img=new Image();
+    img.crossOrigin='anonymous';
+    img.onload=function(){
+      ctx.beginPath();
+      ctx.arc(40,40,40,0,Math.PI*2);
+      ctx.clip();
+      ctx.drawImage(img,0,0,80,80);
+      const imgData=canvas.toDataURL('image/jpeg',0.9);
+      doc.addImage(imgData,'JPEG',margin-4+6,32,14,14);
+      finalizePDF(doc,W,H,margin,contentW,docTitle,docHeading,examType,necoType,serial,pin,dateStr,timeStr,now);
+    };
+    img.onerror=function(){
+      finalizePDF(doc,W,H,margin,contentW,docTitle,docHeading,examType,necoType,serial,pin,dateStr,timeStr,now);
+    };
+    img.src='https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png';
+  } catch(e) {
+    finalizePDF(doc,W,H,margin,contentW,docTitle,docHeading,examType,necoType,serial,pin,dateStr,timeStr,now);
+  }
+}
+
+function finalizePDF(doc,W,H,margin,contentW,docTitle,docHeading,examType,necoType,serial,pin,dateStr,timeStr,now){
+  const accentBlue=[14,36,112];
+  const orange=[249,115,22];
+  const darkText=[15,23,42];
+  const mutedText=[100,116,139];
+
+  // ── BRAND TEXT in header ──
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(10);
+  doc.setTextColor(255,255,255);
+  doc.text('BIG QUAMS MEDIA\u00AE', margin-4+22, 38);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(6.5);
+  doc.setTextColor(191,219,254);
+  doc.text('Nigeria\'s Student Education Platform', margin-4+22, 43);
+
+  // Date top-right
+  doc.setFontSize(7);
+  doc.setTextColor(191,219,254);
+  doc.text(dateStr+' · '+timeStr, W-margin+4, 38, {align:'right'});
+
+  let y=56;
+
+  // ── DOCUMENT HEADING ──
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(15);
+  doc.setTextColor(...accentBlue);
+  doc.text(docHeading, W/2, y, {align:'center'});
+  y+=6;
+
+  // Underline
+  doc.setDrawColor(...orange);
+  doc.setLineWidth(1);
+  doc.line(margin+10, y, W-margin-10, y);
+  y+=10;
+
+  // ── SECURITY NOTICE BOX ──
+  doc.setFillColor(255,251,235);
+  doc.setDrawColor(253,230,138);
+  doc.setLineWidth(0.4);
+  doc.roundedRect(margin, y, contentW, 14, 2, 2, 'FD');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(146,64,14);
+  doc.text('⚠  CONFIDENTIAL — Keep this document secure. Do not share your PIN with anyone.', W/2, y+5.5, {align:'center',maxWidth:contentW-6});
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(6.8);
+  doc.text('This document was generated by BIG QUAMS MEDIA for internal distribution only.', W/2, y+10.5, {align:'center',maxWidth:contentW-6});
+  y+=22;
+
+  // ── CARD DETAILS SECTION ──
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...mutedText);
+  doc.text('CARD DETAILS', margin, y);
+  y+=7;
+
+  // Main details card
+  const cardH = examType==='waec' ? 54 : 36;
+  doc.setFillColor(248,250,255);
+  doc.setDrawColor(219,234,254);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(margin, y, contentW, cardH, 3, 3, 'FD');
+
+  // Left blue accent line
+  doc.setFillColor(...accentBlue);
+  doc.rect(margin, y, 3, cardH, 'F');
+
+  let fy = y+13;
+
+  if(examType==='waec'){
+    // Serial Number
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...mutedText);
+    doc.text('SERIAL NUMBER', margin+10, fy);
+    doc.setFont('courier','bold');
+    doc.setFontSize(14);
+    doc.setTextColor(...accentBlue);
+    doc.text(serial, margin+10, fy+8);
+
+    // PIN
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...mutedText);
+    doc.text('PIN', margin+10, fy+22);
+    doc.setFont('courier','bold');
+    doc.setFontSize(14);
+    doc.setTextColor(...accentBlue);
+    doc.text(pin, margin+10, fy+30);
+
+  } else {
+    // NECO PIN only
+    const heading = necoType==='token' ? 'NECO TOKEN' : 'NECO E-VERIFICATION PIN';
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...mutedText);
+    doc.text(heading, margin+10, fy);
+    doc.setFont('courier','bold');
+    doc.setFontSize(18);
+    doc.setTextColor(...accentBlue);
+    doc.text(pin, margin+10, fy+11);
+  }
+  y += cardH+14;
+
+  // ── INSTRUCTIONS ──
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...mutedText);
+  doc.text('INSTRUCTIONS', margin, y);
+  y+=7;
+
+  doc.setFillColor(240,253,244);
+  doc.setDrawColor(187,247,208);
+  doc.setLineWidth(0.4);
+  doc.roundedRect(margin, y, contentW, examType==='waec'?34:28, 2,2,'FD');
+
+  let steps=[];
+  if(examType==='waec'){
+    steps=[
+      '1. Visit the WAEC result checking portal: www.waecdirect.org',
+      '2. Enter your Exam Number (7 digits + 2-letter state code + year)',
+      '3. Select your Exam type and enter the Serial Number and PIN above',
+      '4. Click "Check Result" to view your WAEC result online'
+    ];
+  } else if(necoType==='token'){
+    steps=[
+      '1. Visit the NECO result portal: https://result.neco.gov.ng',
+      '2. Enter your Exam Number, select the Examination type and year',
+      '3. Enter the Token above and click "Check Result"'
+    ];
+  } else {
+    steps=[
+      '1. Visit the NECO e-Verification portal: https://verification.neco.gov.ng',
+      '2. Enter your certificate details and Exam Number',
+      '3. Enter the PIN above to complete e-verification'
+    ];
+  }
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(8);
+  doc.setTextColor(...darkText);
+  steps.forEach((s,i)=>{
+    doc.text(s, margin+5, y+8+(i*7));
+  });
+  y += (examType==='waec'?34:28)+16;
+
+  // ── DIVIDER ──
+  doc.setDrawColor(...[219,234,254]);
+  doc.setLineWidth(0.3);
+  doc.line(margin, y, W-margin, y);
+  y+=12;
+
+  // ── CONTACT / FOOTER ──
+  // Footer box
+  doc.setFillColor(14,36,112);
+  doc.roundedRect(margin, y, contentW, 28, 3,3,'F');
+
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(255,255,255);
+  doc.text('BIG QUAMS MEDIA\u00AE', W/2, y+7, {align:'center'});
+
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(191,219,254);
+  doc.text('Nigeria\'s #1 Student Education Platform', W/2, y+13, {align:'center'});
+
+  // Contact line
+  doc.setFontSize(7);
+  doc.setTextColor(249,115,22);
+  doc.text('📱 WhatsApp: 09049871643', margin+6, y+20.5);
+  doc.text('🌐 www.bigquamsmedia.com.ng', margin+6+(contentW/3), y+20.5);
+  doc.text('📲 @bigquamsmedia', margin+6+(contentW*2/3), y+20.5);
+
+  // ── VERY BOTTOM PAGE FOOTER ──
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(6);
+  doc.setTextColor(...mutedText);
+  doc.text('Generated by BIG QUAMS MEDIA Internal Tool · '+now.toISOString().slice(0,19).replace('T',' ')+' · FOR AUTHORISED USE ONLY', W/2, H-10, {align:'center'});
+
+  // ── SAVE ──
+  const examLabel = examType==='waec' ? 'WAEC' : (necoType==='token'?'NECO-Token':'NECO-eVerify');
+  const filename = 'BQM-'+examLabel+'-'+Date.now()+'.pdf';
+  doc.save(filename);
+
+  showStatus('success','PDF downloaded: '+filename);
+}
+
+function showStatus(type,msg){
+  const b=document.getElementById('statusBar');
+  b.className='status show '+type;
+  b.innerHTML=(type==='error'?'❌ ':'✅ ')+msg;
+  if(type==='success') setTimeout(()=>b.classList.remove('show'),5000);
+}
+function clearStatus(){ document.getElementById('statusBar').classList.remove('show'); }
+</script>
+</body>
+</html>
