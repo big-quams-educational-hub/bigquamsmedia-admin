@@ -13,28 +13,18 @@
   --text:#0f172a;--muted:#64748b;--bg:#f1f5f9;--card:#fff;
 }
 body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;color:var(--text)}
-
-/* ── TOPBAR ── */
 .topbar{background:linear-gradient(135deg,var(--blue-dk),var(--blue));padding:0 28px;height:62px;display:flex;align-items:center;gap:14px;box-shadow:0 3px 20px rgba(0,0,0,.28)}
 .tb-logo{width:40px;height:40px;border-radius:50%;border:2.5px solid var(--orange);overflow:hidden;flex-shrink:0;background:#fff}
 .tb-logo img{width:100%;height:100%;object-fit:cover;display:block}
 .tb-title{color:#fff;font-weight:800;font-size:.92rem;letter-spacing:.2px}
 .tb-sub{color:#93c5fd;font-size:.63rem;font-weight:500;display:block;margin-top:1px}
 .tb-badge{margin-left:auto;background:rgba(249,115,22,.2);border:1px solid rgba(249,115,22,.45);color:#fed7aa;font-size:.63rem;font-weight:700;padding:5px 14px;border-radius:20px;letter-spacing:.5px}
-
-/* ── PAGE ── */
 .page{max-width:560px;margin:0 auto;padding:32px 20px 80px}
-
-/* ── STATUS ── */
 .status{padding:13px 16px;border-radius:10px;font-size:.84rem;font-weight:600;margin-bottom:18px;display:none;align-items:center;gap:8px}
 .status.show{display:flex}
 .status.error{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
 .status.success{background:#dcfce7;color:#14532d;border:1px solid #86efac}
-
-/* ── SECTION LABEL ── */
 .section-lbl{font-size:.67rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
-
-/* ── EXAM SELECTOR ── */
 .exam-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px}
 .exam-btn{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:16px 10px 14px;cursor:pointer;text-align:center;transition:.18s;user-select:none}
 .exam-btn:hover{border-color:var(--blue);background:var(--blue-lt)}
@@ -44,22 +34,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;color:
 .exam-ico{font-size:1.5rem;margin-bottom:8px}
 .exam-name{font-weight:800;font-size:.82rem;color:var(--text);line-height:1.3}
 .exam-sub{font-size:.66rem;color:var(--muted);margin-top:3px}
-
-/* ── FORM CARD ── */
 .form-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px 22px;box-shadow:0 2px 16px rgba(0,0,0,.07);display:none;margin-bottom:28px}
 .form-card.show{display:block}
 .form-head{display:flex;align-items:center;gap:10px;margin-bottom:20px}
 .form-head-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
 .form-head h2{font-size:1rem;font-weight:800;color:var(--text)}
 .form-head p{font-size:.72rem;color:var(--muted);margin-top:2px}
-
 .field{margin-bottom:18px}
 .field label{display:block;font-size:.7rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
 .field input{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:1rem;font-family:'Inter',sans-serif;color:var(--text);background:#fafbfc;transition:.18s;letter-spacing:.5px}
 .field input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,63,168,.1);background:#fff}
 .field input::placeholder{color:#bbc5d4;font-size:.9rem;letter-spacing:0}
-
-/* ── BUTTONS ── */
 .btn-row{display:flex;gap:10px;margin-top:4px}
 .btn{padding:13px 22px;border:none;border-radius:10px;font-family:'Inter',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:.18s;display:inline-flex;align-items:center;gap:7px;justify-content:center}
 .btn-primary{background:linear-gradient(135deg,var(--blue-dk),var(--blue));color:#fff;flex:1}
@@ -72,7 +57,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;color:
 
 <div class="topbar">
   <div class="tb-logo">
-    <img src="https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png" alt="BQM" id="logoImg">
+    <img src="https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png" alt="BQM">
   </div>
   <div>
     <div class="tb-title">BIG QUAMS MEDIA®</div>
@@ -132,44 +117,45 @@ const { jsPDF } = window.jspdf;
 let activeType = null;
 let logoDataUrl = null;
 
-// Pre-load logo
 (function(){
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.onload = function(){
     const c = document.createElement('canvas');
-    c.width = 200; c.height = 200;
-    const ctx = c.getContext('2d');
+    c.width=200; c.height=200;
+    const ctx=c.getContext('2d');
     ctx.beginPath(); ctx.arc(100,100,100,0,Math.PI*2); ctx.clip();
     ctx.drawImage(img,0,0,200,200);
-    logoDataUrl = c.toDataURL('image/png');
+    logoDataUrl=c.toDataURL('image/png');
   };
-  img.src = 'https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png';
+  img.src='https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png';
 })();
 
 function selectType(type){
-  activeType = type;
+  activeType=type;
   document.querySelectorAll('.exam-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('btn-'+type).classList.add('active');
-  const fc = document.getElementById('formCard');
-  fc.classList.add('show');
-  const ico = document.getElementById('formIco');
-  const title = document.getElementById('formTitle');
-  const sub = document.getElementById('formSub');
-  const pinLabel = document.getElementById('pinLabel');
-  const fieldSerial = document.getElementById('fieldSerial');
+  document.getElementById('formCard').classList.add('show');
+  const ico=document.getElementById('formIco');
+  const fieldSerial=document.getElementById('fieldSerial');
   if(type==='waec'){
     ico.textContent='📋'; ico.style.background='#fff5f5';
-    title.textContent='WAEC Scratch Card'; sub.textContent='Enter Serial Number and PIN';
-    fieldSerial.style.display='block'; pinLabel.textContent='PIN';
+    document.getElementById('formTitle').textContent='WAEC Scratch Card';
+    document.getElementById('formSub').textContent='Enter Serial Number and PIN';
+    fieldSerial.style.display='block';
+    document.getElementById('pinLabel').textContent='PIN';
   } else if(type==='neco-token'){
     ico.textContent='🔑'; ico.style.background='#f0fdf4';
-    title.textContent='NECO Results Token'; sub.textContent='Enter the result checking token';
-    fieldSerial.style.display='none'; pinLabel.textContent='Token / PIN';
+    document.getElementById('formTitle').textContent='NECO Results Token';
+    document.getElementById('formSub').textContent='Enter the result checking token';
+    fieldSerial.style.display='none';
+    document.getElementById('pinLabel').textContent='Token / PIN';
   } else {
     ico.textContent='✅'; ico.style.background='#faf5ff';
-    title.textContent='NECO e-Verification PIN'; sub.textContent='Enter the e-Verification PIN';
-    fieldSerial.style.display='none'; pinLabel.textContent='e-Verification PIN';
+    document.getElementById('formTitle').textContent='NECO e-Verification PIN';
+    document.getElementById('formSub').textContent='Enter the e-Verification PIN';
+    fieldSerial.style.display='none';
+    document.getElementById('pinLabel').textContent='e-Verification PIN';
   }
   clearStatus();
   document.getElementById('inPin').value='';
@@ -193,518 +179,327 @@ function clearStatus(){ document.getElementById('statusBar').classList.remove('s
 function generatePDF(){
   clearStatus();
   if(!activeType){ showStatus('error','Select a card type first.'); return; }
-  const pin = document.getElementById('inPin').value.trim();
-  const serial = document.getElementById('inSerial').value.trim();
+  const pin=document.getElementById('inPin').value.trim();
+  const serial=document.getElementById('inSerial').value.trim();
   if(!pin){ showStatus('error','Enter the PIN.'); return; }
-  if(activeType==='waec' && !serial){ showStatus('error','Enter the Serial Number.'); return; }
-  buildPDF(activeType, serial, pin);
+  if(activeType==='waec'&&!serial){ showStatus('error','Enter the Serial Number.'); return; }
+  buildPDF(activeType,serial,pin);
 }
 
 function buildPDF(type, serial, pin){
-  const doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
   const PW=210, PH=297;
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('en-NG',{day:'numeric',month:'long',year:'numeric'});
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('en-NG',{day:'numeric',month:'long',year:'numeric'});
 
-  // ── PAGE BACKGROUND: clean white ──
+  // ── BACKGROUND ──
   doc.setFillColor(255,255,255);
   doc.rect(0,0,PW,PH,'F');
 
-  // ── BQM HEADER ──
-  // Deep blue header block
-  const HH = 38; // header height
+  // ── HEADER ──
+  const HH=40;
   doc.setFillColor(14,36,112);
   doc.rect(0,0,PW,HH,'F');
-  // Orange accent strip at bottom of header
   doc.setFillColor(249,115,22);
-  doc.rect(0,HH-2,PW,2,'F');
+  doc.rect(0,HH-2.5,PW,2.5,'F');
 
-  // Circular logo
-  const logoR = 13, logoX = 18, logoY = HH/2;
+  // Logo
+  const logoR=14, logoX=20, logoY=HH/2;
   doc.setFillColor(255,255,255);
-  doc.circle(logoX, logoY, logoR+1, 'F');
-  if(logoDataUrl){
-    doc.addImage(logoDataUrl,'PNG', logoX-logoR, logoY-logoR, logoR*2, logoR*2);
-  }
+  doc.circle(logoX,logoY,logoR+1.2,'F');
+  if(logoDataUrl) doc.addImage(logoDataUrl,'PNG',logoX-logoR,logoY-logoR,logoR*2,logoR*2);
 
-  // Brand name
   doc.setFont('helvetica','bold');
-  doc.setFontSize(12);
+  doc.setFontSize(13);
   doc.setTextColor(255,255,255);
-  doc.text('BIG QUAMS MEDIA\u00AE', logoX+logoR+6, logoY-3);
+  doc.text('BIG QUAMS MEDIA\u00AE',logoX+logoR+7,logoY-3);
   doc.setFont('helvetica','normal');
   doc.setFontSize(7.5);
   doc.setTextColor(147,197,253);
-  doc.text('Simplifying campus life for every student', logoX+logoR+6, logoY+4);
+  doc.text('Simplifying campus life for every student',logoX+logoR+7,logoY+4.5);
 
-  // Date — top right
   doc.setFontSize(7);
   doc.setTextColor(147,197,253);
-  doc.text(dateStr, PW-14, logoY+1, {align:'right'});
+  doc.text(dateStr,PW-14,logoY+1,{align:'right'});
 
-  // ── CARD VISUAL SECTION ──
-  // Cards centred horizontally
-  const CW = 166, CH = 56;
-  const CX = (PW-CW)/2;
-  const frontY = HH + 18;
-  const backY = frontY + CH + 12;
+  // ── OUTER BORDER FRAME (BQM colours) ──
+  // Blue outer frame
+  doc.setDrawColor(14,36,112);
+  doc.setLineWidth(3);
+  doc.rect(10,HH+8,PW-20,PH-HH-8-26,'D');
+  // Orange inner frame line
+  doc.setDrawColor(249,115,22);
+  doc.setLineWidth(1);
+  doc.rect(13,HH+11,PW-26,PH-HH-11-29,'D');
 
-  drawFrontCard(doc, type, CX, frontY, CW, CH);
-  drawBackCard(doc, type, CX, backY, CW, CH, pin, serial);
+  // ── CARD (back only) — centred ──
+  const CW=166, CH=58;
+  const CX=(PW-CW)/2;
+  const CY=HH+24;
+  drawBackCard(doc,type,CX,CY,CW,CH,pin,serial);
 
-  // ── HOW TO USE CARD ── (mimics the PDF reference exactly)
-  const howY = backY + CH + 18;
-  const colW = (PW - 42) / 2; // two columns with margins
-  const col1X = 14, col2X = 14 + colW + 14;
+  // ── DIVIDER ──
+  const divY=CY+CH+14;
+  doc.setDrawColor(14,36,112);
+  doc.setLineWidth(0.4);
+  doc.line(18,divY,PW-18,divY);
+  doc.setDrawColor(249,115,22);
+  doc.setLineWidth(0.25);
+  doc.line(18,divY+1.5,PW-18,divY+1.5);
 
-  // Column 1
-  drawHowToUse(doc, col1X, howY, colW, type, serial, pin);
-  // Vertical divider
+  // ── HOW TO USE — two columns ──
+  const howY=divY+10;
+  const colW=(PW-42)/2;
+  const col1X=16, col2X=16+colW+10;
+  drawHowToUse(doc,col1X,howY,colW,type,serial,pin);
+  // Column divider
   doc.setDrawColor(210,218,230);
   doc.setLineWidth(0.3);
-  doc.line(14+colW+7, howY, 14+colW+7, howY+85);
-  // Column 2
-  drawHowToUse(doc, col2X, howY, colW, type, null, null);
+  doc.line(16+colW+5,howY,16+colW+5,howY+90);
+  drawHowToUse(doc,col2X,howY,colW,type,null,null);
 
   // ── FOOTER ──
-  drawFooter(doc, PW, PH);
+  drawFooter(doc,PW,PH);
 
-  // Save
   const labels={waec:'WAEC',['neco-token']:'NECO-Token',['neco-ev']:'NECO-eVerify'};
   doc.save('BQM-'+labels[type]+'-'+Date.now()+'.pdf');
   showStatus('success','PDF downloaded successfully.');
 }
 
 // ═══════════════════════════════
-// FRONT CARD
+// BACK CARD ONLY
 // ═══════════════════════════════
-function drawFrontCard(doc, type, x, y, w, h){
-  const r = 4;
-
-  if(type==='waec'){
-    // Drop shadow
-    doc.setFillColor(200,205,215);
-    doc.roundedRect(x+1.5, y+1.5, w, h, r, r, 'F');
-    // Dark blue body
-    doc.setFillColor(10,30,90);
-    doc.roundedRect(x, y, w, h, r, r, 'F');
-    // Red top band
-    doc.setFillColor(192,57,43);
-    doc.roundedRect(x, y, w, 14, r, r, 'F');
-    doc.rect(x, y+8, w, 6, 'F');
-    // Gold bottom band
-    doc.setFillColor(212,160,23);
-    doc.rect(x, y+h-5, w, 5, 'F');
-    doc.roundedRect(x, y+h-5, w, 5, r, r, 'F');
-    // Gold line under red
-    doc.setDrawColor(212,160,23);
-    doc.setLineWidth(0.7);
-    doc.line(x+6, y+15.5, x+w-6, y+15.5);
-
-    // WAEC text in red band
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(13);
-    doc.setTextColor(255,215,0);
-    doc.text('WAEC', x+8, y+10);
-
-    // WAEC shield right side
-    drawWaecShield(doc, x+w-22, y+3, 16, 22);
-
-    // Body text
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(5.5);
-    doc.setTextColor(180,200,255);
-    doc.text('WEST AFRICAN EXAMINATIONS COUNCIL', x+8, y+21);
-
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(9.5);
-    doc.setTextColor(255,215,0);
-    doc.text('RESULT CHECKER', x+8, y+30);
-
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(6.5);
-    doc.setTextColor(200,215,255);
-    doc.text('SCRATCH CARD', x+8, y+37);
-
-    // Scratch area
-    doc.setFillColor(160,165,175);
-    doc.roundedRect(x+8, y+40, 75, 8, 2, 2, 'F');
-    doc.setFont('helvetica','italic');
-    doc.setFontSize(6);
-    doc.setTextColor(55,55,60);
-    doc.text('[ Scratch here to reveal PIN ]', x+45, y+44.5, {align:'center'});
-
-    // Nigerian flag — bottom right
-    drawNigeriaFlag(doc, x+w-17, y+h-13, 12, 8);
-
-  } else if(type==='neco-token'){
-    doc.setFillColor(180,210,190);
-    doc.roundedRect(x+1.5, y+1.5, w, h, r, r, 'F');
-    doc.setFillColor(16,68,38);
-    doc.roundedRect(x, y, w, h, r, r, 'F');
-    // Gold top band
-    doc.setFillColor(180,140,20);
-    doc.roundedRect(x, y, w, 14, r, r, 'F');
-    doc.rect(x, y+8, w, 6, 'F');
-    // Gold bottom band
-    doc.setFillColor(180,140,20);
-    doc.rect(x, y+h-5, w, 5, 'F');
-    doc.roundedRect(x, y+h-5, w, 5, r, r, 'F');
-    doc.setDrawColor(212,160,23);
-    doc.setLineWidth(0.7);
-    doc.line(x+6, y+15.5, x+w-6, y+15.5);
-
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(13);
-    doc.setTextColor(255,230,80);
-    doc.text('NECO', x+8, y+10);
-
-    drawNecoShield(doc, x+w-22, y+3, 16, 22, [16,68,38]);
-
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(5.5);
-    doc.setTextColor(160,220,180);
-    doc.text('NATIONAL EXAMINATIONS COUNCIL', x+8, y+21);
-
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(9.5);
-    doc.setTextColor(255,230,80);
-    doc.text('RESULT TOKEN', x+8, y+30);
-
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(6.5);
-    doc.setTextColor(160,220,180);
-    doc.text('Use to check your NECO result online', x+8, y+37);
-
-    doc.setFillColor(80,120,90);
-    doc.roundedRect(x+8, y+40, 75, 8, 2, 2, 'F');
-    doc.setFont('helvetica','italic');
-    doc.setFontSize(6);
-    doc.setTextColor(40,60,45);
-    doc.text('[ Token printed on reverse side ]', x+45, y+44.5, {align:'center'});
-
-    drawNigeriaFlag(doc, x+w-17, y+h-13, 12, 8);
-
-  } else {
-    // NECO e-Verify — deep navy/purple
-    doc.setFillColor(180,175,215);
-    doc.roundedRect(x+1.5, y+1.5, w, h, r, r, 'F');
-    doc.setFillColor(38,20,90);
-    doc.roundedRect(x, y, w, h, r, r, 'F');
-    // Purple top band
-    doc.setFillColor(109,40,217);
-    doc.roundedRect(x, y, w, 14, r, r, 'F');
-    doc.rect(x, y+8, w, 6, 'F');
-    // Orange bottom band
-    doc.setFillColor(249,115,22);
-    doc.rect(x, y+h-5, w, 5, 'F');
-    doc.roundedRect(x, y+h-5, w, 5, r, r, 'F');
-    doc.setDrawColor(200,160,255);
-    doc.setLineWidth(0.7);
-    doc.line(x+6, y+15.5, x+w-6, y+15.5);
-
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(13);
-    doc.setTextColor(220,190,255);
-    doc.text('NECO', x+8, y+10);
-
-    drawNecoShield(doc, x+w-22, y+3, 16, 22, [38,20,90]);
-
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(5.5);
-    doc.setTextColor(190,180,240);
-    doc.text('NATIONAL EXAMINATIONS COUNCIL', x+8, y+21);
-
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(9.5);
-    doc.setTextColor(220,190,255);
-    doc.text('e-VERIFICATION PIN', x+8, y+30);
-
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(6.5);
-    doc.setTextColor(180,165,230);
-    doc.text('Certificate Verification Portal', x+8, y+37);
-
-    doc.setFillColor(70,55,120);
-    doc.roundedRect(x+8, y+40, 75, 8, 2, 2, 'F');
-    doc.setFont('helvetica','italic');
-    doc.setFontSize(6);
-    doc.setTextColor(140,120,200);
-    doc.text('[ PIN printed on reverse side ]', x+45, y+44.5, {align:'center'});
-
-    drawNigeriaFlag(doc, x+w-17, y+h-13, 12, 8);
-  }
-}
-
-// ═══════════════════════════════
-// BACK CARD
-// ═══════════════════════════════
-function drawBackCard(doc, type, x, y, w, h, pin, serial){
-  const r = 4;
+function drawBackCard(doc,type,x,y,w,h,pin,serial){
+  const r=5;
 
   // Shadow
-  doc.setFillColor(200,205,215);
-  doc.roundedRect(x+1.5, y+1.5, w, h, r, r, 'F');
-  // White card body
+  doc.setFillColor(195,205,225);
+  doc.roundedRect(x+2,y+2,w,h,r,r,'F');
+  // White body
   doc.setFillColor(255,255,255);
-  doc.roundedRect(x, y, w, h, r, r, 'F');
+  doc.roundedRect(x,y,w,h,r,r,'F');
   doc.setDrawColor(210,220,235);
   doc.setLineWidth(0.3);
-  doc.roundedRect(x, y, w, h, r, r, 'D');
+  doc.roundedRect(x,y,w,h,r,r,'D');
 
-  // Top colour strip
-  let sc = type==='waec'?[192,57,43]:type==='neco-token'?[16,68,38]:[38,20,90];
+  // Top colour strip — matches exam type
+  let sc=type==='waec'?[192,57,43]:type==='neco-token'?[16,68,38]:[38,20,90];
+  let sc2=type==='waec'?[212,160,23]:type==='neco-token'?[180,140,20]:[249,115,22];
   doc.setFillColor(...sc);
-  doc.roundedRect(x, y, w, 8, r, r, 'F');
-  doc.rect(x, y+4, w, 4, 'F');
+  doc.roundedRect(x,y,w,9,r,r,'F');
+  doc.rect(x,y+5,w,4,'F');
+  // Thin accent under strip
+  doc.setFillColor(...sc2);
+  doc.rect(x,y+9,w,2,'F');
 
   // Magnetic stripe
-  doc.setFillColor(35,35,35);
-  doc.rect(x, y+10, w, 8, 'F');
+  doc.setFillColor(30,30,30);
+  doc.rect(x,y+13,w,9,'F');
 
   // Signature panel
-  doc.setFillColor(248,248,248);
-  doc.setDrawColor(210,215,225);
-  doc.setLineWidth(0.25);
-  doc.rect(x+6, y+21, w-12, 10, 'FD');
+  doc.setFillColor(248,249,251);
+  doc.setDrawColor(210,218,228);
+  doc.setLineWidth(0.22);
+  doc.rect(x+7,y+25,w-14,11,'FD');
   for(let i=1;i<4;i++){
     doc.setDrawColor(200,210,225);
-    doc.setLineWidth(0.18);
-    doc.line(x+6, y+21+(i*2.5), x+w-6, y+21+(i*2.5));
+    doc.setLineWidth(0.15);
+    doc.line(x+7,y+25+(i*2.75),x+w-7,y+25+(i*2.75));
   }
   doc.setFont('helvetica','normal');
   doc.setFontSize(5);
-  doc.setTextColor(180,185,195);
-  doc.text('Authorised Signature', x+9, y+28.5);
+  doc.setTextColor(175,182,194);
+  doc.text('Authorised Signature',x+10,y+33);
 
   // PIN detail box
-  const detY = y+34;
-  const detH = h - 34 - 4;
-  doc.setFillColor(248,250,255);
-  doc.setDrawColor(219,230,248);
+  const detY=y+39;
+  const detH=h-39-4;
+  doc.setFillColor(248,251,255);
+  doc.setDrawColor(210,228,250);
   doc.setLineWidth(0.35);
-  doc.roundedRect(x+6, detY, w-12, detH, 2, 2, 'FD');
+  doc.roundedRect(x+7,detY,w-14,detH,2,2,'FD');
 
   // Left accent bar
   doc.setFillColor(...sc);
-  doc.rect(x+6, detY, 2.5, detH, 'F');
+  doc.rect(x+7,detY,3,detH,'F');
 
-  const ix = x+12;
-  let iy = detY+8;
+  const ix=x+14;
+  let iy=detY+8;
 
   if(type==='waec'){
+    // Serial
     doc.setFont('helvetica','bold');
     doc.setFontSize(6);
     doc.setTextColor(100,116,139);
-    doc.text('SERIAL NUMBER', ix, iy);
+    doc.text('SERIAL NUMBER',ix,iy);
     iy+=5.5;
     doc.setFont('courier','bold');
-    doc.setFontSize(12);
+    doc.setFontSize(12.5);
     doc.setTextColor(10,30,90);
-    doc.text(serial, ix, iy);
-    iy+=3;
+    doc.text(serial,ix,iy);
+    // divider
+    iy+=2.5;
     doc.setDrawColor(210,225,245);
-    doc.setLineWidth(0.25);
-    doc.line(ix, iy+1, x+w-10, iy+1);
+    doc.setLineWidth(0.22);
+    doc.line(ix,iy+1,x+w-10,iy+1);
     iy+=6;
+    // PIN
     doc.setFont('helvetica','bold');
     doc.setFontSize(6);
     doc.setTextColor(100,116,139);
-    doc.text('PIN', ix, iy);
+    doc.text('PIN',ix,iy);
     iy+=5.5;
     doc.setFont('courier','bold');
-    doc.setFontSize(12);
+    doc.setFontSize(12.5);
     doc.setTextColor(10,30,90);
-    doc.text(pin, ix, iy);
+    doc.text(pin,ix,iy);
   } else {
-    const heading = type==='neco-token'?'NECO TOKEN':'NECO E-VERIFICATION PIN';
+    const heading=type==='neco-token'?'NECO TOKEN':'NECO E-VERIFICATION PIN';
     doc.setFont('helvetica','bold');
-    doc.setFontSize(6);
+    doc.setFontSize(6.5);
     doc.setTextColor(100,116,139);
-    doc.text(heading, ix, iy);
-    iy+=7;
+    doc.text(heading,ix,iy);
+    iy+=8;
     doc.setFont('courier','bold');
-    doc.setFontSize(15);
+    doc.setFontSize(16);
     doc.setTextColor(...sc);
-    doc.text(pin, ix, iy);
+    doc.text(pin,ix,iy);
   }
 
   // BACK label
   doc.setFont('helvetica','bold');
   doc.setFontSize(5.5);
-  doc.setTextColor(160,168,180);
-  doc.text('BACK', x+w-8, y+h-3, {align:'right'});
+  doc.setTextColor(165,172,184);
+  doc.text('BACK',x+w-9,y+h-3,{align:'right'});
+
+  // Exam badge — top left of card strip
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(255,255,255);
+  const badgeLabel=type==='waec'?'WAEC':type==='neco-token'?'NECO TOKEN':'NECO e-VERIFY';
+  doc.text(badgeLabel,x+8,y+6.5);
 }
 
 // ═══════════════════════════════
-// HOW TO USE — matches reference PDF
+// HOW TO USE
 // ═══════════════════════════════
-function drawHowToUse(doc, x, y, w, type, serial, pin){
-  // Box with dashed border
-  doc.setDrawColor(180,190,205);
-  doc.setLineDashPattern([1.5,1.5], 0);
+function drawHowToUse(doc,x,y,w,type,serial,pin){
+  // Dashed border box
+  doc.setDrawColor(175,188,205);
+  doc.setLineDashPattern([1.8,1.8],0);
   doc.setLineWidth(0.4);
-  doc.rect(x, y, w, 85, 'D');
-  doc.setLineDashPattern([], 0);
+  doc.rect(x,y,w,90,'D');
+  doc.setLineDashPattern([],0);
 
-  // Corner marks (like PDF reference)
+  // Corner marks
   const mk=4;
-  const corners=[[x,y],[x+w,y],[x,y+85],[x+w,y+85]];
-  doc.setDrawColor(130,145,165);
-  doc.setLineWidth(0.5);
-  corners.forEach(([cx,cy])=>{
-    if(cx===x && cy===y){ doc.line(cx,cy,cx+mk,cy); doc.line(cx,cy,cx,cy+mk); }
-    else if(cx===x+w && cy===y){ doc.line(cx-mk,cy,cx,cy); doc.line(cx,cy,cx,cy+mk); }
-    else if(cx===x && cy===y+85){ doc.line(cx,cy-mk,cx,cy); doc.line(cx,cy,cx+mk,cy); }
-    else{ doc.line(cx-mk,cy,cx,cy); doc.line(cx,cy-mk,cx,cy); }
+  [[x,y,1,1],[x+w,y,-1,1],[x,y+90,1,-1],[x+w,y+90,-1,-1]].forEach(([cx,cy,dx,dy])=>{
+    doc.setDrawColor(120,138,165);
+    doc.setLineWidth(0.5);
+    doc.line(cx,cy,cx+mk*dx,cy);
+    doc.line(cx,cy,cx,cy+mk*dy);
   });
 
-  let iy = y+8;
+  let iy=y+9;
 
   // Title
   doc.setFont('helvetica','bold');
   doc.setFontSize(8.5);
   doc.setTextColor(15,23,42);
-  doc.text('HOW TO USE CARD', x+w/2, iy, {align:'center'});
-  iy+=3.5;
-
-  // Underline
+  doc.text('HOW TO USE CARD',x+w/2,iy,{align:'center'});
+  iy+=4;
   doc.setDrawColor(14,36,112);
-  doc.setLineWidth(0.5);
-  doc.line(x+8, iy, x+w-8, iy);
-  iy+=7;
+  doc.setLineWidth(0.55);
+  doc.line(x+8,iy,x+w-8,iy);
+  iy+=8;
 
   // Steps
-  const steps = type==='waec'
-    ? ['Scratch off the covered area to reveal your PIN','Enter Pin and Serial Number where required']
-    : ['No scratch needed — PIN is printed below','Enter the PIN where required on the portal'];
+  const steps=type==='waec'
+    ?['Scratch off the covered area to reveal your PIN','Enter Pin and Serial Number where required']
+    :['No scratch needed — PIN is printed below','Enter the PIN where required on the portal'];
 
   steps.forEach((s,i)=>{
-    // Circle number
     doc.setFillColor(14,36,112);
-    doc.circle(x+8, iy-1.5, 3, 'F');
+    doc.circle(x+9,iy-1.5,3.2,'F');
     doc.setFont('helvetica','bold');
     doc.setFontSize(6.5);
     doc.setTextColor(255,255,255);
-    doc.text(String(i+1), x+8, iy-0.2, {align:'center'});
-    // Step text
+    doc.text(String(i+1),x+9,iy-0.2,{align:'center'});
     doc.setFont('helvetica','normal');
     doc.setFontSize(7.5);
-    doc.setTextColor(30,40,60);
-    doc.text(s, x+14, iy, {maxWidth:w-18});
-    iy+=10;
+    doc.setTextColor(28,38,58);
+    doc.text(s,x+15,iy,{maxWidth:w-19});
+    iy+=11;
   });
 
   iy+=2;
 
-  // PIN / Serial display (only in left column where serial/pin passed in)
-  if(serial || pin){
+  // PIN/Serial display (left column only)
+  if(serial||pin){
     doc.setFont('helvetica','bold');
     doc.setFontSize(10);
     doc.setTextColor(15,23,42);
     if(serial){
-      doc.text('Serial: '+serial, x+6, iy);
-      iy+=8;
+      doc.text('Serial: '+serial,x+7,iy);
+      iy+=9;
     }
     if(pin){
-      const pinLabel = activeType==='neco-token'?'Token: ':'PIN: ';
-      doc.text(pinLabel+pin, x+6, iy);
+      const lbl=activeType==='neco-token'?'Token: ':activeType==='neco-ev'?'PIN: ':'PIN: ';
+      doc.text(lbl+pin,x+7,iy);
       iy+=10;
     }
   } else {
-    iy+=18;
+    iy+=19;
   }
 
   // Divider
-  doc.setDrawColor(200,210,225);
-  doc.setLineWidth(0.3);
-  doc.line(x+6, iy, x+w-6, iy);
+  doc.setDrawColor(200,212,228);
+  doc.setLineWidth(0.28);
+  doc.line(x+7,iy,x+w-7,iy);
   iy+=7;
 
   // Disclaimer
   doc.setFont('helvetica','bold');
   doc.setFontSize(6.5);
-  doc.setTextColor(30,40,60);
-  doc.text('Disclaimer:', x+6, iy);
-  iy+=5;
+  doc.setTextColor(28,38,58);
+  doc.text('Disclaimer:',x+7,iy);
+  iy+=5.5;
   doc.setFont('helvetica','normal');
   doc.setFontSize(6);
-  doc.setTextColor(80,90,110);
-  const disclaimer = 'This scratch card is not the property of BIG QUAMS MEDIA. It is issued by the relevant examination body (such as WAEC, NECO, NABTEB, NBAIS, or other authorised bodies). BIG QUAMS MEDIA acts only as a distributor and is not responsible for the conduct, administration, or results of the examination.';
-  const lines = doc.splitTextToSize(disclaimer, w-12);
-  doc.text(lines, x+6, iy);
+  doc.setTextColor(75,88,110);
+  const disc='This scratch card is not the property of BIG QUAMS MEDIA. It is issued by the relevant examination body (such as WAEC, NECO, NABTEB, NBAIS, or other authorised bodies). BIG QUAMS MEDIA acts only as a distributor and is not responsible for the conduct, administration, or results of the examination.';
+  doc.text(doc.splitTextToSize(disc,w-14),x+7,iy);
 }
 
 // ═══════════════════════════════
 // FOOTER
 // ═══════════════════════════════
-function drawFooter(doc, PW, PH){
-  const fh = 24;
-  const fy = PH - fh;
-
+function drawFooter(doc,PW,PH){
+  const fh=24, fy=PH-fh;
   doc.setFillColor(14,36,112);
-  doc.rect(0, fy, PW, fh, 'F');
+  doc.rect(0,fy,PW,fh,'F');
   doc.setFillColor(249,115,22);
-  doc.rect(0, fy, PW, 2, 'F');
+  doc.rect(0,fy,PW,2.5,'F');
 
-  // Logo small
   if(logoDataUrl){
     doc.setFillColor(255,255,255);
-    doc.circle(20, fy+12, 7, 'F');
-    doc.addImage(logoDataUrl,'PNG', 13, fy+5, 14, 14);
+    doc.circle(21,fy+12,7.5,'F');
+    doc.addImage(logoDataUrl,'PNG',13.5,fy+4.5,15,15);
   }
 
-  // Brand
   doc.setFont('helvetica','bold');
-  doc.setFontSize(8);
+  doc.setFontSize(8.5);
   doc.setTextColor(255,255,255);
-  doc.text('BIG QUAMS MEDIA\u00AE', 32, fy+10);
+  doc.text('BIG QUAMS MEDIA\u00AE',33,fy+10.5);
   doc.setFont('helvetica','normal');
   doc.setFontSize(6.5);
   doc.setTextColor(147,197,253);
-  doc.text('Simplifying campus life for every student', 32, fy+17);
+  doc.text('Simplifying campus life for every student',33,fy+17);
 
-  // Contact right side — centred in right half
   doc.setFont('helvetica','normal');
   doc.setFontSize(7);
   doc.setTextColor(253,186,116);
-  const contact = 'WhatsApp: +2349049871643  ||  www.bigquamsmedia.com.ng  ||  @bigquamsmedia';
-  doc.text(contact, PW-14, fy+13, {align:'right'});
-}
-
-// ═══════════════════════════════
-// SHAPE HELPERS
-// ═══════════════════════════════
-function drawWaecShield(doc, x, y, w, h){
-  // White shield with WAEC text + gold border
-  doc.setFillColor(255,255,255);
-  doc.setDrawColor(212,160,23);
-  doc.setLineWidth(0.5);
-  // Pentagon shield shape approximated
-  doc.triangle(x, y, x+w, y, x+w/2, y+h, 'FD');
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(5);
-  doc.setTextColor(10,30,90);
-  doc.text('WAEC', x+w/2, y+h*0.5, {align:'center'});
-}
-function drawNecoShield(doc, x, y, w, h, bgColor){
-  doc.setFillColor(255,255,255);
-  doc.setDrawColor(212,160,23);
-  doc.setLineWidth(0.5);
-  doc.triangle(x, y, x+w, y, x+w/2, y+h, 'FD');
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(5);
-  doc.setTextColor(...bgColor);
-  doc.text('NECO', x+w/2, y+h*0.5, {align:'center'});
-}
-function drawNigeriaFlag(doc, x, y, w, h){
-  const sw = w/3;
-  doc.setFillColor(0,128,0); doc.rect(x,y,sw,h,'F');
-  doc.setFillColor(255,255,255); doc.rect(x+sw,y,sw,h,'F');
-  doc.setFillColor(0,128,0); doc.rect(x+sw*2,y,sw,h,'F');
-  doc.setDrawColor(180,185,195);
-  doc.setLineWidth(0.2);
-  doc.rect(x,y,w,h,'D');
+  doc.text('WhatsApp: +2349049871643  ||  www.bigquamsmedia.com.ng  ||  @bigquamsmedia',PW-14,fy+13,{align:'right'});
 }
 </script>
 </body>
