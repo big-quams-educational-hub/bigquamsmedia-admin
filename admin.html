@@ -44,7 +44,7 @@ body.dark .stat-card{background:#1e293b;border-color:#334155}
 /* ─── LOGIN ─── */
 #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
   background:linear-gradient(135deg,rgba(8,15,32,0.92) 0%,rgba(16,40,128,0.89) 50%,rgba(29,78,216,0.87) 100%),
-             url('https://bigquamsmedia.com.ng/bigquamsmedia-admin/1001736174.png') center/cover no-repeat;
+             url('https://bigquamsmedia.com.ng/bigquamsmedia-admin/1782510955485.png') center/cover no-repeat;
   position:relative;
 }
 #loginScreen::before{
@@ -2914,7 +2914,7 @@ async function loadTokenCount(){
 window.loadTokenCount=loadTokenCount;
 
 // ── Worker URL — paste your Cloudflare/Render URL here when ready ──
-const BQM_WORKER_URL = ''; // e.g. 'https://bqm-fcm.yourname.workers.dev'
+const BQM_WORKER_URL = 'https://bqm-fcm-server.onrender.com/send';
 
 async function sendPushNotification(){
   const title=document.getElementById('pushTitle').value.trim();

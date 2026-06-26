@@ -25,7 +25,7 @@ button{cursor:pointer;font-family:inherit}
 #loginGate{
   position:fixed;inset:0;
   background:linear-gradient(135deg,rgba(12,31,110,0.93),rgba(26,63,168,0.90),rgba(37,99,235,0.88)),
-             url('https://bigquamsmedia.com.ng/bigquamsmedia-admin/1001736174.png') center/cover no-repeat;
+             url('https://bigquamsmedia.com.ng/bigquamsmedia-admin/1782510955485.png') center/cover no-repeat;
   display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;
 }
 #loginGate::before{
@@ -1025,6 +1025,30 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
             </div>
           </div>
           <button class="btn-primary-sm" onclick="saveTopBar()">💾 Save Top Bar</button>
+        </div>
+      </div>
+
+      <!-- ══ PUSH NOTIFICATION BROADCAST ══ -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">📢 Push Notification Broadcast</div></div>
+        <div style="padding:16px">
+          <p style="font-size:.8rem;color:var(--muted);margin-bottom:16px;line-height:1.6">Send a push notification to every student who enabled notifications — even with browser closed.</p>
+          <div style="margin-bottom:12px">
+            <label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Notification Title *</label>
+            <input class="log-search" type="text" id="ceoPushTitle" placeholder="e.g. JAMB Result is Out!" maxlength="65" style="width:100%" oninput="document.getElementById('ceoPushTitleCount').textContent=this.value.length+'/65'">
+            <div style="font-size:.7rem;color:var(--muted);text-align:right" id="ceoPushTitleCount">0/65</div>
+          </div>
+          <div style="margin-bottom:12px">
+            <label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Message Body *</label>
+            <textarea class="log-search" id="ceoPushBody" placeholder="e.g. Check your JAMB result now on BQM..." maxlength="200" rows="3" style="width:100%;resize:vertical" oninput="document.getElementById('ceoPushBodyCount').textContent=this.value.length+'/200'"></textarea>
+            <div style="font-size:.7rem;color:var(--muted);text-align:right" id="ceoPushBodyCount">0/200</div>
+          </div>
+          <div style="margin-bottom:12px">
+            <label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Link (optional)</label>
+            <input class="log-search" type="url" id="ceoPushLink" placeholder="https://bigquamsmedia.com.ng/" style="width:100%">
+          </div>
+          <div id="ceoPushStatus" style="display:none;padding:10px;border-radius:8px;font-size:.82rem;font-weight:600;margin-bottom:12px"></div>
+          <button class="btn-primary-sm" id="ceoPushBtn" onclick="ceoDashSendPush()" style="width:100%;padding:12px;font-size:.9rem">📢 Send to All Students</button>
         </div>
       </div>
 
@@ -2556,6 +2580,52 @@ window.switchTab=function(name,btn){
   else if(name==='siteconfig') loadTickerItems(),loadSuccessTickerItems();
   else if(name==='commlinks') loadCommLinks();
 };
+
+// ── PUSH NOTIFICATION BROADCAST (CEO Dashboard) ──
+const BQM_WORKER_URL = 'https://bqm-fcm-server.onrender.com/send';
+
+async function ceoDashSendPush(){
+  const title = document.getElementById('ceoPushTitle').value.trim();
+  const body  = document.getElementById('ceoPushBody').value.trim();
+  const link  = document.getElementById('ceoPushLink').value.trim() || 'https://bigquamsmedia.com.ng/';
+  const icon  = 'https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png';
+  if(!title||!body){ ceoPushStatus('error','❌ Title and message body are required.'); return; }
+  if(!confirm('Send this notification to ALL subscribed students?
+
+Title: '+title+'
+Message: '+body+'
+
+This cannot be undone.')) return;
+  const btn = document.getElementById('ceoPushBtn');
+  btn.disabled=true; btn.textContent='Sending…';
+  ceoPushStatus('info','⏳ Fetching device tokens…');
+  try{
+    const snap=await window.getDocs(window.collection(window.db,'fcm_tokens'));
+    const tokens=[];
+    snap.forEach(d=>{ if(d.data().token&&d.data().active!==false) tokens.push(d.data().token); });
+    if(!tokens.length){ ceoPushStatus('error','❌ No subscribed devices found.'); btn.disabled=false; btn.textContent='📢 Send to All Students'; return; }
+    ceoPushStatus('info','⏳ Sending to '+tokens.length+' devices via FCM…');
+    const res=await fetch(BQM_WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title,message:body,link,icon,tokens})});
+    const result=await res.json();
+    if(!res.ok) throw new Error(result.error||'Server error');
+    await window.setDoc(window.doc(window.db,'push_broadcasts',Date.now().toString()),{title,body,link,icon,tokenCount:tokens.length,sent:result.sent,failed:result.failed,sentBy:JSON.parse(localStorage.getItem('bqm_ceo')||'{}').email||'CEO',sentAt:new Date().toISOString(),status:'sent',mode:'fcm'});
+    ceoPushStatus('success','✅ Sent to '+result.sent+' devices! '+(result.failed>0?result.failed+' failed.':''));
+    document.getElementById('ceoPushTitle').value='';
+    document.getElementById('ceoPushBody').value='';
+    document.getElementById('ceoPushLink').value='';
+    document.getElementById('ceoPushTitleCount').textContent='0/65';
+    document.getElementById('ceoPushBodyCount').textContent='0/200';
+  }catch(e){ ceoPushStatus('error','❌ Error: '+e.message); }
+  btn.disabled=false; btn.textContent='📢 Send to All Students';
+}
+function ceoPushStatus(type,msg){
+  const el=document.getElementById('ceoPushStatus');
+  el.style.display='block';
+  el.style.background=type==='success'?'#dcfce7':type==='error'?'#fee2e2':'#ede9fe';
+  el.style.color=type==='success'?'#166534':type==='error'?'#991b1b':'#5b21b6';
+  el.textContent=msg;
+}
+window.ceoDashSendPush=ceoDashSendPush;
 </script>
 </body>
 </html>
