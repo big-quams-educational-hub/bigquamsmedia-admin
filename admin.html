@@ -511,6 +511,10 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <span class="nav-icon">🌟</span><span class="nav-label">Spotlight</span>
         <span class="nav-count" id="cnt-sp">—</span>
       </button>
+      <button class="section-tab" onclick="switchSection('anonymous')">
+        <span class="nav-icon">🔒</span><span class="nav-label">Anonymous Msgs</span>
+        <span class="nav-count" id="cnt-anon">—</span>
+      </button>
     </nav>
 
     <!-- MAIN CONTENT -->
@@ -917,6 +921,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="form-group"><label>Fact / Headline *</label><input type="text" id="dAddFact" placeholder="Short attention-grabbing fact headline"></div>
           <div class="form-group"><label>Full Explanation *</label><textarea id="dAddBody" placeholder="Expand on the fact here…"></textarea></div>
           <div class="form-group"><label>Source</label><input type="text" id="dAddSource" placeholder="e.g. JAMB 2024 Statistics"></div>
+          <div class="form-group"><label>Images <span style="font-weight:400;color:var(--muted)">(optional — comma-separated URLs)</span></label><textarea id="dAddImages" style="min-height:55px" placeholder="https://example.com/img1.jpg , https://example.com/img2.jpg"></textarea></div>
           <div class="btn-row">
             <button class="btn btn-success" onclick="addDyk()" id="addDykBtn">💡 Add Fact</button>
             <button class="btn btn-ghost" onclick="clearDykForm()">Clear</button>
@@ -1369,6 +1374,15 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div id="puBulkProgress" style="display:none;margin-top:10px;font-size:0.82rem;color:var(--muted)"></div>
         </div>
       </div>
+    </div>
+
+    <!-- ══ ANONYMOUS MESSAGES ══ -->
+    <div class="admin-section" id="section-anonymous">
+      <div class="section-header">
+        <h2 class="section-title-h2">🔒 Anonymous Messages</h2>
+        <button class="btn btn-outline btn-sm" onclick="loadAnonMessages()">🔄 Refresh</button>
+      </div>
+      <div id="anonMsgList"><div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Refresh to load messages</div></div>
     </div>
 
     <!-- ══ SUBJECT COMBINATION ══ -->
@@ -2899,6 +2913,9 @@ async function loadTokenCount(){
 }
 window.loadTokenCount=loadTokenCount;
 
+// ── Worker URL — paste your Cloudflare/Render URL here when ready ──
+const BQM_WORKER_URL = ''; // e.g. 'https://bqm-fcm.yourname.workers.dev'
+
 async function sendPushNotification(){
   const title=document.getElementById('pushTitle').value.trim();
   const body=document.getElementById('pushBody').value.trim();
@@ -2910,38 +2927,60 @@ async function sendPushNotification(){
   btn.disabled=true;btn.textContent='Sending…';
   showPushStatus('info','⏳ Fetching device tokens…');
   try{
-    // Collect all FCM tokens from Firestore
+    // 1. Collect all active FCM tokens from Firestore
     const snap=await window.getDocs(window.collection(window.db,'fcm_tokens'));
     const tokens=[];
     snap.forEach(d=>{if(d.data().token&&d.data().active!==false) tokens.push(d.data().token);});
     if(!tokens.length){showPushStatus('error','❌ No subscribed devices found. Students need to enable notifications first.');btn.disabled=false;btn.textContent='📢 Send to All Students';return;}
-    showPushStatus('info',`⏳ Sending to ${tokens.length} devices via service worker broadcast…`);
-    // Save broadcast record to Firestore
+
+    let sent=tokens.length, failed=0;
+
+    // 2. If worker URL is set — send via FCM backend (works even with browser closed)
+    if(BQM_WORKER_URL){
+      showPushStatus('info',`⏳ Sending to ${tokens.length} devices via FCM…`);
+      const res=await fetch(BQM_WORKER_URL,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({title,message:body,link,icon,tokens}),
+      });
+      const result=await res.json();
+      if(!res.ok) throw new Error(result.error||'Worker error');
+      sent=result.sent; failed=result.failed;
+    } else {
+      // Fallback — postMessage to open SW only (browser must be open)
+      showPushStatus('info',`⏳ Sending to ${tokens.length} devices (browser-only mode)…`);
+      if('serviceWorker' in navigator && navigator.serviceWorker.controller){
+        navigator.serviceWorker.controller.postMessage({
+          type:'BROADCAST_NOTIFICATION',
+          title,body,icon,
+          url:link,
+          tag:'bqm-broadcast-'+Date.now(),
+        });
+      }
+    }
+
+    // 3. Save broadcast record to Firestore
     const broadcastRef=window.doc(window.db,'push_broadcasts',Date.now().toString());
     await window.setDoc(broadcastRef,{
       title,body,link,icon,
       tokenCount:tokens.length,
+      sent,failed,
       sentBy:JSON.parse(localStorage.getItem('bqm_user')||'{}').email||'admin',
       sentByNick:JSON.parse(localStorage.getItem('bqm_user')||'{}').nickname||'Admin',
       sentAt:new Date().toISOString(),
       status:'sent',
+      mode: BQM_WORKER_URL ? 'fcm' : 'browser-only',
     });
-    // Broadcast to all open service worker clients immediately
-    if('serviceWorker' in navigator && navigator.serviceWorker.controller){
-      navigator.serviceWorker.controller.postMessage({
-        type:'BROADCAST_NOTIFICATION',
-        title,body,icon,
-        url:link,
-        tag:'bqm-broadcast-'+Date.now(),
-      });
-    }
-    // Save to local history
+
+    // 4. Save to local history
     const hist=JSON.parse(localStorage.getItem(PUSH_HISTORY_KEY)||'[]');
-    hist.unshift({title,body,link,tokens:tokens.length,sentAt:new Date().toISOString()});
+    hist.unshift({title,body,link,tokens:tokens.length,sent,sentAt:new Date().toISOString()});
     localStorage.setItem(PUSH_HISTORY_KEY,JSON.stringify(hist.slice(0,20)));
     renderPushHistory();
-    showPushStatus('success',`✅ Broadcast queued for ${tokens.length} devices! Students will receive it shortly.`);
-    logAdminActivity('broadcast','Push Notifications',`Sent "${title}" to ${tokens.length} devices`);
+
+    const modeNote = BQM_WORKER_URL ? '' : ' (browser-only — set worker URL for full delivery)';
+    showPushStatus('success',`✅ Sent to ${sent} devices! ${failed>0?failed+' failed.':''}${modeNote}`);
+    logAdminActivity('broadcast','Push Notifications',`Sent "${title}" to ${sent}/${tokens.length} devices`);
     document.getElementById('pushTitle').value='';
     document.getElementById('pushBody').value='';
     document.getElementById('pushLink').value='';
@@ -3499,6 +3538,51 @@ function copyArticleLink(idx,btnId){
   });
 }
 window.copyArticleLink=copyArticleLink;
+
+// ════════════════════════════════
+// ══ ANONYMOUS MESSAGES ══
+// ════════════════════════════════
+async function loadAnonMessages(){
+  const el=document.getElementById('anonMsgList');
+  if(!el) return;
+  el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>';
+  try{
+    const snap=await window.getDocs(window.query(window.collection(window.db,'fs_anonymous_messages'),window.orderBy('createdAt','desc'),window.limit(50)));
+    const items=snap.docs.map(d=>({_id:d.id,...d.data()}));
+    document.getElementById('cnt-anon').textContent=items.length;
+    if(!items.length){el.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)">No messages yet.</div>';return;}
+    el.innerHTML=items.map(m=>`
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="background:#ede9fe;color:#7c3aed;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${m.category||'anonymous'}</span>
+          <span style="font-size:.64rem;color:var(--muted)">${m.createdAt?.toDate?m.createdAt.toDate().toLocaleDateString('en-NG'):m.createdAt||''}</span>
+          <button onclick="toggleAnonFeatured('${m._id}',${!m.featured})" style="margin-left:auto;background:${m.featured?'#dcfce7':'var(--surface-alt)'};border:1px solid var(--border);padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700;color:${m.featured?'#15803d':'var(--muted)'}">
+            ${m.featured?'⭐ Featured':'☆ Feature'}
+          </button>
+          <button onclick="deleteAnonMsg('${m._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer">🗑</button>
+        </div>
+        <div style="font-size:.84rem;color:var(--text-main);line-height:1.65">${m.message||''}</div>
+      </div>`).join('');
+  }catch(e){el.innerHTML='<div style="color:#ef4444;padding:16px">Error: '+e.message+'</div>';}
+}
+window.loadAnonMessages=loadAnonMessages;
+
+async function toggleAnonFeatured(id,featured){
+  try{
+    await window.updateDoc(window.doc(window.db,'fs_anonymous_messages',id),{featured});
+    loadAnonMessages();
+  }catch(e){showStatus('error',e.message);}
+}
+window.toggleAnonFeatured=toggleAnonFeatured;
+
+async function deleteAnonMsg(id){
+  if(!confirm('Delete this message?')) return;
+  try{
+    await window.deleteDoc(window.doc(window.db,'fs_anonymous_messages',id));
+    loadAnonMessages();
+  }catch(e){showStatus('error',e.message);}
+}
+window.deleteAnonMsg=deleteAnonMsg;
 
 function makeSlug(title){
   return (title||'').toLowerCase()
