@@ -415,6 +415,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <button class="tab-btn" onclick="switchTab('calendar',this)" style="border-color:#06b6d4;color:#0e7490">📅 Calendar</button>
       <button class="tab-btn" onclick="switchTab('newsroom',this)" style="border-color:#64748b;color:#334155">🗞️ Newsroom</button>
       <button class="tab-btn" onclick="switchTab('siteconfig',this)" style="border-color:#dc2626;color:#991b1b">⚙️ Site Settings</button>
+      <button class="tab-btn" onclick="switchTab('commlinks',this)" style="border-color:#10b981;color:#065f46">🔗 Community Links</button>
     </div>
 
     <!-- ── TAB: FULL LOG ── -->
@@ -1085,6 +1086,43 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">LinkedIn</label><input class="log-search" type="url" id="soc-linkedin" placeholder="https://linkedin.com/company/bigquamsmedia" style="width:100%"></div>
           </div>
           <button class="btn-primary-sm" onclick="saveSocialLinks()">💾 Save Social Links</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══ COMMUNITY LINKS TAB ══ -->
+    <div class="tab-panel" id="tab-commlinks">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔗 Community Page Links</div>
+          <button class="btn-primary-sm" onclick="addCommLink()">➕ Add Link</button>
+        </div>
+        <div style="padding:16px;font-size:.78rem;color:var(--muted);margin-bottom:4px">These links appear on the Community page. Drag to reorder (save after).</div>
+        <div id="commLinksList" style="padding:0 16px 16px">
+          <div style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem">Loading…</div>
+        </div>
+      </div>
+
+      <!-- Add / Edit Form -->
+      <div class="card" id="commLinkForm" style="display:none">
+        <div class="card-header"><div class="card-title" id="commLinkFormTitle">➕ Add New Link</div></div>
+        <div style="padding:16px">
+          <input type="hidden" id="clEditId">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Name *</label><input class="log-search" type="text" id="clName" placeholder="e.g. Brainy Buddies WhatsApp Group" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">URL *</label><input class="log-search" type="url" id="clUrl" placeholder="https://..." style="width:100%"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Icon (emoji)</label><input class="log-search" type="text" id="clIcon" placeholder="💬" maxlength="4" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Background Color</label><input class="log-search" type="text" id="clBg" placeholder="#dcfce7" style="width:100%"></div>
+          </div>
+          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Description</label><input class="log-search" type="text" id="clDesc" placeholder="Short description of the link…" style="width:100%"></div>
+          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Order (lower = first)</label><input class="log-search" type="number" id="clOrder" value="10" min="1" max="99" style="width:80px"></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-primary-sm" onclick="saveCommLink()">💾 Save Link</button>
+            <button class="btn-sm" onclick="document.getElementById('commLinkForm').style.display='none'">Cancel</button>
+          </div>
         </div>
       </div>
     </div>
@@ -2409,6 +2447,101 @@ function showCEOStatus(type,msg){
 }
 window.showCEOStatus=showCEOStatus;
 
+// ── COMMUNITY LINKS MANAGEMENT ──
+let commLinksData=[];
+
+async function loadCommLinks(){
+  const el=document.getElementById('commLinksList');
+  if(!el) return;
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_community_links'),window._orderBy('order','asc')));
+    commLinksData=snap.docs.map(d=>({_id:d.id,...d.data()}));
+    renderCommLinks();
+  }catch(e){el.innerHTML='<div style="color:#ef4444;font-size:.8rem">Error loading links: '+e.message+'</div>';}
+}
+window.loadCommLinks=loadCommLinks;
+
+function renderCommLinks(){
+  const el=document.getElementById('commLinksList');
+  if(!commLinksData.length){
+    el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:.82rem">No links yet. Add your first one above.</div>';
+    return;
+  }
+  el.innerHTML=commLinksData.map(l=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:12px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;background:var(--surface2)">
+      <div style="width:40px;height:40px;border-radius:10px;background:${l.bg||'#f0f4ff'};display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">${l.icon||'🔗'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.84rem;color:var(--text)">${l.name||''}</div>
+        <div style="font-size:.7rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.url||''}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button onclick="editCommLink('${l._id}')" style="background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:5px 10px;border-radius:7px;font-size:.74rem;cursor:pointer">✏️ Edit</button>
+        <button onclick="deleteCommLink('${l._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:5px 10px;border-radius:7px;font-size:.74rem;cursor:pointer">🗑 Del</button>
+      </div>
+    </div>`).join('');
+}
+
+function addCommLink(){
+  ['clEditId','clName','clUrl','clIcon','clBg','clDesc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('clOrder').value='10';
+  document.getElementById('commLinkFormTitle').textContent='➕ Add New Link';
+  document.getElementById('commLinkForm').style.display='block';
+  document.getElementById('commLinkForm').scrollIntoView({behavior:'smooth'});
+}
+window.addCommLink=addCommLink;
+
+function editCommLink(id){
+  const l=commLinksData.find(x=>x._id===id);
+  if(!l) return;
+  document.getElementById('clEditId').value=id;
+  document.getElementById('clName').value=l.name||'';
+  document.getElementById('clUrl').value=l.url||'';
+  document.getElementById('clIcon').value=l.icon||'';
+  document.getElementById('clBg').value=l.bg||'';
+  document.getElementById('clDesc').value=l.desc||'';
+  document.getElementById('clOrder').value=l.order||10;
+  document.getElementById('commLinkFormTitle').textContent='✏️ Edit Link';
+  document.getElementById('commLinkForm').style.display='block';
+  document.getElementById('commLinkForm').scrollIntoView({behavior:'smooth'});
+}
+window.editCommLink=editCommLink;
+
+async function saveCommLink(){
+  const id=document.getElementById('clEditId').value;
+  const name=document.getElementById('clName').value.trim();
+  const url=document.getElementById('clUrl').value.trim();
+  if(!name||!url){showCEOStatus('error','Name and URL are required.');return;}
+  const data={
+    name,url,
+    icon:document.getElementById('clIcon').value.trim()||'🔗',
+    bg:document.getElementById('clBg').value.trim()||'#f0f4ff',
+    desc:document.getElementById('clDesc').value.trim(),
+    order:parseInt(document.getElementById('clOrder').value)||10,
+    updatedAt:window._serverTimestamp()
+  };
+  try{
+    if(id){
+      await window._updateDoc(window._doc(window._db,'fs_community_links',id),data);
+    } else {
+      await window._addDoc(window._collection(window._db,'fs_community_links'),data);
+    }
+    showCEOStatus('success','✅ Link saved!');
+    document.getElementById('commLinkForm').style.display='none';
+    loadCommLinks();
+  }catch(e){showCEOStatus('error','Error: '+e.message);}
+}
+window.saveCommLink=saveCommLink;
+
+async function deleteCommLink(id){
+  if(!confirm('Delete this link?')) return;
+  try{
+    await window._deleteDoc(window._doc(window._db,'fs_community_links',id));
+    showCEOStatus('success','✅ Deleted.');
+    loadCommLinks();
+  }catch(e){showCEOStatus('error','Error: '+e.message);}
+}
+window.deleteCommLink=deleteCommLink;
+
 // ── Extend switchTab to load data on first visit ──
 const _origSwitchTab=window.switchTab;
 const _tabLoaded={};
@@ -2421,6 +2554,7 @@ window.switchTab=function(name,btn){
   else if(name==='calendar') loadCalendar();
   else if(name==='newsroom') loadNewsroomData();
   else if(name==='siteconfig') loadTickerItems(),loadSuccessTickerItems();
+  else if(name==='commlinks') loadCommLinks();
 };
 </script>
 </body>
