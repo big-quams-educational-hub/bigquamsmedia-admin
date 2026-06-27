@@ -2546,10 +2546,10 @@ window.updateProfile = updateProfile;
 <!-- Keep Render.com server warm — pings every 13 min so it never cold-starts -->
 <script>
 (function(){
-  var PING_URL = 'https://bqm-fcm-server.onrender.com/ping';
-  function ping(){ fetch(PING_URL).catch(function(){}); }
-  ping(); // immediate ping on page load
-  setInterval(ping, 13 * 60 * 1000); // then every 13 minutes
+  var PING_URL='https://bqm-fcm-server.onrender.com/ping';
+  function ping(){fetch(PING_URL).catch(function(){});}
+  ping();
+  setInterval(ping,13*60*1000);
 })();
 </script>
 
@@ -2916,9 +2916,14 @@ function updatePushPreview(){
 
 async function loadTokenCount(){
   try{
+    // Wait up to 5s for Firestore to be ready (module script loads async)
+    let waited=0;
+    while(!window.db && waited<5000){ await new Promise(r=>setTimeout(r,200)); waited+=200; }
     if(!window.db) return;
     const snap=await window.getDocs(window.collection(window.db,'fcm_tokens'));
-    document.getElementById('tokenCount').textContent=snap.size;
+    // Only count docs that have an actual token field (not empty docs)
+    const active=snap.docs.filter(d=>d.data().token).length;
+    document.getElementById('tokenCount').textContent=active;
   }catch(e){document.getElementById('tokenCount').textContent='?';}
 }
 window.loadTokenCount=loadTokenCount;
@@ -2949,33 +2954,23 @@ async function sendPushNotification(){
     if(BQM_WORKER_URL){
       showPushStatus('info',`⏳ Sending to ${tokens.length} devices via FCM…`);
 
-      // Helper: fetch with timeout (handles Render cold-start silently hanging)
-      async function fetchWithTimeout(url, options, timeoutMs){
-        var ctrl = new AbortController();
-        var timer = setTimeout(function(){ ctrl.abort(); }, timeoutMs);
-        try{
-          var r = await fetch(url, Object.assign({}, options, {signal: ctrl.signal}));
-          clearTimeout(timer);
-          return r;
-        }catch(err){
-          clearTimeout(timer);
-          throw err;
-        }
+      async function fetchWithTimeout(url,options,timeoutMs){
+        var ctrl=new AbortController();
+        var timer=setTimeout(function(){ctrl.abort();},timeoutMs);
+        try{var r=await fetch(url,Object.assign({},options,{signal:ctrl.signal}));clearTimeout(timer);return r;}
+        catch(err){clearTimeout(timer);throw err;}
       }
 
-      var payload = JSON.stringify({title, message:body, link, icon, tokens});
-      var fetchOptions = {method:'POST', headers:{'Content-Type':'application/json'}, body:payload};
+      var payload=JSON.stringify({title,message:body,link,icon,tokens});
+      var fetchOptions={method:'POST',headers:{'Content-Type':'application/json'},body:payload};
       var res;
-
       try{
-        // First attempt — 20 s timeout
-        res = await fetchWithTimeout(BQM_WORKER_URL, fetchOptions, 20000);
+        res=await fetchWithTimeout(BQM_WORKER_URL,fetchOptions,20000);
       }catch(firstErr){
-        // If aborted (cold-start timeout) or network error, wake server and retry once
         showPushStatus('info','⏳ Server waking up — retrying (Render cold start)…');
-        try{ await fetch(BQM_WORKER_URL.replace('/send','/ping')).catch(function(){}); }catch(e){}
-        await new Promise(function(r){setTimeout(r, 5000);}); // wait 5 s for Render to wake
-        res = await fetchWithTimeout(BQM_WORKER_URL, fetchOptions, 30000);
+        try{await fetch(BQM_WORKER_URL.replace('/send','/ping')).catch(function(){});}catch(e){}
+        await new Promise(function(r){setTimeout(r,5000);});
+        res=await fetchWithTimeout(BQM_WORKER_URL,fetchOptions,30000);
       }
 
       const result=await res.json();
@@ -2983,17 +2978,17 @@ async function sendPushNotification(){
       sent=result.sent; failed=result.failed;
 
       // Auto-clean invalid tokens reported by the server
-      if(result.invalidTokens && result.invalidTokens.length){
+      if(result.invalidTokens&&result.invalidTokens.length){
         showPushStatus('info','🧹 Removing '+result.invalidTokens.length+' expired token(s)…');
-        var allDocs = await window.getDocs(window.collection(window.db,'fcm_tokens'));
-        var deletePromises = [];
+        var allDocs=await window.getDocs(window.collection(window.db,'fcm_tokens'));
+        var deletePromises=[];
         allDocs.forEach(function(d){
-          if(result.invalidTokens.indexOf(d.data().token) !== -1){
+          if(result.invalidTokens.indexOf(d.data().token)!==-1){
             deletePromises.push(window.deleteDoc(window.doc(window.db,'fcm_tokens',d.id)));
           }
         });
         await Promise.all(deletePromises);
-        if(deletePromises.length) loadTokenCount(); // refresh badge
+        if(deletePromises.length) loadTokenCount();
       }
     } else {
       // Fallback — postMessage to open SW only (browser must be open)
@@ -3456,7 +3451,7 @@ function switchSection(name){
   if(window.innerWidth<=740) window.scrollTo({top:document.getElementById('adminApp').offsetTop||0,behavior:'smooth'});
   // Section-specific hooks
   if(name==='activitylog') setTimeout(refreshActivityLog,100);
-  if(name==='pushnotif'){setTimeout(()=>{loadTokenCount();renderPushHistory();},100);}
+  if(name==='pushnotif'){setTimeout(()=>{loadTokenCount();renderPushHistory();},500);}
   if(name==='postutmecbt') setTimeout(loadPUCBTQuestions,100);
 }
 window.switchSection=switchSection;
