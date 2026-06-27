@@ -403,6 +403,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <button class="tab-btn" onclick="switchTab('referrals',this)">🔗 Referrals</button>
       <button class="tab-btn" onclick="switchTab('cbtanalytics',this)">🎯 CBT Analytics</button>
       <button class="tab-btn" onclick="switchTab('whitelist',this)" style="border-color:#dc2626;color:#dc2626">🔐 Admin Access</button>
+      <button class="tab-btn" onclick="switchTab('pushnotif',this)" style="border-color:#7c3aed;color:#7c3aed">📢 Push Broadcast</button>
       <button class="tab-btn" onclick="switchTab('library',this)" style="border-color:#f59e0b;color:#92400e">📚 eLibrary</button>
       <button class="tab-btn" onclick="switchTab('scholarships',this)" style="border-color:#10b981;color:#065f46">💰 Scholarships</button>
       <button class="tab-btn" onclick="switchTab('nelfund',this)" style="border-color:#8b5cf6;color:#5b21b6">💳 NELFUND</button>
@@ -410,12 +411,24 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <button class="tab-btn" onclick="switchTab('spotlight',this)" style="border-color:#ec4899;color:#9d174d">🌟 Spotlight</button>
       <button class="tab-btn" onclick="switchTab('postutme',this)" style="border-color:#3b82f6;color:#1d4ed8">🧮 Post-UTME</button>
       <button class="tab-btn" onclick="switchTab('combo',this)" style="border-color:#10b981;color:#065f46">📋 Subject Combo</button>
+      <button class="tab-btn" onclick="switchTab('cbt',this)" style="border-color:#ef4444;color:#b91c1c">🎯 CBT Questions</button>
+      <button class="tab-btn" onclick="switchTab('results',this)" style="border-color:#0ea5e9;color:#0369a1">📊 Results Checker</button>
+      <button class="tab-btn" onclick="switchTab('gpa',this)" style="border-color:#10b981;color:#065f46">🎓 GPA Config</button>
+      <button class="tab-btn" onclick="switchTab('postutmeprep',this)" style="border-color:#f59e0b;color:#92400e">📖 Post-UTME Prep</button>
       <button class="tab-btn" onclick="switchTab('reviews',this)" style="border-color:#f59e0b;color:#92400e">⭐ Reviews</button>
       <button class="tab-btn" onclick="switchTab('qa',this)" style="border-color:#8b5cf6;color:#6d28d9">❓ Q&amp;A</button>
       <button class="tab-btn" onclick="switchTab('calendar',this)" style="border-color:#06b6d4;color:#0e7490">📅 Calendar</button>
       <button class="tab-btn" onclick="switchTab('newsroom',this)" style="border-color:#64748b;color:#334155">🗞️ Newsroom</button>
+      <button class="tab-btn" onclick="switchTab('herostats',this)" style="border-color:#8b5cf6;color:#6d28d9">🦸 Hero &amp; Stats</button>
+      <button class="tab-btn" onclick="switchTab('ticker',this)" style="border-color:#3b82f6;color:#1d4ed8">📢 News Ticker</button>
+      <button class="tab-btn" onclick="switchTab('successticker',this)" style="border-color:#10b981;color:#065f46">🎉 Success Ticker</button>
+      <button class="tab-btn" onclick="switchTab('topbar',this)" style="border-color:#f59e0b;color:#92400e">🔔 Top Bar</button>
+      <button class="tab-btn" onclick="switchTab('contactchannels',this)" style="border-color:#10b981;color:#065f46">📞 Contact Channels</button>
+      <button class="tab-btn" onclick="switchTab('socials',this)" style="border-color:#3b82f6;color:#1d4ed8">🔗 Social Links</button>
       <button class="tab-btn" onclick="switchTab('siteconfig',this)" style="border-color:#dc2626;color:#991b1b">⚙️ Site Settings</button>
       <button class="tab-btn" onclick="switchTab('commlinks',this)" style="border-color:#10b981;color:#065f46">🔗 Community Links</button>
+      <button class="tab-btn" onclick="switchTab('campuslife',this)" style="border-color:#ec4899;color:#9d174d">🎮 Campus Life</button>
+      <button class="tab-btn" onclick="switchTab('dailyhub',this)" style="border-color:#f59e0b;color:#92400e">📅 Daily Hub</button>
     </div>
 
     <!-- ── TAB: FULL LOG ── -->
@@ -1127,6 +1140,200 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       </div>
     </div>
 
+    <!-- ══ PUSH BROADCAST TAB ══ -->
+    <div class="tab-panel" id="tab-pushnotif">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📢 Send Push Notification to All Students</div></div>
+        <div class="card-body">
+          <p style="font-size:.8rem;color:var(--muted);margin-bottom:16px;line-height:1.6">Sends a real push notification via FCM to every subscribed device — even when the browser is closed.</p>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Notification Title *</label><input class="log-search" type="text" id="ceo-pushTitle" placeholder="e.g. 🎓 New Scholarship Alert!" maxlength="65" style="width:100%" oninput="document.getElementById('ceo-pushTitleCount').textContent=this.value.length+'/65';document.getElementById('ceo-pushPreviewTitle').textContent=this.value||'Notification Title'"><span style="font-size:.7rem;color:var(--muted)" id="ceo-pushTitleCount">0/65</span></div>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Message Body *</label><textarea class="log-search" id="ceo-pushBody" maxlength="200" placeholder="e.g. NNPC/SNEPCo scholarship is now open. Tap to view details." style="width:100%;min-height:80px;resize:vertical" oninput="document.getElementById('ceo-pushBodyCount').textContent=this.value.length+'/200';document.getElementById('ceo-pushPreviewBody').textContent=this.value||'Your message will appear here…'"></textarea><span style="font-size:.7rem;color:var(--muted)" id="ceo-pushBodyCount">0/200</span></div>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Link (students land here when they tap)</label><input class="log-search" type="url" id="ceo-pushLink" placeholder="https://bigquamsmedia.com.ng/scholarship.html" style="width:100%"></div>
+          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Icon URL (optional)</label><input class="log-search" type="url" id="ceo-pushIcon" value="https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png" style="width:100%"></div>
+          <!-- Preview -->
+          <div style="background:#f8fafc;border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px">
+            <div style="font-size:.65rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📱 Preview</div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <img src="https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png" style="width:36px;height:36px;border-radius:8px;flex-shrink:0;object-fit:cover">
+              <div>
+                <div style="font-size:.82rem;font-weight:700;color:var(--text)" id="ceo-pushPreviewTitle">Notification Title</div>
+                <div style="font-size:.74rem;color:var(--muted);margin-top:2px;line-height:1.4" id="ceo-pushPreviewBody">Your message will appear here…</div>
+                <div style="font-size:.62rem;color:var(--muted);margin-top:4px">Big Quams Media® · now</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn-primary-sm" id="ceo-sendPushBtn" onclick="ceoPushSend()">📢 Send to All Students</button>
+            <button class="btn-sm" onclick="document.getElementById('ceo-pushTitle').value='';document.getElementById('ceo-pushBody').value='';document.getElementById('ceo-pushLink').value='';document.getElementById('ceo-pushTitleCount').textContent='0/65';document.getElementById('ceo-pushBodyCount').textContent='0/200';">Clear</button>
+          </div>
+          <div id="ceo-pushStatus" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.8rem;font-weight:700"></div>
+          <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
+            <div style="font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">📋 Recent Broadcasts</div>
+            <div id="ceo-pushHistory"><div style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem">No broadcasts yet.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CBT QUESTIONS TAB ══ -->
+    <div class="tab-panel" id="tab-cbt">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🎯 JAMB CBT Practice Questions</div>
+          <a href="admin.html#cbt" style="font-size:.75rem;background:var(--blue);color:#fff;padding:6px 14px;border-radius:8px;text-decoration:none;font-weight:700">Open in Admin Panel →</a>
+        </div>
+        <div class="card-body" style="text-align:center;padding:40px 20px">
+          <div style="font-size:3rem;margin-bottom:12px">🎯</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">Manage CBT Questions in the Admin Panel</div>
+          <div style="font-size:.8rem;color:var(--muted);max-width:360px;margin:0 auto 16px">The full CBT question editor, CSV bulk upload and subject management tools are in the Admin Panel for easier access.</div>
+          <a href="admin.html" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem">Go to Admin Panel → CBT</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ RESULTS CHECKER TAB ══ -->
+    <div class="tab-panel" id="tab-results">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 Results Checker Configuration</div></div>
+        <div class="card-body" style="text-align:center;padding:40px 20px">
+          <div style="font-size:3rem;margin-bottom:12px">📊</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">Results Checker Settings</div>
+          <div style="font-size:.8rem;color:var(--muted);max-width:360px;margin:0 auto 16px">Manage JAMB, WAEC, NECO and NABTEB portal links and step-by-step checking instructions in the Admin Panel.</div>
+          <a href="admin.html" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem">Go to Admin Panel → Results</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ GPA CONFIG TAB ══ -->
+    <div class="tab-panel" id="tab-gpa">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🎓 GPA / CGPA Calculator Config</div></div>
+        <div class="card-body" style="text-align:center;padding:40px 20px">
+          <div style="font-size:3rem;margin-bottom:12px">🎓</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">GPA Grade Scale Settings</div>
+          <div style="font-size:.8rem;color:var(--muted);max-width:360px;margin:0 auto 16px">Manage grade scales for University (5.0) and Polytechnic (4.0) systems in the Admin Panel.</div>
+          <a href="admin.html" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem">Go to Admin Panel → GPA</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ POST-UTME PREP TAB ══ -->
+    <div class="tab-panel" id="tab-postutmeprep">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📖 Post-UTME Prep Guide</div></div>
+        <div class="card-body" style="text-align:center;padding:40px 20px">
+          <div style="font-size:3rem;margin-bottom:12px">📖</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">Post-UTME Prep Management</div>
+          <div style="font-size:.8rem;color:var(--muted);max-width:360px;margin:0 auto 16px">Create and update Post-UTME preparation guides, tips and resource links in the Admin Panel.</div>
+          <a href="admin.html" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem">Go to Admin Panel → Post-UTME Prep</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HERO & STATS TAB ══ -->
+    <div class="tab-panel" id="tab-herostats">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🦸 Hero &amp; Stats Editor</div></div>
+        <div class="card-body" style="text-align:center;padding:40px 20px">
+          <div style="font-size:3rem;margin-bottom:12px">🦸</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">Homepage Hero &amp; Stat Counters</div>
+          <div style="font-size:.8rem;color:var(--muted);max-width:360px;margin:0 auto 16px">Edit the homepage hero badge, headline, description and the four animated stat counters in the Admin Panel.</div>
+          <a href="admin.html" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem">Go to Admin Panel → Hero &amp; Stats</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ NEWS TICKER TAB ══ -->
+    <div class="tab-panel" id="tab-ticker">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📢 News Ticker</div></div>
+        <div class="card-body" style="text-align:center;padding:40px 20px">
+          <div style="font-size:3rem;margin-bottom:12px">📢</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">Scrolling Ticker Management</div>
+          <div style="font-size:.8rem;color:var(--muted);max-width:360px;margin:0 auto 16px">Manage the scrolling seed announcements shown before news loads in the Admin Panel.</div>
+          <a href="admin.html" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem">Go to Admin Panel → News Ticker</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SUCCESS TICKER TAB ══ -->
+    <div class="tab-panel" id="tab-successticker">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🎉 Success Ticker</div></div>
+        <div class="card-body" style="text-align:center;padding:40px 20px">
+          <div style="font-size:3rem;margin-bottom:12px">🎉</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">Student Win Messages</div>
+          <div style="font-size:.8rem;color:var(--muted);max-width:360px;margin:0 auto 16px">Edit student win messages in the scrolling success bar in the Admin Panel.</div>
+          <a href="admin.html" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem">Go to Admin Panel → Success Ticker</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TOP BAR TAB ══ -->
+    <div class="tab-panel" id="tab-topbar">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔔 Notification Top Bar</div></div>
+        <div class="card-body" style="text-align:center;padding:40px 20px">
+          <div style="font-size:3rem;margin-bottom:12px">🔔</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">Top Bar Configuration</div>
+          <div style="font-size:.8rem;color:var(--muted);max-width:360px;margin:0 auto 16px">Control the notification bar message and toggle it on or off in the Admin Panel.</div>
+          <a href="admin.html" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem">Go to Admin Panel → Top Bar</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CONTACT CHANNELS TAB ══ -->
+    <div class="tab-panel" id="tab-contactchannels">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📞 Contact Channels</div></div>
+        <div class="card-body" style="text-align:center;padding:40px 20px">
+          <div style="font-size:3rem;margin-bottom:12px">📞</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">WhatsApp, Email &amp; Community Links</div>
+          <div style="font-size:.8rem;color:var(--muted);max-width:360px;margin:0 auto 16px">Update WhatsApp numbers, email, community group and channel links in the Admin Panel.</div>
+          <a href="admin.html" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem">Go to Admin Panel → Contact Channels</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SOCIAL LINKS TAB ══ -->
+    <div class="tab-panel" id="tab-socials">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔗 Social Media Links</div></div>
+        <div class="card-body" style="text-align:center;padding:40px 20px">
+          <div style="font-size:3rem;margin-bottom:12px">🔗</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">Social Profile URLs</div>
+          <div style="font-size:.8rem;color:var(--muted);max-width:360px;margin:0 auto 16px">Manage Facebook, Instagram, Telegram and other social URLs in the Admin Panel.</div>
+          <a href="admin.html" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem">Go to Admin Panel → Social Links</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CAMPUS LIFE TAB ══ -->
+    <div class="tab-panel" id="tab-campuslife">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🎮 Campus Life</div></div>
+        <div class="card-body" style="text-align:center;padding:40px 20px">
+          <div style="font-size:3rem;margin-bottom:12px">🎮</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">Campus Gist, Polls &amp; Would You Rather</div>
+          <div style="font-size:.8rem;color:var(--muted);max-width:360px;margin:0 auto 16px">Add campus gist stories, create polls and manage engagement content in the Admin Panel.</div>
+          <a href="admin.html" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem">Go to Admin Panel → Campus Life</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DAILY HUB TAB ══ -->
+    <div class="tab-panel" id="tab-dailyhub">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📅 Daily Hub</div></div>
+        <div class="card-body" style="text-align:center;padding:40px 20px">
+          <div style="font-size:3rem;margin-bottom:12px">📅</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">Daily Challenge &amp; DYK Content</div>
+          <div style="font-size:.8rem;color:var(--muted);max-width:360px;margin:0 auto 16px">Manage daily challenge questions and content in the Admin Panel.</div>
+          <a href="admin.html" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem">Go to Admin Panel → Daily Hub</a>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -1797,7 +2004,48 @@ function switchTab(name,btn){
 }
 window.switchTab=switchTab;
 
-// ── ADMIN WHITELIST ──
+// ── CEO PUSH BROADCAST ──
+async function ceoPushSend(){
+  const title=document.getElementById('ceo-pushTitle').value.trim();
+  const body=document.getElementById('ceo-pushBody').value.trim();
+  const link=document.getElementById('ceo-pushLink').value.trim()||'https://bigquamsmedia.com.ng/';
+  const icon=document.getElementById('ceo-pushIcon').value.trim()||'https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png';
+  if(!title||!body){ceoPushStatus('error','❌ Title and message body are required.');return;}
+  if(!confirm(`Send push notification to ALL subscribed students?\n\nTitle: ${title}\nMessage: ${body}\n\nThis cannot be undone.`)) return;
+  const btn=document.getElementById('ceo-sendPushBtn');
+  btn.disabled=true;btn.textContent='Sending…';
+  ceoPushStatus('info','⏳ Sending via Render backend…');
+  try{
+    const senderEmail=_currentUser?.email||'';
+    const RENDER_URL='https://bqm-fcm-server.onrender.com/send-push';
+    const res=await fetch(RENDER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title,body,link,icon,senderEmail})});
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.error||'Server error');
+    const {totalTokens,successCount,failureCount,invalidCleaned}=data;
+    let msg=`✅ Delivered to ${successCount} of ${totalTokens} devices!`;
+    if(failureCount>0) msg+=` (${failureCount} failed)`;
+    if(invalidCleaned>0) msg+=` — ${invalidCleaned} stale tokens cleaned.`;
+    ceoPushStatus('success',msg);
+    // Save to push history display
+    const hist=document.getElementById('ceo-pushHistory');
+    const row=document.createElement('div');
+    row.style.cssText='padding:10px 0;border-bottom:1px solid var(--border);font-size:.78rem';
+    row.innerHTML=`<strong>${title}</strong><br><span style="color:var(--muted)">${body}</span><br><span style="color:var(--muted);font-size:.7rem">${new Date().toLocaleString()} · ${successCount} delivered</span>`;
+    if(hist.querySelector('[style*="text-align:center"]')) hist.innerHTML='';
+    hist.prepend(row);
+  }catch(e){
+    ceoPushStatus('error','❌ Error: '+e.message);
+  }
+  btn.disabled=false;btn.textContent='📢 Send to All Students';
+}
+function ceoPushStatus(type,msg){
+  const el=document.getElementById('ceo-pushStatus');
+  el.style.display='block';
+  el.style.background=type==='success'?'#dcfce7':type==='error'?'#fee2e2':'#dbeafe';
+  el.style.color=type==='success'?'#15803d':type==='error'?'#b91c1c':'#1d4ed8';
+  el.textContent=msg;
+}
+window.ceoPushSend=ceoPushSend;
 async function loadWhitelist(){
   const el=document.getElementById('wlList');
   if(!el) return;
