@@ -109,7 +109,89 @@ header{
 .logout-hdr-btn:hover{background:rgba(239,68,68,.22)}
 
 /* ── MAIN LAYOUT ── */
-main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
+main{max-width:1400px;margin:0 auto;padding:24px 20px 90px}
+
+/* ── FACEBOOK-STYLE BOTTOM NAV ── */
+.fb-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:400;
+  background:#ffffff;border-top:1.5px solid var(--border);
+  display:flex;align-items:stretch;
+  box-shadow:0 -4px 20px rgba(12,31,110,.10);
+}
+.fb-nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;padding:8px 4px 10px;
+  border:none;background:transparent;cursor:pointer;
+  transition:.15s;position:relative;min-width:0;
+  border-top:3px solid transparent;
+}
+.fb-nav-item:hover{background:var(--surface2)}
+.fb-nav-item.active{border-top-color:var(--blue)}
+.fb-nav-icon{font-size:1.3rem;line-height:1}
+.fb-nav-lbl{
+  font-family:'Montserrat',sans-serif;font-size:.54rem;font-weight:800;
+  color:var(--muted);letter-spacing:.2px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:60px;
+}
+.fb-nav-item.active .fb-nav-lbl{color:var(--blue)}
+.fb-nav-item.active .fb-nav-icon{filter:none}
+.fb-nav-badge{
+  position:absolute;top:6px;right:calc(50% - 18px);
+  background:var(--red);color:#fff;font-size:.5rem;font-weight:800;
+  width:14px;height:14px;border-radius:50%;display:none;
+  align-items:center;justify-content:center;border:1.5px solid #fff;
+}
+
+/* ── CONTENT PANELS ── */
+.fb-panel{display:none}
+.fb-panel.active{display:block}
+
+/* Sub-tab bar within a panel */
+.sub-tab-bar{
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;
+}
+.sub-tab-btn{
+  padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);
+  background:var(--surface);color:var(--muted);font-family:'Montserrat',sans-serif;
+  font-size:.72rem;font-weight:800;cursor:pointer;transition:.15s;white-space:nowrap;
+}
+.sub-tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.sub-tab-btn:hover:not(.active){border-color:var(--blue);color:var(--blue)}
+.sub-panel{display:none}
+.sub-panel.active{display:block}
+
+/* Section back bar */
+.section-back-bar{
+  display:flex;align-items:center;gap:12px;margin-bottom:18px;
+  padding-bottom:14px;border-bottom:1.5px solid var(--border);
+}
+.section-back-btn{
+  width:36px;height:36px;border-radius:50%;background:var(--surface2);
+  border:1.5px solid var(--border);display:flex;align-items:center;
+  justify-content:center;font-size:1rem;cursor:pointer;transition:.15s;flex-shrink:0;
+}
+.section-back-btn:hover{background:var(--border)}
+.section-back-lbl{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:800;color:var(--text)}
+
+/* Content menu grid */
+.content-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+@media(min-width:600px){.content-menu-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.content-menu-grid{grid-template-columns:repeat(4,1fr)}}
+.content-menu-card{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:14px;
+  padding:18px 14px 14px;display:flex;flex-direction:column;align-items:flex-start;
+  gap:8px;cursor:pointer;transition:.18s;width:100%;text-align:left;
+  box-shadow:0 2px 8px rgba(26,63,168,.05);
+}
+.content-menu-card:hover{border-color:var(--blue-light);transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,63,168,.10)}
+.content-menu-card:active{transform:scale(.97)}
+.content-menu-icon{
+  width:48px;height:48px;border-radius:12px;display:flex;align-items:center;
+  justify-content:center;font-size:1.5rem;flex-shrink:0;
+}
+.content-menu-lbl{font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:800;color:var(--text)}
+.content-menu-sub{font-size:.64rem;color:var(--muted);line-height:1.4}
+.content-menu-badge{font-size:.64rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:auto;align-self:flex-start}
 
 /* ── PAGE HEADER ── */
 .page-header{margin-bottom:24px}
@@ -337,7 +419,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 
 /* ── MOBILE RESPONSIVE ── */
 @media(max-width:600px){
-  main{padding:16px 12px 50px}
+  main{padding:16px 12px 100px}
   .page-title{font-size:1.1rem}
   .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
   .stat-num{font-size:1.2rem}
@@ -420,30 +502,242 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <div class="stat-card cyan"><div class="stat-icon">✏️</div><div class="stat-num" id="sc-edits">—</div><div class="stat-lbl">Edits/Saves</div></div>
     </div>
 
-    <!-- TABS -->
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('log',this)">📋 Activity Log</button>
-      <button class="tab-btn" onclick="switchTab('admins',this)">👥 Admin Profiles</button>
-      <button class="tab-btn" onclick="switchTab('timeline',this)">🕐 Timeline</button>
-      <button class="tab-btn" onclick="switchTab('analytics',this)">📊 Analytics</button>
-      <button class="tab-btn" onclick="switchTab('referrals',this)">🔗 Referrals</button>
-      <button class="tab-btn" onclick="switchTab('cbtanalytics',this)">🎯 CBT Analytics</button>
-      <button class="tab-btn" onclick="switchTab('whitelist',this)" style="border-color:#dc2626;color:#dc2626">🔐 Admin Access</button>
-      <button class="tab-btn" onclick="switchTab('library',this)" style="border-color:#f59e0b;color:#92400e">📚 eLibrary</button>
-      <button class="tab-btn" onclick="switchTab('scholarships',this)" style="border-color:#10b981;color:#065f46">💰 Scholarships</button>
-      <button class="tab-btn" onclick="switchTab('nelfund',this)" style="border-color:#8b5cf6;color:#5b21b6">💳 NELFUND</button>
-      <button class="tab-btn" onclick="switchTab('dyk',this)" style="border-color:#f59e0b;color:#92400e">💡 DYK</button>
-      <button class="tab-btn" onclick="switchTab('spotlight',this)" style="border-color:#ec4899;color:#9d174d">🌟 Spotlight</button>
-      <button class="tab-btn" onclick="switchTab('postutme',this)" style="border-color:#3b82f6;color:#1d4ed8">🧮 Post-UTME</button>
-      <button class="tab-btn" onclick="switchTab('combo',this)" style="border-color:#10b981;color:#065f46">📋 Subject Combo</button>
-      <button class="tab-btn" onclick="switchTab('reviews',this)" style="border-color:#f59e0b;color:#92400e">⭐ Reviews</button>
-      <button class="tab-btn" onclick="switchTab('qa',this)" style="border-color:#8b5cf6;color:#6d28d9">❓ Q&amp;A</button>
-      <button class="tab-btn" onclick="switchTab('calendar',this)" style="border-color:#06b6d4;color:#0e7490">📅 Calendar</button>
-      <button class="tab-btn" onclick="switchTab('newsroom',this)" style="border-color:#64748b;color:#334155">🗞️ Newsroom</button>
-      <button class="tab-btn" onclick="switchTab('siteconfig',this)" style="border-color:#dc2626;color:#991b1b">⚙️ Site Settings</button>
-      <button class="tab-btn" onclick="switchTab('commlinks',this)" style="border-color:#10b981;color:#065f46">🔗 Community Links</button>
+    <!-- ══ FB-STYLE PANEL: HOME (Overview) ══ -->
+    <div class="fb-panel active" id="fb-home">
+      <!-- Content management menu -->
+      <p style="font-family:'Montserrat',sans-serif;font-size:.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Content Management</p>
+      <div class="content-menu-grid">
+        <button class="content-menu-card" onclick="switchFbPanel('content','log')">
+          <div class="content-menu-icon" style="background:#dbeafe">📋</div>
+          <div class="content-menu-lbl">Activity Log</div>
+          <div class="content-menu-sub">Full audit trail of all admin actions</div>
+          <div class="content-menu-badge" style="background:#dbeafe;color:#1d4ed8">Live</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('content','admins')">
+          <div class="content-menu-icon" style="background:#dcfce7">👥</div>
+          <div class="content-menu-lbl">Admin Profiles</div>
+          <div class="content-menu-sub">View admin accounts and activity</div>
+          <div class="content-menu-badge" style="background:#dcfce7;color:#15803d" id="hm-cnt-admins">—</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('content','timeline')">
+          <div class="content-menu-icon" style="background:#f3e8ff">🕐</div>
+          <div class="content-menu-lbl">Timeline</div>
+          <div class="content-menu-sub">Chronological activity stream</div>
+          <div class="content-menu-badge" style="background:#f3e8ff;color:#6d28d9">Stream</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('content','analytics')">
+          <div class="content-menu-icon" style="background:#fef3c7">📊</div>
+          <div class="content-menu-lbl">Analytics</div>
+          <div class="content-menu-sub">Charts and content breakdown</div>
+          <div class="content-menu-badge" style="background:#fef3c7;color:#92400e">Insights</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('content','referrals')">
+          <div class="content-menu-icon" style="background:#e0f2fe">🔗</div>
+          <div class="content-menu-lbl">Referrals</div>
+          <div class="content-menu-sub">Referral leaderboard and connections</div>
+          <div class="content-menu-badge" style="background:#e0f2fe;color:#0369a1">Rankings</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('content','cbtanalytics')">
+          <div class="content-menu-icon" style="background:#fee2e2">🎯</div>
+          <div class="content-menu-lbl">CBT Analytics</div>
+          <div class="content-menu-sub">Student performance and scores</div>
+          <div class="content-menu-badge" style="background:#fee2e2;color:#b91c1c">Students</div>
+        </button>
+      </div>
     </div>
 
+    <!-- ══ FB-STYLE PANEL: CONTENT ══ -->
+    <div class="fb-panel" id="fb-content">
+      <div class="section-back-bar">
+        <button class="section-back-btn" onclick="switchFbNav('home')">←</button>
+        <div class="section-back-lbl" id="fb-content-title">Content</div>
+      </div>
+
+      <!-- Sub-tabs for content sections -->
+      <div class="sub-tab-bar" id="contentSubTabs">
+        <button class="sub-tab-btn active" onclick="switchSubPanel('content','log',this)">📋 Log</button>
+        <button class="sub-tab-btn" onclick="switchSubPanel('content','admins',this)">👥 Admins</button>
+        <button class="sub-tab-btn" onclick="switchSubPanel('content','timeline',this)">🕐 Timeline</button>
+        <button class="sub-tab-btn" onclick="switchSubPanel('content','analytics',this)">📊 Analytics</button>
+        <button class="sub-tab-btn" onclick="switchSubPanel('content','referrals',this)">🔗 Referrals</button>
+        <button class="sub-tab-btn" onclick="switchSubPanel('content','cbtanalytics',this)">🎯 CBT</button>
+      </div>
+
+      <!-- Sub-panels (reuse old tab-panel IDs so existing JS still works) -->
+      <div class="sub-panel active" id="sub-content-log">
+        <div id="tab-log-inner"></div>
+      </div>
+      <div class="sub-panel" id="sub-content-admins">
+        <div id="tab-admins-inner"></div>
+      </div>
+      <div class="sub-panel" id="sub-content-timeline">
+        <div id="tab-timeline-inner"></div>
+      </div>
+      <div class="sub-panel" id="sub-content-analytics">
+        <div id="tab-analytics-inner"></div>
+      </div>
+      <div class="sub-panel" id="sub-content-referrals">
+        <div id="tab-referrals-inner"></div>
+      </div>
+      <div class="sub-panel" id="sub-content-cbtanalytics">
+        <div id="tab-cbtanalytics-inner"></div>
+      </div>
+    </div>
+
+    <!-- ══ FB-STYLE PANEL: MANAGE ══ -->
+    <div class="fb-panel" id="fb-manage">
+      <div class="section-back-bar">
+        <button class="section-back-btn" onclick="switchFbNav('home')">←</button>
+        <div class="section-back-lbl">Manage Content</div>
+      </div>
+      <div class="content-menu-grid">
+        <button class="content-menu-card" onclick="switchFbPanel('manage','library')">
+          <div class="content-menu-icon" style="background:#fef3c7">📚</div>
+          <div class="content-menu-lbl">eLibrary</div>
+          <div class="content-menu-sub">Books and academic PDFs</div>
+          <div class="content-menu-badge" style="background:#fef3c7;color:#92400e" id="hm-cnt-lib">—</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('manage','scholarships')">
+          <div class="content-menu-icon" style="background:#dcfce7">💰</div>
+          <div class="content-menu-lbl">Scholarships</div>
+          <div class="content-menu-sub">Scholarship listings</div>
+          <div class="content-menu-badge" style="background:#dcfce7;color:#15803d" id="hm-cnt-sch">—</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('manage','nelfund')">
+          <div class="content-menu-icon" style="background:#ede9fe">💳</div>
+          <div class="content-menu-lbl">NELFUND</div>
+          <div class="content-menu-sub">Student loan guides</div>
+          <div class="content-menu-badge" style="background:#ede9fe;color:#6d28d9" id="hm-cnt-nelfund">—</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('manage','dyk')">
+          <div class="content-menu-icon" style="background:#fef9c3">💡</div>
+          <div class="content-menu-lbl">Did You Know?</div>
+          <div class="content-menu-sub">Fun facts and education tips</div>
+          <div class="content-menu-badge" style="background:#fef9c3;color:#92400e" id="hm-cnt-dyk">—</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('manage','spotlight')">
+          <div class="content-menu-icon" style="background:#fce7f3">🌟</div>
+          <div class="content-menu-lbl">Spotlight</div>
+          <div class="content-menu-sub">Student success stories</div>
+          <div class="content-menu-badge" style="background:#fce7f3;color:#9d174d" id="hm-cnt-sp">—</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('manage','postutme')">
+          <div class="content-menu-icon" style="background:#dbeafe">🧮</div>
+          <div class="content-menu-lbl">Post-UTME</div>
+          <div class="content-menu-sub">Calculator schools & formulas</div>
+          <div class="content-menu-badge" style="background:#dbeafe;color:#1d4ed8" id="hm-cnt-postutme">—</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('manage','combo')">
+          <div class="content-menu-icon" style="background:#dcfce7">📋</div>
+          <div class="content-menu-lbl">Subject Combo</div>
+          <div class="content-menu-sub">JAMB subject requirements</div>
+          <div class="content-menu-badge" style="background:#dcfce7;color:#15803d" id="hm-cnt-combo">—</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('manage','reviews')">
+          <div class="content-menu-icon" style="background:#fef3c7">⭐</div>
+          <div class="content-menu-lbl">Reviews</div>
+          <div class="content-menu-sub">Student testimonials</div>
+          <div class="content-menu-badge" style="background:#fef3c7;color:#92400e" id="hm-cnt-rev">—</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('manage','qa')">
+          <div class="content-menu-icon" style="background:#f3e8ff">❓</div>
+          <div class="content-menu-lbl">Q&amp;A</div>
+          <div class="content-menu-sub">FAQ and student queries</div>
+          <div class="content-menu-badge" style="background:#f3e8ff;color:#6d28d9" id="hm-cnt-qa">—</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('manage','calendar')">
+          <div class="content-menu-icon" style="background:#e0f2fe">📅</div>
+          <div class="content-menu-lbl">Calendar</div>
+          <div class="content-menu-sub">Academic events and dates</div>
+          <div class="content-menu-badge" style="background:#e0f2fe;color:#0369a1" id="hm-cnt-cal">—</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('manage','newsroom')">
+          <div class="content-menu-icon" style="background:#f1f5f9">🗞️</div>
+          <div class="content-menu-lbl">Newsroom</div>
+          <div class="content-menu-sub">Newsroom page settings</div>
+          <div class="content-menu-badge" style="background:#f1f5f9;color:#475569">Settings</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('manage','commlinks')">
+          <div class="content-menu-icon" style="background:#dcfce7">🔗</div>
+          <div class="content-menu-lbl">Community Links</div>
+          <div class="content-menu-sub">WhatsApp, Telegram, channels</div>
+          <div class="content-menu-badge" style="background:#dcfce7;color:#15803d">Links</div>
+        </button>
+      </div>
+
+      <!-- Manage sub-panels -->
+      <div class="sub-tab-bar" id="manageSubTabs" style="display:none">
+        <button class="section-back-btn" onclick="document.getElementById('manageSubTabs').style.display='none';document.getElementById('manageSections').style.display='none';document.querySelector('#fb-manage .content-menu-grid').style.display='grid';document.querySelector('#fb-manage .section-back-bar + p').style.display='block'">← Back</button>
+        <span id="manageSubLabel" style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:.88rem;color:var(--text);line-height:38px;margin-left:8px"></span>
+      </div>
+      <div id="manageSections" style="display:none">
+        <div class="sub-panel active" id="sub-manage-library"><div id="tab-library-inner"></div></div>
+        <div class="sub-panel" id="sub-manage-scholarships"><div id="tab-scholarships-inner"></div></div>
+        <div class="sub-panel" id="sub-manage-nelfund"><div id="tab-nelfund-inner"></div></div>
+        <div class="sub-panel" id="sub-manage-dyk"><div id="tab-dyk-inner"></div></div>
+        <div class="sub-panel" id="sub-manage-spotlight"><div id="tab-spotlight-inner"></div></div>
+        <div class="sub-panel" id="sub-manage-postutme"><div id="tab-postutme-inner"></div></div>
+        <div class="sub-panel" id="sub-manage-combo"><div id="tab-combo-inner"></div></div>
+        <div class="sub-panel" id="sub-manage-reviews"><div id="tab-reviews-inner"></div></div>
+        <div class="sub-panel" id="sub-manage-qa"><div id="tab-qa-inner"></div></div>
+        <div class="sub-panel" id="sub-manage-calendar"><div id="tab-calendar-inner"></div></div>
+        <div class="sub-panel" id="sub-manage-newsroom"><div id="tab-newsroom-inner"></div></div>
+        <div class="sub-panel" id="sub-manage-commlinks"><div id="tab-commlinks-inner"></div></div>
+      </div>
+    </div>
+
+    <!-- ══ FB-STYLE PANEL: SETTINGS ══ -->
+    <div class="fb-panel" id="fb-settings">
+      <div class="section-back-bar">
+        <button class="section-back-btn" onclick="switchFbNav('home')">←</button>
+        <div class="section-back-lbl">Settings &amp; Access</div>
+      </div>
+      <div class="content-menu-grid">
+        <button class="content-menu-card" onclick="switchFbPanel('settings','whitelist')">
+          <div class="content-menu-icon" style="background:#fee2e2">🔐</div>
+          <div class="content-menu-lbl">Admin Access</div>
+          <div class="content-menu-sub">Approve and manage admin whitelist</div>
+          <div class="content-menu-badge" style="background:#fee2e2;color:#b91c1c">CEO Only</div>
+        </button>
+        <button class="content-menu-card" onclick="switchFbPanel('settings','siteconfig')">
+          <div class="content-menu-icon" style="background:#f1f5f9">⚙️</div>
+          <div class="content-menu-lbl">Site Settings</div>
+          <div class="content-menu-sub">Global config, logo, tagline, contacts</div>
+          <div class="content-menu-badge" style="background:#f1f5f9;color:#475569">Config</div>
+        </button>
+      </div>
+      <div id="settingsSections">
+        <div class="sub-panel active" id="sub-settings-whitelist"><div id="tab-whitelist-inner"></div></div>
+        <div class="sub-panel" id="sub-settings-siteconfig"><div id="tab-siteconfig-inner"></div></div>
+      </div>
+    </div>
+
+    <!-- ══ FB-STYLE PANEL: PROFILE ══ -->
+    <div class="fb-panel" id="fb-profile">
+      <div class="section-back-bar">
+        <button class="section-back-btn" onclick="switchFbNav('home')">←</button>
+        <div class="section-back-lbl">CEO Profile</div>
+      </div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">👑 Signed-in as CEO</div></div>
+        <div class="card-body">
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <img id="profileAvatar" src="" alt="" style="width:56px;height:56px;border-radius:50%;border:2px solid var(--border);display:none">
+            <div>
+              <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:.95rem;color:var(--text)" id="profileName">—</div>
+              <div style="font-size:.76rem;color:var(--muted)" id="profileEmail">—</div>
+              <div style="margin-top:6px"><span class="tag tag-ceo">👑 CEO</span></div>
+            </div>
+          </div>
+          <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+            <a href="../index.html" target="_blank" style="padding:9px 16px;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:800;color:var(--text);text-decoration:none">🌐 View Site</a>
+            <button onclick="doLogout()" style="padding:9px 16px;background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.3);border-radius:8px;font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:800;color:#dc2626;cursor:pointer">🚪 Sign Out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ LEGACY TAB PANELS (content moved into FB panels above via JS) ══ -->
     <!-- ── TAB: FULL LOG ── -->
     <div class="tab-panel active" id="tab-log">
       <div class="refresh-row">
@@ -1178,6 +1472,30 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     </div>
 
   </main>
+
+  <!-- ══ FACEBOOK-STYLE BOTTOM NAV ══ -->
+  <nav class="fb-nav" id="fbNav">
+    <button class="fb-nav-item active" id="fb-nav-home" onclick="switchFbNav('home')">
+      <span class="fb-nav-icon">🏠</span>
+      <span class="fb-nav-lbl">Home</span>
+    </button>
+    <button class="fb-nav-item" id="fb-nav-content" onclick="switchFbNav('content')">
+      <span class="fb-nav-icon">📋</span>
+      <span class="fb-nav-lbl">Activity</span>
+    </button>
+    <button class="fb-nav-item" id="fb-nav-manage" onclick="switchFbNav('manage')">
+      <span class="fb-nav-icon">📂</span>
+      <span class="fb-nav-lbl">Manage</span>
+    </button>
+    <button class="fb-nav-item" id="fb-nav-settings" onclick="switchFbNav('settings')">
+      <span class="fb-nav-icon">⚙️</span>
+      <span class="fb-nav-lbl">Settings</span>
+    </button>
+    <button class="fb-nav-item" id="fb-nav-profile" onclick="switchFbNav('profile')">
+      <span class="fb-nav-icon">👑</span>
+      <span class="fb-nav-lbl">Profile</span>
+    </button>
+  </nav>
 </div>
 
 <!-- Firebase -->
@@ -2653,5 +2971,155 @@ function ceoPushStatus(type,msg){
 }
 window.ceoDashSendPush=ceoDashSendPush;
 </script>
-</body>
-</html>
+
+<script>
+// ══ FACEBOOK-STYLE NAV SYSTEM ══
+// Maps each tab-panel ID to which FB panel + sub-container it belongs to
+const TAB_MAP = {
+  // content panel
+  'log':         {fb:'content', sub:'sub-content-log',          inner:'tab-log-inner'},
+  'admins':      {fb:'content', sub:'sub-content-admins',       inner:'tab-admins-inner'},
+  'timeline':    {fb:'content', sub:'sub-content-timeline',     inner:'tab-timeline-inner'},
+  'analytics':   {fb:'content', sub:'sub-content-analytics',   inner:'tab-analytics-inner'},
+  'referrals':   {fb:'content', sub:'sub-content-referrals',    inner:'tab-referrals-inner'},
+  'cbtanalytics':{fb:'content', sub:'sub-content-cbtanalytics', inner:'tab-cbtanalytics-inner'},
+  // manage panel
+  'library':     {fb:'manage',  sub:'sub-manage-library',       inner:'tab-library-inner'},
+  'scholarships':{fb:'manage',  sub:'sub-manage-scholarships',  inner:'tab-scholarships-inner'},
+  'nelfund':     {fb:'manage',  sub:'sub-manage-nelfund',       inner:'tab-nelfund-inner'},
+  'dyk':         {fb:'manage',  sub:'sub-manage-dyk',           inner:'tab-dyk-inner'},
+  'spotlight':   {fb:'manage',  sub:'sub-manage-spotlight',     inner:'tab-spotlight-inner'},
+  'postutme':    {fb:'manage',  sub:'sub-manage-postutme',      inner:'tab-postutme-inner'},
+  'combo':       {fb:'manage',  sub:'sub-manage-combo',         inner:'tab-combo-inner'},
+  'reviews':     {fb:'manage',  sub:'sub-manage-reviews',       inner:'tab-reviews-inner'},
+  'qa':          {fb:'manage',  sub:'sub-manage-qa',            inner:'tab-qa-inner'},
+  'calendar':    {fb:'manage',  sub:'sub-manage-calendar',      inner:'tab-calendar-inner'},
+  'newsroom':    {fb:'manage',  sub:'sub-manage-newsroom',      inner:'tab-newsroom-inner'},
+  'commlinks':   {fb:'manage',  sub:'sub-manage-commlinks',     inner:'tab-commlinks-inner'},
+  // settings panel
+  'whitelist':   {fb:'settings', sub:'sub-settings-whitelist',  inner:'tab-whitelist-inner'},
+  'siteconfig':  {fb:'settings', sub:'sub-settings-siteconfig', inner:'tab-siteconfig-inner'},
+};
+
+// On first load, move each tab-panel's contents into its inner div
+let _tabsMoved = false;
+function moveTabs(){
+  if(_tabsMoved) return;
+  _tabsMoved = true;
+  Object.entries(TAB_MAP).forEach(([id, map]) => {
+    const src = document.getElementById('tab-'+id);
+    const dst = document.getElementById(map.inner);
+    if(src && dst){ dst.appendChild(src); src.classList.remove('tab-panel'); }
+  });
+}
+
+function switchFbNav(nav){
+  moveTabs();
+  // Update bottom nav active state
+  document.querySelectorAll('.fb-nav-item').forEach(b=>b.classList.remove('active'));
+  const nb = document.getElementById('fb-nav-'+nav);
+  if(nb) nb.classList.add('active');
+  // Show correct FB panel
+  document.querySelectorAll('.fb-panel').forEach(p=>p.classList.remove('active'));
+  const fp = document.getElementById('fb-'+nav);
+  if(fp) fp.classList.add('active');
+  // Auto-load data when switching to content panel
+  if(nav==='content' && typeof loadAll==='function' && !window._allLogs?.length) loadAll();
+}
+
+function switchFbPanel(fbPanel, tabName){
+  moveTabs();
+  const map = TAB_MAP[tabName];
+  if(!map) return;
+  // Show the FB panel
+  switchFbNav(fbPanel);
+  // For content panel: activate correct sub-tab
+  if(fbPanel === 'content'){
+    document.querySelectorAll('#fb-content .sub-panel').forEach(p=>p.classList.remove('active'));
+    const sp = document.getElementById(map.sub);
+    if(sp) sp.classList.add('active');
+    // Update sub-tab buttons
+    document.querySelectorAll('#contentSubTabs .sub-tab-btn').forEach(b=>{
+      b.classList.toggle('active', b.textContent.toLowerCase().includes(tabName.slice(0,3)));
+    });
+    // Trigger data loads
+    if(['log','admins','timeline','analytics'].includes(tabName) && typeof loadAll==='function' && !window._allLogs?.length) loadAll();
+    if(tabName==='referrals' && typeof loadReferrals==='function') loadReferrals();
+    if(tabName==='cbtanalytics' && typeof loadCBTAnalytics==='function') loadCBTAnalytics();
+    return;
+  }
+  // For manage panel: show grid → hide grid, show section
+  if(fbPanel === 'manage'){
+    const grid = document.querySelector('#fb-manage .content-menu-grid');
+    const lbl  = document.querySelector('#fb-manage .section-back-bar');
+    const secs = document.getElementById('manageSections');
+    if(grid) grid.style.display = 'none';
+    if(secs){ secs.style.display = 'block'; }
+    document.querySelectorAll('#manageSections .sub-panel').forEach(p=>p.classList.remove('active'));
+    const sp = document.getElementById(map.sub);
+    if(sp) sp.classList.add('active');
+    // Show a small back bar label
+    const manualBack = document.getElementById('manageSubTabs');
+    if(manualBack){
+      manualBack.style.display = 'flex';
+      const lbl2 = document.getElementById('manageSubLabel');
+      if(lbl2) lbl2.textContent = tabName.charAt(0).toUpperCase()+tabName.slice(1);
+    }
+    // back button restores grid
+    const backBtn = manualBack?.querySelector('.section-back-btn');
+    if(backBtn){
+      backBtn.onclick = ()=>{
+        if(grid) grid.style.display = 'grid';
+        if(secs) secs.style.display = 'none';
+        if(manualBack) manualBack.style.display = 'none';
+      };
+    }
+    return;
+  }
+  // For settings panel
+  if(fbPanel === 'settings'){
+    document.querySelectorAll('#settingsSections .sub-panel').forEach(p=>p.classList.remove('active'));
+    const sp = document.getElementById(map.sub);
+    if(sp) sp.classList.add('active');
+    if(tabName==='whitelist' && typeof loadWhitelist==='function') loadWhitelist();
+    return;
+  }
+}
+
+function switchSubPanel(fbPanel, tabName, btn){
+  switchFbPanel(fbPanel, tabName);
+  // Update sub-tab active button
+  const barId = fbPanel==='content' ? 'contentSubTabs' : null;
+  if(barId){
+    document.querySelectorAll('#'+barId+' .sub-tab-btn').forEach(b=>b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+  }
+}
+
+// Override the old switchTab so existing JS calls still work
+const _oldSwitchTabFB = window.switchTab;
+window.switchTab = function(name, btn){
+  moveTabs();
+  const map = TAB_MAP[name];
+  if(map){ switchFbPanel(map.fb, name); return; }
+  if(_oldSwitchTabFB) _oldSwitchTabFB(name, btn);
+};
+
+// Populate profile panel on load
+window.addEventListener('_ceoReady', ()=>{
+  const u = window._currentUser;
+  if(!u) return;
+  const av = document.getElementById('profileAvatar');
+  const nm = document.getElementById('profileName');
+  const em = document.getElementById('profileEmail');
+  if(av && u.photoURL){ av.src=u.photoURL; av.style.display='block'; }
+  if(nm) nm.textContent = u.displayName || 'CEO';
+  if(em) em.textContent = u.email || '';
+});
+
+// Initialise — show home panel on load
+document.addEventListener('DOMContentLoaded', ()=>{
+  switchFbNav('home');
+});
+</script>
+</body></html>
