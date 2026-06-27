@@ -1049,6 +1049,13 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
           </div>
           <div id="ceoPushStatus" style="display:none;padding:10px;border-radius:8px;font-size:.82rem;font-weight:600;margin-bottom:12px"></div>
           <button class="btn-primary-sm" id="ceoPushBtn" onclick="ceoDashSendPush()" style="width:100%;padding:12px;font-size:.9rem">📢 Send to All Students</button>
+          <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <div style="font-size:.78rem;font-weight:700;color:var(--text)">📋 Recent Broadcasts</div>
+              <button onclick="loadCeoBroadcastHistory()" style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:.7rem;cursor:pointer;color:var(--muted)">🔄 Refresh</button>
+            </div>
+            <div id="ceoPushHistory"><div style="text-align:center;padding:16px;color:var(--muted);font-size:.8rem">Tap Refresh to load history</div></div>
+          </div>
         </div>
       </div>
 
@@ -2610,6 +2617,7 @@ This cannot be undone.')) return;
     if(!res.ok) throw new Error(result.error||'Server error');
     await window.setDoc(window.doc(window.db,'push_broadcasts',Date.now().toString()),{title,body,link,icon,tokenCount:tokens.length,sent:result.sent,failed:result.failed,sentBy:JSON.parse(localStorage.getItem('bqm_ceo')||'{}').email||'CEO',sentAt:new Date().toISOString(),status:'sent',mode:'fcm'});
     ceoPushStatus('success','✅ Sent to '+result.sent+' devices! '+(result.failed>0?result.failed+' failed.':''));
+    loadCeoBroadcastHistory();
     document.getElementById('ceoPushTitle').value='';
     document.getElementById('ceoPushBody').value='';
     document.getElementById('ceoPushLink').value='';
@@ -2626,6 +2634,44 @@ function ceoPushStatus(type,msg){
   el.textContent=msg;
 }
 window.ceoDashSendPush=ceoDashSendPush;
+
+async function loadCeoBroadcastHistory(){
+  const el=document.getElementById('ceoPushHistory');if(!el)return;
+  el.innerHTML='<div style="text-align:center;padding:16px;color:var(--muted);font-size:.8rem">Loading…</div>';
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'push_broadcasts'),window._orderBy('sentAt','desc'),window._limit(20)));
+    if(snap.empty){el.innerHTML='<div style="text-align:center;padding:16px;color:var(--muted);font-size:.8rem">📭 No broadcasts yet.</div>';return;}
+    el.innerHTML=snap.docs.map(d=>{
+      const h=d.data();const id=d.id;
+      const date=h.sentAt?new Date(h.sentAt).toLocaleString('en-NG'):'';
+      const sent=h.sent||h.tokenCount||0;
+      const failed=h.failed||0;
+      return '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)" id="cpbrow-'+id+'">'
+        +'<div style="width:28px;height:28px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.85rem">📢</div>'
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:.78rem;font-weight:700;color:var(--text)">'+(h.title||'')+'</div>'
+        +'<div style="font-size:.7rem;color:var(--muted);margin-top:2px">'+(h.body||'').slice(0,70)+((h.body||'').length>70?'…':'')+'</div>'
+        +'<div style="font-size:.65rem;color:var(--muted);margin-top:3px">📱 '+sent+' sent'+(failed>0?' · '+failed+' failed':'')+' · '+date+'</div>'
+        +'</div>'
+        +'<button onclick="deleteCeoBroadcast(''+id+'')" style="background:#fee2e2;color:#991b1b;border:none;border-radius:6px;padding:4px 8px;font-size:.7rem;font-weight:700;cursor:pointer;flex-shrink:0">🗑️</button>'
+        +'</div>';
+    }).join('');
+  }catch(e){
+    el.innerHTML='<div style="color:#991b1b;font-size:.78rem;padding:8px">Failed: '+e.message+'</div>';
+  }
+}
+
+async function deleteCeoBroadcast(id){
+  if(!confirm('Delete this broadcast record?\nNote: This only removes it from history — it cannot unsend the notification.')) return;
+  try{
+    await window._deleteDoc(window._doc(window._db,'push_broadcasts',id));
+    document.getElementById('cpbrow-'+id)?.remove();
+    const el=document.getElementById('ceoPushHistory');
+    if(el&&!el.querySelector('[id^="cpbrow-"]')) el.innerHTML='<div style="text-align:center;padding:16px;color:var(--muted);font-size:.8rem">📭 No broadcasts yet.</div>';
+  }catch(e){ alert('Delete failed: '+e.message); }
+}
+window.loadCeoBroadcastHistory=loadCeoBroadcastHistory;
+window.deleteCeoBroadcast=deleteCeoBroadcast;
 </script>
 </body>
 </html>

@@ -2501,7 +2501,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider, signOut, sendPasswordResetEmail, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const fbConfig = {
@@ -2529,6 +2529,7 @@ window.getDocs      = getDocs;
 window.addDoc       = addDoc;
 window.updateDoc    = updateDoc;
 window.deleteDoc    = deleteDoc;
+window.limit        = limit;
 window.doc          = doc;
 window.getDoc       = getDoc;
 window.setDoc       = setDoc;
@@ -3016,10 +3017,7 @@ async function sendPushNotification(){
       mode: BQM_WORKER_URL ? 'fcm' : 'browser-only',
     });
 
-    // 4. Save to local history
-    const hist=JSON.parse(localStorage.getItem(PUSH_HISTORY_KEY)||'[]');
-    hist.unshift({title,body,link,tokens:tokens.length,sent,sentAt:new Date().toISOString()});
-    localStorage.setItem(PUSH_HISTORY_KEY,JSON.stringify(hist.slice(0,20)));
+    // 4. Refresh history from Firestore
     renderPushHistory();
 
     const modeNote = BQM_WORKER_URL ? '' : ' (browser-only — set worker URL for full delivery)';
@@ -3046,20 +3044,42 @@ function showPushStatus(type,msg){
   el.textContent=msg;
 }
 
-function renderPushHistory(){
+async function renderPushHistory(){
   const el=document.getElementById('pushHistory');if(!el)return;
-  const hist=JSON.parse(localStorage.getItem(PUSH_HISTORY_KEY)||'[]');
-  if(!hist.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No broadcasts sent yet.</p></div>';return;}
-  el.innerHTML=hist.map(h=>`
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
-      <div style="width:32px;height:32px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;flex-shrink:0">📢</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:.8rem;font-weight:700;color:var(--text)">${h.title}</div>
-        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">${h.body.slice(0,80)}…</div>
-        <div style="font-size:.66rem;color:var(--muted);margin-top:4px">📱 ${h.tokens} devices · ${new Date(h.sentAt).toLocaleString('en-NG')}</div>
-      </div>
-    </div>`).join('');
+  el.innerHTML='<div style="text-align:center;padding:16px;color:var(--muted);font-size:.8rem">Loading…</div>';
+  try{
+    const snap=await window.getDocs(window.query(window.collection(window.db,'push_broadcasts'),window.orderBy('sentAt','desc'),window.limit(20)));
+    if(snap.empty){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No broadcasts sent yet.</p></div>';return;}
+    el.innerHTML=snap.docs.map(d=>{
+      const h=d.data();const id=d.id;
+      const date=h.sentAt?new Date(h.sentAt).toLocaleString('en-NG'):'';
+      const sent=h.sent||h.tokenCount||0;
+      const failed=h.failed||0;
+      return '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)" id="pbrow-'+id+'">'
+        +'<div style="width:32px;height:32px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem">📢</div>'
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:.8rem;font-weight:700;color:var(--text)">'+(h.title||'')+'</div>'
+        +'<div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+(h.body||'').slice(0,80)+((h.body||'').length>80?'…':'')+'</div>'
+        +'<div style="font-size:.66rem;color:var(--muted);margin-top:4px">📱 '+sent+' sent'+(failed>0?' · '+failed+' failed':'')+' · '+date+'</div>'
+        +'</div>'
+        +'<button onclick="deleteBroadcast(''+id+'')" style="background:#fee2e2;color:#991b1b;border:none;border-radius:6px;padding:4px 8px;font-size:.7rem;font-weight:700;cursor:pointer;flex-shrink:0">🗑️</button>'
+        +'</div>';
+    }).join('');
+  }catch(e){
+    el.innerHTML='<div style="color:#991b1b;font-size:.8rem;padding:8px">Failed to load: '+e.message+'</div>';
+  }
 }
+
+async function deleteBroadcast(id){
+  if(!confirm('Delete this broadcast record?\nNote: This only removes it from history — it cannot unsend the notification.')) return;
+  try{
+    await window.deleteDoc(window.doc(window.db,'push_broadcasts',id));
+    document.getElementById('pbrow-'+id)?.remove();
+    const el=document.getElementById('pushHistory');
+    if(el&&!el.querySelector('[id^="pbrow-"]')) el.innerHTML='<div class="empty"><div class="ei">📭</div><p>No broadcasts sent yet.</p></div>';
+  }catch(e){ alert('Delete failed: '+e.message); }
+}
+window.deleteBroadcast=deleteBroadcast;
 
 function clearPushForm(){
   ['pushTitle','pushBody','pushLink'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
