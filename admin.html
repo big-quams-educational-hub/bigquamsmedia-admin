@@ -560,7 +560,9 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="dm-count" style="background:#dbeafe;color:#1d4ed8" id="dm-cnt-news">Loading…</div>
         </div>
 
-        <div class="dm-title">Newsroom</div>
+        <div class="dash-module" onclick="switchSection('newsroom')">
+          <div class="dm-icon" style="background:#e0f2fe">🗞️</div>
+          <div class="dm-title">Newsroom</div>
           <div class="dm-desc">Configure the newsroom page layout, featured stories and categories shown to students.</div>
           <div class="dm-count" style="background:#e0f2fe;color:#0369a1">Settings</div>
         </div>
@@ -600,102 +602,142 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="dm-count" style="background:#ede9fe;color:#6d28d9" id="dm-cnt-nelfund">Loading…</div>
         </div>
 
-        <div class="dm-title">JAMB CBT Practice</div>
+        <div class="dash-module" onclick="switchSection('cbt')">
+          <div class="dm-icon" style="background:#fee2e2">🎯</div>
+          <div class="dm-title">JAMB CBT Practice</div>
           <div class="dm-desc">Add past questions, set answers and explanations for each subject.</div>
           <div class="dm-count" style="background:#fee2e2;color:#b91c1c" id="dm-cnt-cbt">Loading…</div>
         </div>
 
-        <div class="dm-title">Post-UTME Calculator</div>
+        <div class="dash-module" onclick="switchSection('postutme')">
+          <div class="dm-icon" style="background:#dbeafe">🧮</div>
+          <div class="dm-title">Post-UTME Calculator</div>
           <div class="dm-desc">Add schools with their aggregate formulas. Students calculate and download results as PDF.</div>
           <div class="dm-count" style="background:#dbeafe;color:#1d4ed8" id="dm-cnt-postutme">Loading…</div>
         </div>
 
-        <div class="dm-title">Subject Combination</div>
+        <div class="dash-module" onclick="switchSection('combo')">
+          <div class="dm-icon" style="background:#dcfce7">📋</div>
+          <div class="dm-title">Subject Combination</div>
           <div class="dm-desc">Manually upload JAMB subject requirements per course. Unknown courses show "Not Found".</div>
           <div class="dm-count" style="background:#dcfce7;color:#15803d" id="dm-cnt-combo">Loading…</div>
         </div>
 
-        <div class="dm-title">Results Checker</div>
+        <div class="dash-module" onclick="switchSection('results')">
+          <div class="dm-icon" style="background:#e0f2fe">📄</div>
+          <div class="dm-title">Results Checker</div>
           <div class="dm-desc">Manage JAMB, WAEC, NECO and NABTEB portal links and step-by-step instructions.</div>
           <div class="dm-count" style="background:#e0f2fe;color:#0369a1">Settings</div>
         </div>
 
-        <div class="dm-title">GPA / CGPA Calculator</div>
+        <div class="dash-module" onclick="switchSection('gpa')">
+          <div class="dm-icon" style="background:#dcfce7">🎓</div>
+          <div class="dm-title">GPA / CGPA Calculator</div>
           <div class="dm-desc">Manage grade scales for University (5.0) and Polytechnic (4.0) systems.</div>
           <div class="dm-count" style="background:#dcfce7;color:#15803d">Settings</div>
         </div>
 
-        <div class="dm-title">Post-UTME Prep Guide</div>
+        <div class="dash-module" onclick="switchSection('prep')">
+          <div class="dm-icon" style="background:#fef9c3">📖</div>
+          <div class="dm-title">Post-UTME Prep Guide</div>
           <div class="dm-desc">Create and update preparation guides, tips and resource links for Post-UTME screening.</div>
           <div class="dm-count" style="background:#fef9c3;color:#92400e" id="dm-cnt-prep">Loading…</div>
         </div>
 
-        <div class="dm-title">Student Reviews</div>
+        <div class="dash-module" onclick="switchSection('reviews')">
+          <div class="dm-icon" style="background:#fef3c7">⭐</div>
+          <div class="dm-title">Student Reviews</div>
           <div class="dm-desc">Moderate and manage student testimonials shown on the platform.</div>
           <div class="dm-count" style="background:#fef3c7;color:#92400e" id="dm-cnt-rev">Loading…</div>
         </div>
 
-        <div class="dm-title">Q&amp;A</div>
+        <div class="dash-module" onclick="switchSection('qa')">
+          <div class="dm-icon" style="background:#f3e8ff">❓</div>
+          <div class="dm-title">Q&amp;A</div>
           <div class="dm-desc">Manage frequently asked questions and student queries.</div>
           <div class="dm-count" style="background:#f3e8ff;color:#6d28d9" id="dm-cnt-qa">Loading…</div>
         </div>
 
-        <div class="dm-title">Academic Calendar</div>
+        <div class="dash-module" onclick="switchSection('calendar')">
+          <div class="dm-icon" style="background:#dbeafe">📅</div>
+          <div class="dm-title">Academic Calendar</div>
           <div class="dm-desc">Add JAMB, WAEC, NECO dates and key academic events for the countdown timer.</div>
           <div class="dm-count" style="background:#dbeafe;color:#1d4ed8" id="dm-cnt-cal">Loading…</div>
         </div>
 
-        <div class="dm-title">Site Settings</div>
+        <div class="dash-module" onclick="switchSection('siteconfig')">
+          <div class="dm-icon" style="background:#f1f5f9">⚙️</div>
+          <div class="dm-title">Site Settings</div>
           <div class="dm-desc">Update logo, tagline, WhatsApp number, Formspree ID and global contact details.</div>
           <div class="dm-count" style="background:#f1f5f9;color:#475569">Global Config</div>
         </div>
 
-        <div class="dm-title">Hero &amp; Stats</div>
+        <div class="dash-module" onclick="switchSection('hero')">
+          <div class="dm-icon" style="background:#ede9fe">🏠</div>
+          <div class="dm-title">Hero &amp; Stats</div>
           <div class="dm-desc">Edit the homepage hero badge, headline, description and the four animated stat counters.</div>
           <div class="dm-count" style="background:#ede9fe;color:#6d28d9">Homepage</div>
         </div>
 
-        <div class="dm-title">News Ticker</div>
+        <div class="dash-module" onclick="switchSection('ticker')">
+          <div class="dm-icon" style="background:#dbeafe">📢</div>
+          <div class="dm-title">News Ticker</div>
           <div class="dm-desc">Manage the scrolling seed announcements shown before news.json loads.</div>
           <div class="dm-count" style="background:#dbeafe;color:#1d4ed8" id="dm-cnt-ticker">Loading…</div>
         </div>
 
-        <div class="dm-title">Success Ticker</div>
+        <div class="dash-module" onclick="switchSection('success')">
+          <div class="dm-icon" style="background:#dcfce7">🏆</div>
+          <div class="dm-title">Success Ticker</div>
           <div class="dm-desc">Edit student win messages in the scrolling success bar — powerful social proof.</div>
           <div class="dm-count" style="background:#dcfce7;color:#15803d" id="dm-cnt-success">Loading…</div>
         </div>
 
-        <div class="dm-title">Top Bar</div>
+        <div class="dash-module" onclick="switchSection('topbar')">
+          <div class="dm-icon" style="background:#fef9c3">🔔</div>
+          <div class="dm-title">Top Bar</div>
           <div class="dm-desc">Control the notification bar — edit its message and toggle it on or off.</div>
           <div class="dm-count" style="background:#fef9c3;color:#92400e">Notification</div>
         </div>
 
-        <div class="dm-title">Contact Channels</div>
+        <div class="dash-module" onclick="switchSection('contacts')">
+          <div class="dm-icon" style="background:#dcfce7">📞</div>
+          <div class="dm-title">Contact Channels</div>
           <div class="dm-desc">Update WhatsApp numbers, email, community group and channel links.</div>
           <div class="dm-count" style="background:#dcfce7;color:#15803d">Links</div>
         </div>
 
-        <div class="dm-title">Social Links</div>
+        <div class="dash-module" onclick="switchSection('social')">
+          <div class="dm-icon" style="background:#dbeafe">🌐</div>
+          <div class="dm-title">Social Links</div>
           <div class="dm-desc">Manage Facebook, Instagram and Telegram URLs in the footer.</div>
           <div class="dm-count" style="background:#dbeafe;color:#1d4ed8">3 Platforms</div>
         </div>
 
-        <div class="dm-title">Admin Activity Log</div>
+        <div class="dash-module" onclick="switchSection('actlog')">
+          <div class="dm-icon" style="background:#fee2e2">📊</div>
+          <div class="dm-title">Admin Activity Log</div>
           <div class="dm-desc">Track every admin action — who did what and when. Full audit trail for CEO oversight.</div>
           <div class="dm-count" style="background:#fee2e2;color:#b91c1c" id="dm-cnt-actlog">CEO Only</div>
         </div>
 
-        <div class="dm-title">Push Broadcast</div>
+        <div class="dash-module" onclick="switchSection('push')">
+          <div class="dm-icon" style="background:#ede9fe">📡</div>
+          <div class="dm-title">Push Broadcast</div>
           <div class="dm-desc">Send instant push notifications to all students — news alerts, scholarship updates, announcements.</div>
           <div class="dm-count" style="background:#ede9fe;color:#7c3aed">Broadcast</div>
         </div>
 
-        <div class="dm-title">Daily Hub</div>
+        <div class="dash-module" onclick="switchSection('daily')">
+          <div class="dm-icon" style="background:#fef9c3">☀️</div>
+          <div class="dm-title">Daily Hub</div>
           <div class="dm-desc">Manage daily challenge questions and DYK content. Add new questions to keep students engaged.</div>
           <div class="dm-count" style="background:#fef9c3;color:#92400e" id="dm-cnt-daily">Daily</div>
         </div>
 
-        <div class="dm-title">Campus Life</div>
+        <div class="dash-module" onclick="switchSection('campus')">
+          <div class="dm-icon" style="background:#fce7f3">🎓</div>
+          <div class="dm-title">Campus Life</div>
           <div class="dm-desc">Add campus gist stories, create polls and manage Would You Rather questions.</div>
           <div class="dm-count" style="background:#fce7f3;color:#9d174d">Fun Content</div>
         </div>
@@ -2606,7 +2648,8 @@ async function signInWithEmail(){
   if(!email||!pass){showLoginError('Enter your email and password.');return;}
   const btn=document.querySelector('#signinForm .login-btn');btn.disabled=true;btn.textContent='Signing in…';
   try{
-    if(!window.auth) throw new Error('Auth not ready — wait a moment and try again.');
+    const ready=await waitForAuth();
+    if(!ready) throw new Error('Firebase is still loading — please wait a moment and try again.');
     const cred=await window.signInWithEmailAndPassword(window.auth,email,pass);
     const user=cred.user;
     const isCEO=user.email==='bigquamsmedia024@gmail.com';
@@ -2654,7 +2697,8 @@ async function createAccount(){
   if(pass.length<6){showLoginError('Password must be at least 6 characters.');return;}
   const btn=document.querySelector('#registerForm .login-btn');btn.disabled=true;btn.textContent='Creating account…';
   try{
-    if(!window.auth) throw new Error('Auth not ready — wait a moment and try again.');
+    const ready=await waitForAuth();
+    if(!ready) throw new Error('Firebase is still loading — please wait a moment and try again.');
     const cred=await window.createUserWithEmailAndPassword(window.auth,email,pass);
     await window.updateProfile(cred.user,{displayName:name});
     // Save admin profile with nickname to Firestore
@@ -2674,10 +2718,21 @@ async function createAccount(){
 }
 window.createAccount=createAccount;
 
+// ── Wait for Firebase to be ready (fixes race condition on page load) ──
+async function waitForAuth(ms){
+  const deadline=Date.now()+(ms||4000);
+  while(Date.now()<deadline){
+    if(window.auth&&window.db&&window.signInWithPopup) return true;
+    await new Promise(r=>setTimeout(r,120));
+  }
+  return false;
+}
+
 // ── Google sign in ──
 async function signInWithGoogle(){
   try{
-    if(!window.auth||!window.googleProvider) throw new Error('Auth not ready.');
+    const ready=await waitForAuth();
+    if(!ready) throw new Error('Firebase is still loading — please wait a moment and try again.');
     const cred=await window.signInWithPopup(window.auth,window.googleProvider);
     const user=cred.user;
     const isCEO=user.email==='bigquamsmedia024@gmail.com';
@@ -2713,6 +2768,8 @@ window.signInWithGoogle=signInWithGoogle;
 
 async function signInWithApple(){
   try{
+    const ready=await waitForAuth();
+    if(!ready) throw new Error('Firebase is still loading — please wait a moment and try again.');
     const cred=await window.signInWithPopup(window.auth,window.appleProvider);
     await goToStep2(cred.user);
   }catch(e){
