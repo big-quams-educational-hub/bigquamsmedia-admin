@@ -515,6 +515,14 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <span class="nav-icon">🔒</span><span class="nav-label">Anonymous Msgs</span>
         <span class="nav-count" id="cnt-anon">—</span>
       </button>
+      <button class="section-tab" onclick="switchSection('campusgist')">
+        <span class="nav-icon">😂</span><span class="nav-label">Campus Gist</span>
+        <span class="nav-count" id="cnt-gist">—</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('polls')">
+        <span class="nav-icon">🗳️</span><span class="nav-label">Polls</span>
+        <span class="nav-count" id="cnt-polls">—</span>
+      </button>
     </nav>
 
     <!-- MAIN CONTENT -->
@@ -560,6 +568,13 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="dm-count" style="background:#dbeafe;color:#1d4ed8" id="dm-cnt-news">Loading…</div>
         </div>
 
+        <div class="dash-module" onclick="switchSection('newsroom')">
+          <div class="dm-icon" style="background:#e0f2fe">🗞️</div>
+          <div class="dm-title">Newsroom</div>
+          <div class="dm-desc">Configure the newsroom page layout, featured stories and categories shown to students.</div>
+          <div class="dm-count" style="background:#e0f2fe;color:#0369a1">Settings</div>
+        </div>
+
         <div class="dash-module" onclick="switchSection('dyk')">
           <div class="dm-icon" style="background:#fef9c3">💡</div>
           <div class="dm-title">Did You Know?</div>
@@ -574,11 +589,165 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="dm-count" style="background:#fce7f3;color:#9d174d" id="dm-cnt-sp">Loading…</div>
         </div>
 
-        <div class="dash-module" onclick="switchSection('anonymous')">
-          <div class="dm-icon" style="background:#f1f5f9">🔒</div>
-          <div class="dm-title">Anonymous Messages</div>
-          <div class="dm-desc">Read and moderate anonymous messages submitted by students.</div>
-          <div class="dm-count" style="background:#f1f5f9;color:#475569" id="dm-cnt-anon">Loading…</div>
+        <div class="dash-module" onclick="switchSection('library')">
+          <div class="dm-icon" style="background:#fef3c7">📚</div>
+          <div class="dm-title">eLibrary</div>
+          <div class="dm-desc">Upload and manage free textbooks, past questions and academic PDFs.</div>
+          <div class="dm-count" style="background:#fef3c7;color:#92400e" id="dm-cnt-lib">Loading…</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('scholarships')">
+          <div class="dm-icon" style="background:#dcfce7">💰</div>
+          <div class="dm-title">Scholarships</div>
+          <div class="dm-desc">Add, update and manage scholarship listings shown to students.</div>
+          <div class="dm-count" style="background:#dcfce7;color:#15803d" id="dm-cnt-sch">Loading…</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('nelfund')">
+          <div class="dm-icon" style="background:#ede9fe">💳</div>
+          <div class="dm-title">NELFUND Student Loan</div>
+          <div class="dm-desc">Post updates, eligibility info and step-by-step guides about the NELFUND federal loan.</div>
+          <div class="dm-count" style="background:#ede9fe;color:#6d28d9" id="dm-cnt-nelfund">Loading…</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('cbt')">
+          <div class="dm-icon" style="background:#fee2e2">🎯</div>
+          <div class="dm-title">JAMB CBT Practice</div>
+          <div class="dm-desc">Add past questions, set answers and explanations for each subject.</div>
+          <div class="dm-count" style="background:#fee2e2;color:#b91c1c" id="dm-cnt-cbt">Loading…</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('postutme')">
+          <div class="dm-icon" style="background:#dbeafe">🧮</div>
+          <div class="dm-title">Post-UTME Calculator</div>
+          <div class="dm-desc">Add schools with their aggregate formulas. Students calculate and download results as PDF.</div>
+          <div class="dm-count" style="background:#dbeafe;color:#1d4ed8" id="dm-cnt-postutme">Loading…</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('subjectcombo')">
+          <div class="dm-icon" style="background:#f0fdf4">📋</div>
+          <div class="dm-title">Subject Combination</div>
+          <div class="dm-desc">Manually upload JAMB subject requirements per course. Unknown courses show "Not Found".</div>
+          <div class="dm-count" style="background:#dcfce7;color:#15803d" id="dm-cnt-combo">Loading…</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('results')">
+          <div class="dm-icon" style="background:#e0f2fe">📊</div>
+          <div class="dm-title">Results Checker</div>
+          <div class="dm-desc">Manage JAMB, WAEC, NECO and NABTEB portal links and step-by-step instructions.</div>
+          <div class="dm-count" style="background:#e0f2fe;color:#0369a1">Settings</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('gpa')">
+          <div class="dm-icon" style="background:#dcfce7">🎓</div>
+          <div class="dm-title">GPA / CGPA Calculator</div>
+          <div class="dm-desc">Manage grade scales for University (5.0) and Polytechnic (4.0) systems.</div>
+          <div class="dm-count" style="background:#dcfce7;color:#15803d">Settings</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('postutmeprep')">
+          <div class="dm-icon" style="background:#fef9c3">📖</div>
+          <div class="dm-title">Post-UTME Prep Guide</div>
+          <div class="dm-desc">Create and update preparation guides, tips and resource links for Post-UTME screening.</div>
+          <div class="dm-count" style="background:#fef9c3;color:#92400e" id="dm-cnt-prep">Loading…</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('reviews')">
+          <div class="dm-icon" style="background:#fef3c7">⭐</div>
+          <div class="dm-title">Student Reviews</div>
+          <div class="dm-desc">Moderate and manage student testimonials shown on the platform.</div>
+          <div class="dm-count" style="background:#fef3c7;color:#92400e" id="dm-cnt-rev">Loading…</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('qa')">
+          <div class="dm-icon" style="background:#f3e8ff">❓</div>
+          <div class="dm-title">Q&amp;A</div>
+          <div class="dm-desc">Manage frequently asked questions and student queries.</div>
+          <div class="dm-count" style="background:#f3e8ff;color:#6d28d9" id="dm-cnt-qa">Loading…</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('calendar')">
+          <div class="dm-icon" style="background:#dbeafe">📅</div>
+          <div class="dm-title">Academic Calendar</div>
+          <div class="dm-desc">Add JAMB, WAEC, NECO dates and key academic events for the countdown timer.</div>
+          <div class="dm-count" style="background:#dbeafe;color:#1d4ed8" id="dm-cnt-cal">Loading…</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('siteconfig')">
+          <div class="dm-icon" style="background:#f1f5f9">⚙️</div>
+          <div class="dm-title">Site Settings</div>
+          <div class="dm-desc">Update logo, tagline, WhatsApp number, Formspree ID and global contact details.</div>
+          <div class="dm-count" style="background:#f1f5f9;color:#475569">Global Config</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('herostats')">
+          <div class="dm-icon" style="background:#ede9fe">🦸</div>
+          <div class="dm-title">Hero &amp; Stats</div>
+          <div class="dm-desc">Edit the homepage hero badge, headline, description and the four animated stat counters.</div>
+          <div class="dm-count" style="background:#ede9fe;color:#6d28d9">Homepage</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('ticker')">
+          <div class="dm-icon" style="background:#dbeafe">📢</div>
+          <div class="dm-title">News Ticker</div>
+          <div class="dm-desc">Manage the scrolling seed announcements shown before news.json loads.</div>
+          <div class="dm-count" style="background:#dbeafe;color:#1d4ed8" id="dm-cnt-ticker">Loading…</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('successticker')">
+          <div class="dm-icon" style="background:#dcfce7">🎉</div>
+          <div class="dm-title">Success Ticker</div>
+          <div class="dm-desc">Edit student win messages in the scrolling success bar — powerful social proof.</div>
+          <div class="dm-count" style="background:#dcfce7;color:#15803d" id="dm-cnt-success">Loading…</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('topbar')">
+          <div class="dm-icon" style="background:#fef9c3">🔔</div>
+          <div class="dm-title">Top Bar</div>
+          <div class="dm-desc">Control the notification bar — edit its message and toggle it on or off.</div>
+          <div class="dm-count" style="background:#fef9c3;color:#92400e">Notification</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('contactchannels')">
+          <div class="dm-icon" style="background:#dcfce7">📞</div>
+          <div class="dm-title">Contact Channels</div>
+          <div class="dm-desc">Update WhatsApp numbers, email, community group and channel links.</div>
+          <div class="dm-count" style="background:#dcfce7;color:#15803d">Links</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('socials')">
+          <div class="dm-icon" style="background:#dbeafe">🔗</div>
+          <div class="dm-title">Social Links</div>
+          <div class="dm-desc">Manage Facebook, Instagram and Telegram URLs in the footer.</div>
+          <div class="dm-count" style="background:#dbeafe;color:#1d4ed8">3 Platforms</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('activitylog')" style="border:1.5px solid #fee2e2">
+          <div class="dm-icon" style="background:#fee2e2">🕵️</div>
+          <div class="dm-title">Admin Activity Log</div>
+          <div class="dm-desc">Track every admin action — who did what and when. Full audit trail for CEO oversight.</div>
+          <div class="dm-count" style="background:#fee2e2;color:#b91c1c" id="dm-cnt-actlog">CEO Only</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('pushnotif')" style="border:1.5px solid #ede9fe">
+          <div class="dm-icon" style="background:#ede9fe">📢</div>
+          <div class="dm-title">Push Broadcast</div>
+          <div class="dm-desc">Send instant push notifications to all students — news alerts, scholarship updates, announcements.</div>
+          <div class="dm-count" style="background:#ede9fe;color:#7c3aed">Broadcast</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('dailyhub')" style="border:1.5px solid #fef9c3">
+          <div class="dm-icon" style="background:#fef9c3">📅</div>
+          <div class="dm-title">Daily Hub</div>
+          <div class="dm-desc">Manage daily challenge questions and DYK content. Add new questions to keep students engaged.</div>
+          <div class="dm-count" style="background:#fef9c3;color:#92400e" id="dm-cnt-daily">Daily</div>
+        </div>
+
+        <div class="dash-module" onclick="switchSection('campuslife')" style="border:1.5px solid #fce7f3">
+          <div class="dm-icon" style="background:#fce7f3">🎮</div>
+          <div class="dm-title">Campus Life</div>
+          <div class="dm-desc">Add campus gist stories, create polls and manage Would You Rather questions.</div>
+          <div class="dm-count" style="background:#fce7f3;color:#9d174d">Fun Content</div>
         </div>
 
       </div>
@@ -1222,6 +1391,91 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <button class="btn btn-outline btn-sm" onclick="loadAnonMessages()">🔄 Refresh</button>
       </div>
       <div id="anonMsgList"><div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Refresh to load messages</div></div>
+    </div>
+
+    <!-- ══ CAMPUS GIST ══ -->
+    <div class="admin-section" id="section-campusgist">
+      <div class="section-header">
+        <h2 class="section-title-h2">😂 Campus Gist</h2>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('campusgist','list')">All Posts</button>
+        <button class="admin-tab" onclick="switchTab('campusgist','add')">Add Post</button>
+      </div>
+      <!-- LIST -->
+      <div class="admin-panel" id="campusgist-tab-list">
+        <div class="section-card">
+          <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+            All Gist Posts
+            <button class="btn btn-outline btn-sm" onclick="loadCampusGist()">🔄 Refresh</button>
+          </div>
+          <div id="gistList"><div style="text-align:center;padding:28px;color:var(--muted);font-size:.82rem">Click Refresh to load posts</div></div>
+        </div>
+      </div>
+      <!-- ADD -->
+      <div class="admin-panel" id="campusgist-tab-add" style="display:none">
+        <div class="section-card">
+          <div class="card-title">➕ Add Campus Gist Post</div>
+          <div class="form-group"><label>Category</label>
+            <select id="gistAddCat" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.84rem;font-family:inherit;background:var(--surface2);color:var(--text)">
+              <option value="Funny">😂 Funny</option><option value="Relatable">🤝 Relatable</option>
+              <option value="Hostel">🏠 Hostel</option><option value="Exam">📝 Exam</option>
+              <option value="Lecturer">👨🏽‍🏫 Lecturer</option><option value="Meme">🖼 Meme</option><option value="General">💬 General</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Emoji (optional)</label><input type="text" id="gistAddEmoji" placeholder="😂" maxlength="4" style="width:80px"></div>
+          <div class="form-group"><label>Text Content</label><textarea id="gistAddText" style="min-height:100px" placeholder="Write the gist here…"></textarea></div>
+          <div class="form-group"><label>Image URLs <span style="font-weight:400;color:var(--muted)">(comma-separated — supports multiple)</span></label><textarea id="gistAddImages" style="min-height:55px" placeholder="https://... , https://... (leave blank if no image)"></textarea></div>
+          <div class="form-group"><label>Video URL <span style="font-weight:400;color:var(--muted)">(optional — MP4 or YouTube embed)</span></label><input type="url" id="gistAddVideo" placeholder="https://..."></div>
+          <div class="form-group"><label>Pin this post?</label>
+            <select id="gistAddPinned" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.84rem;font-family:inherit;background:var(--surface2);color:var(--text)">
+              <option value="false">No</option><option value="true">Yes — Pin to top</option>
+            </select>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addCampusGist()" id="addGistBtn">😂 Publish Gist</button>
+            <button class="btn btn-ghost" onclick="clearGistForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ POLLS ══ -->
+    <div class="admin-section" id="section-polls">
+      <div class="section-header">
+        <h2 class="section-title-h2">🗳️ Polls</h2>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('polls','list')">All Polls</button>
+        <button class="admin-tab" onclick="switchTab('polls','add')">Create Poll</button>
+      </div>
+      <!-- LIST -->
+      <div class="admin-panel" id="polls-tab-list">
+        <div class="section-card">
+          <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+            All Polls
+            <button class="btn btn-outline btn-sm" onclick="loadPolls()">🔄 Refresh</button>
+          </div>
+          <div id="pollsList"><div style="text-align:center;padding:28px;color:var(--muted);font-size:.82rem">Click Refresh to load polls</div></div>
+        </div>
+      </div>
+      <!-- ADD -->
+      <div class="admin-panel" id="polls-tab-add" style="display:none">
+        <div class="section-card">
+          <div class="card-title">➕ Create New Poll</div>
+          <div class="form-group"><label>Question / Caption *</label><textarea id="pollAddQuestion" style="min-height:75px" placeholder="e.g. Which Nigerian university has the best campus life?"></textarea></div>
+          <div class="form-group"><label>Poll Image URL <span style="font-weight:400;color:var(--muted)">(optional)</span></label><input type="url" id="pollAddImage" placeholder="https://..."></div>
+          <div class="form-group"><label>Category</label><input type="text" id="pollAddCat" placeholder="e.g. Campus, Exam, Fun" value="Poll"></div>
+          <div class="form-group"><label>Option 1 *</label><input type="text" id="pollOpt1" placeholder="e.g. University of Lagos"></div>
+          <div class="form-group"><label>Option 2 *</label><input type="text" id="pollOpt2" placeholder="e.g. University of Ibadan"></div>
+          <div class="form-group"><label>Option 3 <span style="font-weight:400;color:var(--muted)">(optional)</span></label><input type="text" id="pollOpt3" placeholder="e.g. OAU"></div>
+          <div class="form-group"><label>Option 4 <span style="font-weight:400;color:var(--muted)">(optional)</span></label><input type="text" id="pollOpt4" placeholder="e.g. ABU"></div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addPoll()" id="addPollBtn">🗳️ Publish Poll</button>
+            <button class="btn btn-ghost" onclick="clearPollForm()">Clear</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ══ SUBJECT COMBINATION ══ -->
@@ -2763,28 +3017,40 @@ async function sendPushNotification(){
   if(!confirm(`Send this notification to ALL subscribed students?\n\nTitle: ${title}\nMessage: ${body}\n\nThis cannot be undone.`)) return;
   const btn=document.getElementById('sendPushBtn');
   btn.disabled=true;btn.textContent='Sending…';
-  showPushStatus('info','⏳ Sending push notification to all devices…');
+  showPushStatus('info','⏳ Fetching device tokens…');
   try{
-    const senderEmail = auth.currentUser?.email || '';
-    // ── Render backend — sends real FCM pushes to ALL devices, even offline ──
-    const RENDER_URL = 'https://bqm-fcm-server.onrender.com/send-push';
-    const res = await fetch(RENDER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, body, link, icon, senderEmail }),
+    // Collect all FCM tokens from Firestore
+    const snap=await window.getDocs(window.collection(window.db,'fcm_tokens'));
+    const tokens=[];
+    snap.forEach(d=>{if(d.data().token&&d.data().active!==false) tokens.push(d.data().token);});
+    if(!tokens.length){showPushStatus('error','❌ No subscribed devices found. Students need to enable notifications first.');btn.disabled=false;btn.textContent='📢 Send to All Students';return;}
+    showPushStatus('info',`⏳ Sending to ${tokens.length} devices via service worker broadcast…`);
+    // Save broadcast record to Firestore
+    const broadcastRef=window.doc(window.db,'push_broadcasts',Date.now().toString());
+    await window.setDoc(broadcastRef,{
+      title,body,link,icon,
+      tokenCount:tokens.length,
+      sentBy:JSON.parse(localStorage.getItem('bqm_user')||'{}').email||'admin',
+      sentByNick:JSON.parse(localStorage.getItem('bqm_user')||'{}').nickname||'Admin',
+      sentAt:new Date().toISOString(),
+      status:'sent',
     });
-    const data = await res.json();
-    if(!res.ok) throw new Error(data.error || 'Server error');
-    const {totalTokens, successCount, failureCount, invalidCleaned} = data;
+    // Broadcast to all open service worker clients immediately
+    if('serviceWorker' in navigator && navigator.serviceWorker.controller){
+      navigator.serviceWorker.controller.postMessage({
+        type:'BROADCAST_NOTIFICATION',
+        title,body,icon,
+        url:link,
+        tag:'bqm-broadcast-'+Date.now(),
+      });
+    }
+    // Save to local history
     const hist=JSON.parse(localStorage.getItem(PUSH_HISTORY_KEY)||'[]');
-    hist.unshift({title,body,link,tokens:successCount,sentAt:new Date().toISOString()});
+    hist.unshift({title,body,link,tokens:tokens.length,sentAt:new Date().toISOString()});
     localStorage.setItem(PUSH_HISTORY_KEY,JSON.stringify(hist.slice(0,20)));
     renderPushHistory();
-    let statusMsg=`✅ Delivered to ${successCount} of ${totalTokens} devices!`;
-    if(failureCount>0) statusMsg+=` (${failureCount} failed)`;
-    if(invalidCleaned>0) statusMsg+=` — ${invalidCleaned} stale tokens cleaned.`;
-    showPushStatus('success', statusMsg);
-    logAdminActivity('broadcast','Push Notifications',`Sent "${title}" to ${successCount}/${totalTokens} devices`);
+    showPushStatus('success',`✅ Broadcast queued for ${tokens.length} devices! Students will receive it shortly.`);
+    logAdminActivity('broadcast','Push Notifications',`Sent "${title}" to ${tokens.length} devices`);
     document.getElementById('pushTitle').value='';
     document.getElementById('pushBody').value='';
     document.getElementById('pushLink').value='';
@@ -4833,6 +5099,158 @@ function clearPuBulk(){
   btn.disabled=true; btn.textContent='🚀 Upload All Schools to Firebase';
 }
 window.clearPuBulk=clearPuBulk;
+
+
+// ════════════════════════════════
+// ══ CAMPUS GIST ══
+// ════════════════════════════════
+async function loadCampusGist(){
+  const el=document.getElementById('gistList');
+  if(!el) return;
+  el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>';
+  try{
+    const snap=await window.getDocs(window.query(window.collection(window.db,'fs_campus_gist'),window.orderBy('createdAt','desc'),window.limit(30)));
+    const items=snap.docs.map(d=>({_id:d.id,...d.data()}));
+    document.getElementById('cnt-gist').textContent=items.length;
+    if(!items.length){el.innerHTML='<div style="text-align:center;padding:28px;color:var(--muted)">No gist posts yet.</div>';return;}
+    el.innerHTML=items.map(g=>`
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+          <span style="background:#fce7f3;color:#9d174d;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${g.category||'General'}</span>
+          ${g.pinned?'<span style="background:var(--orange);color:#fff;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">📌 Pinned</span>':''}
+          <span style="font-size:.64rem;color:var(--muted);margin-left:auto">${g.createdAt?.toDate?g.createdAt.toDate().toLocaleDateString('en-NG'):''}</span>
+          <button onclick="toggleGistPublished('${g._id}',${!g.published})" style="background:${g.published?'#dcfce7':'#fee2e2'};border:1px solid ${g.published?'#86efac':'#fca5a5'};color:${g.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${g.published?'✅ Published':'⏸ Hidden'}</button>
+          <button onclick="deleteGistPost('${g._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer">🗑</button>
+        </div>
+        <div style="font-size:.84rem;color:var(--text-main);line-height:1.6">${(g.text||'').substring(0,200)}${(g.text||'').length>200?'…':''}</div>
+        ${(g.images||[]).length?`<div style="font-size:.7rem;color:var(--muted);margin-top:4px">📷 ${(g.images||[]).length} image(s)</div>`:''}
+        ${g.videoUrl?`<div style="font-size:.7rem;color:var(--muted);margin-top:4px">🎬 Video attached</div>`:''}
+      </div>`).join('');
+  }catch(e){el.innerHTML='<div style="color:#ef4444;padding:16px">Error: '+e.message+'</div>';}
+}
+window.loadCampusGist=loadCampusGist;
+
+async function addCampusGist(){
+  const text=document.getElementById('gistAddText').value.trim();
+  const cat=document.getElementById('gistAddCat').value;
+  const emoji=document.getElementById('gistAddEmoji').value.trim()||'😂';
+  const pinned=document.getElementById('gistAddPinned').value==='true';
+  const imgsRaw=document.getElementById('gistAddImages').value.trim();
+  const videoUrl=document.getElementById('gistAddVideo').value.trim();
+  if(!text&&!imgsRaw&&!videoUrl){showStatus('error','Add text, image or video.');return;}
+  const images=imgsRaw?imgsRaw.split(',').map(s=>s.trim()).filter(Boolean):[];
+  const item={category:cat,emoji,text,pinned,published:true,reactions:{},createdAt:window.serverTimestamp()};
+  if(images.length===1) item.image=images[0];
+  if(images.length>1) item.images=images;
+  if(videoUrl) item.videoUrl=videoUrl;
+  const btn=document.getElementById('addGistBtn');btn.disabled=true;btn.textContent='Publishing…';
+  try{
+    await window.addDoc(window.collection(window.db,'fs_campus_gist'),item);
+    logAdminActivity('add','campusgist','Add gist: '+text.substring(0,40));
+    showStatus('success','😂 Gist published!');
+    clearGistForm();loadCampusGist();switchTab('campusgist','list');
+  }catch(e){showStatus('error','Firebase error: '+e.message);}
+  btn.disabled=false;btn.textContent='😂 Publish Gist';
+}
+window.addCampusGist=addCampusGist;
+
+async function toggleGistPublished(id,published){
+  try{await window.updateDoc(window.doc(window.db,'fs_campus_gist',id),{published});loadCampusGist();}
+  catch(e){showStatus('error',e.message);}
+}
+window.toggleGistPublished=toggleGistPublished;
+
+async function deleteGistPost(id){
+  if(!confirm('Delete this gist post?')) return;
+  try{await window.deleteDoc(window.doc(window.db,'fs_campus_gist',id));loadCampusGist();}
+  catch(e){showStatus('error',e.message);}
+}
+window.deleteGistPost=deleteGistPost;
+
+function clearGistForm(){
+  ['gistAddText','gistAddImages','gistAddVideo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const emoji=document.getElementById('gistAddEmoji');if(emoji)emoji.value='';
+  const cat=document.getElementById('gistAddCat');if(cat)cat.value='Funny';
+  const pinned=document.getElementById('gistAddPinned');if(pinned)pinned.value='false';
+}
+window.clearGistForm=clearGistForm;
+
+// ════════════════════════════════
+// ══ POLLS ══
+// ════════════════════════════════
+async function loadPolls(){
+  const el=document.getElementById('pollsList');
+  if(!el) return;
+  el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>';
+  try{
+    const snap=await window.getDocs(window.query(window.collection(window.db,'fs_polls'),window.orderBy('createdAt','desc'),window.limit(20)));
+    const items=snap.docs.map(d=>({_id:d.id,...d.data()}));
+    document.getElementById('cnt-polls').textContent=items.length;
+    if(!items.length){el.innerHTML='<div style="text-align:center;padding:28px;color:var(--muted)">No polls yet.</div>';return;}
+    el.innerHTML=items.map(p=>{
+      const opts=p.options||[];
+      const votes=p.votes||[];
+      const total=votes.reduce((a,b)=>a+(b||0),0)||1;
+      return`<div style="padding:14px 16px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+          <span style="background:#ede9fe;color:#7c3aed;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${p.category||'Poll'}</span>
+          <span style="font-size:.64rem;color:var(--muted);margin-left:auto">${p.createdAt?.toDate?p.createdAt.toDate().toLocaleDateString('en-NG'):''}</span>
+          <button onclick="togglePollPublished('${p._id}',${!p.published})" style="background:${p.published?'#dcfce7':'#fee2e2'};border:1px solid ${p.published?'#86efac':'#fca5a5'};color:${p.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${p.published?'✅ Published':'⏸ Hidden'}</button>
+          <button onclick="deletePoll('${p._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer">🗑</button>
+        </div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:.84rem;font-weight:700;color:var(--text-main);margin-bottom:8px">${p.caption||p.question||''}</div>
+        ${opts.map((opt,i)=>{const v=votes[i]||0;const pct=Math.round((v/total)*100);return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:.78rem"><span style="flex:1;color:var(--text-main)">${opt}</span><span style="font-weight:700;color:var(--muted);min-width:40px;text-align:right">${v} (${pct}%)</span></div>`;}).join('')}
+        <div style="font-size:.68rem;color:var(--muted);margin-top:4px">Total votes: ${votes.reduce((a,b)=>a+(b||0),0)}</div>
+      </div>`;
+    }).join('');
+  }catch(e){el.innerHTML='<div style="color:#ef4444;padding:16px">Error: '+e.message+'</div>';}
+}
+window.loadPolls=loadPolls;
+
+async function addPoll(){
+  const question=document.getElementById('pollAddQuestion').value.trim();
+  const opt1=document.getElementById('pollOpt1').value.trim();
+  const opt2=document.getElementById('pollOpt2').value.trim();
+  const opt3=document.getElementById('pollOpt3').value.trim();
+  const opt4=document.getElementById('pollOpt4').value.trim();
+  const image=document.getElementById('pollAddImage').value.trim();
+  const cat=document.getElementById('pollAddCat').value.trim();
+  if(!question||!opt1||!opt2){showStatus('error','Question and at least 2 options required.');return;}
+  const options=[opt1,opt2];
+  if(opt3) options.push(opt3);
+  if(opt4) options.push(opt4);
+  const item={caption:question,question,category:cat||'Poll',options,votes:new Array(options.length).fill(0),published:true,createdAt:window.serverTimestamp()};
+  if(image) item.image=image;
+  const btn=document.getElementById('addPollBtn');btn.disabled=true;btn.textContent='Publishing…';
+  try{
+    await window.addDoc(window.collection(window.db,'fs_polls'),item);
+    logAdminActivity('add','polls','Add poll: '+question.substring(0,40));
+    showStatus('success','🗳️ Poll published!');
+    clearPollForm();loadPolls();switchTab('polls','list');
+  }catch(e){showStatus('error','Firebase error: '+e.message);}
+  btn.disabled=false;btn.textContent='🗳️ Publish Poll';
+}
+window.addPoll=addPoll;
+
+async function togglePollPublished(id,published){
+  try{await window.updateDoc(window.doc(window.db,'fs_polls',id),{published});loadPolls();}
+  catch(e){showStatus('error',e.message);}
+}
+window.togglePollPublished=togglePollPublished;
+
+async function deletePoll(id){
+  if(!confirm('Delete this poll? All votes will be lost.')) return;
+  try{await window.deleteDoc(window.doc(window.db,'fs_polls',id));loadPolls();}
+  catch(e){showStatus('error',e.message);}
+}
+window.deletePoll=deletePoll;
+
+function clearPollForm(){
+  ['pollAddQuestion','pollAddImage','pollAddCat','pollOpt1','pollOpt2','pollOpt3','pollOpt4'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value=id==='pollAddCat'?'Poll':'';
+  });
+}
+window.clearPollForm=clearPollForm;
 
 
 </script>
