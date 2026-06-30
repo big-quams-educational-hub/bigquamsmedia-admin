@@ -419,6 +419,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <button class="tab-btn" onclick="switchTab('gist',this)" style="border-color:#ec4899;color:#9d174d">😂 Campus Gist</button>
       <button class="tab-btn" onclick="switchTab('polls',this)" style="border-color:#7c3aed;color:#5b21b6">🗳️ Polls</button>
       <button class="tab-btn" onclick="switchTab('dailyhub',this)" style="border-color:#f59e0b;color:#92400e">📅 Daily Hub</button>
+      <button class="tab-btn" onclick="switchTab('pushnotif',this)" style="border-color:#dc2626;color:#991b1b">🔔 Push Notifications</button>
     </div>
 
     <!-- ── TAB: FULL LOG ── -->
@@ -1250,6 +1251,64 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
           <button class="btn-primary-sm" onclick="saveDailyQuote()">💾 Save Daily Quote</button>
         </div>
       </div>
+    </div>
+
+    <!-- ══ PUSH NOTIFICATIONS TAB ══ -->
+    <div class="tab-panel" id="tab-pushnotif">
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">🔔 Send Push Notification</div></div>
+        <div style="padding:16px">
+          <div id="pnServerStatus" style="background:rgba(100,116,139,.08);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:.78rem;color:var(--text-muted);display:flex;align-items:center;gap:8px">
+            <span id="pnServerDot" style="width:8px;height:8px;border-radius:50%;background:#94a3b8;flex-shrink:0"></span>
+            <span id="pnServerText">Checking server status…</span>
+          </div>
+
+          <div style="margin-bottom:12px">
+            <label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Title *</label>
+            <input class="log-search" type="text" id="pnTitle" placeholder="e.g. 🎓 JAMB 2026 Results Are Out!" style="width:100%" maxlength="65">
+          </div>
+          <div style="margin-bottom:12px">
+            <label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Message *</label>
+            <textarea id="pnMessage" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:75px" placeholder="Short notification body…" maxlength="180"></textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div>
+              <label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Link (optional)</label>
+              <input class="log-search" type="text" id="pnLink" placeholder="e.g. /newsroom.html or full URL" style="width:100%">
+            </div>
+            <div>
+              <label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Icon URL (optional)</label>
+              <input class="log-search" type="url" id="pnIcon" placeholder="Defaults to BQM logo" style="width:100%">
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border-radius:10px;padding:12px 14px;margin-bottom:16px">
+            <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);margin-bottom:4px">PREVIEW</div>
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <img src="https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png" style="width:32px;height:32px;border-radius:6px;flex-shrink:0">
+              <div style="min-width:0">
+                <div id="pnPreviewTitle" style="font-weight:800;font-size:.82rem;color:var(--text)">Notification title</div>
+                <div id="pnPreviewBody" style="font-size:.76rem;color:var(--text-muted);margin-top:2px">Notification message will appear here…</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-primary-sm" onclick="sendPushNotification()" id="pnSendBtn" style="width:100%;background:linear-gradient(135deg,#dc2626,#991b1b)">🚀 Send to All Subscribers</button>
+          <div id="pnResult" style="display:none;margin-top:12px;padding:12px 14px;border-radius:10px;font-size:.82rem"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📜 Broadcast History</div>
+          <button class="btn-sm" onclick="loadBroadcastHistory()">🔄 Refresh</button>
+        </div>
+        <div id="broadcastHistoryList" style="padding:0 16px 16px">
+          <div style="text-align:center;padding:28px;color:var(--muted);font-size:.82rem">Click Refresh to load history</div>
+        </div>
+      </div>
+
     </div>
 
   </main>
@@ -2854,7 +2913,195 @@ window.switchTab=function(name,btn){
   else if(name==='gist') ceoLoadGist();
   else if(name==='polls') ceoLoadPolls();
   else if(name==='dailyhub') loadDailyQuote();
+  else if(name==='pushnotif'){checkPushServerStatus();loadBroadcastHistory();}
 };
+
+// ════════════════════════════════
+// ══ PUSH NOTIFICATIONS ══
+// ════════════════════════════════
+const FCM_SERVER='https://bqm-fcm-server.onrender.com';
+
+// Live preview as admin types
+document.addEventListener('input',(e)=>{
+  if(e.target&&e.target.id==='pnTitle'){
+    const el=document.getElementById('pnPreviewTitle');
+    if(el) el.textContent=e.target.value.trim()||'Notification title';
+  }
+  if(e.target&&e.target.id==='pnMessage'){
+    const el=document.getElementById('pnPreviewBody');
+    if(el) el.textContent=e.target.value.trim()||'Notification message will appear here…';
+  }
+});
+
+async function checkPushServerStatus(){
+  const dot=document.getElementById('pnServerDot');
+  const text=document.getElementById('pnServerText');
+  if(!dot||!text) return;
+  dot.style.background='#94a3b8';
+  text.textContent='Checking server status… (Render free tier may take 30–60s to wake up)';
+  try{
+    const ctrl=new AbortController();
+    const timeout=setTimeout(()=>ctrl.abort(),45000);
+    const res=await fetch(FCM_SERVER+'/',{signal:ctrl.signal});
+    clearTimeout(timeout);
+    if(res.ok){
+      dot.style.background='#16a34a';
+      text.textContent='✅ FCM server is online and ready';
+    }else{
+      dot.style.background='#f59e0b';
+      text.textContent='⚠️ Server responded but with an error';
+    }
+  }catch(e){
+    dot.style.background='#dc2626';
+    text.textContent='❌ Server unreachable — it may be waking up (Render free tier sleeps after inactivity). Try sending anyway; the first request wakes it up.';
+  }
+}
+window.checkPushServerStatus=checkPushServerStatus;
+
+async function getAllActiveTokens(){
+  const snap=await window._getDocs(window._query(window._collection(window._db,'fcm_tokens')));
+  const tokens=[];
+  snap.forEach(doc=>{
+    const d=doc.data();
+    if(d.active!==false&&d.token) tokens.push(d.token);
+  });
+  return tokens;
+}
+
+async function sendPushNotification(){
+  const title=document.getElementById('pnTitle').value.trim();
+  const message=document.getElementById('pnMessage').value.trim();
+  const link=document.getElementById('pnLink').value.trim();
+  const icon=document.getElementById('pnIcon').value.trim();
+  const btn=document.getElementById('pnSendBtn');
+  const resultEl=document.getElementById('pnResult');
+
+  if(!title||!message){
+    showCEOStatus('error','Title and Message are required.');
+    return;
+  }
+
+  btn.disabled=true;
+  btn.textContent='📡 Fetching subscriber tokens…';
+  resultEl.style.display='none';
+
+  try{
+    const tokens=await getAllActiveTokens();
+    if(!tokens.length){
+      showCEOStatus('error','No subscribed devices found. Nobody has enabled notifications yet.');
+      btn.disabled=false;btn.textContent='🚀 Send to All Subscribers';
+      return;
+    }
+
+    btn.textContent=`📤 Sending to ${tokens.length} device(s)…`;
+
+    let fullLink=link;
+    if(link&&!link.startsWith('http')) fullLink='https://bigquamsmedia.com.ng/'+link.replace(/^\//,'');
+
+    const payload={title,message,tokens};
+    if(fullLink) payload.link=fullLink;
+    if(icon) payload.icon=icon;
+
+    const res=await fetch(FCM_SERVER+'/send',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const data=await res.json();
+
+    if(res.ok&&data.success){
+      resultEl.style.display='block';
+      resultEl.style.background='#dcfce7';
+      resultEl.style.border='1.5px solid #86efac';
+      resultEl.style.color='#15803d';
+      resultEl.innerHTML=`✅ <strong>Sent successfully!</strong><br>Delivered: ${data.sent} · Failed: ${data.failed} · Total: ${data.total}`;
+      showCEOStatus('success',`🚀 Notification sent to ${data.sent} device(s)!`);
+
+      // Save to broadcast history
+      await window._addDoc(window._collection(window._db,'push_broadcasts'),{
+        title,body:message,link:fullLink||'',icon:icon||'',
+        sent:data.sent,failed:data.failed,total:data.total,
+        sentAt:window._serverTimestamp()
+      });
+
+      // Clean up invalid/expired tokens
+      if(data.invalidTokens&&data.invalidTokens.length){
+        cleanupInvalidTokens(data.invalidTokens);
+      }
+
+      // Reset form
+      document.getElementById('pnTitle').value='';
+      document.getElementById('pnMessage').value='';
+      document.getElementById('pnLink').value='';
+      document.getElementById('pnIcon').value='';
+      document.getElementById('pnPreviewTitle').textContent='Notification title';
+      document.getElementById('pnPreviewBody').textContent='Notification message will appear here…';
+      loadBroadcastHistory();
+    }else{
+      resultEl.style.display='block';
+      resultEl.style.background='#fee2e2';
+      resultEl.style.border='1.5px solid #fca5a5';
+      resultEl.style.color='#b91c1c';
+      resultEl.innerHTML=`❌ <strong>Send failed:</strong> ${data.error||'Unknown error'}`;
+      showCEOStatus('error','Send failed: '+(data.error||'Unknown error'));
+    }
+  }catch(e){
+    resultEl.style.display='block';
+    resultEl.style.background='#fee2e2';
+    resultEl.style.border='1.5px solid #fca5a5';
+    resultEl.style.color='#b91c1c';
+    resultEl.innerHTML=`❌ <strong>Connection error:</strong> ${e.message}<br><span style="font-size:.74rem">The Render server may be asleep — wait 30-60s and try again.</span>`;
+    showCEOStatus('error','Connection error: '+e.message);
+  }
+
+  btn.disabled=false;
+  btn.textContent='🚀 Send to All Subscribers';
+}
+window.sendPushNotification=sendPushNotification;
+
+async function cleanupInvalidTokens(tokens){
+  for(const t of tokens){
+    try{await window._updateDoc(window._doc(window._db,'fcm_tokens',t),{active:false});}catch(e){}
+  }
+}
+
+async function loadBroadcastHistory(){
+  const el=document.getElementById('broadcastHistoryList');
+  if(!el) return;
+  el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>';
+  try{
+    const snap=await window._getDocs(window._query(window._collection(window._db,'push_broadcasts'),window._orderBy('sentAt','desc'),window._limit(30)));
+    const items=snap.docs.map(d=>({_id:d.id,...d.data()}));
+    if(!items.length){el.innerHTML='<div style="text-align:center;padding:28px;color:var(--muted);font-size:.82rem">No broadcasts sent yet.</div>';return;}
+    el.innerHTML=items.map(b=>`
+      <div style="padding:14px 0;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px">
+          <div style="min-width:0;flex:1">
+            <div style="font-weight:800;font-size:.86rem;color:var(--text)">${b.title||''}</div>
+            <div style="font-size:.78rem;color:var(--muted);margin-top:2px">${b.body||''}</div>
+          </div>
+          <button onclick="deleteBroadcast('${b._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:4px 9px;border-radius:7px;font-size:.7rem;cursor:pointer;flex-shrink:0">🗑</button>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:.68rem;color:var(--muted)">
+          <span>📤 Sent: ${b.sent??'—'}</span>
+          <span>❌ Failed: ${b.failed??'—'}</span>
+          <span>📱 Total: ${b.total??'—'}</span>
+          <span style="margin-left:auto">${b.sentAt?.toDate?b.sentAt.toDate().toLocaleString('en-NG'):''}</span>
+        </div>
+        ${b.link?`<a href="${b.link}" target="_blank" style="font-size:.7rem;color:var(--blue,#1a3fa8);font-weight:700;margin-top:4px;display:inline-block">🔗 ${b.link}</a>`:''}
+      </div>`).join('');
+  }catch(e){el.innerHTML='<div style="color:#ef4444;padding:16px">Error: '+e.message+'</div>';}
+}
+window.loadBroadcastHistory=loadBroadcastHistory;
+
+async function deleteBroadcast(id){
+  if(!confirm('Delete this broadcast record? (This only removes the history entry, not the already-sent notification.)')) return;
+  try{
+    await window._deleteDoc(window._doc(window._db,'push_broadcasts',id));
+    loadBroadcastHistory();
+  }catch(e){showCEOStatus('error',e.message);}
+}
+window.deleteBroadcast=deleteBroadcast;
 </script>
 </body>
 </html>
