@@ -418,6 +418,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <button class="tab-btn" onclick="switchTab('commlinks',this)" style="border-color:#10b981;color:#065f46">🔗 Community Links</button>
       <button class="tab-btn" onclick="switchTab('gist',this)" style="border-color:#ec4899;color:#9d174d">😂 Campus Gist</button>
       <button class="tab-btn" onclick="switchTab('polls',this)" style="border-color:#7c3aed;color:#5b21b6">🗳️ Polls</button>
+      <button class="tab-btn" onclick="switchTab('dailyhub',this)" style="border-color:#f59e0b;color:#92400e">📅 Daily Hub</button>
     </div>
 
     <!-- ── TAB: FULL LOG ── -->
@@ -1217,6 +1218,40 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       </div>
     </div>
 
+
+    <!-- ══ DAILY HUB TAB ══ -->
+    <div class="tab-panel" id="tab-dailyhub">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📅 Daily Hub Management</div></div>
+        <div style="padding:16px">
+          <div style="background:rgba(245,158,11,.08);border:1.5px solid rgba(245,158,11,.2);border-radius:10px;padding:14px;margin-bottom:16px;font-size:.82rem;line-height:1.6;color:var(--text)">
+            The Daily Hub page currently uses static content (daily challenges, motivational quotes, prayer corner). To manage dynamic content, use the sections below.
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div style="background:var(--surface2);border-radius:10px;padding:16px;text-align:center">
+              <div style="font-size:1.8rem;margin-bottom:6px">📅</div>
+              <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:.82rem;color:var(--text);margin-bottom:4px">Daily Challenge</div>
+              <div style="font-size:.72rem;color:var(--muted)">Managed via DYK section</div>
+              <button onclick="switchTab('dyk',document.querySelector('[onclick*=dyk]'))" style="margin-top:10px;background:var(--blue);color:#fff;border:none;padding:7px 14px;border-radius:7px;font-size:.74rem;font-weight:700;cursor:pointer;width:100%">Go to DYK →</button>
+            </div>
+            <div style="background:var(--surface2);border-radius:10px;padding:16px;text-align:center">
+              <div style="font-size:1.8rem;margin-bottom:6px">📢</div>
+              <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:.82rem;color:var(--text);margin-bottom:4px">Daily Announcement</div>
+              <div style="font-size:.72rem;color:var(--muted)">Push via News Ticker</div>
+              <button onclick="switchTab('siteconfig',document.querySelector('[onclick*=siteconfig]'))" style="margin-top:10px;background:var(--blue);color:#fff;border:none;padding:7px 14px;border-radius:7px;font-size:.74rem;font-weight:700;cursor:pointer;width:100%">Go to Ticker →</button>
+            </div>
+          </div>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Daily Motivational Quote</label>
+            <textarea id="dailyQuote" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:75px" placeholder="e.g. Success is not final, failure is not fatal..."></textarea>
+          </div>
+          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Quote Author</label>
+            <input class="log-search" type="text" id="dailyQuoteAuthor" placeholder="e.g. Winston Churchill" style="width:100%">
+          </div>
+          <button class="btn-primary-sm" onclick="saveDailyQuote()">💾 Save Daily Quote</button>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -1390,6 +1425,30 @@ async function ceoDeletePoll(id){
   catch(e){showCEOStatus('error',e.message);}
 }
 window.ceoDeletePoll=ceoDeletePoll;
+
+// ── DAILY HUB ──
+async function loadDailyQuote(){
+  try{
+    const doc=await window._db.collection('site_config').doc('daily').get();
+    if(doc.exists){
+      const d=doc.data();
+      if(d.quote) document.getElementById('dailyQuote').value=d.quote;
+      if(d.author) document.getElementById('dailyQuoteAuthor').value=d.author;
+    }
+  }catch(e){}
+}
+window.loadDailyQuote=loadDailyQuote;
+
+async function saveDailyQuote(){
+  const quote=document.getElementById('dailyQuote').value.trim();
+  const author=document.getElementById('dailyQuoteAuthor').value.trim();
+  if(!quote){showCEOStatus('error','Quote cannot be empty.');return;}
+  try{
+    await window._db.collection('site_config').doc('daily').set({quote,author,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    showCEOStatus('success','✅ Daily quote saved!');
+  }catch(e){showCEOStatus('error','Error: '+e.message);}
+}
+window.saveDailyQuote=saveDailyQuote;
 
 </script>
 
@@ -2794,6 +2853,7 @@ window.switchTab=function(name,btn){
   else if(name==='commlinks') loadCommLinks();
   else if(name==='gist') ceoLoadGist();
   else if(name==='polls') ceoLoadPolls();
+  else if(name==='dailyhub') loadDailyQuote();
 };
 </script>
 </body>
