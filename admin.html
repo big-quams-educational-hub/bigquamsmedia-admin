@@ -390,7 +390,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- ══════════════ LOGIN ══════════════ -->
 <div id="loginScreen">
   <div class="login-card">
-    <div class="login-logo"><img src="https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png" alt="BQM Logo"></div>
+    <div class="login-logo"><img src="https://bigquamsmedia.com.ng/logo.png" alt="BQM Logo"></div>
     <h2>BIG QUAMS MEDIA®</h2>
     <p class="login-sub">Admin Panel — Authorised Team Members Only<br><span style="color:#dc2626;font-weight:700">🔒 Restricted Access</span></p>
 
@@ -1876,7 +1876,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="form-group"><label>Site Name</label><input type="text" id="sc_sitename" value="Big Quams Media®"></div>
           <div class="form-group"><label>Site Tagline</label><input type="text" id="sc_tagline" value="Your Admission Success Starts Here"></div>
         </div>
-        <div class="form-group"><label>Site Logo URL</label><input type="url" id="sc_logo" value="https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png"></div>
+        <div class="form-group"><label>Site Logo URL</label><input type="url" id="sc_logo" value="https://bigquamsmedia.com.ng/logo.png"></div>
         <div class="form-row">
           <div class="form-group"><label>Primary WhatsApp Number</label><input type="text" id="sc_waNumber" value="2349049871643"><div class="form-hint">Country code + number, no + or spaces</div></div>
           <div class="form-group"><label>WhatsApp Message Link</label><input type="url" id="sc_waLink" value="https://wa.me/2349049871643"></div>
@@ -2159,14 +2159,14 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         </div>
         <div class="form-group">
           <label>Notification Icon (optional URL)</label>
-          <input type="url" id="pushIcon" placeholder="https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png" value="https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png">
+          <input type="url" id="pushIcon" placeholder="https://bigquamsmedia.com.ng/logo.png" value="https://bigquamsmedia.com.ng/logo.png">
         </div>
 
         <!-- Preview -->
         <div style="background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px">
           <div style="font-size:.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">📱 Preview</div>
           <div style="display:flex;align-items:flex-start;gap:10px">
-            <img id="pushPreviewIcon" src="https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png" style="width:36px;height:36px;border-radius:8px;flex-shrink:0;object-fit:cover">
+            <img id="pushPreviewIcon" src="https://bigquamsmedia.com.ng/logo.png" style="width:36px;height:36px;border-radius:8px;flex-shrink:0;object-fit:cover">
             <div>
               <div style="font-size:.82rem;font-weight:700;color:var(--text)" id="pushPreviewTitle">Notification Title</div>
               <div style="font-size:.74rem;color:var(--muted);margin-top:2px;line-height:1.4" id="pushPreviewBody">Your message will appear here…</div>
@@ -3012,7 +3012,7 @@ async function sendPushNotification(){
   const title=document.getElementById('pushTitle').value.trim();
   const body=document.getElementById('pushBody').value.trim();
   const link=document.getElementById('pushLink').value.trim()||'https://bigquamsmedia.com.ng/';
-  const icon=document.getElementById('pushIcon').value.trim()||'https://bigquamsmedia.com.ng/file_000000000370724698997662ddbee6b5.png';
+  const icon=document.getElementById('pushIcon').value.trim()||'https://bigquamsmedia.com.ng/logo.png';
   if(!title||!body){showPushStatus('error','❌ Title and message body are required.');return;}
   if(!confirm(`Send this notification to ALL subscribed students?\n\nTitle: ${title}\nMessage: ${body}\n\nThis cannot be undone.`)) return;
   const btn=document.getElementById('sendPushBtn');
