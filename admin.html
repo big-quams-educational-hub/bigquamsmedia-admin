@@ -3725,7 +3725,7 @@ async function deleteNews(idx){
   const item=newsData[idx];
   if(!confirm('Delete "'+item.title+'"? This cannot be undone.')) return;
   try{
-    if(item._id) await window.deleteDoc(window.doc(window.db,'news',item._id));
+    if(item._id) await window.deleteDoc(window.doc(window.db,'fs_news',item._id));
     logAdminActivity('delete','news','Delete: '+item.title);
     await loadNewsFromFirebase();
     showStatus('success','🗑 Article deleted.');
