@@ -2927,7 +2927,7 @@ async function enterAdminPanel(){
   const badge=document.getElementById('topBadge');
   if(badge) badge.textContent=(isCEO?'👑 Quams':resolvedNickname)+' · '+(isCEO?'CEO':'Admin');
   const authorField=document.getElementById('addAuthor');
-  if(authorField) authorField.value=isCEO?'BIG QUAMS MEDIA':resolvedNickname;
+  if(authorField) authorField.value=isCEO?'Big Quams Media®':resolvedNickname;
   init();
 }
 window.enterAdminPanel=enterAdminPanel;
@@ -3568,7 +3568,7 @@ function renderNews(){
     const pin=!!item.pinned;
     const url=articleUrl(item);
     const previewText=(item.fullContent||'').replace(/<[^>]*>/g,'').slice(0,140);
-    const previewImg=item.image||'https://bigquamsmedia.com.ng/1001736174.png';
+    const previewImg=item.image||'https://bigquamsmedia.com.ng/logo.png';
     return`<div class="news-item${pin?' pinned':''}">
       ${pin?'<div class="pin-badge">📌 PINNED</div>':''}
       ${item.image?`<img src="${item.image}" style="width:100%;max-height:80px;object-fit:cover;border-radius:6px;margin-bottom:6px;" alt="">`:''}
@@ -3577,7 +3577,7 @@ function renderNews(){
         <div class="item-meta"><span class="item-cat">${item.category||'News'}</span> ${item.date||''} ${item.author?'· ✍️ <strong>'+item.author+'</strong>':''}</div>
         <div class="item-preview">${previewText}…</div>
         <div style="margin:6px 0;padding:8px 10px;background:var(--light);border-radius:8px;border:1px solid var(--border);display:flex;gap:8px;align-items:center;">
-          <img src="${previewImg}" style="width:36px;height:36px;border-radius:4px;object-fit:cover;flex-shrink:0;" onerror="this.src='https://bigquamsmedia.com.ng/1001736174.png'">
+          <img src="${previewImg}" style="width:36px;height:36px;border-radius:4px;object-fit:cover;flex-shrink:0;" onerror="this.src='https://bigquamsmedia.com.ng/logo.png'">
           <div style="overflow:hidden;">
             <div style="font-size:0.7rem;color:var(--muted);font-weight:600;">🔗 ARTICLE LINK</div>
             <div style="font-size:0.72rem;color:#2563eb;word-break:break-all;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${url}</div>
@@ -3680,8 +3680,12 @@ async function addNews(){
   const image=document.getElementById('addImageB64').value;
   const fullContent=document.getElementById('addFullContent').value.trim();
   const pinned=document.getElementById('addPinned').value==='true';
-  let author='BIG QUAMS MEDIA';
-  try{const u=JSON.parse(localStorage.getItem('bqm_user')||'{}');author=u.isCEO?'BIG QUAMS MEDIA':(u.nickname||u.name||'BIG QUAMS MEDIA');}catch(e){}
+  let author='Big Quams Media®';
+  try{
+    const authorInput=document.getElementById('addAuthor');
+    if(authorInput&&authorInput.value.trim()) author=authorInput.value.trim();
+    else{const u=JSON.parse(localStorage.getItem('bqm_user')||'{}');author=u.nickname||u.name||u.email?.split('@')[0]||'Big Quams Media®';}
+  }catch(e){}
   if(!title||!category||!fullContent){showStatus('error','Fill in Title, Category and Content.');return;}
   if(pinned&&newsData.filter(n=>n.pinned).length>=3){showStatus('error','Max 3 pinned articles. Unpin one first.');return;}
   const slug=makeSlug(title);
@@ -3723,13 +3727,20 @@ window.togglePin=togglePin;
 
 async function deleteNews(idx){
   const item=newsData[idx];
+  if(!item){showStatus('error','Article not found. Please refresh.');return;}
   if(!confirm('Delete "'+item.title+'"? This cannot be undone.')) return;
+  const docId=item._id||item.id;
+  if(!docId){showStatus('error','Cannot delete — article has no document ID.');return;}
   try{
-    if(item._id) await window.deleteDoc(window.doc(window.db,'fs_news',item._id));
+    await window.deleteDoc(window.doc(window.db,'fs_news',docId));
     logAdminActivity('delete','news','Delete: '+item.title);
-    await loadNewsFromFirebase();
+    newsData.splice(idx,1);
+    renderNews();
     showStatus('success','🗑 Article deleted.');
-  }catch(e){showStatus('error','Firebase error: '+e.message);}
+  }catch(e){
+    console.error('Delete news error:',e.code,e.message);
+    showStatus('error','Delete failed: '+e.message);
+  }
 }
 window.deleteNews=deleteNews;
 
