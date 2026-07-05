@@ -384,6 +384,7 @@ body.dark .nelfund-highlight{background:linear-gradient(135deg,#0c1a3a,#1e3a5f);
 body.dark .nelfund-highlight h4{color:#93c5fd}
 .nelfund-highlight p{font-size:0.8rem;color:var(--muted);line-height:1.6}
 </style>
+<meta property="og:image" content="https://bigquamsmedia.com.ng/bigquamsmedia-admin/admin.png">
 </head>
 <body>
 
@@ -514,6 +515,10 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <button class="section-tab" onclick="switchSection('anonymous')">
         <span class="nav-icon">🔒</span><span class="nav-label">Anonymous Msgs</span>
         <span class="nav-count" id="cnt-anon">—</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('users')">
+        <span class="nav-icon">👥</span><span class="nav-label">Users</span>
+        <span class="nav-count" id="cnt-users">—</span>
       </button>
       <button class="section-tab" onclick="switchSection('campusgist')">
         <span class="nav-icon">😂</span><span class="nav-label">Campus Gist</span>
@@ -1391,6 +1396,18 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <button class="btn btn-outline btn-sm" onclick="loadAnonMessages()">🔄 Refresh</button>
       </div>
       <div id="anonMsgList"><div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Refresh to load messages</div></div>
+    </div>
+
+    <!-- ══ USERS ══ -->
+    <div class="admin-section" id="section-users">
+      <div class="section-header">
+        <h2 class="section-title-h2">👥 Registered Users</h2>
+        <button class="btn btn-outline btn-sm" onclick="loadUsers()">🔄 Refresh</button>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="userSearch" placeholder="Search by name or email…" oninput="filterUsers()" class="log-search" style="width:100%">
+      </div>
+      <div id="usersList"><div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Refresh to load users</div></div>
     </div>
 
     <!-- ══ CAMPUS GIST ══ -->
@@ -5263,6 +5280,52 @@ function clearPollForm(){
 }
 window.clearPollForm=clearPollForm;
 
+
+// ════════════════════════════════
+// ══ USERS MANAGEMENT ══
+// ════════════════════════════════
+let allUsersData=[];
+async function loadUsers(){
+  const el=document.getElementById('usersList');
+  if(!el) return;
+  el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>';
+  try{
+    const snap=await window.getDocs(window.query(window.collection(window.db,'cbt_users'),window.limit(200)));
+    allUsersData=snap.docs.map(d=>({_id:d.id,...d.data()}));
+    document.getElementById('cnt-users').textContent=allUsersData.length;
+    renderUsers(allUsersData);
+  }catch(e){el.innerHTML='<div style="color:#ef4444;padding:16px">Error: '+e.message+'</div>';}
+}
+window.loadUsers=loadUsers;
+
+function filterUsers(){
+  const q=(document.getElementById('userSearch').value||'').toLowerCase();
+  const filtered=q?allUsersData.filter(u=>(u.displayName||u.nickname||'').toLowerCase().includes(q)||(u.email||'').toLowerCase().includes(q)):allUsersData;
+  renderUsers(filtered);
+}
+window.filterUsers=filterUsers;
+
+function renderUsers(users){
+  const el=document.getElementById('usersList');
+  if(!users.length){el.innerHTML='<div style="text-align:center;padding:28px;color:var(--muted)">No users found.</div>';return;}
+  el.innerHTML=`<div style="font-size:.72rem;color:var(--muted);padding:8px 16px;margin-bottom:4px">${users.length} user(s)</div>`+users.map(u=>{
+    const name=u.displayName||u.nickname||'—';
+    const initials=(name[0]||'?').toUpperCase();
+    const joined=u.joinDate?new Date(u.joinDate).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'}):'—';
+    return`<div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+      <div style="width:36px;height:36px;border-radius:50%;background:hsl(${name.charCodeAt(0)*13%360},55%,35%);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.82rem;color:#fff;flex-shrink:0">${initials}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.84rem;color:var(--text-main)">${name} ${u.gender?`<span style="font-size:.62rem;color:var(--muted)">(${u.gender})</span>`:''}</div>
+        <div style="font-size:.7rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.email||'—'}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;font-size:.68rem;color:var(--muted)">
+        <div>🪙 ${u.coinsBalance||0} coins</div>
+        <div>🔥 ${u.dailyStreak||u.streak||0} streak</div>
+        <div style="margin-top:2px">${joined}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
 
 </script>
 </body>
