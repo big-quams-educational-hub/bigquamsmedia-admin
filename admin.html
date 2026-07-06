@@ -657,26 +657,11 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="dm-count" style="background:#fef9c3;color:#92400e" id="dm-cnt-prep">Loading…</div>
         </div>
 
-        <div class="dash-module" onclick="switchSection('reviews')">
-          <div class="dm-icon" style="background:#fef3c7">⭐</div>
-          <div class="dm-title">Student Reviews</div>
-          <div class="dm-desc">Moderate and manage student testimonials shown on the platform.</div>
-          <div class="dm-count" style="background:#fef3c7;color:#92400e" id="dm-cnt-rev">Loading…</div>
-        </div>
+        
 
-        <div class="dash-module" onclick="switchSection('qa')">
-          <div class="dm-icon" style="background:#f3e8ff">❓</div>
-          <div class="dm-title">Q&amp;A</div>
-          <div class="dm-desc">Manage frequently asked questions and student queries.</div>
-          <div class="dm-count" style="background:#f3e8ff;color:#6d28d9" id="dm-cnt-qa">Loading…</div>
-        </div>
+        
 
-        <div class="dash-module" onclick="switchSection('calendar')">
-          <div class="dm-icon" style="background:#dbeafe">📅</div>
-          <div class="dm-title">Academic Calendar</div>
-          <div class="dm-desc">Add JAMB, WAEC, NECO dates and key academic events for the countdown timer.</div>
-          <div class="dm-count" style="background:#dbeafe;color:#1d4ed8" id="dm-cnt-cal">Loading…</div>
-        </div>
+        
 
         <div class="dash-module" onclick="switchSection('siteconfig')">
           <div class="dm-icon" style="background:#f1f5f9">⚙️</div>
@@ -1766,152 +1751,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       </div>
     </div>
 
-    <!-- ══ REVIEWS ══ -->
-    <div class="admin-section" id="section-reviews">
-      <div class="section-header">
-        <h2 class="section-title-h2">⭐ Student Reviews</h2>
-        <button class="btn btn-success btn-sm" onclick="switchTab('rev','add')">+ Add Review</button>
-      </div>
-      <div class="admin-tabs">
-        <button class="admin-tab active" onclick="switchTab('rev','list')">All Reviews</button>
-        <button class="admin-tab" onclick="switchTab('rev','add')">Add Review</button>
-      </div>
-      <div class="admin-panel active" id="rev-tab-list">
-        <div class="section-card">
-          <div class="card-title">⭐ All Student Reviews</div>
-          <div id="reviewsList"><div class="sk-grid"><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div><div class="sk-card"><div class="sk-row"><div class="skeleton sk-avatar"></div><div style="flex:1"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w30"></div></div></div></div></div></div>
-        </div>
-      </div>
-      <div class="admin-panel" id="rev-tab-add">
-        <div class="section-card">
-          <div class="card-title">➕ Add Review</div>
-          <div class="form-row">
-            <div class="form-group"><label>Student Name *</label><input type="text" id="rAddName" placeholder="e.g. Fatima Abubakar"></div>
-            <div class="form-group"><label>Location</label><input type="text" id="rAddLocation" placeholder="e.g. Abuja, FCT"></div>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>Star Rating *</label>
-              <select id="rAddStars"><option value="5">★★★★★ (5 stars)</option><option value="4">★★★★☆ (4 stars)</option><option value="3">★★★☆☆ (3 stars)</option></select>
-            </div>
-            <div class="form-group"><label>Date</label><input type="text" id="rAddDate"></div>
-          </div>
-          <div class="form-group"><label>Review Message *</label><textarea id="rAddMessage" style="min-height:90px;" placeholder="Student's testimonial…"></textarea></div>
-          <div class="btn-row">
-            <button class="btn btn-success" onclick="addReview()" id="addRevBtn">⭐ Add Review</button>
-            <button class="btn btn-ghost" onclick="clearRevForm()">Clear</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ Q&A ══ -->
-    <div class="admin-section" id="section-qa">
-      <div class="section-header">
-        <h2 class="section-title-h2">❓ Q&amp;A</h2>
-        <button class="btn btn-success btn-sm" onclick="switchTab('qa','add')">+ Add Q&amp;A</button>
-      </div>
-      <div class="admin-tabs">
-        <button class="admin-tab active" onclick="switchTab('qa','list')">All Q&amp;As</button>
-        <button class="admin-tab" onclick="switchTab('qa','add')">Add Q&amp;A</button>
-      </div>
-      <div class="admin-panel active" id="qa-tab-list">
-        <div class="section-card">
-          <div class="card-title">❓ All Q&amp;As</div>
-          <div id="qaList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div><div class="sk-card"><div class="skeleton sk-line sk-w90"></div><div class="skeleton sk-line sk-w50"></div></div></div></div>
-        </div>
-      </div>
-      <div class="admin-panel" id="qa-tab-add">
-        <div class="section-card">
-          <div class="card-title">➕ Add Q&amp;A</div>
-          <div class="form-group"><label>Question *</label><input type="text" id="qaAddQ" placeholder="e.g. Can I use JAMB result for 5 years?"></div>
-          <div class="form-group"><label>Answer *</label><textarea id="qaAddA" placeholder="Detailed answer…"></textarea></div>
-          <div class="form-row">
-            <div class="form-group"><label>Category</label>
-              <select id="qaAddCat"><option>JAMB</option><option>Post-UTME</option><option>Admission</option><option>eLibrary</option><option>Scholarship</option><option>Student Loan</option><option>General</option></select>
-            </div>
-          </div>
-          <div class="btn-row">
-            <button class="btn btn-success" onclick="addQA()" id="addQABtn">❓ Add Q&amp;A</button>
-            <button class="btn btn-ghost" onclick="clearQAForm()">Clear</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ CALENDAR ══ -->
-    <div class="admin-section" id="section-calendar">
-      <div class="section-header">
-        <h2 class="section-title-h2">📅 Academic Calendar</h2>
-        <button class="btn btn-success btn-sm" onclick="switchTab('cal','add')">+ Add Event</button>
-      </div>
-      <div class="admin-tabs">
-        <button class="admin-tab active" onclick="switchTab('cal','list')">All Events</button>
-        <button class="admin-tab" onclick="switchTab('cal','add')">Add Event</button>
-      </div>
-      <div class="admin-panel active" id="cal-tab-list">
-        <div class="section-card">
-          <div class="card-title">📅 Upcoming Events</div>
-          <div id="calList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
-        </div>
-      </div>
-      <div class="admin-panel" id="cal-tab-add">
-        <div class="section-card">
-          <div class="card-title">➕ Add Calendar Event</div>
-          <div class="form-row">
-            <div class="form-group"><label>Event Title *</label><input type="text" id="calAddTitle" placeholder="e.g. JAMB UTME 2027 Registration Opens"></div>
-            <div class="form-group"><label>Date *</label><input type="date" id="calAddDate"></div>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>Category</label>
-              <select id="calAddCat"><option>JAMB</option><option>WAEC</option><option>NECO</option><option>Post-UTME</option><option>Admission</option><option>School Resumption</option><option>Scholarship</option><option>General</option></select>
-            </div>
-            <div class="form-group"><label>Colour</label>
-              <select id="calAddColor">
-                <option value="#1a3fa8">Blue (JAMB)</option><option value="#dc2626">Red (Deadline)</option>
-                <option value="#16a34a">Green (Admission)</option><option value="#f59e0b">Yellow (Notice)</option>
-                <option value="#7c3aed">Purple (Scholarship)</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group"><label>Description</label><textarea id="calAddDesc" style="min-height:70px;" placeholder="Brief event description…"></textarea></div>
-          <div class="btn-row">
-            <button class="btn btn-success" onclick="addCalEvent()" id="addCalBtn">📅 Add Event</button>
-            <button class="btn btn-ghost" onclick="clearCalForm()">Clear</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- SITE SETTINGS -->
-    <div class="admin-section" id="section-siteconfig">
-      <div class="section-header"><h2 class="section-title-h2">⚙️ Site Settings</h2></div>
-      <div class="section-card">
-        <div class="card-title">🌐 Global Site Identity</div>
-        <div class="nelfund-highlight"><h4>ℹ️ How Site Settings work</h4><p>These values are used across all pages. Save to <strong>site-config.json</strong> — pages that load config dynamically will pick up changes instantly.</p></div>
-        <div class="form-row">
-          <div class="form-group"><label>Site Name</label><input type="text" id="sc_sitename" value="Big Quams Media®"></div>
-          <div class="form-group"><label>Site Tagline</label><input type="text" id="sc_tagline" value="Your Admission Success Starts Here"></div>
-        </div>
-        <div class="form-group"><label>Site Logo URL</label><input type="url" id="sc_logo" value="https://bigquamsmedia.com.ng/logo.png"></div>
-        <div class="form-row">
-          <div class="form-group"><label>Primary WhatsApp Number</label><input type="text" id="sc_waNumber" value="2349049871643"><div class="form-hint">Country code + number, no + or spaces</div></div>
-          <div class="form-group"><label>WhatsApp Message Link</label><input type="url" id="sc_waLink" value="https://wa.me/2349049871643"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Email Address</label><input type="email" id="sc_email" value="bigquamsmedia@gmail.com"></div>
-          <div class="form-group"><label>Formspree Form ID</label><input type="text" id="sc_formspree" value="mqegznag"><div class="form-hint">From formspree.io — used in the contact form</div></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Site Base URL</label><input type="url" id="sc_baseUrl" value="https://bigquamsmedia.com.ng"></div>
-          <div class="form-group"><label>Founded Year</label><input type="text" id="sc_year" value="2023"></div>
-        </div>
-        <div class="form-group"><label>SEO Meta Description</label><textarea id="sc_metaDesc" style="min-height:70px;">Big Quams Media® — Nigeria's #1 free student platform. JAMB prep, Post-UTME calculator, scholarship finder, free eLibrary and admission guides. Trusted by 10,000+ Nigerian students.</textarea></div>
-        <div class="btn-row"><button class="btn btn-primary" onclick="saveSiteConfig()">💾 Save Site Settings</button></div>
-      </div>
-    </div>
-
-    <!-- HERO & STATS -->
+                    <!-- HERO & STATS -->
     <div class="admin-section" id="section-herostats">
       <div class="section-header"><h2 class="section-title-h2">🦸 Hero &amp; Stats Editor</h2></div>
       <div class="section-card">
@@ -1960,63 +1800,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       </div>
     </div>
 
-    <!-- NEWS TICKER -->
-    <div class="admin-section" id="section-ticker">
-      <div class="section-header"><h2 class="section-title-h2">📢 News Ticker</h2><button class="btn btn-success btn-sm" onclick="switchTab('ticker','add')">+ Add Item</button></div>
-      <div class="nelfund-highlight" style="margin-bottom:16px"><h4>ℹ️ Ticker seed items</h4><p>The scrolling ticker pulls live from news.json. These items are the <strong>fallback</strong> shown instantly on load or if the fetch fails. Keep them current.</p></div>
-      <div class="admin-tabs">
-        <button class="admin-tab active" onclick="switchTab('ticker','list')">All Items</button>
-        <button class="admin-tab" onclick="switchTab('ticker','add')">Add Item</button>
-      </div>
-      <div class="admin-panel active" id="ticker-tab-list">
-        <div class="section-card">
-          <div class="card-title">📢 Seed Ticker Items</div>
-          <div id="tickerList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
-        </div>
-      </div>
-      <div class="admin-panel" id="ticker-tab-add">
-        <div class="section-card">
-          <div class="card-title">➕ Add Ticker Item</div>
-          <div class="form-group"><label>Emoji Prefix</label><input type="text" id="tkAddEmoji" maxlength="5" value="📢"></div>
-          <div class="form-group"><label>Announcement Text *</label><input type="text" id="tkAddText" placeholder="e.g. JAMB 2027 registration opens November — get ready!"></div>
-          <div class="btn-row">
-            <button class="btn btn-success" onclick="addTickerItem()" id="addTickerBtn">📢 Add Item</button>
-            <button class="btn btn-ghost" onclick="clearTickerForm()">Clear</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SUCCESS TICKER -->
-    <div class="admin-section" id="section-successticker">
-      <div class="section-header"><h2 class="section-title-h2">🎉 Success Ticker</h2><button class="btn btn-success btn-sm" onclick="switchTab('success','add')">+ Add Win</button></div>
-      <div class="nelfund-highlight" style="margin-bottom:16px"><h4>ℹ️ Student Win Messages</h4><p>The scrolling "🎉 Students" bar displays real student wins. These build trust and social proof. Add admissions, scholarship wins, JAMB scores and NELFUND approvals.</p></div>
-      <div class="admin-tabs">
-        <button class="admin-tab active" onclick="switchTab('success','list')">All Wins</button>
-        <button class="admin-tab" onclick="switchTab('success','add')">Add Win</button>
-      </div>
-      <div class="admin-panel active" id="success-tab-list">
-        <div class="section-card">
-          <div class="card-title">🎉 Student Win Messages</div>
-          <div id="successList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
-        </div>
-      </div>
-      <div class="admin-panel" id="success-tab-add">
-        <div class="section-card">
-          <div class="card-title">➕ Add Student Win</div>
-          <div class="form-group"><label>Win Message *</label>
-            <input type="text" id="swAddText" placeholder="e.g. Chidera O. just got admitted to UNILAG — Medicine &amp; Surgery">
-            <div class="form-hint">Keep it short and real. First name + initial only for privacy.</div>
-          </div>
-          <div class="btn-row">
-            <button class="btn btn-success" onclick="addSuccessWin()" id="addSuccessBtn">🎉 Add Win</button>
-            <button class="btn btn-ghost" onclick="clearSuccessForm()">Clear</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TOP BAR -->
+            <!-- TOP BAR -->
     <div class="admin-section" id="section-topbar">
       <div class="section-header"><h2 class="section-title-h2">🔔 Notification Top Bar</h2></div>
       <div class="section-card">
@@ -2151,35 +1935,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       </div>
     </div>
 
-    <!-- ══ PUSH NOTIFICATION BROADCAST ══ -->
-    <div class="admin-section" id="section-pushnotif">
-      <div class="section-header">
-        <h2 class="section-title-h2">📢 Push Notification Broadcast</h2>
-      </div>
-      <div class="section-card">
-        <div class="card-title">📣 Send to All Students</div>
-        <p style="font-size:.8rem;color:var(--muted);margin-bottom:16px;line-height:1.6">This will send a push notification to every student who has enabled notifications on their device. Use this for important updates only.</p>
-
-        <div class="form-group">
-          <label>Notification Title *</label>
-          <input type="text" id="pushTitle" placeholder="e.g. 🎓 New Scholarship Alert!" maxlength="65">
-          <span class="field-hint" id="pushTitleCount">0/65</span>
-        </div>
-        <div class="form-group">
-          <label>Message Body *</label>
-          <textarea id="pushBody" style="min-height:80px" placeholder="e.g. NNPC/SNEPCo scholarship is now open. Tap to view details and apply before the deadline." maxlength="200" oninput="document.getElementById('pushBodyCount').textContent=this.value.length+'/200'"></textarea>
-          <span class="field-hint" id="pushBodyCount">0/200</span>
-        </div>
-        <div class="form-group">
-          <label>Link (URL students land on when they tap)</label>
-          <input type="url" id="pushLink" placeholder="https://bigquamsmedia.com.ng/scholarship.html">
-        </div>
-        <div class="form-group">
-          <label>Notification Icon (optional URL)</label>
-          <input type="url" id="pushIcon" placeholder="https://bigquamsmedia.com.ng/logo.png" value="https://bigquamsmedia.com.ng/logo.png">
-        </div>
-
-        <!-- Preview -->
+            <!-- Preview -->
         <div style="background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px">
           <div style="font-size:.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">📱 Preview</div>
           <div style="display:flex;align-items:flex-start;gap:10px">
@@ -3496,13 +3252,15 @@ function switchSection(name){
   if(name==='activitylog') setTimeout(refreshActivityLog,100);
   if(name==='pushnotif'){setTimeout(()=>{loadTokenCount();renderPushHistory();},100);}
   if(name==='postutmecbt') setTimeout(loadPUCBTQuestions,100);
+  if(name==='anonymous') setTimeout(loadAnonMessages,100);
+  if(name==='users') setTimeout(loadUsers,100);
 }
 window.switchSection=switchSection;
 
 function switchTab(sec,tab){
   const sMap={
     news:'section-news',lib:'section-library',dyk:'section-dyk',spotlight:'section-spotlight',
-    rev:'section-reviews',qa:'section-qa',cal:'section-calendar',sch:'section-scholarships',
+    sch:'section-scholarships',
     cbt:'section-cbt',postutme:'section-postutme',combo:'section-subjectcombo',
     nelfund:'section-nelfund',prep:'section-postutmeprep',
     ticker:'section-ticker',success:'section-successticker',pucbt:'section-postutmecbt'
@@ -3634,8 +3392,13 @@ async function loadAnonMessages(){
   if(!el) return;
   el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>';
   try{
-    const snap=await window.getDocs(window.query(window.collection(window.db,'fs_anonymous_messages'),window.orderBy('createdAt','desc'),window.limit(50)));
+    const snap=await window.getDocs(window.query(window.collection(window.db,'fs_anonymous_messages'),window.limit(50)));
     const items=snap.docs.map(d=>({_id:d.id,...d.data()}));
+    items.sort((a,b)=>{
+      const at=a.createdAt?.toMillis?a.createdAt.toMillis():new Date(a.createdAt||0).getTime();
+      const bt=b.createdAt?.toMillis?b.createdAt.toMillis():new Date(b.createdAt||0).getTime();
+      return bt-at;
+    });
     document.getElementById('cnt-anon').textContent=items.length;
     if(!items.length){el.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)">No messages yet.</div>';return;}
     el.innerHTML=items.map(m=>`
