@@ -123,37 +123,39 @@ body.dark .admin-badge-name{color:#93c5fd}
 .home-btn{background:rgba(249,115,22,0.25);border:1px solid rgba(249,115,22,0.4);color:white;padding:6px 10px;border-radius:8px;font-size:0.7rem;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap;display:none}
 @media(min-width:540px){.home-btn{display:inline-flex;padding:6px 12px;font-size:0.74rem}}
 .home-btn:hover{background:rgba(249,115,22,0.45)}
+.hamburger-btn{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:white;width:38px;height:38px;min-width:38px;border-radius:8px;cursor:pointer;font-size:1.15rem;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
+.hamburger-btn:hover{background:rgba(255,255,255,0.22)}
 
 /* ─── LAYOUT ─── */
-.admin-shell{display:flex;min-height:calc(100vh - var(--topbar-h))}
+.admin-shell{display:block;min-height:calc(100vh - var(--topbar-h))}
 
-/* ─── SIDEBAR ─── */
-.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--card);border-right:1px solid var(--border);padding:10px 8px;display:flex;flex-direction:column;gap:2px;position:sticky;top:var(--topbar-h);height:calc(100vh - var(--topbar-h));overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+/* ─── SIDEBAR (off-canvas drawer, same behavior on desktop & mobile) ─── */
+.sidebar{width:min(var(--sidebar-w),82vw);flex-shrink:0;background:var(--card);border-right:1px solid var(--border);padding:8px;display:flex;flex-direction:column;gap:2px;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;z-index:500;transform:translateX(-100%);transition:transform .25s ease;box-shadow:8px 0 32px rgba(0,0,0,0.15)}
+.sidebar.open{transform:translateX(0)}
 .sidebar::-webkit-scrollbar{width:4px}
 .sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-@media(max-width:740px){
-  .admin-shell{flex-direction:column}
-  .sidebar{width:100%;height:auto;position:sticky;top:var(--topbar-h);z-index:200;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;overflow-y:visible;padding:8px 10px;gap:5px;border-right:none;border-bottom:2px solid var(--border);-webkit-overflow-scrolling:touch;scrollbar-width:none}
-  .sidebar::-webkit-scrollbar{display:none}
-}
-.nav-section-label{font-size:0.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:10px 8px 4px;display:none}
-@media(min-width:741px){.nav-section-label{display:block}}
+.sidebar-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 8px 14px;position:sticky;top:0;background:var(--card);z-index:2}
+.sidebar-header-brand{display:flex;align-items:center;gap:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.8rem;color:var(--blue-dk)}
+body.dark .sidebar-header-brand{color:#93c5fd}
+.sidebar-header-brand img{width:30px;height:30px;border-radius:50%;border:2px solid var(--orange)}
+.sidebar-close-btn{background:var(--light);border:none;color:var(--muted);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+body.dark .sidebar-close-btn{background:#0f172a;color:#94a3b8}
+.sidebar-close-btn:hover{background:#fee2e2;color:#b91c1c}
+.sidebar-backdrop{position:fixed;inset:0;background:rgba(15,23,42,0.5);z-index:499;display:none;backdrop-filter:blur(1px)}
+.sidebar-backdrop.show{display:block}
+.nav-section-label{font-size:0.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:10px 8px 4px;display:block}
 .sidebar-divider{height:1px;background:var(--border);margin:6px 4px}
-@media(max-width:740px){.sidebar-divider{display:none}.nav-section-label{display:none}}
 .section-tab{display:flex;align-items:center;gap:8px;padding:10px 10px;border-radius:10px;border:none;font-family:'Roboto',sans-serif;font-size:0.83rem;font-weight:600;cursor:pointer;color:var(--muted);background:transparent;transition:.15s;white-space:nowrap;width:100%;text-align:left;min-height:var(--touch)}
-@media(max-width:740px){.section-tab{width:auto;padding:8px 12px;font-size:0.76rem;flex-shrink:0;border-radius:20px;border:1.5px solid var(--border);min-height:36px}}
-@media(max-width:740px){.section-tab.active{border-color:var(--blue)}}
 .nav-icon{font-size:0.95rem;flex-shrink:0;width:18px;text-align:center}
-.nav-label{flex:1;line-height:1.2}
+.nav-label{flex:1;line-height:1.2;overflow:hidden;text-overflow:ellipsis}
 .nav-count{background:var(--border);color:var(--muted);font-size:0.58rem;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
-@media(max-width:740px){.nav-count{display:none}}
 .section-tab:hover:not(.active){background:var(--light);color:var(--blue)}
 .section-tab.active{background:var(--blue);color:white}
 .section-tab.active .nav-count{background:rgba(255,255,255,0.2);color:white}
 
 /* ─── MAIN CONTENT ─── */
-.admin-main{flex:1;min-width:0;padding:14px 12px 100px;max-width:1000px;width:100%}
-@media(min-width:480px){.admin-main{padding:16px 16px 100px}}
+.admin-main{flex:1;min-width:0;padding:14px 12px 50px;max-width:1000px;width:100%;margin:0 auto}
+@media(min-width:480px){.admin-main{padding:16px 16px 50px}}
 @media(min-width:741px){.admin-main{padding:22px 26px 80px}}
 
 /* ─── STATUS BAR ─── */
@@ -473,6 +475,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 
   <!-- TOPBAR -->
   <div class="topbar">
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" title="Menu" aria-label="Open navigation menu">☰</button>
     <div class="topbar-logo">
       <img src="https://i.imgur.com/lYJXUyY.jpeg" alt="Logo">
       <div><div class="topbar-brand">BIG QUAMS MEDIA®</div><span class="topbar-sub">News Admin Panel</span></div>
@@ -480,7 +483,6 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     <div class="topbar-right">
       <span class="topbar-badge" id="topBadge">Loading…</span>
       <a href="../index.html" target="_blank" class="site-link">View Site ↗</a>
-      <button class="home-btn" onclick="switchSection('dashboard')">🏠 Dashboard</button>
       <button class="dark-toggle" id="darkToggleBtn" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
       <button class="logout-btn" onclick="doLogout()">Log Out</button>
     </div>
@@ -491,18 +493,32 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     <div class="status-bar" id="statusBar"></div>
   </div>
 
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
   <div class="admin-shell">
 
     <!-- SIDEBAR -->
     <nav class="sidebar" id="adminSidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-brand">
+          <img src="https://i.imgur.com/lYJXUyY.jpeg" alt="Logo">
+          <span>BQM Admin</span>
+        </div>
+        <button class="sidebar-close-btn" onclick="closeSidebar()" title="Close menu" aria-label="Close navigation menu">✕</button>
+      </div>
+
       <button class="section-tab active" onclick="switchSection('dashboard')">
         <span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span>
       </button>
+
       <div class="sidebar-divider"></div>
       <div class="nav-section-label">Content</div>
       <button class="section-tab" onclick="switchSection('news')">
         <span class="nav-icon">📰</span><span class="nav-label">News</span>
         <span class="nav-count" id="cnt-news">—</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('newsroom')">
+        <span class="nav-icon">🗞️</span><span class="nav-label">Newsroom Settings</span>
       </button>
       <button class="section-tab" onclick="switchSection('dyk')">
         <span class="nav-icon">💡</span><span class="nav-label">Did You Know?</span>
@@ -512,13 +528,53 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <span class="nav-icon">🌟</span><span class="nav-label">Spotlight</span>
         <span class="nav-count" id="cnt-sp">—</span>
       </button>
-      <button class="section-tab" onclick="switchSection('anonymous')">
-        <span class="nav-icon">🔒</span><span class="nav-label">Anonymous Msgs</span>
-        <span class="nav-count" id="cnt-anon">—</span>
+      <button class="section-tab" onclick="switchSection('library')">
+        <span class="nav-icon">📚</span><span class="nav-label">eLibrary</span>
       </button>
-      <button class="section-tab" onclick="switchSection('users')">
-        <span class="nav-icon">👥</span><span class="nav-label">Users</span>
-        <span class="nav-count" id="cnt-users">—</span>
+      <button class="section-tab" onclick="switchSection('scholarships')">
+        <span class="nav-icon">💰</span><span class="nav-label">Scholarships</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('nelfund')">
+        <span class="nav-icon">💳</span><span class="nav-label">NELFUND Loan</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('reviews')">
+        <span class="nav-icon">⭐</span><span class="nav-label">Reviews</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('qa')">
+        <span class="nav-icon">❓</span><span class="nav-label">Q&amp;A</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('calendar')">
+        <span class="nav-icon">📅</span><span class="nav-label">Academic Calendar</span>
+      </button>
+
+      <div class="sidebar-divider"></div>
+      <div class="nav-section-label">Academic Tools</div>
+      <button class="section-tab" onclick="switchSection('cbt')">
+        <span class="nav-icon">🎯</span><span class="nav-label">JAMB CBT Practice</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('postutmecbt')">
+        <span class="nav-icon">📝</span><span class="nav-label">Post-UTME CBT</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('postutme')">
+        <span class="nav-icon">🧮</span><span class="nav-label">Post-UTME Calculator</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('postutmeprep')">
+        <span class="nav-icon">📖</span><span class="nav-label">Post-UTME Prep Guide</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('subjectcombo')">
+        <span class="nav-icon">📋</span><span class="nav-label">Subject Combination</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('results')">
+        <span class="nav-icon">📊</span><span class="nav-label">Results Checker</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('gpa')">
+        <span class="nav-icon">🎓</span><span class="nav-label">GPA / CGPA Calculator</span>
+      </button>
+
+      <div class="sidebar-divider"></div>
+      <div class="nav-section-label">Campus &amp; Community</div>
+      <button class="section-tab" onclick="switchSection('campuslife')">
+        <span class="nav-icon">🎮</span><span class="nav-label">Campus Life</span>
       </button>
       <button class="section-tab" onclick="switchSection('campusgist')">
         <span class="nav-icon">😂</span><span class="nav-label">Campus Gist</span>
@@ -527,6 +583,50 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <button class="section-tab" onclick="switchSection('polls')">
         <span class="nav-icon">🗳️</span><span class="nav-label">Polls</span>
         <span class="nav-count" id="cnt-polls">—</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('dailyhub')">
+        <span class="nav-icon">📅</span><span class="nav-label">Daily Hub</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('anonymous')">
+        <span class="nav-icon">🔒</span><span class="nav-label">Anonymous Msgs</span>
+        <span class="nav-count" id="cnt-anon">—</span>
+      </button>
+
+      <div class="sidebar-divider"></div>
+      <div class="nav-section-label">Homepage &amp; Site</div>
+      <button class="section-tab" onclick="switchSection('herostats')">
+        <span class="nav-icon">🦸</span><span class="nav-label">Hero &amp; Stats</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('topbar')">
+        <span class="nav-icon">🔔</span><span class="nav-label">Top Bar</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('contactchannels')">
+        <span class="nav-icon">📞</span><span class="nav-label">Contact Channels</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('socials')">
+        <span class="nav-icon">🔗</span><span class="nav-label">Social Links</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('ticker')">
+        <span class="nav-icon">📢</span><span class="nav-label">News Ticker</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('successticker')">
+        <span class="nav-icon">🎉</span><span class="nav-label">Success Ticker</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('siteconfig')">
+        <span class="nav-icon">⚙️</span><span class="nav-label">Site Settings</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('pushnotif')">
+        <span class="nav-icon">📱</span><span class="nav-label">Push Broadcast</span>
+      </button>
+
+      <div class="sidebar-divider"></div>
+      <div class="nav-section-label">System</div>
+      <button class="section-tab" onclick="switchSection('users')">
+        <span class="nav-icon">👥</span><span class="nav-label">Users</span>
+        <span class="nav-count" id="cnt-users">—</span>
+      </button>
+      <button class="section-tab" onclick="switchSection('activitylog')">
+        <span class="nav-icon">🕵️</span><span class="nav-label">Activity Log</span>
       </button>
     </nav>
 
@@ -538,7 +638,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="dash-welcome">
         <div class="welcome-text">
           <h2>Welcome back, Admin 👋</h2>
-          <p>Manage all content for Big Quams Media® from here.<br>Select any section below to get started.</p>
+          <p>Manage all content for Big Quams Media® from here.<br>Tap the ☰ menu to jump to any section.</p>
         </div>
         <img class="welcome-img" src="https://i.imgur.com/lYJXUyY.jpeg" alt="BQM">
       </div>
@@ -560,186 +660,6 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="stat-icon" style="background:#f3e8ff">🎯</div>
           <div><div class="stat-num" id="dash-cbt">—</div><div class="stat-lbl">CBT Questions</div></div>
         </div>
-      </div>
-
-      <div class="section-label">Content Management</div>
-      <div class="dash-grid" id="dashGrid">
-
-        <div class="dash-module" onclick="switchSection('news')" style="--accent:#1a3fa8">
-          <style>.dash-module:nth-child(1)::before{background:#1a3fa8}</style>
-          <div class="dm-icon" style="background:#dbeafe">📰</div>
-          <div class="dm-title">News &amp; Updates</div>
-          <div class="dm-desc">Publish, pin and manage news articles that appear on the newsroom and homepage preview.</div>
-          <div class="dm-count" style="background:#dbeafe;color:#1d4ed8" id="dm-cnt-news">Loading…</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('newsroom')">
-          <div class="dm-icon" style="background:#e0f2fe">🗞️</div>
-          <div class="dm-title">Newsroom</div>
-          <div class="dm-desc">Configure the newsroom page layout, featured stories and categories shown to students.</div>
-          <div class="dm-count" style="background:#e0f2fe;color:#0369a1">Settings</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('dyk')">
-          <div class="dm-icon" style="background:#fef9c3">💡</div>
-          <div class="dm-title">Did You Know?</div>
-          <div class="dm-desc">Add and manage educational fun facts that appear on the DYK page and explore hub.</div>
-          <div class="dm-count" style="background:#fef9c3;color:#92400e" id="dm-cnt-dyk">Loading…</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('spotlight')">
-          <div class="dm-icon" style="background:#fce7f3">🌟</div>
-          <div class="dm-title">Student Spotlight</div>
-          <div class="dm-desc">Feature inspiring student success stories for the Spotlight page.</div>
-          <div class="dm-count" style="background:#fce7f3;color:#9d174d" id="dm-cnt-sp">Loading…</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('library')">
-          <div class="dm-icon" style="background:#fef3c7">📚</div>
-          <div class="dm-title">eLibrary</div>
-          <div class="dm-desc">Upload and manage free textbooks, past questions and academic PDFs.</div>
-          <div class="dm-count" style="background:#fef3c7;color:#92400e" id="dm-cnt-lib">Loading…</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('scholarships')">
-          <div class="dm-icon" style="background:#dcfce7">💰</div>
-          <div class="dm-title">Scholarships</div>
-          <div class="dm-desc">Add, update and manage scholarship listings shown to students.</div>
-          <div class="dm-count" style="background:#dcfce7;color:#15803d" id="dm-cnt-sch">Loading…</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('nelfund')">
-          <div class="dm-icon" style="background:#ede9fe">💳</div>
-          <div class="dm-title">NELFUND Student Loan</div>
-          <div class="dm-desc">Post updates, eligibility info and step-by-step guides about the NELFUND federal loan.</div>
-          <div class="dm-count" style="background:#ede9fe;color:#6d28d9" id="dm-cnt-nelfund">Loading…</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('cbt')">
-          <div class="dm-icon" style="background:#fee2e2">🎯</div>
-          <div class="dm-title">JAMB CBT Practice</div>
-          <div class="dm-desc">Add past questions, set answers and explanations for each subject.</div>
-          <div class="dm-count" style="background:#fee2e2;color:#b91c1c" id="dm-cnt-cbt">Loading…</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('postutme')">
-          <div class="dm-icon" style="background:#dbeafe">🧮</div>
-          <div class="dm-title">Post-UTME Calculator</div>
-          <div class="dm-desc">Add schools with their aggregate formulas. Students calculate and download results as PDF.</div>
-          <div class="dm-count" style="background:#dbeafe;color:#1d4ed8" id="dm-cnt-postutme">Loading…</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('subjectcombo')">
-          <div class="dm-icon" style="background:#f0fdf4">📋</div>
-          <div class="dm-title">Subject Combination</div>
-          <div class="dm-desc">Manually upload JAMB subject requirements per course. Unknown courses show "Not Found".</div>
-          <div class="dm-count" style="background:#dcfce7;color:#15803d" id="dm-cnt-combo">Loading…</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('results')">
-          <div class="dm-icon" style="background:#e0f2fe">📊</div>
-          <div class="dm-title">Results Checker</div>
-          <div class="dm-desc">Manage JAMB, WAEC, NECO and NABTEB portal links and step-by-step instructions.</div>
-          <div class="dm-count" style="background:#e0f2fe;color:#0369a1">Settings</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('gpa')">
-          <div class="dm-icon" style="background:#dcfce7">🎓</div>
-          <div class="dm-title">GPA / CGPA Calculator</div>
-          <div class="dm-desc">Manage grade scales for University (5.0) and Polytechnic (4.0) systems.</div>
-          <div class="dm-count" style="background:#dcfce7;color:#15803d">Settings</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('postutmeprep')">
-          <div class="dm-icon" style="background:#fef9c3">📖</div>
-          <div class="dm-title">Post-UTME Prep Guide</div>
-          <div class="dm-desc">Create and update preparation guides, tips and resource links for Post-UTME screening.</div>
-          <div class="dm-count" style="background:#fef9c3;color:#92400e" id="dm-cnt-prep">Loading…</div>
-        </div>
-
-        
-
-        
-
-        
-
-        <div class="dash-module" onclick="switchSection('siteconfig')">
-          <div class="dm-icon" style="background:#f1f5f9">⚙️</div>
-          <div class="dm-title">Site Settings</div>
-          <div class="dm-desc">Update logo, tagline, WhatsApp number, Formspree ID and global contact details.</div>
-          <div class="dm-count" style="background:#f1f5f9;color:#475569">Global Config</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('herostats')">
-          <div class="dm-icon" style="background:#ede9fe">🦸</div>
-          <div class="dm-title">Hero &amp; Stats</div>
-          <div class="dm-desc">Edit the homepage hero badge, headline, description and the four animated stat counters.</div>
-          <div class="dm-count" style="background:#ede9fe;color:#6d28d9">Homepage</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('ticker')">
-          <div class="dm-icon" style="background:#dbeafe">📢</div>
-          <div class="dm-title">News Ticker</div>
-          <div class="dm-desc">Manage the scrolling seed announcements shown before news.json loads.</div>
-          <div class="dm-count" style="background:#dbeafe;color:#1d4ed8" id="dm-cnt-ticker">Loading…</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('successticker')">
-          <div class="dm-icon" style="background:#dcfce7">🎉</div>
-          <div class="dm-title">Success Ticker</div>
-          <div class="dm-desc">Edit student win messages in the scrolling success bar — powerful social proof.</div>
-          <div class="dm-count" style="background:#dcfce7;color:#15803d" id="dm-cnt-success">Loading…</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('topbar')">
-          <div class="dm-icon" style="background:#fef9c3">🔔</div>
-          <div class="dm-title">Top Bar</div>
-          <div class="dm-desc">Control the notification bar — edit its message and toggle it on or off.</div>
-          <div class="dm-count" style="background:#fef9c3;color:#92400e">Notification</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('contactchannels')">
-          <div class="dm-icon" style="background:#dcfce7">📞</div>
-          <div class="dm-title">Contact Channels</div>
-          <div class="dm-desc">Update WhatsApp numbers, email, community group and channel links.</div>
-          <div class="dm-count" style="background:#dcfce7;color:#15803d">Links</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('socials')">
-          <div class="dm-icon" style="background:#dbeafe">🔗</div>
-          <div class="dm-title">Social Links</div>
-          <div class="dm-desc">Manage Facebook, Instagram and Telegram URLs in the footer.</div>
-          <div class="dm-count" style="background:#dbeafe;color:#1d4ed8">3 Platforms</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('activitylog')" style="border:1.5px solid #fee2e2">
-          <div class="dm-icon" style="background:#fee2e2">🕵️</div>
-          <div class="dm-title">Admin Activity Log</div>
-          <div class="dm-desc">Track every admin action — who did what and when. Full audit trail for CEO oversight.</div>
-          <div class="dm-count" style="background:#fee2e2;color:#b91c1c" id="dm-cnt-actlog">CEO Only</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('pushnotif')" style="border:1.5px solid #ede9fe">
-          <div class="dm-icon" style="background:#ede9fe">📢</div>
-          <div class="dm-title">Push Broadcast</div>
-          <div class="dm-desc">Send instant push notifications to all students — news alerts, scholarship updates, announcements.</div>
-          <div class="dm-count" style="background:#ede9fe;color:#7c3aed">Broadcast</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('dailyhub')" style="border:1.5px solid #fef9c3">
-          <div class="dm-icon" style="background:#fef9c3">📅</div>
-          <div class="dm-title">Daily Hub</div>
-          <div class="dm-desc">Manage daily challenge questions and DYK content. Add new questions to keep students engaged.</div>
-          <div class="dm-count" style="background:#fef9c3;color:#92400e" id="dm-cnt-daily">Daily</div>
-        </div>
-
-        <div class="dash-module" onclick="switchSection('campuslife')" style="border:1.5px solid #fce7f3">
-          <div class="dm-icon" style="background:#fce7f3">🎮</div>
-          <div class="dm-title">Campus Life</div>
-          <div class="dm-desc">Add campus gist stories, create polls and manage Would You Rather questions.</div>
-          <div class="dm-count" style="background:#fce7f3;color:#9d174d">Fun Content</div>
-        </div>
-
       </div>
     </div>
 
@@ -994,25 +914,27 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <div class="section-card">
           <div class="card-title">➕ Add New Scholarship</div>
           <div class="form-row">
-            <div class="form-group"><label>Scholarship Name *</label><input type="text" id="sAddName" placeholder="e.g. MTN Foundation Scholarship"></div>
-            <div class="form-group"><label>Providing Organisation *</label><input type="text" id="sAddOrg" placeholder="e.g. MTN Nigeria Foundation"></div>
+            <div class="form-group"><label>Scholarship Name/Title *</label><input type="text" id="sAddName" placeholder="e.g. MTN Foundation Scholarship"></div>
+            <div class="form-group"><label>Organization *</label><input type="text" id="sAddOrg" placeholder="e.g. MTN Nigeria Foundation"></div>
+          </div>
+          <div class="form-group"><label>Organization Type *</label>
+            <select id="sAddType"><option value="">— Select —</option><option value="federal">Federal Government</option><option value="state">State Government</option><option value="corporate">Corporate</option><option value="international">International</option><option value="university">NGO / University-Based</option></select>
+          </div>
+          <div class="form-group"><label>Description *</label><textarea id="sAddDesc" style="min-height:80px;" placeholder="What the scholarship funds or covers…"></textarea></div>
+          <div class="form-group"><label>Eligibility *</label><textarea id="sAddEligibility" style="min-height:70px;" placeholder="Who can apply — level of study, CGPA, course, state of origin, age limit, etc."></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label>Flyer / Logo Image URL</label><input type="url" id="sAddImage" placeholder="https:// (optional)"></div>
+            <div class="form-group"><label>Link to Apply *</label><input type="url" id="sAddLink" placeholder="https://"></div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label>Type *</label>
-              <select id="sAddType"><option value="">— Select —</option><option value="federal">Federal Government</option><option value="state">State Government</option><option value="corporate">Corporate / NGO</option><option value="international">International</option><option value="university">University-Based</option></select>
+            <div class="form-group"><label>Application Deadline</label><input type="text" id="sAddDeadline" placeholder="e.g. June–August annually (optional)"></div>
+            <div class="form-group"><label>Award Amount</label><input type="text" id="sAddAmount" placeholder="e.g. ₦200,000/year (optional)"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Status</label>
+              <select id="sAddStatus"><option value="open">🟢 Open</option><option value="soon">🟡 Opening Soon</option><option value="ongoing" selected>🔵 Ongoing</option><option value="closed">🔴 Closed</option></select>
             </div>
-            <div class="form-group"><label>Status *</label>
-              <select id="sAddStatus"><option value="open">🟢 Open</option><option value="soon">🟡 Opening Soon</option><option value="ongoing">🔵 Ongoing</option><option value="closed">🔴 Closed</option></select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>Application Deadline</label><input type="text" id="sAddDeadline" placeholder="e.g. June–August annually"></div>
-            <div class="form-group"><label>Award Amount</label><input type="text" id="sAddAmount" placeholder="e.g. ₦200,000/year or Fully Funded"></div>
-          </div>
-          <div class="form-group"><label>Description *</label><textarea id="sAddDesc" style="min-height:80px;" placeholder="Brief description of eligibility, coverage and requirements…"></textarea></div>
-          <div class="form-row">
-            <div class="form-group"><label>Application Link</label><input type="url" id="sAddLink" placeholder="https://"></div>
-            <div class="form-group"><label>Icon Emoji</label><input type="text" id="sAddIcon" placeholder="e.g. 📡 🌍 🇳🇬" maxlength="8"></div>
+            <div class="form-group"><label>Icon Emoji (shown if no flyer/logo)</label><input type="text" id="sAddIcon" placeholder="e.g. 📡 🌍 🇳🇬" maxlength="8"></div>
           </div>
           <div class="form-group"><label>Mark as Featured?</label><select id="sAddFeatured"><option value="false">No</option><option value="true">Yes — show first</option></select></div>
           <div class="btn-row">
@@ -1078,6 +1000,251 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <button class="btn btn-primary" onclick="saveNelfundSettings()">💾 Save Settings</button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- ══ REVIEWS ══ -->
+    <div class="admin-section" id="section-reviews">
+      <div class="section-header">
+        <h2 class="section-title-h2">⭐ Student Reviews</h2>
+        <button class="btn btn-success btn-sm" onclick="switchTab('rev','add')">+ Add Review</button>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('rev','list')">All Reviews</button>
+        <button class="admin-tab" onclick="switchTab('rev','add')">Add Review</button>
+      </div>
+      <div class="admin-panel active" id="rev-tab-list">
+        <div class="section-card">
+          <div class="card-title">⭐ All Reviews</div>
+          <div id="reviewsList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="rev-tab-add">
+        <div class="section-card">
+          <div class="card-title">➕ Add Student Review</div>
+          <div class="form-row">
+            <div class="form-group"><label>Student Name *</label><input type="text" id="rAddName" placeholder="e.g. Amaka O."></div>
+            <div class="form-group"><label>Star Rating</label>
+              <select id="rAddStars"><option value="5">★★★★★ (5)</option><option value="4">★★★★ (4)</option><option value="3">★★★ (3)</option><option value="2">★★ (2)</option><option value="1">★ (1)</option></select>
+            </div>
+          </div>
+          <div class="form-group"><label>Review Message *</label><textarea id="rAddMessage" style="min-height:80px" placeholder="What did they say about Big Quams Media?"></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label>Location / School</label><input type="text" id="rAddLocation" placeholder="e.g. UNILAG"></div>
+            <div class="form-group"><label>Date</label><input type="text" id="rAddDate" placeholder="e.g. July 2026"></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addReview()" id="addRevBtn">⭐ Add Review</button>
+            <button class="btn btn-ghost" onclick="clearRevForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ Q&A ══ -->
+    <div class="admin-section" id="section-qa">
+      <div class="section-header">
+        <h2 class="section-title-h2">❓ Q&amp;A</h2>
+        <button class="btn btn-success btn-sm" onclick="switchTab('qa','add')">+ Add Q&amp;A</button>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('qa','list')">All Q&amp;As</button>
+        <button class="admin-tab" onclick="switchTab('qa','add')">Add Q&amp;A</button>
+      </div>
+      <div class="admin-panel active" id="qa-tab-list">
+        <div class="section-card">
+          <div class="card-title">❓ All Q&amp;As</div>
+          <div id="qaList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="qa-tab-add">
+        <div class="section-card">
+          <div class="card-title">➕ Add Question &amp; Answer</div>
+          <div class="form-group"><label>Question *</label><textarea id="qaAddQ" style="min-height:60px" placeholder="e.g. How do I check my JAMB CAPS status?"></textarea></div>
+          <div class="form-group"><label>Answer *</label><textarea id="qaAddA" style="min-height:100px" placeholder="Full answer shown to students…"></textarea></div>
+          <div class="form-group"><label>Category</label>
+            <select id="qaAddCat"><option>General</option><option>Admissions</option><option>JAMB</option><option>Post-UTME</option><option>Scholarships</option><option>NELFUND</option></select>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addQA()" id="addQABtn">❓ Add Q&amp;A</button>
+            <button class="btn btn-ghost" onclick="clearQAForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CALENDAR ══ -->
+    <div class="admin-section" id="section-calendar">
+      <div class="section-header">
+        <h2 class="section-title-h2">📅 Academic Calendar</h2>
+        <button class="btn btn-success btn-sm" onclick="switchTab('cal','add')">+ Add Event</button>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('cal','list')">All Events</button>
+        <button class="admin-tab" onclick="switchTab('cal','add')">Add Event</button>
+      </div>
+      <div class="admin-panel active" id="cal-tab-list">
+        <div class="section-card">
+          <div class="card-title">📅 Upcoming &amp; Past Events</div>
+          <div id="calList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="cal-tab-add">
+        <div class="section-card">
+          <div class="card-title">➕ Add Calendar Event</div>
+          <div class="form-row">
+            <div class="form-group"><label>Event Title *</label><input type="text" id="calAddTitle" placeholder="e.g. JAMB CAPS Opens"></div>
+            <div class="form-group"><label>Date *</label><input type="date" id="calAddDate"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Category</label>
+              <select id="calAddCat"><option>Event</option><option>JAMB</option><option>Post-UTME</option><option>WAEC/NECO</option><option>Scholarship</option><option>Screening</option></select>
+            </div>
+            <div class="form-group"><label>Color</label><input type="color" id="calAddColor" value="#1a3fa8" style="height:44px;padding:4px"></div>
+          </div>
+          <div class="form-group"><label>Description</label><textarea id="calAddDesc" style="min-height:70px" placeholder="Optional extra detail shown when expanded…"></textarea></div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addCalEvent()" id="addCalBtn">📅 Add Event</button>
+            <button class="btn btn-ghost" onclick="clearCalForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ NEWS TICKER ══ -->
+    <div class="admin-section" id="section-ticker">
+      <div class="section-header">
+        <h2 class="section-title-h2">📢 News Ticker</h2>
+        <button class="btn btn-success btn-sm" onclick="switchTab('ticker','add')">+ Add Item</button>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('ticker','list')">All Items</button>
+        <button class="admin-tab" onclick="switchTab('ticker','add')">Add Item</button>
+      </div>
+      <div class="admin-panel active" id="ticker-tab-list">
+        <div class="section-card">
+          <div class="card-title">📢 Scrolling Ticker Items</div>
+          <div id="tickerList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div></div></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="ticker-tab-add">
+        <div class="section-card">
+          <div class="card-title">➕ Add Ticker Item</div>
+          <div class="form-row">
+            <div class="form-group"><label>Emoji</label><input type="text" id="tkAddEmoji" value="📢" maxlength="8"></div>
+            <div class="form-group"><label>Type</label>
+              <select id="addTickerType"><option value="info">Info</option><option value="urgent">Urgent</option><option value="success">Success</option></select>
+            </div>
+          </div>
+          <div class="form-group"><label>Announcement Text *</label><input type="text" id="tkAddText" placeholder="e.g. JAMB 2026 UTME Results Released"></div>
+          <div class="form-group"><label>Link (optional)</label><input type="url" id="addTickerLink" placeholder="https://"></div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addTickerItem()" id="addTickerBtn">📢 Add Item</button>
+            <button class="btn btn-ghost" onclick="clearTickerForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SUCCESS TICKER ══ -->
+    <div class="admin-section" id="section-successticker">
+      <div class="section-header">
+        <h2 class="section-title-h2">🎉 Success Ticker</h2>
+        <button class="btn btn-success btn-sm" onclick="switchTab('success','add')">+ Add Win</button>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('success','list')">All Wins</button>
+        <button class="admin-tab" onclick="switchTab('success','add')">Add Win</button>
+      </div>
+      <div class="admin-panel active" id="success-tab-list">
+        <div class="section-card">
+          <div class="card-title">🎉 Student Wins</div>
+          <div id="successList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div></div></div></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="success-tab-add">
+        <div class="section-card">
+          <div class="card-title">➕ Add Student Win</div>
+          <div class="form-group"><label>Win Message *</label><input type="text" id="swAddText" placeholder="e.g. Just got admitted into UNILAG Medicine!"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Student (optional)</label><input type="text" id="addSuccessStudent" placeholder="e.g. Tolu A."></div>
+            <div class="form-group"><label>School (optional)</label><input type="text" id="addSuccessSchool" placeholder="e.g. UNILAG"></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addSuccessWin()" id="addSuccessBtn">🎉 Add Win</button>
+            <button class="btn btn-ghost" onclick="clearSuccessForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SITE SETTINGS ══ -->
+    <div class="admin-section" id="section-siteconfig">
+      <div class="section-header">
+        <h2 class="section-title-h2">⚙️ Site Settings</h2>
+      </div>
+      <div class="section-card">
+        <div class="card-title">⚙️ Global Site Configuration</div>
+        <div class="form-row">
+          <div class="form-group"><label>Site Name</label><input type="text" id="sc_sitename" placeholder="Big Quams Media"></div>
+          <div class="form-group"><label>Tagline</label><input type="text" id="sc_tagline" placeholder="Built for Nigerian Undergraduates"></div>
+        </div>
+        <div class="form-group"><label>Logo URL</label><input type="url" id="sc_logo" placeholder="https://bigquamsmedia.com.ng/logo.png"></div>
+        <div class="form-row">
+          <div class="form-group"><label>WhatsApp Number</label><input type="text" id="sc_waNumber" placeholder="e.g. 2349049871643"></div>
+          <div class="form-group"><label>WhatsApp Link</label><input type="url" id="sc_waLink" placeholder="https://wa.me/2349049871643"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Contact Email</label><input type="email" id="sc_email" placeholder="bigquamsmedia024@gmail.com"></div>
+          <div class="form-group"><label>Formspree ID</label><input type="text" id="sc_formspree" placeholder="e.g. xyzabcd"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Base Site URL</label><input type="url" id="sc_baseUrl" placeholder="https://bigquamsmedia.com.ng"></div>
+          <div class="form-group"><label>Copyright Year</label><input type="text" id="sc_year" placeholder="2026"></div>
+        </div>
+        <div class="form-group"><label>Meta Description (SEO)</label><textarea id="sc_metaDesc" style="min-height:70px" placeholder="Shown in search engine results…"></textarea></div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveSiteConfig()">💾 Save Site Settings</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PUSH BROADCAST ══ -->
+    <div class="admin-section" id="section-pushnotif">
+      <div class="section-header">
+        <h2 class="section-title-h2">📢 Push Broadcast</h2>
+        <span style="font-size:.72rem;color:var(--muted)"><span id="tokenCount">—</span> devices <button class="btn btn-ghost btn-sm" onclick="loadTokenCount()" style="margin-left:6px">🔄 Refresh count</button></span>
+      </div>
+      <div class="section-card">
+        <div class="card-title">📢 Compose Broadcast</div>
+        <div class="form-group">
+          <label>Title * <span style="font-weight:400;color:var(--muted)" id="pushTitleCount">0/65</span></label>
+          <input type="text" id="pushTitle" maxlength="65" oninput="updatePushPreview()" placeholder="e.g. New Scholarship Alert!">
+        </div>
+        <div class="form-group">
+          <label>Message * <span style="font-weight:400;color:var(--muted)" id="pushBodyCount">0/200</span></label>
+          <textarea id="pushBody" maxlength="200" oninput="updatePushPreview()" style="min-height:80px" placeholder="Notification message body…"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Link (where tapping opens)</label><input type="url" id="pushLink" placeholder="https://bigquamsmedia.com.ng/"></div>
+          <div class="form-group"><label>Icon URL</label><input type="url" id="pushIcon" oninput="updatePushPreview()" placeholder="https://bigquamsmedia.com.ng/logo.png"></div>
+        </div>
+        <div style="background:var(--light);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;gap:10px;align-items:center;margin-bottom:14px">
+          <img id="pushPreviewIcon" src="https://i.imgur.com/lYJXUyY.jpeg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;flex-shrink:0">
+          <div style="min-width:0">
+            <div id="pushPreviewTitle" style="font-weight:800;font-size:.84rem;color:var(--text)">Notification Title</div>
+            <div id="pushPreviewBody" style="font-size:.76rem;color:var(--muted)">Your message will appear here…</div>
+          </div>
+        </div>
+        <div class="status-bar" id="pushStatus" style="display:none"></div>
+        <div class="btn-row">
+          <button class="btn btn-success" id="sendPushBtn" onclick="sendPushNotification()">📢 Send to All Students</button>
+          <button class="btn btn-ghost" onclick="clearPushForm()">Clear</button>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="card-title">📭 Broadcast History</div>
+        <div id="pushHistory"></div>
       </div>
     </div>
 
@@ -1935,43 +2102,6 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       </div>
     </div>
 
-            <!-- Preview -->
-        <div style="background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px">
-          <div style="font-size:.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">📱 Preview</div>
-          <div style="display:flex;align-items:flex-start;gap:10px">
-            <img id="pushPreviewIcon" src="https://bigquamsmedia.com.ng/logo.png" style="width:36px;height:36px;border-radius:8px;flex-shrink:0;object-fit:cover">
-            <div>
-              <div style="font-size:.82rem;font-weight:700;color:var(--text)" id="pushPreviewTitle">Notification Title</div>
-              <div style="font-size:.74rem;color:var(--muted);margin-top:2px;line-height:1.4" id="pushPreviewBody">Your message will appear here…</div>
-              <div style="font-size:.62rem;color:var(--muted);margin-top:4px">Big Quams Media® · now</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Token count -->
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-          <div style="background:#ede9fe;border-radius:8px;padding:8px 14px;font-size:.78rem;font-weight:700;color:#7c3aed">
-            📱 <span id="tokenCount">—</span> devices subscribed
-          </div>
-          <button class="btn btn-ghost btn-sm" onclick="loadTokenCount()">🔄 Refresh count</button>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn btn-success" id="sendPushBtn" onclick="sendPushNotification()">📢 Send to All Students</button>
-          <button class="btn btn-ghost" onclick="clearPushForm()">Clear</button>
-        </div>
-        <div id="pushStatus" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.8rem;font-weight:700"></div>
-
-        <!-- Send history -->
-        <div style="margin-top:24px;border-top:1px solid var(--border);padding-top:18px">
-          <div class="card-title" style="margin-bottom:12px">📋 Recent Broadcasts</div>
-          <div id="pushHistory">
-            <div class="empty"><div class="ei">📭</div><p>No broadcasts sent yet.</p></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- ══ POST-UTME CBT QUESTIONS (added to existing prep section) ══ -->
     <div class="admin-section" id="section-postutmecbt">
       <div class="section-header">
@@ -2348,24 +2478,6 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
   </div>
 </div>
 
-<!-- MOBILE BOTTOM QUICK-NAV -->
-<div id="mobileQuickNav" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:6px 8px;z-index:400;flex-direction:row;justify-content:space-around;align-items:center;box-shadow:0 -4px 16px rgba(0,0,0,0.08)">
-  <button onclick="switchSection('dashboard')" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--muted);font-size:0.6rem;font-weight:700;cursor:pointer;padding:4px 8px;border-radius:8px;min-width:48px" class="mqn-btn" data-sec="dashboard">
-    <span style="font-size:1.2rem">🏠</span>Home
-  </button>
-  <button onclick="switchSection('news')" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--muted);font-size:0.6rem;font-weight:700;cursor:pointer;padding:4px 8px;border-radius:8px;min-width:48px" class="mqn-btn" data-sec="news">
-    <span style="font-size:1.2rem">📰</span>News
-  </button>
-  <button onclick="switchSection('cbt')" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--muted);font-size:0.6rem;font-weight:700;cursor:pointer;padding:4px 8px;border-radius:8px;min-width:48px" class="mqn-btn" data-sec="cbt">
-    <span style="font-size:1.2rem">🎯</span>CBT
-  </button>
-  <button onclick="switchSection('library')" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--muted);font-size:0.6rem;font-weight:700;cursor:pointer;padding:4px 8px;border-radius:8px;min-width:48px" class="mqn-btn" data-sec="library">
-    <span style="font-size:1.2rem">📚</span>Library
-  </button>
-  <button onclick="switchSection('siteconfig')" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--muted);font-size:0.6rem;font-weight:700;cursor:pointer;padding:4px 8px;border-radius:8px;min-width:48px" class="mqn-btn" data-sec="siteconfig">
-    <span style="font-size:1.2rem">⚙️</span>Settings
-  </button>
-</div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
@@ -3232,7 +3344,28 @@ window.openModal=openModal; window.closeModal=closeModal; window.handleOverlay=h
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
 
 // ── SECTION & TAB SWITCHING ──
-const ALL_SECTIONS=['dashboard','news','newsroom','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','subjectcombo','results','gpa','postutmeprep','reviews','qa','calendar','siteconfig','herostats','ticker','successticker','topbar','contactchannels','socials','activitylog','pushnotif','postutmecbt'];
+const ALL_SECTIONS=['dashboard','news','newsroom','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','campuslife','campusgist','polls','dailyhub','anonymous','herostats','topbar','contactchannels','socials','activitylog','users','reviews','qa','calendar','ticker','successticker','siteconfig','pushnotif'];
+
+function toggleSidebar(){
+  const isOpen=document.getElementById('adminSidebar').classList.contains('open');
+  if(isOpen) closeSidebar(); else openSidebar();
+}
+function openSidebar(){
+  document.getElementById('adminSidebar').classList.add('open');
+  document.getElementById('sidebarBackdrop').classList.add('show');
+  document.getElementById('hamburgerBtn').textContent='✕';
+  document.body.style.overflow='hidden';
+}
+function closeSidebar(){
+  document.getElementById('adminSidebar').classList.remove('open');
+  document.getElementById('sidebarBackdrop').classList.remove('show');
+  document.getElementById('hamburgerBtn').textContent='☰';
+  document.body.style.overflow='';
+}
+window.toggleSidebar=toggleSidebar;
+window.openSidebar=openSidebar;
+window.closeSidebar=closeSidebar;
+
 function switchSection(name){
   ALL_SECTIONS.forEach(s=>{
     const el=document.getElementById('section-'+s);
@@ -3241,19 +3374,15 @@ function switchSection(name){
   document.querySelectorAll('.section-tab').forEach(t=>{
     t.classList.toggle('active',t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+name+"'"));
   });
-  // Update mobile bottom nav active state
-  document.querySelectorAll('.mqn-btn').forEach(b=>{
-    const active=b.getAttribute('data-sec')===name;
-    b.style.color=active?'var(--blue)':'var(--muted)';
-    b.style.background=active?'var(--blue-lt)':'none';
-  });
-  if(window.innerWidth<=740) window.scrollTo({top:document.getElementById('adminApp').offsetTop||0,behavior:'smooth'});
+  closeSidebar();
+  window.scrollTo({top:0,behavior:'smooth'});
   // Section-specific hooks
   if(name==='activitylog') setTimeout(refreshActivityLog,100);
-  if(name==='pushnotif'){setTimeout(()=>{loadTokenCount();renderPushHistory();},100);}
   if(name==='postutmecbt') setTimeout(loadPUCBTQuestions,100);
   if(name==='anonymous') setTimeout(loadAnonMessages,100);
   if(name==='users') setTimeout(loadUsers,100);
+  if(name==='pushnotif') setTimeout(()=>{loadTokenCount();renderPushHistory();},100);
+  if(name==='siteconfig') setTimeout(loadSiteConfigForm,100);
 }
 window.switchSection=switchSection;
 
@@ -3263,7 +3392,8 @@ function switchTab(sec,tab){
     sch:'section-scholarships',
     cbt:'section-cbt',postutme:'section-postutme',combo:'section-subjectcombo',
     nelfund:'section-nelfund',prep:'section-postutmeprep',
-    ticker:'section-ticker',success:'section-successticker',pucbt:'section-postutmecbt'
+    ticker:'section-ticker',success:'section-successticker',pucbt:'section-postutmecbt',
+    rev:'section-reviews',qa:'section-qa',cal:'section-calendar'
   };
   const secEl=document.getElementById(sMap[sec]);
   if(!secEl) return;
@@ -3601,7 +3731,7 @@ async function addBook(){
   if(view) item.viewUrl=view; if(cover) item.cover=cover; if(featured) item.featured=true;
   booksData.unshift(item);
   const btn=document.getElementById('addBookBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ await fbAdd('fs_books',{title,category:document.getElementById('addBookCat').value,description:document.getElementById('addBookDesc').value.trim(),downloadUrl:document.getElementById('addBookDownload').value.trim(),viewUrl:document.getElementById('addBookView')?document.getElementById('addBookView').value.trim():'',author:document.getElementById('addBookAuthor')?document.getElementById('addBookAuthor').value.trim():'',year:document.getElementById('addBookYear')?document.getElementById('addBookYear').value.trim():''},'Add book: '+title); booksData=await fbLoad('fs_books'); showStatus('success','📚 Book added!'); clearBookForm(); renderBooks(); updateBadges(); switchTab('lib','list'); }
+  try{ await fbAdd('fs_books',item,'Add book: '+title); booksData=await fbLoad('fs_books'); showStatus('success','📚 Book added!'); clearBookForm(); renderBooks(); updateBadges(); switchTab('lib','list'); }
   catch(e){ booksData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='📚 Add Book';
 }
@@ -3642,7 +3772,7 @@ async function saveEditBook(){
   if(!t||!d){showStatus('error','Fill in Title and Description.');return;}
   const old={...booksData[idx]};
   Object.assign(booksData[idx],{title:t,author:document.getElementById('eBookAuthor').value.trim(),category:document.getElementById('eBookCategory').value,downloadUrl:document.getElementById('eBookDownload').value.trim(),description:d});
-  try{ const item=booksData[parseInt(document.getElementById('editBookIdx').value)]; if(item&&item._id) await fbUpdate('fs_books',item._id,{title:t,category:document.getElementById('eBookCat').value,description:document.getElementById('eBookDesc').value.trim(),downloadUrl:document.getElementById('eBookDownload').value.trim()},'Edit book: '+t); booksData=await fbLoad('fs_books'); closeModal('editBookModal'); renderBooks(); showStatus('success','✅ Book updated!'); }
+  try{ const item=booksData[idx]; if(item&&item._id) await fbUpdate('fs_books',item._id,{title:t,author:item.author,category:item.category,downloadUrl:item.downloadUrl,description:d},'Edit book: '+t); booksData=await fbLoad('fs_books'); closeModal('editBookModal'); renderBooks(); showStatus('success','✅ Book updated!'); }
   catch(e){ Object.assign(booksData[idx],old); showStatus('error',e.message); }
 }
 window.saveEditBook=saveEditBook;
@@ -3679,7 +3809,7 @@ async function addDyk(){
   const item={fact,body,emoji:document.getElementById('dAddEmoji').value.trim()||'💡',category:document.getElementById('dAddCat').value.trim(),source:document.getElementById('dAddSource').value.trim()};
   dykData.unshift(item);
   const btn=document.getElementById('addDykBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ await fbAdd('fs_dyk',{fact,emoji:document.getElementById('addDykEmoji')?document.getElementById('addDykEmoji').value.trim():'💡',category:document.getElementById('addDykCat')?document.getElementById('addDykCat').value.trim():'',body:document.getElementById('addDykBody')?document.getElementById('addDykBody').value.trim():'',source:document.getElementById('addDykSource')?document.getElementById('addDykSource').value.trim():''},'Add DYK: '+fact.slice(0,40)); dykData=await fbLoad('fs_dyk'); showStatus('success','💡 Fact added!'); clearDykForm(); renderDyk(); updateBadges(); switchTab('dyk','list'); }
+  try{ await fbAdd('fs_dyk',item,'Add DYK: '+fact.slice(0,40)); dykData=await fbLoad('fs_dyk'); showStatus('success','💡 Fact added!'); clearDykForm(); renderDyk(); updateBadges(); switchTab('dyk','list'); }
   catch(e){ dykData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='💡 Add Fact';
 }
@@ -3730,7 +3860,7 @@ async function addSpotlight(){
   if(photo) item.photo=photo;
   spotlightData.unshift(item);
   const btn=document.getElementById('addSpBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ await fbAdd('fs_spotlight',{name,achievement:document.getElementById('addSpTitle')?document.getElementById('addSpTitle').value.trim():'',story:document.getElementById('addSpStory')?document.getElementById('addSpStory').value.trim():'',state:document.getElementById('addSpState')?document.getElementById('addSpState').value.trim():'',year:document.getElementById('addSpYear')?document.getElementById('addSpYear').value.trim():''},'Add spotlight: '+name); spotlightData=await fbLoad('fs_spotlight'); showStatus('success','🌟 Spotlight added!'); clearSpForm(); renderSpotlights(); updateBadges(); switchTab('spotlight','list'); }
+  try{ await fbAdd('fs_spotlight',item,'Add spotlight: '+name); spotlightData=await fbLoad('fs_spotlight'); showStatus('success','🌟 Spotlight added!'); clearSpForm(); renderSpotlights(); updateBadges(); switchTab('spotlight','list'); }
   catch(e){ spotlightData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='🌟 Add Story';
 }
@@ -3756,7 +3886,7 @@ function renderScholarships(){
   el.innerHTML='<div class="items-list">'+schData.map((s,idx)=>`
     <div class="content-item">
       <div class="item-header" onclick="toggleExpand(this)">
-        <div class="item-num" style="font-size:1.1rem">${s.icon||'💰'}</div>
+        ${s.image?`<img src="${s.image}" alt="" style="width:32px;height:32px;border-radius:8px;object-fit:cover;flex-shrink:0">`:`<div class="item-num" style="font-size:1.1rem">${s.icon||'💰'}</div>`}
         <div class="item-info">
           <div class="item-title">${s.name}</div>
           <div class="item-meta"><span class="item-cat" style="background:${sColor[s.status]||'#dbeafe'};color:${sTxt[s.status]||'#1d4ed8'}">${s.status||'ongoing'}</span> ${s.org||''} · ${s.amount||''}</div>
@@ -3765,7 +3895,8 @@ function renderScholarships(){
       </div>
       <div class="item-expand">
         <div class="item-preview">${(s.description||'').slice(0,200)}</div>
-        <div class="item-meta" style="margin-bottom:8px">📅 ${s.deadline||'—'} ${s.link?`· <a href="${s.link}" target="_blank" style="color:var(--blue);font-weight:600">Apply →</a>`:''}</div>
+        ${s.eligibility?`<div class="item-meta" style="margin-bottom:6px"><strong>Eligibility:</strong> ${s.eligibility.slice(0,180)}</div>`:'<div class="item-meta" style="margin-bottom:6px;color:#dc2626">⚠️ No eligibility info added</div>'}
+        <div class="item-meta" style="margin-bottom:8px">📅 ${s.deadline||'—'} ${s.link?`· <a href="${s.link}" target="_blank" style="color:var(--blue);font-weight:600">Apply →</a>`:'· <span style="color:#dc2626">No apply link</span>'}</div>
         <div class="item-actions">
           <button class="btn btn-danger btn-sm" onclick="deleteScholarship(${idx})">🗑 Delete</button>
         </div>
@@ -3778,17 +3909,33 @@ async function addScholarship(){
   const org=document.getElementById('sAddOrg').value.trim();
   const type=document.getElementById('sAddType').value;
   const desc=document.getElementById('sAddDesc').value.trim();
-  if(!name||!org||!type||!desc){showStatus('error','Fill in Name, Organisation, Type and Description.');return;}
-  const item={name,org,type,description:desc,status:document.getElementById('sAddStatus').value,deadline:document.getElementById('sAddDeadline').value.trim(),amount:document.getElementById('sAddAmount').value.trim(),link:document.getElementById('sAddLink').value.trim(),icon:document.getElementById('sAddIcon').value.trim()||'💰'};
+  const eligibility=document.getElementById('sAddEligibility').value.trim();
+  const link=document.getElementById('sAddLink').value.trim();
+  if(!name||!org||!type||!desc||!eligibility||!link){showStatus('error','Fill in Name, Organization, Type, Description, Eligibility and Link to Apply.');return;}
+  const item={
+    name,org,type,description:desc,eligibility,
+    image:document.getElementById('sAddImage').value.trim(),
+    link,
+    status:document.getElementById('sAddStatus').value,
+    deadline:document.getElementById('sAddDeadline').value.trim(),
+    amount:document.getElementById('sAddAmount').value.trim(),
+    icon:document.getElementById('sAddIcon').value.trim()||'💰'
+  };
   if(document.getElementById('sAddFeatured').value==='true') item.featured=true;
   schData.unshift(item);
   const btn=document.getElementById('addSchBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ await fbAdd('fs_scholarships',{name,organization:document.getElementById('addSchOrg')?document.getElementById('addSchOrg').value.trim():'',description:document.getElementById('addSchDesc')?document.getElementById('addSchDesc').value.trim():'',type:document.getElementById('addSchType')?document.getElementById('addSchType').value:'corporate',status:document.getElementById('addSchStatus')?document.getElementById('addSchStatus').value:'open',deadline:document.getElementById('addSchDeadline')?document.getElementById('addSchDeadline').value.trim():'',amount:document.getElementById('addSchAmount')?document.getElementById('addSchAmount').value.trim():'',link:document.getElementById('addSchLink')?document.getElementById('addSchLink').value.trim():'',icon:document.getElementById('addSchIcon')?document.getElementById('addSchIcon').value.trim():'💰'},'Add scholarship: '+name); schData=await fbLoad('fs_scholarships'); showStatus('success','💰 Scholarship added!'); clearSchForm(); renderScholarships(); updateBadges(); switchTab('sch','list'); document.getElementById('sch-list').style.display='block'; document.getElementById('sch-add').style.display='none'; }
+  try{
+    await fbAdd('fs_scholarships',item,'Add scholarship: '+name);
+    schData=await fbLoad('fs_scholarships');
+    showStatus('success','💰 Scholarship added!');
+    clearSchForm(); renderScholarships(); updateBadges(); switchTab('sch','list');
+    document.getElementById('sch-list').style.display='block'; document.getElementById('sch-add').style.display='none';
+  }
   catch(e){ schData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='💰 Add Scholarship';
 }
 window.addScholarship=addScholarship;
-function clearSchForm(){ ['sAddName','sAddOrg','sAddDeadline','sAddAmount','sAddLink','sAddIcon','sAddDesc'].forEach(id=>document.getElementById(id).value=''); document.getElementById('sAddType').value=''; document.getElementById('sAddFeatured').value='false'; }
+function clearSchForm(){ ['sAddName','sAddOrg','sAddDeadline','sAddAmount','sAddLink','sAddIcon','sAddDesc','sAddEligibility','sAddImage'].forEach(id=>document.getElementById(id).value=''); document.getElementById('sAddType').value=''; document.getElementById('sAddStatus').value='ongoing'; document.getElementById('sAddFeatured').value='false'; }
 window.clearSchForm=clearSchForm;
 async function deleteScholarship(idx){
   if(!confirm('Delete "'+schData[idx].name+'"?')) return;
@@ -3830,7 +3977,7 @@ async function addNelfund(){
   const item={title,summary,body:document.getElementById('nfAddBody').value.trim(),category:document.getElementById('nfAddCat').value,date:document.getElementById('nfAddDate').value.trim()||new Date().toLocaleDateString(),link:document.getElementById('nfAddLink').value.trim()};
   nelfundData.unshift(item);
   const btn=document.getElementById('addNelfundBtn'); btn.disabled=true; btn.textContent='Publishing…';
-  try{ await fbAdd('fs_nelfund',{title,content:document.getElementById('addNelfContent')?document.getElementById('addNelfContent').value.trim():'',category:document.getElementById('addNelfCat')?document.getElementById('addNelfCat').value.trim():'',date:document.getElementById('addNelfDate')?document.getElementById('addNelfDate').value.trim():''},'Add NELFUND: '+title); nelfundData=await fbLoad('fs_nelfund'); showStatus('success','💳 NELFUND update published!'); clearNelfundForm(); renderNelfund(); updateBadges(); switchTab('nelfund','list'); }
+  try{ await fbAdd('fs_nelfund',item,'Add NELFUND: '+title); nelfundData=await fbLoad('fs_nelfund'); showStatus('success','💳 NELFUND update published!'); clearNelfundForm(); renderNelfund(); updateBadges(); switchTab('nelfund','list'); }
   catch(e){ nelfundData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='💳 Publish Update';
 }
@@ -3898,7 +4045,7 @@ async function addPostUtme(){
   postutmeData.push(item);
   postutmeData.sort((a,b)=>a.name.localeCompare(b.name));
   const btn=document.getElementById('addPuBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ await fbAdd('fs_postutme_schools',{school:name,abbreviation:document.getElementById('addPuAbbr')?document.getElementById('addPuAbbr').value.trim():'',jambWeight:parseFloat(document.getElementById('addPuJamb')?document.getElementById('addPuJamb').value:50)||50,postWeight:parseFloat(document.getElementById('addPuPost')?document.getElementById('addPuPost').value:50)||50,cutoff:parseFloat(document.getElementById('addPuCutoff')?document.getElementById('addPuCutoff').value:200)||200,notes:document.getElementById('addPuNotes')?document.getElementById('addPuNotes').value.trim():''},'Add school: '+name); postutmeData=await fbLoad('fs_postutme_schools','school','asc'); showStatus('success','🏫 School added!'); clearPuForm(); renderPostUtme(); updateBadges(); switchTab('postutme','list'); }
+  try{ await fbAdd('fs_postutme_schools',item,'Add school: '+name); postutmeData=await fbLoad('fs_postutme_schools','name','asc'); showStatus('success','🏫 School added!'); clearPuForm(); renderPostUtme(); updateBadges(); switchTab('postutme','list'); }
   catch(e){ postutmeData=postutmeData.filter(s=>s.name!==name); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='🏫 Add School';
 }
@@ -3924,7 +4071,7 @@ async function saveEditSchool(){
   const idx=parseInt(document.getElementById('editSchoolIdx').value);
   const old={...postutmeData[idx]};
   Object.assign(postutmeData[idx],{name:document.getElementById('eSchName').value.trim(),abbr:document.getElementById('eSchAbbr').value.trim(),formula:document.getElementById('eSchFormula').value,cutoff:document.getElementById('eSchCutoff').value.trim(),notes:document.getElementById('eSchNotes').value.trim(),fees:document.getElementById('eSchFees').value.trim()});
-  try{ const item=postutmeData[parseInt(document.getElementById('editSchoolIdx').value)]; if(item&&item._id) await fbUpdate('fs_postutme_schools',item._id,{school:document.getElementById('ePuSchool').value.trim(),abbreviation:document.getElementById('ePuAbbr')?document.getElementById('ePuAbbr').value.trim():'',notes:document.getElementById('ePuNotes')?document.getElementById('ePuNotes').value.trim():''},'Edit school'); postutmeData=await fbLoad('fs_postutme_schools','school','asc'); closeModal('editSchoolModal'); renderPostUtme(); showStatus('success','✅ School updated!'); }
+  try{ const item=postutmeData[idx]; if(item&&item._id) await fbUpdate('fs_postutme_schools',item._id,{name:item.name,abbr:item.abbr,formula:item.formula,cutoff:item.cutoff,notes:item.notes,fees:item.fees},'Edit school'); postutmeData=await fbLoad('fs_postutme_schools','name','asc'); closeModal('editSchoolModal'); renderPostUtme(); showStatus('success','✅ School updated!'); }
   catch(e){ Object.assign(postutmeData[idx],old); showStatus('error',e.message); }
 }
 window.saveEditSchool=saveEditSchool;
@@ -3989,7 +4136,7 @@ async function addCombo(){
   comboData.push(item);
   comboData.sort((a,b)=>a.course.localeCompare(b.course));
   const btn=document.getElementById('addComboBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ await fbAdd('fs_subject_combo',{course,dept:document.getElementById('addComboDept')?document.getElementById('addComboDept').value.trim():'',subjects:(document.getElementById('addComboSubjects')?document.getElementById('addComboSubjects').value:'').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean),olevel:document.getElementById('addComboOlevel')?document.getElementById('addComboOlevel').value.trim():'',notes:document.getElementById('addComboNotes')?document.getElementById('addComboNotes').value.trim():''},'Add combo: '+course); comboData=await fbLoad('fs_subject_combo','course','asc'); showStatus('success','📋 Course added!'); clearComboForm(); renderComboList(); updateBadges(); switchTab('combo','list'); }
+  try{ await fbAdd('fs_subject_combo',{...item,subjects:[s2,s3,s4].filter(Boolean)},'Add combo: '+course); comboData=await fbLoad('fs_subject_combo','course','asc'); showStatus('success','📋 Course added!'); clearComboForm(); renderComboList(); updateBadges(); switchTab('combo','list'); }
   catch(e){ comboData=comboData.filter(c=>c.course!==course); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='📋 Add Course';
 }
@@ -4016,7 +4163,7 @@ async function saveEditCombo(){
   const idx=parseInt(document.getElementById('editComboIdx').value);
   const old={...comboData[idx]};
   Object.assign(comboData[idx],{course:document.getElementById('eCbCourse').value.trim(),dept:document.getElementById('eCbDept').value,s2:document.getElementById('eCbS2').value.trim(),s3:document.getElementById('eCbS3').value.trim(),s4:document.getElementById('eCbS4').value.trim(),olevel:document.getElementById('eCbOlevel').value.trim(),notes:document.getElementById('eCbNotes').value.trim()});
-  try{ const item=comboData[parseInt(document.getElementById('editComboIdx').value)]; if(item&&item._id) await fbUpdate('fs_subject_combo',item._id,{course:document.getElementById('eComboName').value.trim(),notes:document.getElementById('eComboNotes')?document.getElementById('eComboNotes').value.trim():''},'Edit combo'); comboData=await fbLoad('fs_subject_combo','course','asc'); closeModal('editComboModal'); renderComboList(); showStatus('success','✅ Course updated!'); }
+  try{ const item=comboData[idx]; if(item&&item._id) await fbUpdate('fs_subject_combo',item._id,{course:item.course,dept:item.dept,s2:item.s2,s3:item.s3,s4:item.s4,subjects:[item.s2,item.s3,item.s4].filter(Boolean),olevel:item.olevel,notes:item.notes},'Edit combo'); comboData=await fbLoad('fs_subject_combo','course','asc'); closeModal('editComboModal'); renderComboList(); showStatus('success','✅ Course updated!'); }
   catch(e){ Object.assign(comboData[idx],old); showStatus('error',e.message); }
 }
 window.saveEditCombo=saveEditCombo;
@@ -4069,7 +4216,7 @@ async function addPrepGuide(){
   if(document.getElementById('prepAddFeatured').value==='true') item.featured=true;
   prepData.unshift(item);
   const btn=document.getElementById('addPrepBtn'); btn.disabled=true; btn.textContent='Publishing…';
-  try{ await fbAdd('fs_prep_guides',{title,content:document.getElementById('addPrepContent')?document.getElementById('addPrepContent').value.trim():'',category:document.getElementById('addPrepCat')?document.getElementById('addPrepCat').value.trim():''},'Add prep guide: '+title); prepData=await fbLoad('fs_prep_guides'); showStatus('success','📖 Guide published!'); clearPrepForm(); renderPrepList(); updateBadges(); switchTab('prep','list'); }
+  try{ await fbAdd('fs_prep_guides',item,'Add prep guide: '+title); prepData=await fbLoad('fs_prep_guides'); showStatus('success','📖 Guide published!'); clearPrepForm(); renderPrepList(); updateBadges(); switchTab('prep','list'); }
   catch(e){ prepData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='📖 Publish Guide';
 }
@@ -4116,7 +4263,7 @@ async function addReview(){
   const item={name,message,stars:parseInt(document.getElementById('rAddStars').value),location:document.getElementById('rAddLocation').value.trim(),date:document.getElementById('rAddDate').value.trim()||new Date().toLocaleDateString()};
   reviewsData.unshift(item);
   const btn=document.getElementById('addRevBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ await fbAdd('fs_reviews',{name,rating:parseInt(document.getElementById('addRevRating')?document.getElementById('addRevRating').value:5)||5,review:document.getElementById('addRevText')?document.getElementById('addRevText').value.trim():'',school:document.getElementById('addRevSchool')?document.getElementById('addRevSchool').value.trim():''},'Add review: '+name); reviewsData=await fbLoad('fs_reviews'); showStatus('success','⭐ Review added!'); clearRevForm(); renderReviews(); updateBadges(); switchTab('rev','list'); }
+  try{ await fbAdd('fs_reviews',{name,message,stars:parseInt(document.getElementById('rAddStars').value)||5,location:document.getElementById('rAddLocation').value.trim(),date:document.getElementById('rAddDate').value.trim()||new Date().toLocaleDateString()},'Add review: '+name); reviewsData=await fbLoad('fs_reviews'); showStatus('success','⭐ Review added!'); clearRevForm(); renderReviews(); updateBadges(); switchTab('rev','list'); }
   catch(e){ reviewsData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='⭐ Add Review';
 }
@@ -4163,7 +4310,7 @@ async function addQA(){
   const item={question,answer,category:document.getElementById('qaAddCat').value};
   qaData.unshift(item);
   const btn=document.getElementById('addQABtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ await fbAdd('fs_qa',{question:document.getElementById('addQAQ')?document.getElementById('addQAQ').value.trim():'',answer:document.getElementById('addQAA')?document.getElementById('addQAA').value.trim():'',category:document.getElementById('addQACat')?document.getElementById('addQACat').value.trim():''},'Add Q&A'); qaData=await fbLoad('fs_qa'); showStatus('success','❓ Q&A added!'); clearQAForm(); renderQA(); updateBadges(); switchTab('qa','list'); }
+  try{ await fbAdd('fs_qa',{question,answer,category:document.getElementById('qaAddCat').value},'Add Q&A'); qaData=await fbLoad('fs_qa'); showStatus('success','❓ Q&A added!'); clearQAForm(); renderQA(); updateBadges(); switchTab('qa','list'); }
   catch(e){ qaData.shift(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='❓ Add Q&A';
 }
@@ -4218,7 +4365,7 @@ async function addCalEvent(){
   const item={title,date,category:document.getElementById('calAddCat').value,color:document.getElementById('calAddColor').value,description:document.getElementById('calAddDesc').value.trim(),dateObj:date};
   calData.push(item);
   const btn=document.getElementById('addCalBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ await fbAdd('fs_calendar',{title,date:document.getElementById('addCalDate')?document.getElementById('addCalDate').value.trim():'',description:document.getElementById('addCalDesc')?document.getElementById('addCalDesc').value.trim():'',type:document.getElementById('addCalType')?document.getElementById('addCalType').value:'general'},'Add event: '+title); calData=await fbLoad('fs_calendar','title','asc'); showStatus('success','📅 Event added!'); clearCalForm(); renderCalendar(); updateBadges(); switchTab('cal','list'); }
+  try{ await fbAdd('fs_calendar',{title,date,category:document.getElementById('calAddCat').value,color:document.getElementById('calAddColor').value,description:document.getElementById('calAddDesc').value.trim()},'Add event: '+title); calData=await fbLoad('fs_calendar','title','asc'); showStatus('success','📅 Event added!'); clearCalForm(); renderCalendar(); updateBadges(); switchTab('cal','list'); }
   catch(e){ calData.pop(); showStatus('error',e.message); }
   btn.disabled=false; btn.textContent='📅 Add Event';
 }
@@ -4390,15 +4537,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Sync dark mode toggle button state
   const btn=document.getElementById('darkToggleBtn');
   if(btn) btn.textContent=document.body.classList.contains('dark')?'☀️':'🌙';
-  // Show mobile bottom nav on small screens — only when logged in
-  function checkMobile(){
-    const mob=document.getElementById('mobileQuickNav');
-    const loggedIn=document.getElementById('adminApp')&&document.getElementById('adminApp').style.display!=='none';
-    if(mob) mob.style.display=(window.innerWidth<=560&&loggedIn)?'flex':'none';
-  }
-  window._checkMobile=checkMobile;
-  checkMobile();
-  window.addEventListener('resize',checkMobile);
 });
 
 // ════════════════════════════════════
@@ -4450,6 +4588,20 @@ async function saveSiteConfig(){
   }catch(e){ showStatus('error','❌ '+e.message); }
 }
 window.saveSiteConfig=saveSiteConfig;
+
+async function loadSiteConfigForm(){
+  try{
+    const sd=await window.getDoc(window.doc(window.db,'fs_config','site'));
+    if(!sd.exists()) return;
+    const d=sd.data();
+    const map={sc_sitename:'siteName',sc_tagline:'tagline',sc_logo:'logo',sc_waNumber:'waNumber',sc_waLink:'waLink',sc_email:'email',sc_formspree:'formspree',sc_baseUrl:'baseUrl',sc_year:'year',sc_metaDesc:'metaDesc'};
+    Object.entries(map).forEach(([elId,key])=>{
+      const el=document.getElementById(elId);
+      if(el&&d[key]!=null&&!el.value) el.value=d[key];
+    });
+  }catch(e){console.warn('loadSiteConfigForm:',e.message);}
+}
+window.loadSiteConfigForm=loadSiteConfigForm;
 
 // ── HERO CONFIG ──
 async function saveHeroConfig(){
