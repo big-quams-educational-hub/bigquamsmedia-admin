@@ -570,6 +570,10 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <button class="section-tab" onclick="switchSection('gpa')">
         <span class="nav-icon">🎓</span><span class="nav-label">GPA / CGPA Calculator</span>
       </button>
+      <button class="section-tab" onclick="switchSection('admission')">
+        <span class="nav-icon">🎯</span><span class="nav-label">Admission Chances</span>
+        <span class="nav-count" id="cnt-admission">—</span>
+      </button>
 
       <div class="sidebar-divider"></div>
       <div class="nav-section-label">Campus &amp; Community</div>
@@ -1481,6 +1485,74 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div id="usersList"><div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Refresh to load users</div></div>
     </div>
 
+    <!-- ══ ADMISSION CHANCES CALCULATOR ══ -->
+    <div class="admin-section" id="section-admission">
+      <div class="section-header">
+        <h2 class="section-title-h2">🎯 Admission Chances Calculator</h2>
+        <button class="btn btn-success btn-sm" onclick="switchTab('adm','add')">+ Add Requirement</button>
+      </div>
+      <div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.78rem;color:#9a3412;line-height:1.5">
+        ⚠️ <strong>No server-side payment verification.</strong> This feature trusts the Paystack popup callback in the browser. A technically-inclined student could bypass payment. Check the Submissions tab periodically against your Paystack dashboard if this matters to you.
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('adm','list')">Requirements</button>
+        <button class="admin-tab" onclick="switchTab('adm','add')">Add Requirement</button>
+        <button class="admin-tab" onclick="switchTab('adm','submissions');loadAdmissionSubmissions()">Submissions</button>
+        <button class="admin-tab" onclick="switchTab('adm','settings')">Price</button>
+      </div>
+
+      <div class="admin-panel active" id="adm-tab-list">
+        <div class="section-card">
+          <div class="card-title">🏫 School &amp; Course Requirements</div>
+          <div id="admissionReqList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div></div></div>
+        </div>
+      </div>
+
+      <div class="admin-panel" id="adm-tab-add">
+        <div class="section-card">
+          <div class="card-title">➕ Add Requirement</div>
+          <div class="form-row">
+            <div class="form-group"><label>School Name *</label><input type="text" id="admAddSchool" placeholder="e.g. University of Lagos"></div>
+            <div class="form-group"><label>Course *</label><input type="text" id="admAddCourse" placeholder="e.g. Medicine and Surgery"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Minimum JAMB Score *</label><input type="number" id="admAddMinJamb" placeholder="e.g. 280" min="0" max="400"></div>
+            <div class="form-group"><label>Minimum Post-UTME/DE Score</label><input type="number" id="admAddMinPostUtme" placeholder="e.g. 60 (leave blank if not used)" min="0"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Cutoff Aggregate (optional)</label><input type="number" id="admAddCutoffAggregate" placeholder="e.g. 65 — used if you weight JAMB+Post-UTME"></div>
+            <div class="form-group"><label>Minimum O-Level Credits *</label><input type="number" id="admAddMinOlevel" value="5" min="1" max="9"></div>
+          </div>
+          <div class="form-group"><label>Required O-Level Subjects (comma-separated) *</label><input type="text" id="admAddSubjects" placeholder="e.g. English Language, Mathematics, Biology, Chemistry, Physics"></div>
+          <div class="form-group"><label>Notes (shown to students)</label><textarea id="admAddNotes" style="min-height:60px" placeholder="Any extra context, e.g. 'Very competitive — UTME weighted 60%'"></textarea></div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="addAdmissionReq()" id="addAdmReqBtn">🎯 Add Requirement</button>
+            <button class="btn btn-ghost" onclick="clearAdmissionReqForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-panel" id="adm-tab-submissions">
+        <div class="section-card">
+          <div class="section-header" style="margin-bottom:14px">
+            <div class="card-title" style="margin:0">📋 Student Submissions</div>
+            <button class="btn btn-ghost btn-sm" onclick="loadAdmissionSubmissions()">🔄 Refresh</button>
+          </div>
+          <div id="admissionSubList"><div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Refresh to load submissions</div></div>
+        </div>
+      </div>
+
+      <div class="admin-panel" id="adm-tab-settings">
+        <div class="section-card">
+          <div class="card-title">💰 Calculator Price</div>
+          <div class="form-group"><label>Price (₦)</label><input type="number" id="admPrice" placeholder="e.g. 500" min="0"></div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="saveAdmissionPrice()">💾 Save Price</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ══ CAMPUS GIST ══ -->
     <div class="admin-section" id="section-campusgist">
       <div class="section-header">
@@ -2341,6 +2413,7 @@ let calData=[], schData=[];
 let postutmeData=[], comboData=[];
 let nelfundData=[], prepData=[];
 let tickerData=[];
+let admissionReqData=[], admissionSubData=[];
 
 const SUBJECT_LABELS = {
   english:'Use of English',maths:'Mathematics',physics:'Physics',chemistry:'Chemistry',
@@ -3049,7 +3122,7 @@ async function init(){
   try{
     [newsData, booksData, dykData, spotlightData, reviewsData, qaData,
      calData, schData, postutmeData, comboData, nelfundData, prepData,
-     tickerData] = await Promise.all([
+     tickerData, admissionReqData] = await Promise.all([
       fbLoad('fs_news'),
       fbLoad('fs_books'),
       fbLoad('fs_dyk'),
@@ -3063,6 +3136,7 @@ async function init(){
       fbLoad('fs_nelfund'),
       fbLoad('fs_prep_guides'),
       fbLoad('fs_ticker'),
+      fbLoad('fs_admission_requirements'),
     ]);
     renderAll();
     updateBadges();
@@ -3083,6 +3157,7 @@ function renderAll(){
   renderNews(); renderBooks(); renderDyk(); renderSpotlights();
   renderReviews(); renderQA(); renderCalendar(); renderScholarships();
   renderPostUtme(); renderComboList(); renderNelfund(); renderPrepList();
+  renderAdmissionReqs();
 }
 
 function updateBadges(){
@@ -3091,7 +3166,8 @@ function updateBadges(){
     'cnt-news':newsData.length,'cnt-lib':booksData.length,'cnt-dyk':dykData.length,
     'cnt-sp':spotlightData.length,'cnt-rev':reviewsData.length,'cnt-qa':qaData.length,
     'cnt-cal':calData.length,'cnt-sch':schData.length,'cnt-postutme':postutmeData.length,
-    'cnt-combo':comboData.length,'cnt-nelfund':nelfundData.length,'cnt-prep':prepData.length
+    'cnt-combo':comboData.length,'cnt-nelfund':nelfundData.length,'cnt-prep':prepData.length,
+    'cnt-admission':admissionReqData.length
   };
   Object.entries(m).forEach(([id,v])=>{const el=document.getElementById(id);if(el) el.textContent=v;});
   // Dashboard stat cards
@@ -3133,7 +3209,7 @@ window.openModal=openModal; window.closeModal=closeModal; window.handleOverlay=h
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
 
 // ── SECTION & TAB SWITCHING ──
-const ALL_SECTIONS=['dashboard','news','newsroom','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','campuslife','campusgist','polls','dailyhub','anonymous','activitylog','users','reviews','qa','calendar','ticker','pushnotif'];
+const ALL_SECTIONS=['dashboard','news','newsroom','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','admission','campuslife','campusgist','polls','dailyhub','anonymous','activitylog','users','reviews','qa','calendar','ticker','pushnotif'];
 
 function toggleSidebar(){
   const isOpen=document.getElementById('adminSidebar').classList.contains('open');
@@ -3171,6 +3247,7 @@ function switchSection(name){
   if(name==='anonymous') setTimeout(loadAnonMessages,100);
   if(name==='users') setTimeout(loadUsers,100);
   if(name==='pushnotif') setTimeout(()=>{loadTokenCount();renderPushHistory();},100);
+  if(name==='admission') setTimeout(loadAdmissionPriceForm,100);
 }
 window.switchSection=switchSection;
 
@@ -3182,7 +3259,8 @@ function switchTab(sec,tab){
     nelfund:'section-nelfund',prep:'section-postutmeprep',
     ticker:'section-ticker',pucbt:'section-postutmecbt',
     rev:'section-reviews',qa:'section-qa',cal:'section-calendar',
-    polls:'section-polls',campusgist:'section-campusgist',cl:'section-campuslife'
+    polls:'section-polls',campusgist:'section-campusgist',cl:'section-campuslife',
+    adm:'section-admission'
   };
   const secEl=document.getElementById(sMap[sec]);
   if(!secEl) return;
@@ -4019,6 +4097,135 @@ async function deletePrep(idx){
   catch(e){ prepData.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deletePrep=deletePrep;
+
+// ── ADMISSION CHANCES CALCULATOR ──
+function renderAdmissionReqs(){
+  const el=document.getElementById('admissionReqList'); if(!el) return;
+  if(!admissionReqData.length){el.innerHTML='<div class="empty"><div class="ei">🎯</div><p>No requirements yet. Add a school + course above.</p></div>';return;}
+  el.innerHTML='<div class="items-list">'+admissionReqData.map((r,idx)=>`
+    <div class="content-item">
+      <div class="item-header" onclick="toggleExpand(this)">
+        <div class="item-num" style="font-size:1.1rem">🎯</div>
+        <div class="item-info">
+          <div class="item-title">${r.school} — ${r.course}</div>
+          <div class="item-meta">Min JAMB: ${r.minJamb||'—'} ${r.minPostUtme?'· Min Post-UTME: '+r.minPostUtme:''} · ${r.minOlevel||5} O-Level credits</div>
+        </div>
+        <span class="item-chevron">▼</span>
+      </div>
+      <div class="item-expand">
+        <div class="item-preview">Required subjects: ${(r.subjects||[]).join(', ')||'—'}</div>
+        ${r.notes?`<div class="item-meta" style="margin-bottom:8px">${r.notes}</div>`:''}
+        <div class="item-actions">
+          <button class="btn btn-danger btn-sm" onclick="deleteAdmissionReq(${idx})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+
+async function addAdmissionReq(){
+  const school=document.getElementById('admAddSchool').value.trim();
+  const course=document.getElementById('admAddCourse').value.trim();
+  const minJamb=parseInt(document.getElementById('admAddMinJamb').value)||0;
+  const minOlevel=parseInt(document.getElementById('admAddMinOlevel').value)||5;
+  const subjects=document.getElementById('admAddSubjects').value.split(',').map(s=>s.trim()).filter(Boolean);
+  if(!school||!course||!minJamb||!subjects.length){showStatus('error','Fill in School, Course, Minimum JAMB Score and Required Subjects.');return;}
+  const item={
+    school,course,minJamb,minOlevel,subjects,
+    minPostUtme:parseInt(document.getElementById('admAddMinPostUtme').value)||null,
+    cutoffAggregate:parseFloat(document.getElementById('admAddCutoffAggregate').value)||null,
+    notes:document.getElementById('admAddNotes').value.trim()
+  };
+  admissionReqData.unshift(item);
+  const btn=document.getElementById('addAdmReqBtn'); btn.disabled=true; btn.textContent='Adding…';
+  try{
+    await fbAdd('fs_admission_requirements',item,'Add admission requirement: '+school+' — '+course);
+    admissionReqData=await fbLoad('fs_admission_requirements');
+    showStatus('success','🎯 Requirement added!');
+    clearAdmissionReqForm(); renderAdmissionReqs(); updateBadges(); switchTab('adm','list');
+  }catch(e){ admissionReqData.shift(); showStatus('error',e.message); }
+  btn.disabled=false; btn.textContent='🎯 Add Requirement';
+}
+window.addAdmissionReq=addAdmissionReq;
+
+function clearAdmissionReqForm(){
+  ['admAddSchool','admAddCourse','admAddMinJamb','admAddMinPostUtme','admAddCutoffAggregate','admAddSubjects','admAddNotes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('admAddMinOlevel').value='5';
+}
+window.clearAdmissionReqForm=clearAdmissionReqForm;
+
+async function deleteAdmissionReq(idx){
+  if(!confirm('Delete this requirement?')) return;
+  const r=admissionReqData.splice(idx,1)[0];
+  try{ if(r&&r._id) await fbDelete('fs_admission_requirements',r._id,'Delete admission requirement'); admissionReqData=await fbLoad('fs_admission_requirements'); renderAdmissionReqs(); updateBadges(); showStatus('success','🗑 Deleted.'); }
+  catch(e){ admissionReqData.splice(idx,0,r); showStatus('error',e.message); }
+}
+window.deleteAdmissionReq=deleteAdmissionReq;
+
+async function loadAdmissionSubmissions(){
+  const el=document.getElementById('admissionSubList'); if(!el) return;
+  el.innerHTML='<div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div></div></div>';
+  try{
+    admissionSubData=await fbLoad('fs_admission_submissions');
+    renderAdmissionSubmissions();
+  }catch(e){ el.innerHTML='<p style="color:var(--muted)">Could not load submissions: '+e.message+'</p>'; }
+}
+window.loadAdmissionSubmissions=loadAdmissionSubmissions;
+
+function renderAdmissionSubmissions(){
+  const el=document.getElementById('admissionSubList'); if(!el) return;
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  if(!admissionSubData.length){el.innerHTML='<div class="empty"><div class="ei">📋</div><p>No submissions yet.</p></div>';return;}
+  const sorted=[...admissionSubData].sort((a,b)=>{
+    const at=a.createdAt?.toMillis?a.createdAt.toMillis():0;
+    const bt=b.createdAt?.toMillis?b.createdAt.toMillis():0;
+    return bt-at;
+  });
+  const paidCount=sorted.filter(s=>s.status==='paid').length;
+  const startedOnlyCount=sorted.filter(s=>s.status==='started').length;
+  el.innerHTML=`<div class="form-hint" style="margin-bottom:10px">${paidCount} paid · ${startedOnlyCount} started (may include abandoned or in-progress attempts)</div>`+
+    '<div class="items-list">'+sorted.map(s=>{
+    const isPaid=s.status==='paid';
+    const badge=isPaid?'<span style="background:#dcfce7;color:#15803d;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:10px">✅ PAID</span>':'<span style="background:#fef9c3;color:#92400e;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:10px">⏳ STARTED (not confirmed paid)</span>';
+    return`
+    <div class="content-item">
+      <div class="item-header" onclick="toggleExpand(this)">
+        <div class="item-num" style="font-size:1.1rem">👤</div>
+        <div class="item-info">
+          <div class="item-title">${esc(s.name)||'(no name)'} ${badge}</div>
+          <div class="item-meta">${esc(s.school)} ${s.course?'— '+esc(s.course):''} ${s.resultTier?'· Result: '+esc(s.resultTier):''}</div>
+        </div>
+        <span class="item-chevron">▼</span>
+      </div>
+      <div class="item-expand">
+        <div class="item-meta" style="margin-bottom:6px">📞 ${esc(s.phone)||'—'} ${s.email?'· ✉️ '+esc(s.email):''}</div>
+        <div class="item-meta" style="margin-bottom:6px">JAMB: ${esc(s.jambScore)||'—'} · Post-UTME/DE: ${esc(s.postUtmeScore)||'—'}</div>
+        ${isPaid?`<div class="item-meta" style="margin-bottom:6px">Payment ref: ${esc(s.paymentRef)||'—'} · Amount: ₦${esc(s.amountPaid)||'—'}</div>`:''}
+        <div class="item-meta">Time: ${s.createdAt?.toDate?s.createdAt.toDate().toLocaleString():'—'}</div>
+      </div>
+    </div>`;}).join('')+'</div>';
+}
+
+async function saveAdmissionPrice(){
+  const price=parseInt(document.getElementById('admPrice').value)||0;
+  if(!price){showStatus('error','Enter a price greater than 0.');return;}
+  try{
+    await window.setDoc(window.doc(window.db,'fs_admission_settings','price'),{price});
+    logAdminActivity('edit','config','Update admission calculator price to ₦'+price);
+    showStatus('success','💾 Price saved — ₦'+price);
+  }catch(e){ showStatus('error','❌ '+e.message); }
+}
+window.saveAdmissionPrice=saveAdmissionPrice;
+
+async function loadAdmissionPriceForm(){
+  try{
+    const sd=await window.getDoc(window.doc(window.db,'fs_admission_settings','price'));
+    if(sd.exists()&&sd.data().price){
+      const el=document.getElementById('admPrice');
+      if(el&&!el.value) el.value=sd.data().price;
+    }
+  }catch(e){console.warn('loadAdmissionPriceForm:',e.message);}
+}
+window.loadAdmissionPriceForm=loadAdmissionPriceForm;
 
 // ════════════════════════════════════
 // ══ REVIEWS ══
