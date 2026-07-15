@@ -2481,7 +2481,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider, signOut, sendPasswordResetEmail, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const fbConfig = {
@@ -2515,6 +2515,7 @@ window.setDoc       = setDoc;
 window.serverTimestamp = serverTimestamp;
 window.query        = query;
 window.orderBy      = orderBy;
+window.limit        = limit;
 window.signInWithEmailAndPassword = signInWithEmailAndPassword;
 window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
 window.signInWithPopup = signInWithPopup;
@@ -2620,9 +2621,8 @@ async function signInWithEmail(){
     if(!window.auth) throw new Error('Auth not ready — wait a moment and try again.');
     const cred=await window.signInWithEmailAndPassword(window.auth,email,pass);
     const user=cred.user;
-    const isCEO=user.email==='bigquamsmedia024@gmail.com';
+    const isCEO=isCeoEmail(user.email);
     if(!isCEO){
-      // Check if this email is on the CEO-approved whitelist
       const allowed=await isAdminAllowed(user.email);
       if(!allowed){
         await window.signOutFB(window.auth).catch(()=>{});
@@ -2691,7 +2691,7 @@ async function signInWithGoogle(){
     if(!window.auth||!window.googleProvider) throw new Error('Auth not ready.');
     const cred=await window.signInWithPopup(window.auth,window.googleProvider);
     const user=cred.user;
-    const isCEO=user.email==='bigquamsmedia024@gmail.com';
+    const isCEO=isCeoEmail(user.email);
     if(isCEO){
       goToStep2(user);
       return;
@@ -2786,7 +2786,7 @@ window.verifyTeamPIN=verifyTeamPIN;
 
 async function enterAdminPanel(){
   if(!firebaseUser) return;
-  const isCEO=firebaseUser.email===CEO_EMAIL;
+  const isCEO=isCeoEmail(firebaseUser.email);
   let resolvedNickname='';
   if(isCEO){
     resolvedNickname='Quams';
@@ -2833,7 +2833,8 @@ window.doLogout=doLogout;
 // ══════════════════════════════════════════════
 // ── ADMIN ACTIVITY LOG ──
 // ══════════════════════════════════════════════
-const CEO_EMAIL='bigquamsmedia024@gmail.com'; // ← your Gmail
+const CEO_EMAILS=['bigquamsmedia024@gmail.com','abdulrasqquwamdeen@gmail.com']; // ← must match isCEO() in firestore.rules
+function isCeoEmail(email){ return !!email && CEO_EMAILS.includes(email); }
 let _allActivityLogs=[];
 
 function getCurrentAdminInfo(){
@@ -3113,7 +3114,7 @@ window.clearPUCBTForm=clearPUCBTForm;
 function isCeoAdmin(){
   try{
     const u=JSON.parse(localStorage.getItem('bqm_user')||'{}');
-    return u.email===CEO_EMAIL;
+    return isCeoEmail(u.email);
   }catch(e){return false;}
 }
 
@@ -3157,7 +3158,7 @@ function renderActivityLog(logs){
   listEl.innerHTML=logs.map((l,i)=>{
     const color=actionColors[l.actionType]||'#64748b';
     const icon=actionIcons[l.actionType]||'⚡';
-    const isCeo=l.adminEmail===CEO_EMAIL;
+    const isCeo=isCeoEmail(l.adminEmail);
     return`<div style="display:flex;align-items:flex-start;gap:12px;padding:13px 18px;border-bottom:1px solid var(--border);transition:.15s;${i%2===0?'background:var(--light)':''}" onmouseover="this.style.background='rgba(26,63,168,0.04)'" onmouseout="this.style.background='${i%2===0?'var(--light)':'transparent'}'">
       <div style="width:32px;height:32px;border-radius:50%;background:${color}22;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:1px">${icon}</div>
       <div style="flex:1;min-width:0">
