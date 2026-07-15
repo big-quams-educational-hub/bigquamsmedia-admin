@@ -612,9 +612,6 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <button class="section-tab" onclick="switchSection('successticker')">
         <span class="nav-icon">🎉</span><span class="nav-label">Success Ticker</span>
       </button>
-      <button class="section-tab" onclick="switchSection('siteconfig')">
-        <span class="nav-icon">⚙️</span><span class="nav-label">Site Settings</span>
-      </button>
       <button class="section-tab" onclick="switchSection('pushnotif')">
         <span class="nav-icon">📱</span><span class="nav-label">Push Broadcast</span>
       </button>
@@ -1174,37 +1171,6 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <button class="btn btn-success" onclick="addSuccessWin()" id="addSuccessBtn">🎉 Add Win</button>
             <button class="btn btn-ghost" onclick="clearSuccessForm()">Clear</button>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ SITE SETTINGS ══ -->
-    <div class="admin-section" id="section-siteconfig">
-      <div class="section-header">
-        <h2 class="section-title-h2">⚙️ Site Settings</h2>
-      </div>
-      <div class="section-card">
-        <div class="card-title">⚙️ Global Site Configuration</div>
-        <div class="form-row">
-          <div class="form-group"><label>Site Name</label><input type="text" id="sc_sitename" placeholder="Big Quams Media"></div>
-          <div class="form-group"><label>Tagline</label><input type="text" id="sc_tagline" placeholder="Built for Nigerian Undergraduates"></div>
-        </div>
-        <div class="form-group"><label>Logo URL</label><input type="url" id="sc_logo" placeholder="https://bigquamsmedia.com.ng/logo.png"></div>
-        <div class="form-row">
-          <div class="form-group"><label>WhatsApp Number</label><input type="text" id="sc_waNumber" placeholder="e.g. 2349049871643"></div>
-          <div class="form-group"><label>WhatsApp Link</label><input type="url" id="sc_waLink" placeholder="https://wa.me/2349049871643"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Contact Email</label><input type="email" id="sc_email" placeholder="bigquamsmedia024@gmail.com"></div>
-          <div class="form-group"><label>Formspree ID</label><input type="text" id="sc_formspree" placeholder="e.g. xyzabcd"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Base Site URL</label><input type="url" id="sc_baseUrl" placeholder="https://bigquamsmedia.com.ng"></div>
-          <div class="form-group"><label>Copyright Year</label><input type="text" id="sc_year" placeholder="2026"></div>
-        </div>
-        <div class="form-group"><label>Meta Description (SEO)</label><textarea id="sc_metaDesc" style="min-height:70px" placeholder="Shown in search engine results…"></textarea></div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="saveSiteConfig()">💾 Save Site Settings</button>
         </div>
       </div>
     </div>
@@ -3345,7 +3311,7 @@ window.openModal=openModal; window.closeModal=closeModal; window.handleOverlay=h
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
 
 // ── SECTION & TAB SWITCHING ──
-const ALL_SECTIONS=['dashboard','news','newsroom','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','campuslife','campusgist','polls','dailyhub','anonymous','herostats','topbar','contactchannels','socials','activitylog','users','reviews','qa','calendar','ticker','successticker','siteconfig','pushnotif'];
+const ALL_SECTIONS=['dashboard','news','newsroom','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','campuslife','campusgist','polls','dailyhub','anonymous','herostats','topbar','contactchannels','socials','activitylog','users','reviews','qa','calendar','ticker','successticker','pushnotif'];
 
 function toggleSidebar(){
   const isOpen=document.getElementById('adminSidebar').classList.contains('open');
@@ -3383,7 +3349,6 @@ function switchSection(name){
   if(name==='anonymous') setTimeout(loadAnonMessages,100);
   if(name==='users') setTimeout(loadUsers,100);
   if(name==='pushnotif') setTimeout(()=>{loadTokenCount();renderPushHistory();},100);
-  if(name==='siteconfig') setTimeout(loadSiteConfigForm,100);
 }
 window.switchSection=switchSection;
 
@@ -3394,7 +3359,8 @@ function switchTab(sec,tab){
     cbt:'section-cbt',postutme:'section-postutme',combo:'section-subjectcombo',
     nelfund:'section-nelfund',prep:'section-postutmeprep',
     ticker:'section-ticker',success:'section-successticker',pucbt:'section-postutmecbt',
-    rev:'section-reviews',qa:'section-qa',cal:'section-calendar'
+    rev:'section-reviews',qa:'section-qa',cal:'section-calendar',
+    polls:'section-polls',campusgist:'section-campusgist',cl:'section-campuslife'
   };
   const secEl=document.getElementById(sMap[sec]);
   if(!secEl) return;
@@ -4567,42 +4533,6 @@ async function loadSiteConfigFiles(){
     renderSuccessList(); updateBadges();
   }catch(e){ console.warn('success-ticker.json',e.message); }
 }
-
-// ── SITE CONFIG ──
-async function saveSiteConfig(){
-  const cfg={
-    siteName:document.getElementById('sc_sitename').value.trim(),
-    tagline:document.getElementById('sc_tagline').value.trim(),
-    logo:document.getElementById('sc_logo').value.trim(),
-    waNumber:document.getElementById('sc_waNumber').value.trim(),
-    waLink:document.getElementById('sc_waLink').value.trim(),
-    email:document.getElementById('sc_email').value.trim(),
-    formspree:document.getElementById('sc_formspree').value.trim(),
-    baseUrl:document.getElementById('sc_baseUrl').value.trim(),
-    year:document.getElementById('sc_year').value.trim(),
-    metaDesc:document.getElementById('sc_metaDesc').value.trim()
-  };
-  try{
-    const r={data:[{}]}; try{const sd=await window.getDoc(window.doc(window.db,'fs_config','site'));if(sd.exists())r.data=[sd.data()];}catch(e){}
-    await window.setDoc(window.doc(window.db,'fs_config','site'),cfg); logAdminActivity('edit','config','Update site config');
-    showStatus('success','✅ Site settings saved to site-config.json!');
-  }catch(e){ showStatus('error','❌ '+e.message); }
-}
-window.saveSiteConfig=saveSiteConfig;
-
-async function loadSiteConfigForm(){
-  try{
-    const sd=await window.getDoc(window.doc(window.db,'fs_config','site'));
-    if(!sd.exists()) return;
-    const d=sd.data();
-    const map={sc_sitename:'siteName',sc_tagline:'tagline',sc_logo:'logo',sc_waNumber:'waNumber',sc_waLink:'waLink',sc_email:'email',sc_formspree:'formspree',sc_baseUrl:'baseUrl',sc_year:'year',sc_metaDesc:'metaDesc'};
-    Object.entries(map).forEach(([elId,key])=>{
-      const el=document.getElementById(elId);
-      if(el&&d[key]!=null&&!el.value) el.value=d[key];
-    });
-  }catch(e){console.warn('loadSiteConfigForm:',e.message);}
-}
-window.loadSiteConfigForm=loadSiteConfigForm;
 
 // ── HERO CONFIG ──
 async function saveHeroConfig(){
