@@ -594,23 +594,8 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 
       <div class="sidebar-divider"></div>
       <div class="nav-section-label">Homepage &amp; Site</div>
-      <button class="section-tab" onclick="switchSection('herostats')">
-        <span class="nav-icon">🦸</span><span class="nav-label">Hero &amp; Stats</span>
-      </button>
-      <button class="section-tab" onclick="switchSection('topbar')">
-        <span class="nav-icon">🔔</span><span class="nav-label">Top Bar</span>
-      </button>
-      <button class="section-tab" onclick="switchSection('contactchannels')">
-        <span class="nav-icon">📞</span><span class="nav-label">Contact Channels</span>
-      </button>
-      <button class="section-tab" onclick="switchSection('socials')">
-        <span class="nav-icon">🔗</span><span class="nav-label">Social Links</span>
-      </button>
       <button class="section-tab" onclick="switchSection('ticker')">
         <span class="nav-icon">📢</span><span class="nav-label">News Ticker</span>
-      </button>
-      <button class="section-tab" onclick="switchSection('successticker')">
-        <span class="nav-icon">🎉</span><span class="nav-label">Success Ticker</span>
       </button>
       <button class="section-tab" onclick="switchSection('pushnotif')">
         <span class="nav-icon">📱</span><span class="nav-label">Push Broadcast</span>
@@ -1138,38 +1123,6 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="btn-row">
             <button class="btn btn-success" onclick="addTickerItem()" id="addTickerBtn">📢 Add Item</button>
             <button class="btn btn-ghost" onclick="clearTickerForm()">Clear</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ SUCCESS TICKER ══ -->
-    <div class="admin-section" id="section-successticker">
-      <div class="section-header">
-        <h2 class="section-title-h2">🎉 Success Ticker</h2>
-        <button class="btn btn-success btn-sm" onclick="switchTab('success','add')">+ Add Win</button>
-      </div>
-      <div class="admin-tabs">
-        <button class="admin-tab active" onclick="switchTab('success','list')">All Wins</button>
-        <button class="admin-tab" onclick="switchTab('success','add')">Add Win</button>
-      </div>
-      <div class="admin-panel active" id="success-tab-list">
-        <div class="section-card">
-          <div class="card-title">🎉 Student Wins</div>
-          <div id="successList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div></div></div></div>
-        </div>
-      </div>
-      <div class="admin-panel" id="success-tab-add">
-        <div class="section-card">
-          <div class="card-title">➕ Add Student Win</div>
-          <div class="form-group"><label>Win Message *</label><input type="text" id="swAddText" placeholder="e.g. Just got admitted into UNILAG Medicine!"></div>
-          <div class="form-row">
-            <div class="form-group"><label>Student (optional)</label><input type="text" id="addSuccessStudent" placeholder="e.g. Tolu A."></div>
-            <div class="form-group"><label>School (optional)</label><input type="text" id="addSuccessSchool" placeholder="e.g. UNILAG"></div>
-          </div>
-          <div class="btn-row">
-            <button class="btn btn-success" onclick="addSuccessWin()" id="addSuccessBtn">🎉 Add Win</button>
-            <button class="btn btn-ghost" onclick="clearSuccessForm()">Clear</button>
           </div>
         </div>
       </div>
@@ -1884,136 +1837,6 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       </div>
     </div>
 
-                    <!-- HERO & STATS -->
-    <div class="admin-section" id="section-herostats">
-      <div class="section-header"><h2 class="section-title-h2">🦸 Hero &amp; Stats Editor</h2></div>
-      <div class="section-card">
-        <div class="card-title">🎯 Hero Section</div>
-        <div class="nelfund-highlight"><h4>ℹ️ Live preview</h4><p>Changes update <strong>hero-config.json</strong>. The homepage loads this file on every visit — save, then refresh the site.</p></div>
-        <div class="form-row">
-          <div class="form-group"><label>Badge Text</label><input type="text" id="hc_badge" value="Nigeria's #1 Free Student Platform — Since 2023"></div>
-          <div class="form-group"><label>Badge Dot Color</label>
-            <select id="hc_badgeColor"><option value="#f97316" selected>Orange (Default)</option><option value="#10b981">Green</option><option value="#3b82f6">Blue</option><option value="#ef4444">Red</option></select>
-          </div>
-        </div>
-        <div class="form-group"><label>Hero Headline *</label>
-          <input type="text" id="hc_headline" value="Your Admission Success Starts Here">
-          <div class="form-hint">Use [brackets] to wrap the orange highlighted text e.g. Your [Admission Success] Starts Here</div>
-        </div>
-        <div class="form-group"><label>Hero Description</label>
-          <textarea id="hc_desc" style="min-height:70px;">JAMB prep, Post-UTME calculator, scholarships, free textbooks and live campus news — everything you need, completely free.</textarea>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Primary CTA Label</label><input type="text" id="hc_cta1" value="🎯 Start CBT Practice"></div>
-          <div class="form-group"><label>Primary CTA Link</label><input type="text" id="hc_cta1link" value="cbt.html"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Secondary CTA Label</label><input type="text" id="hc_cta2" value="💬 Chat on WhatsApp"></div>
-          <div class="form-group"><label>Secondary CTA Link</label><input type="text" id="hc_cta2link" value="https://wa.me/2349049871643"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Ghost CTA Label</label><input type="text" id="hc_cta3" value="🗂 Explore All Tools"></div>
-          <div class="form-group"><label>Ghost CTA Link</label><input type="text" id="hc_cta3link" value="explore.html"></div>
-        </div>
-        <div class="btn-row"><button class="btn btn-primary" onclick="saveHeroConfig()">💾 Save Hero Config</button></div>
-      </div>
-      <div class="section-card">
-        <div class="card-title">📊 Animated Stats / Counters</div>
-        <div class="form-hint" style="margin-bottom:14px">These numbers animate on scroll in the hero and About sections. Update as your platform grows.</div>
-        <div class="form-row-3">
-          <div class="form-group"><label>Students Reached</label><input type="number" id="st_students" value="10000" min="0"><div class="form-hint">Shows as: 10K+ Students Reached</div></div>
-          <div class="form-group"><label>News Articles</label><input type="number" id="st_news" value="500" min="0"><div class="form-hint">Shows as: 500+ News Articles</div></div>
-          <div class="form-group"><label>Free eBooks</label><input type="number" id="st_books" value="100" min="0"><div class="form-hint">Shows as: 100+ Free eBooks</div></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Active Scholarships</label><input type="number" id="st_scholarships" value="50" min="0"><div class="form-hint">Shows as: 50+ Scholarships</div></div>
-          <div class="form-group"><label>WhatsApp Community Members</label><input type="number" id="st_community" value="10000" min="0"><div class="form-hint">Shows as: 10,000+ Members</div></div>
-        </div>
-        <div class="btn-row"><button class="btn btn-primary" onclick="saveStatsConfig()">💾 Save Stats</button></div>
-      </div>
-    </div>
-
-            <!-- TOP BAR -->
-    <div class="admin-section" id="section-topbar">
-      <div class="section-header"><h2 class="section-title-h2">🔔 Notification Top Bar</h2></div>
-      <div class="section-card">
-        <div class="card-title">🔔 Top Bar Configuration</div>
-        <div class="nelfund-highlight"><h4>ℹ️ About the Top Bar</h4><p>The thin bar at the very top prompts visitors to enable push notifications. It shows once per session. Use it for your most important announcement or CTA.</p></div>
-        <div class="form-group"><label>Top Bar Status</label>
-          <select id="tb_status"><option value="enabled">🟢 Enabled — show to visitors</option><option value="disabled">🔴 Disabled — hidden from all</option></select>
-        </div>
-        <div class="form-group"><label>Top Bar Message *</label><input type="text" id="tb_message" value="🔔 Stay updated! Enable notifications for instant JAMB, scholarship &amp; admission alerts."></div>
-        <div class="form-row">
-          <div class="form-group"><label>Enable Button Label</label><input type="text" id="tb_enableLabel" value="Enable"></div>
-          <div class="form-group"><label>Dismiss Button Label</label><input type="text" id="tb_dismissLabel" value="✕"></div>
-        </div>
-        <div class="form-group"><label>Show Delay (seconds)</label>
-          <input type="number" id="tb_delay" value="5" min="0" max="60">
-          <div class="form-hint">Seconds after page load before the bar appears. Default: 5</div>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="saveTopBarConfig()">💾 Save Top Bar Config</button>
-          <button class="btn btn-ghost" onclick="previewTopBar()">👁 Preview</button>
-        </div>
-        <div id="topbar-preview" style="display:none;margin-top:14px;background:#1a3fa8;color:#fff;padding:11px 16px;border-radius:9px;align-items:center;justify-content:space-between;gap:10px;font-size:0.82rem;flex-wrap:wrap">
-          <div id="topbar-preview-msg"></div>
-          <div style="display:flex;gap:8px">
-            <span style="background:#fff;color:#1a3fa8;padding:4px 12px;border-radius:4px;font-size:0.74rem;font-weight:700;cursor:pointer" id="topbar-preview-en"></span>
-            <span style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:4px 10px;border-radius:4px;font-size:0.74rem;cursor:pointer" id="topbar-preview-dis"></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CONTACT CHANNELS -->
-    <div class="admin-section" id="section-contactchannels">
-      <div class="section-header"><h2 class="section-title-h2">📞 Contact Channels</h2></div>
-      <div class="section-card">
-        <div class="card-title">💬 WhatsApp Channels</div>
-        <div class="form-row">
-          <div class="form-group"><label>Primary WhatsApp (Direct Message)</label><input type="url" id="cc_waDirect" value="https://wa.me/2349049871643"><div class="form-hint">Used on the floating chat button, hero CTA and contact form fallback</div></div>
-          <div class="form-group"><label>WhatsApp Business Number</label><input type="text" id="cc_waNumber" value="2349049871643"><div class="form-hint">Country code + number, no spaces or +</div></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Community Group Link (Brainy Buddies)</label><input type="url" id="cc_waGroup" value="https://chat.whatsapp.com/FDtwbP0d4Z87e8o8lTW0UO"></div>
-          <div class="form-group"><label>WhatsApp Channel Link</label><input type="url" id="cc_waChannel" value="https://whatsapp.com/channel/0029VbC665dFnSzF7HzlDh2Q"></div>
-        </div>
-      </div>
-      <div class="section-card">
-        <div class="card-title">📧 Email &amp; Other</div>
-        <div class="form-row">
-          <div class="form-group"><label>Contact Email Address</label><input type="email" id="cc_email" value="bigquamsmedia@gmail.com"></div>
-          <div class="form-group"><label>Formspree Form ID</label><input type="text" id="cc_formspree" value="mqegznag"><div class="form-hint">ID from formspree.io — used in contact form</div></div>
-        </div>
-      </div>
-      <div class="section-card">
-        <div class="card-title">📋 Contact Card Labels</div>
-        <div class="form-hint" style="margin-bottom:14px">Labels for the 4 contact channel cards shown in the Contact section.</div>
-        <div class="form-row"><div class="form-group"><label>Card 1 Label</label><input type="text" id="cc_c1label" value="Chat on WhatsApp"></div><div class="form-group"><label>Card 1 Subtitle</label><input type="text" id="cc_c1sub" value="Direct message — fastest response"></div></div>
-        <div class="form-row"><div class="form-group"><label>Card 2 Label</label><input type="text" id="cc_c2label" value="Send an Email"></div><div class="form-group"><label>Card 2 Subtitle</label><input type="text" id="cc_c2sub" value="bigquamsmedia@gmail.com"></div></div>
-        <div class="form-row"><div class="form-group"><label>Card 3 Label</label><input type="text" id="cc_c3label" value="Join Brainy Buddies Group"></div><div class="form-group"><label>Card 3 Subtitle</label><input type="text" id="cc_c3sub" value="Community of Nigerian students"></div></div>
-        <div class="form-row"><div class="form-group"><label>Card 4 Label</label><input type="text" id="cc_c4label" value="Join Our WhatsApp Channel"></div><div class="form-group"><label>Card 4 Subtitle</label><input type="text" id="cc_c4sub" value="10K+ students already subscribed"></div></div>
-        <div class="btn-row"><button class="btn btn-primary" onclick="saveContactConfig()">💾 Save Contact Config</button></div>
-      </div>
-    </div>
-
-    <!-- SOCIAL LINKS -->
-    <div class="admin-section" id="section-socials">
-      <div class="section-header"><h2 class="section-title-h2">🔗 Social Media Links</h2></div>
-      <div class="section-card">
-        <div class="card-title">📱 Social Profiles</div>
-        <div class="nelfund-highlight"><h4>ℹ️ Where these appear</h4><p>Social links appear as icon buttons in the site <strong>footer</strong>. Leave optional fields blank to hide those icons.</p></div>
-        <div class="form-group"><label>Facebook Profile URL</label><input type="url" id="sl_facebook" value="https://www.facebook.com/bigquamsmedia"></div>
-        <div class="form-group"><label>Instagram Profile URL</label><input type="url" id="sl_instagram" value="https://www.instagram.com/bigquamsmedia"></div>
-        <div class="form-group"><label>Telegram Channel / Group URL</label><input type="url" id="sl_telegram" value="https://t.me/bigquamsmedia"></div>
-        <div class="form-group"><label>Twitter / X Profile URL (optional)</label><input type="url" id="sl_twitter" placeholder="https://x.com/…"></div>
-        <div class="form-group"><label>TikTok Profile URL (optional)</label><input type="url" id="sl_tiktok" placeholder="https://www.tiktok.com/@…"></div>
-        <div class="form-group"><label>YouTube Channel URL (optional)</label><input type="url" id="sl_youtube" placeholder="https://www.youtube.com/@…"></div>
-        <div class="form-group"><label>LinkedIn Page URL (optional)</label><input type="url" id="sl_linkedin" placeholder="https://www.linkedin.com/company/…"></div>
-        <div class="btn-row"><button class="btn btn-primary" onclick="saveSocialsConfig()">💾 Save Social Links</button></div>
-      </div>
-    </div>
-
     <!-- ══ ACTIVITY LOG (CEO ONLY) ══ -->
     <div class="admin-section" id="section-activitylog">
       <div class="section-header">
@@ -2517,7 +2340,7 @@ let spotlightData=[], reviewsData=[], qaData=[];
 let calData=[], schData=[];
 let postutmeData=[], comboData=[];
 let nelfundData=[], prepData=[];
-let tickerData=[], successData=[];
+let tickerData=[];
 
 const SUBJECT_LABELS = {
   english:'Use of English',maths:'Mathematics',physics:'Physics',chemistry:'Chemistry',
@@ -3226,7 +3049,7 @@ async function init(){
   try{
     [newsData, booksData, dykData, spotlightData, reviewsData, qaData,
      calData, schData, postutmeData, comboData, nelfundData, prepData,
-     tickerData, successData] = await Promise.all([
+     tickerData] = await Promise.all([
       fbLoad('fs_news'),
       fbLoad('fs_books'),
       fbLoad('fs_dyk'),
@@ -3235,12 +3058,11 @@ async function init(){
       fbLoad('fs_qa'),
       fbLoad('fs_calendar','title','asc'),
       fbLoad('fs_scholarships'),
-      fbLoad('fs_postutme_schools','school','asc'),
+      fbLoad('fs_postutme_schools','name','asc'),
       fbLoad('fs_subject_combo','course','asc'),
       fbLoad('fs_nelfund'),
       fbLoad('fs_prep_guides'),
       fbLoad('fs_ticker'),
-      fbLoad('fs_success_ticker'),
     ]);
     renderAll();
     updateBadges();
@@ -3311,7 +3133,7 @@ window.openModal=openModal; window.closeModal=closeModal; window.handleOverlay=h
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
 
 // ── SECTION & TAB SWITCHING ──
-const ALL_SECTIONS=['dashboard','news','newsroom','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','campuslife','campusgist','polls','dailyhub','anonymous','herostats','topbar','contactchannels','socials','activitylog','users','reviews','qa','calendar','ticker','successticker','pushnotif'];
+const ALL_SECTIONS=['dashboard','news','newsroom','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','campuslife','campusgist','polls','dailyhub','anonymous','activitylog','users','reviews','qa','calendar','ticker','pushnotif'];
 
 function toggleSidebar(){
   const isOpen=document.getElementById('adminSidebar').classList.contains('open');
@@ -3358,7 +3180,7 @@ function switchTab(sec,tab){
     sch:'section-scholarships',
     cbt:'section-cbt',postutme:'section-postutme',combo:'section-subjectcombo',
     nelfund:'section-nelfund',prep:'section-postutmeprep',
-    ticker:'section-ticker',success:'section-successticker',pucbt:'section-postutmecbt',
+    ticker:'section-ticker',pucbt:'section-postutmecbt',
     rev:'section-reviews',qa:'section-qa',cal:'section-calendar',
     polls:'section-polls',campusgist:'section-campusgist',cl:'section-campuslife'
   };
@@ -4518,56 +4340,15 @@ const CONTACT_FILE='contact-config.json';
 const SOCIALS_FILE='socials-config.json';
 
 let tickerSha='', tickerItems=[];
-let successSha='', successItems=[];
 
-// ── Load ticker & success from GitHub (added to init) ──
+// ── Load ticker from Firestore (added to init) ──
 async function loadSiteConfigFiles(){
   try{
     tickerData=await fbLoad('fs_ticker');
     tickerItems=tickerData;
     renderTickerList(); updateBadges();
-  }catch(e){ console.warn('ticker.json',e.message); }
-  try{
-    successData=await fbLoad('fs_success_ticker');
-    successItems=successData;
-    renderSuccessList(); updateBadges();
-  }catch(e){ console.warn('success-ticker.json',e.message); }
+  }catch(e){ console.warn('ticker load:',e.message); }
 }
-
-// ── HERO CONFIG ──
-async function saveHeroConfig(){
-  const cfg={
-    badge:document.getElementById('hc_badge').value.trim(),
-    badgeColor:document.getElementById('hc_badgeColor').value,
-    headline:document.getElementById('hc_headline').value.trim(),
-    desc:document.getElementById('hc_desc').value.trim(),
-    cta1:{label:document.getElementById('hc_cta1').value.trim(),link:document.getElementById('hc_cta1link').value.trim()},
-    cta2:{label:document.getElementById('hc_cta2').value.trim(),link:document.getElementById('hc_cta2link').value.trim()},
-    cta3:{label:document.getElementById('hc_cta3').value.trim(),link:document.getElementById('hc_cta3link').value.trim()}
-  };
-  try{
-    const r={data:[{}]}; try{const hd=await window.getDoc(window.doc(window.db,'fs_config','hero'));if(hd.exists())r.data=[hd.data()];}catch(e){}
-    await window.setDoc(window.doc(window.db,'fs_config','hero'),cfg); logAdminActivity('edit','config','Update hero config');
-    showStatus('success','✅ Hero config saved!');
-  }catch(e){ showStatus('error','❌ '+e.message); }
-}
-window.saveHeroConfig=saveHeroConfig;
-
-async function saveStatsConfig(){
-  const stats={
-    students:parseInt(document.getElementById('st_students').value)||10000,
-    news:parseInt(document.getElementById('st_news').value)||500,
-    books:parseInt(document.getElementById('st_books').value)||100,
-    scholarships:parseInt(document.getElementById('st_scholarships').value)||50,
-    community:parseInt(document.getElementById('st_community').value)||10000
-  };
-  try{
-    const r={data:[{}]}; try{const std=await window.getDoc(window.doc(window.db,'fs_config','stats'));if(std.exists())r.data=[std.data()];}catch(e){}
-    await window.setDoc(window.doc(window.db,'fs_config','stats'),stats); logAdminActivity('edit','config','Update stats config');
-    showStatus('success','✅ Stats saved! Hero and About section counters will reflect these on next visit.');
-  }catch(e){ showStatus('error','❌ '+e.message); }
-}
-window.saveStatsConfig=saveStatsConfig;
 
 // ── TICKER ITEMS ──
 function renderTickerList(){
@@ -4603,112 +4384,6 @@ async function deleteTickerItem(idx){
   catch(e){ tickerItems.splice(idx,0,r); showStatus('error',e.message); }
 }
 window.deleteTickerItem=deleteTickerItem;
-
-// ── SUCCESS TICKER ──
-function renderSuccessList(){
-  const el=document.getElementById('successList'); if(!el) return;
-  document.getElementById('cnt-success').textContent=successItems.length;
-  const dmEl=document.getElementById('dm-cnt-success'); if(dmEl) dmEl.textContent=successItems.length+' wins';
-  if(!successItems.length){el.innerHTML='<div class="empty"><div class="ei">🎉</div><p>No wins yet. Add student achievements.</p></div>';return;}
-  el.innerHTML='<div class="items-list">'+successItems.map((s,idx)=>`
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px">
-      <div style="font-size:1.1rem;flex-shrink:0">🎉</div>
-      <div style="flex:1;font-size:0.84rem;color:var(--text)">${s.text||s}</div>
-      <button class="btn btn-danger btn-sm" onclick="deleteSuccessWin(${idx})">🗑</button>
-    </div>`).join('')+'</div>';
-}
-
-async function addSuccessWin(){
-  const text=document.getElementById('swAddText').value.trim();
-  if(!text){showStatus('error','Enter the student win message.');return;}
-  successItems.push({text});
-  const btn=document.getElementById('addSuccessBtn'); btn.disabled=true; btn.textContent='Adding…';
-  try{ await fbAdd('fs_success_ticker',{text,student:document.getElementById('addSuccessStudent')?document.getElementById('addSuccessStudent').value.trim():'',school:document.getElementById('addSuccessSchool')?document.getElementById('addSuccessSchool').value.trim():''},'Add win: '+text.slice(0,40)); successData=await fbLoad('fs_success_ticker'); showStatus('success','🎉 Win added!'); clearSuccessForm(); renderSuccessList(); switchTab('success','list'); }
-  catch(e){ successItems.pop(); showStatus('error',e.message); }
-  btn.disabled=false; btn.textContent='🎉 Add Win';
-}
-window.addSuccessWin=addSuccessWin;
-function clearSuccessForm(){ document.getElementById('swAddText').value=''; }
-window.clearSuccessForm=clearSuccessForm;
-async function deleteSuccessWin(idx){
-  if(!confirm('Delete this win?')) return;
-  const r=successItems.splice(idx,1)[0];
-  try{ const item=successData[idx]; if(item&&item._id) await fbDelete('fs_success_ticker',item._id,'Delete win'); successData=await fbLoad('fs_success_ticker'); renderSuccessList(); showStatus('success','🗑 Deleted.'); }
-  catch(e){ successItems.splice(idx,0,r); showStatus('error',e.message); }
-}
-window.deleteSuccessWin=deleteSuccessWin;
-
-// ── TOP BAR CONFIG ──
-async function saveTopBarConfig(){
-  const cfg={
-    status:document.getElementById('tb_status').value,
-    message:document.getElementById('tb_message').value.trim(),
-    enableLabel:document.getElementById('tb_enableLabel').value.trim()||'Enable',
-    dismissLabel:document.getElementById('tb_dismissLabel').value.trim()||'✕',
-    delaySeconds:parseInt(document.getElementById('tb_delay').value)||5
-  };
-  try{
-    const r={data:[{}]}; try{const tbd=await window.getDoc(window.doc(window.db,'fs_config','topbar'));if(tbd.exists())r.data=[tbd.data()];}catch(e){}
-    await window.setDoc(window.doc(window.db,'fs_config','topbar'),cfg); logAdminActivity('edit','config','Update top bar config');
-    showStatus('success','✅ Top bar config saved!');
-  }catch(e){ showStatus('error','❌ '+e.message); }
-}
-window.saveTopBarConfig=saveTopBarConfig;
-
-function previewTopBar(){
-  const msg=document.getElementById('tb_message').value;
-  const en=document.getElementById('tb_enableLabel').value||'Enable';
-  const dis=document.getElementById('tb_dismissLabel').value||'✕';
-  const box=document.getElementById('topbar-preview');
-  document.getElementById('topbar-preview-msg').textContent=msg;
-  document.getElementById('topbar-preview-en').textContent=en;
-  document.getElementById('topbar-preview-dis').textContent=dis;
-  box.style.display=box.style.display==='flex'?'none':'flex';
-}
-window.previewTopBar=previewTopBar;
-
-// ── CONTACT CONFIG ──
-async function saveContactConfig(){
-  const cfg={
-    waDirect:document.getElementById('cc_waDirect').value.trim(),
-    waNumber:document.getElementById('cc_waNumber').value.trim(),
-    waGroup:document.getElementById('cc_waGroup').value.trim(),
-    waChannel:document.getElementById('cc_waChannel').value.trim(),
-    email:document.getElementById('cc_email').value.trim(),
-    formspree:document.getElementById('cc_formspree').value.trim(),
-    cards:[
-      {label:document.getElementById('cc_c1label').value.trim(),sub:document.getElementById('cc_c1sub').value.trim()},
-      {label:document.getElementById('cc_c2label').value.trim(),sub:document.getElementById('cc_c2sub').value.trim()},
-      {label:document.getElementById('cc_c3label').value.trim(),sub:document.getElementById('cc_c3sub').value.trim()},
-      {label:document.getElementById('cc_c4label').value.trim(),sub:document.getElementById('cc_c4sub').value.trim()}
-    ]
-  };
-  try{
-    const r={data:[{}]}; try{const ctd=await window.getDoc(window.doc(window.db,'fs_config','contact'));if(ctd.exists())r.data=[ctd.data()];}catch(e){}
-    await window.setDoc(window.doc(window.db,'fs_config','contact'),cfg); logAdminActivity('edit','config','Update contact config');
-    showStatus('success','✅ Contact channels saved!');
-  }catch(e){ showStatus('error','❌ '+e.message); }
-}
-window.saveContactConfig=saveContactConfig;
-
-// ── SOCIALS CONFIG ──
-async function saveSocialsConfig(){
-  const cfg={
-    facebook:document.getElementById('sl_facebook').value.trim(),
-    instagram:document.getElementById('sl_instagram').value.trim(),
-    telegram:document.getElementById('sl_telegram').value.trim(),
-    twitter:document.getElementById('sl_twitter').value.trim(),
-    tiktok:document.getElementById('sl_tiktok').value.trim(),
-    youtube:document.getElementById('sl_youtube').value.trim(),
-    linkedin:document.getElementById('sl_linkedin').value.trim()
-  };
-  try{
-    const r={data:[{}]}; try{const sod=await window.getDoc(window.doc(window.db,'fs_config','socials'));if(sod.exists())r.data=[sod.data()];}catch(e){}
-    await window.setDoc(window.doc(window.db,'fs_config','socials'),cfg); logAdminActivity('edit','config','Update socials config');
-    showStatus('success','✅ Social links saved!');
-  }catch(e){ showStatus('error','❌ '+e.message); }
-}
-window.saveSocialsConfig=saveSocialsConfig;
 
 
 // ════════════════════════════════════
