@@ -1504,6 +1504,15 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="admin-panel active" id="adm-tab-list">
         <div class="section-card">
           <div class="card-title">🏫 School &amp; Course Requirements</div>
+          <div class="form-row" style="margin-bottom:14px">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Filter by School</label>
+              <select id="admSchoolFilter" onchange="renderAdmissionReqs()"><option value="">All schools</option></select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;display:flex;align-items:flex-end">
+              <button class="btn btn-danger btn-sm" onclick="deleteAllForSchool()" id="admDeleteAllBtn" style="width:100%" disabled>🗑 Delete All for Selected School</button>
+            </div>
+          </div>
           <div id="admissionReqList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div></div></div>
         </div>
       </div>
@@ -1516,19 +1525,44 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <div class="form-group"><label>Course *</label><input type="text" id="admAddCourse" placeholder="e.g. Medicine and Surgery"></div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label>Minimum JAMB Score *</label><input type="number" id="admAddMinJamb" placeholder="e.g. 280" min="0" max="400"></div>
-            <div class="form-group"><label>Minimum Post-UTME/DE Score</label><input type="number" id="admAddMinPostUtme" placeholder="e.g. 60 (leave blank if not used)" min="0"></div>
+            <div class="form-group"><label>Academic Session *</label><input type="text" id="admAddSession" placeholder="e.g. 2025/2026"></div>
+            <div class="form-group"><label>Admission Method *</label>
+              <select id="admAddMethod" onchange="toggleAdmMethodFields()">
+                <option value="aggregate">Aggregate (JAMB + Post-UTME weighted)</option>
+                <option value="screening">Screening (no Post-UTME score — document/interview based)</option>
+                <option value="jamb_only">JAMB Score Only</option>
+              </select>
+            </div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label>Cutoff Aggregate (optional)</label><input type="number" id="admAddCutoffAggregate" placeholder="e.g. 65 — used if you weight JAMB+Post-UTME"></div>
+            <div class="form-group"><label>Minimum JAMB Score *</label><input type="number" id="admAddMinJamb" placeholder="e.g. 280" min="0" max="400"></div>
+            <div class="form-group"><label>Minimum Post-UTME/DE Score</label><input type="number" id="admAddMinPostUtme" placeholder="e.g. 60" min="0"></div>
+          </div>
+          <div class="form-row" id="admWeightRow">
+            <div class="form-group"><label>JAMB Weight % (of aggregate)</label><input type="number" id="admAddJambWeight" placeholder="e.g. 40" min="0" max="100"></div>
+            <div class="form-group"><label>Post-UTME Weight % (of aggregate)</label><input type="number" id="admAddPostWeight" placeholder="e.g. 60" min="0" max="100"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Cutoff Aggregate (out of 100)</label><input type="number" id="admAddCutoffAggregate" placeholder="e.g. 65 — required if using Aggregate method" min="0" max="100"></div>
             <div class="form-group"><label>Minimum O-Level Credits *</label><input type="number" id="admAddMinOlevel" value="5" min="1" max="9"></div>
           </div>
           <div class="form-group"><label>Required O-Level Subjects (comma-separated) *</label><input type="text" id="admAddSubjects" placeholder="e.g. English Language, Mathematics, Biology, Chemistry, Physics"></div>
-          <div class="form-group"><label>Notes (shown to students)</label><textarea id="admAddNotes" style="min-height:60px" placeholder="Any extra context, e.g. 'Very competitive — UTME weighted 60%'"></textarea></div>
+          <div class="form-group"><label>Notes / Previous Year's Experience (shown to students)</label><textarea id="admAddNotes" style="min-height:70px" placeholder="e.g. 'Official cutoff was 200, but based on 2025 admissions, students were admitted from 230+ due to high competition.'"></textarea></div>
           <div class="btn-row">
             <button class="btn btn-success" onclick="addAdmissionReq()" id="addAdmReqBtn">🎯 Add Requirement</button>
             <button class="btn btn-ghost" onclick="clearAdmissionReqForm()">Clear</button>
           </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-title">📤 Bulk Upload via CSV</div>
+          <p class="form-hint" style="margin-bottom:12px">Upload many schools/courses at once instead of adding them one by one. Existing requirements are not affected — this only adds new rows.</p>
+          <button class="btn btn-ghost btn-sm" onclick="downloadAdmCsvTemplate()" style="margin-bottom:12px">⬇️ Download CSV Template</button>
+          <div class="form-group"><label>CSV File</label><input type="file" id="admCsvFile" accept=".csv"></div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="uploadAdmissionCsv()" id="admCsvBtn">📤 Upload &amp; Import</button>
+          </div>
+          <div id="admCsvResult" style="margin-top:12px;font-size:.8rem"></div>
         </div>
       </div>
 
@@ -4099,22 +4133,44 @@ async function deletePrep(idx){
 window.deletePrep=deletePrep;
 
 // ── ADMISSION CHANCES CALCULATOR ──
+function admEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+const ADM_METHOD_LABEL={aggregate:'📊 Aggregate',screening:'📋 Screening',jamb_only:'✏️ JAMB Only'};
+
 function renderAdmissionReqs(){
   const el=document.getElementById('admissionReqList'); if(!el) return;
+  const filterEl=document.getElementById('admSchoolFilter');
+  const deleteAllBtn=document.getElementById('admDeleteAllBtn');
+
+  // Populate filter dropdown (preserve current selection across re-renders)
+  if(filterEl){
+    const current=filterEl.value;
+    const schools=[...new Set(admissionReqData.map(r=>r.school))].sort();
+    filterEl.innerHTML='<option value="">All schools</option>'+schools.map(s=>`<option value="${admEsc(s)}"${s===current?' selected':''}>${admEsc(s)} (${admissionReqData.filter(r=>r.school===s).length})</option>`).join('');
+    if(deleteAllBtn) deleteAllBtn.disabled=!filterEl.value;
+  }
+  const selectedSchool=filterEl?filterEl.value:'';
+
   if(!admissionReqData.length){el.innerHTML='<div class="empty"><div class="ei">🎯</div><p>No requirements yet. Add a school + course above.</p></div>';return;}
-  el.innerHTML='<div class="items-list">'+admissionReqData.map((r,idx)=>`
+
+  // Keep original array indices (needed by deleteAdmissionReq) while filtering for display
+  const rows=admissionReqData.map((r,idx)=>({r,idx})).filter(({r})=>!selectedSchool||r.school===selectedSchool);
+  if(!rows.length){el.innerHTML='<div class="empty"><div class="ei">🔍</div><p>No requirements for this school.</p></div>';return;}
+
+  el.innerHTML='<div class="items-list">'+rows.map(({r,idx})=>`
     <div class="content-item">
       <div class="item-header" onclick="toggleExpand(this)">
         <div class="item-num" style="font-size:1.1rem">🎯</div>
         <div class="item-info">
-          <div class="item-title">${r.school} — ${r.course}</div>
-          <div class="item-meta">Min JAMB: ${r.minJamb||'—'} ${r.minPostUtme?'· Min Post-UTME: '+r.minPostUtme:''} · ${r.minOlevel||5} O-Level credits</div>
+          <div class="item-title">${admEsc(r.school)} — ${admEsc(r.course)} <span class="item-cat" style="background:var(--light);color:var(--muted);font-size:.6rem">${ADM_METHOD_LABEL[r.method]||'📊 Aggregate'}${r.session?' · '+admEsc(r.session):''}</span></div>
+          <div class="item-meta">Min JAMB: ${r.minJamb||'—'} ${r.minPostUtme?'· Min Post-UTME: '+r.minPostUtme:''} ${r.cutoffAggregate?'· Cutoff Aggregate: '+r.cutoffAggregate:''} · ${r.minOlevel||5} O-Level credits</div>
         </div>
         <span class="item-chevron">▼</span>
       </div>
       <div class="item-expand">
-        <div class="item-preview">Required subjects: ${(r.subjects||[]).join(', ')||'—'}</div>
-        ${r.notes?`<div class="item-meta" style="margin-bottom:8px">${r.notes}</div>`:''}
+        <div class="item-preview">Required subjects: ${admEsc((r.subjects||[]).join(', '))||'—'}</div>
+        ${r.method==='aggregate'&&(r.jambWeight||r.postWeight)?`<div class="item-meta" style="margin-bottom:8px">Formula: JAMB ${r.jambWeight||0}% + Post-UTME ${r.postWeight||0}%</div>`:''}
+        ${r.notes?`<div class="item-meta" style="margin-bottom:8px">${admEsc(r.notes)}</div>`:''}
         <div class="item-actions">
           <button class="btn btn-danger btn-sm" onclick="deleteAdmissionReq(${idx})">🗑 Delete</button>
         </div>
@@ -4122,16 +4178,48 @@ function renderAdmissionReqs(){
     </div>`).join('')+'</div>';
 }
 
+async function deleteAllForSchool(){
+  const filterEl=document.getElementById('admSchoolFilter');
+  const school=filterEl?filterEl.value:'';
+  if(!school){ showStatus('error','Select a school to delete first.'); return; }
+  const toDelete=admissionReqData.filter(r=>r.school===school);
+  if(!toDelete.length){ showStatus('error','No requirements found for that school.'); return; }
+  if(!confirm(`Delete all ${toDelete.length} requirement(s) for "${school}"? This cannot be undone.`)) return;
+
+  const btn=document.getElementById('admDeleteAllBtn'); btn.disabled=true; btn.textContent='Deleting…';
+  let deleted=0, failed=0;
+  for(const r of toDelete){
+    try{ if(r._id){ await fbDelete('fs_admission_requirements',r._id,'Bulk delete: '+school); deleted++; } }
+    catch(e){ failed++; }
+  }
+  admissionReqData=await fbLoad('fs_admission_requirements');
+  filterEl.value='';
+  renderAdmissionReqs(); updateBadges();
+  showStatus('success',`🗑 Deleted ${deleted} requirement(s) for ${school}.`+(failed?` (${failed} failed)`:''));
+  btn.textContent='🗑 Delete All for Selected School';
+}
+window.deleteAllForSchool=deleteAllForSchool;
+
+function toggleAdmMethodFields(){
+  const method=document.getElementById('admAddMethod').value;
+  document.getElementById('admWeightRow').style.display=method==='aggregate'?'grid':'none';
+}
+window.toggleAdmMethodFields=toggleAdmMethodFields;
+
 async function addAdmissionReq(){
   const school=document.getElementById('admAddSchool').value.trim();
   const course=document.getElementById('admAddCourse').value.trim();
+  const session=document.getElementById('admAddSession').value.trim();
+  const method=document.getElementById('admAddMethod').value;
   const minJamb=parseInt(document.getElementById('admAddMinJamb').value)||0;
   const minOlevel=parseInt(document.getElementById('admAddMinOlevel').value)||5;
   const subjects=document.getElementById('admAddSubjects').value.split(',').map(s=>s.trim()).filter(Boolean);
-  if(!school||!course||!minJamb||!subjects.length){showStatus('error','Fill in School, Course, Minimum JAMB Score and Required Subjects.');return;}
+  if(!school||!course||!session||!minJamb||!subjects.length){showStatus('error','Fill in School, Course, Session, Minimum JAMB Score and Required Subjects.');return;}
   const item={
-    school,course,minJamb,minOlevel,subjects,
+    school,course,session,method,minJamb,minOlevel,subjects,
     minPostUtme:parseInt(document.getElementById('admAddMinPostUtme').value)||null,
+    jambWeight:method==='aggregate'?(parseFloat(document.getElementById('admAddJambWeight').value)||null):null,
+    postWeight:method==='aggregate'?(parseFloat(document.getElementById('admAddPostWeight').value)||null):null,
     cutoffAggregate:parseFloat(document.getElementById('admAddCutoffAggregate').value)||null,
     notes:document.getElementById('admAddNotes').value.trim()
   };
@@ -4148,10 +4236,100 @@ async function addAdmissionReq(){
 window.addAdmissionReq=addAdmissionReq;
 
 function clearAdmissionReqForm(){
-  ['admAddSchool','admAddCourse','admAddMinJamb','admAddMinPostUtme','admAddCutoffAggregate','admAddSubjects','admAddNotes'].forEach(id=>document.getElementById(id).value='');
+  ['admAddSchool','admAddCourse','admAddSession','admAddMinJamb','admAddMinPostUtme','admAddJambWeight','admAddPostWeight','admAddCutoffAggregate','admAddSubjects','admAddNotes'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('admAddMinOlevel').value='5';
+  document.getElementById('admAddMethod').value='aggregate';
+  toggleAdmMethodFields();
 }
 window.clearAdmissionReqForm=clearAdmissionReqForm;
+
+// ── CSV BULK UPLOAD ──
+// Columns: school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,minOlevel,subjects,notes
+// subjects column: subjects separated by a semicolon (;) since commas separate CSV columns
+function downloadAdmCsvTemplate(){
+  const header='school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,minOlevel,subjects,notes';
+  const example1='University of Lagos,Medicine and Surgery,2025/2026,aggregate,280,65,40,60,65,5,English Language;Mathematics;Biology;Chemistry;Physics,"Official cutoff was 250, but based on 2025 admissions most successful candidates scored 280+"';
+  const example2='University of Ibadan,Law,2025/2026,screening,250,,,,,5,English Language;Mathematics;Literature in English;Government,"Screening is document + interview based, no separate Post-UTME score"';
+  const csv=[header,example1,example2].join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='admission-requirements-template.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+window.downloadAdmCsvTemplate=downloadAdmCsvTemplate;
+
+// Minimal CSV line parser that respects double-quoted fields containing commas.
+function parseCsvLine(line){
+  const out=[]; let cur=''; let inQuotes=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(inQuotes){
+      if(c==='"'){ if(line[i+1]==='"'){cur+='"';i++;} else inQuotes=false; }
+      else cur+=c;
+    }else{
+      if(c==='"') inQuotes=true;
+      else if(c===','){ out.push(cur); cur=''; }
+      else cur+=c;
+    }
+  }
+  out.push(cur);
+  return out.map(s=>s.trim());
+}
+
+async function uploadAdmissionCsv(){
+  const fileInput=document.getElementById('admCsvFile');
+  const resultEl=document.getElementById('admCsvResult');
+  const file=fileInput.files[0];
+  if(!file){ showStatus('error','Choose a CSV file first.'); return; }
+
+  const btn=document.getElementById('admCsvBtn'); btn.disabled=true; btn.textContent='Importing…';
+  resultEl.innerHTML='';
+
+  try{
+    const text=await file.text();
+    const lines=text.split(/\r?\n/).filter(l=>l.trim());
+    if(lines.length<2){ throw new Error('CSV has no data rows.'); }
+    const header=parseCsvLine(lines[0]).map(h=>h.trim());
+    const required=['school','course','session','method','minJamb','minOlevel','subjects'];
+    const missing=required.filter(r=>!header.includes(r));
+    if(missing.length) throw new Error('Missing required column(s): '+missing.join(', '));
+
+    let added=0, failed=0; const errors=[];
+    for(let i=1;i<lines.length;i++){
+      const cols=parseCsvLine(lines[i]);
+      const row={}; header.forEach((h,idx)=>row[h]=cols[idx]!==undefined?cols[idx]:'');
+      try{
+        if(!row.school||!row.course||!row.session||!row.minJamb||!row.subjects) throw new Error('missing required field');
+        const item={
+          school:row.school, course:row.course, session:row.session,
+          method:['aggregate','screening','jamb_only'].includes(row.method)?row.method:'aggregate',
+          minJamb:parseInt(row.minJamb)||0,
+          minOlevel:parseInt(row.minOlevel)||5,
+          subjects:(row.subjects||'').split(';').map(s=>s.trim()).filter(Boolean),
+          minPostUtme:row.minPostUtme?parseInt(row.minPostUtme):null,
+          jambWeight:row.jambWeight?parseFloat(row.jambWeight):null,
+          postWeight:row.postWeight?parseFloat(row.postWeight):null,
+          cutoffAggregate:row.cutoffAggregate?parseFloat(row.cutoffAggregate):null,
+          notes:row.notes||''
+        };
+        await fbAdd('fs_admission_requirements',item,'CSV import: '+item.school+' — '+item.course);
+        added++;
+      }catch(e){ failed++; errors.push('Row '+(i+1)+': '+e.message); }
+    }
+
+    admissionReqData=await fbLoad('fs_admission_requirements');
+    renderAdmissionReqs(); updateBadges();
+    resultEl.innerHTML=`<div style="color:var(--green,#15803d);font-weight:700">✅ Imported ${added} requirement(s).</div>`+
+      (failed?`<div style="color:#b91c1c;margin-top:6px">⚠️ ${failed} row(s) failed:<br>${errors.map(e=>admEsc(e)).join('<br>')}</div>`:'');
+    showStatus('success','📤 CSV import complete: '+added+' added, '+failed+' failed.');
+    fileInput.value='';
+  }catch(e){
+    resultEl.innerHTML=`<div style="color:#b91c1c">❌ ${admEsc(e.message)}</div>`;
+    showStatus('error','CSV import failed: '+e.message);
+  }
+  btn.disabled=false; btn.textContent='📤 Upload & Import';
+}
+window.uploadAdmissionCsv=uploadAdmissionCsv;
 
 async function deleteAdmissionReq(idx){
   if(!confirm('Delete this requirement?')) return;
