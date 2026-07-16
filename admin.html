@@ -1534,19 +1534,46 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
               </select>
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group"><label>Minimum JAMB Score *</label><input type="number" id="admAddMinJamb" placeholder="e.g. 280" min="0" max="400"></div>
-            <div class="form-group"><label>Minimum Post-UTME/DE Score</label><input type="number" id="admAddMinPostUtme" placeholder="e.g. 60" min="0"></div>
+
+          <div class="form-group">
+            <label>Does this course use different cutoffs by candidate category? <span style="font-weight:400;color:var(--muted)">(Merit/Catchment/ELDS, Indigene/Non-Indigene, etc.)</span></label>
+            <select id="admAddUseCategories" onchange="toggleAdmCategoryFields()">
+              <option value="no">No — one cutoff for everyone</option>
+              <option value="yes">Yes — set up categories below</option>
+            </select>
           </div>
-          <div class="form-row" id="admWeightRow">
-            <div class="form-group"><label>JAMB Weight % (of aggregate)</label><input type="number" id="admAddJambWeight" placeholder="e.g. 40" min="0" max="100"></div>
-            <div class="form-group"><label>Post-UTME Weight % (of aggregate)</label><input type="number" id="admAddPostWeight" placeholder="e.g. 60" min="0" max="100"></div>
-          </div>
-          <div class="form-row">
+
+          <div id="admGeneralCutoffFields">
+            <div class="form-row">
+              <div class="form-group"><label>Minimum JAMB Score *</label><input type="number" id="admAddMinJamb" placeholder="e.g. 280" min="0" max="400"></div>
+              <div class="form-group"><label>Minimum Post-UTME/DE Score</label><input type="number" id="admAddMinPostUtme" placeholder="e.g. 60" min="0"></div>
+            </div>
+            <div class="form-row" id="admWeightRow">
+              <div class="form-group"><label>JAMB Weight % (of aggregate)</label><input type="number" id="admAddJambWeight" placeholder="e.g. 40" min="0" max="100"></div>
+              <div class="form-group"><label>Post-UTME Weight % (of aggregate)</label><input type="number" id="admAddPostWeight" placeholder="e.g. 60" min="0" max="100"></div>
+            </div>
             <div class="form-group"><label>Cutoff Aggregate (out of 100)</label><input type="number" id="admAddCutoffAggregate" placeholder="e.g. 65 — required if using Aggregate method" min="0" max="100"></div>
-            <div class="form-group"><label>Minimum O-Level Credits *</label><input type="number" id="admAddMinOlevel" value="5" min="1" max="9"></div>
+          </div>
+
+          <div id="admCategoryFields" style="display:none">
+            <div class="form-hint" style="margin-bottom:10px">Add one row per category this school uses (e.g. Merit, Catchment, ELDS — or Indigene, Non-Indigene). Each can have its own minimum JAMB, Post-UTME and cutoff aggregate.</div>
+            <div id="admCategoryRows"></div>
+            <button type="button" class="add-row-btn" onclick="addAdmCategoryRow()" style="margin-bottom:10px">+ Add Category</button>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group"><label>O-Level Scoring Method *</label>
+              <select id="admAddOlevelMethod" onchange="toggleAdmOlevelFields()">
+                <option value="credit_count">Count of Credit Passes</option>
+                <option value="percentage">Percentage Score</option>
+              </select>
+            </div>
+            <div class="form-group" id="admOlevelCreditGroup"><label>Minimum O-Level Credits *</label><input type="number" id="admAddMinOlevel" value="5" min="1" max="9"></div>
+            <div class="form-group" id="admOlevelPctGroup" style="display:none"><label>Minimum O-Level Percentage *</label><input type="number" id="admAddMinOlevelPct" placeholder="e.g. 60" min="0" max="100"></div>
           </div>
           <div class="form-group"><label>Required O-Level Subjects (comma-separated) *</label><input type="text" id="admAddSubjects" placeholder="e.g. English Language, Mathematics, Biology, Chemistry, Physics"></div>
+          <div class="form-group"><label>Required JAMB Subject Combination (comma-separated, usually 4) <span style="font-weight:400;color:var(--muted)">(optional — separate from O-Level subjects above)</span></label><input type="text" id="admAddJambSubjects" placeholder="e.g. English Language, Biology, Chemistry, Physics"></div>
+          <div class="form-group"><label>Alternative/Substitute Courses (comma-separated) <span style="font-weight:400;color:var(--muted)">(optional)</span></label><input type="text" id="admAddAltCourses" placeholder="e.g. Microbiology, Biochemistry — shown as suggestions if this course is a stretch"></div>
           <div class="form-group"><label>Notes / Previous Year's Experience (shown to students)</label><textarea id="admAddNotes" style="min-height:70px" placeholder="e.g. 'Official cutoff was 200, but based on 2025 admissions, students were admitted from 230+ due to high competition.'"></textarea></div>
           <div class="btn-row">
             <button class="btn btn-success" onclick="addAdmissionReq()" id="addAdmReqBtn">🎯 Add Requirement</button>
@@ -4163,13 +4190,16 @@ function renderAdmissionReqs(){
         <div class="item-num" style="font-size:1.1rem">🎯</div>
         <div class="item-info">
           <div class="item-title">${admEsc(r.school)} — ${admEsc(r.course)} <span class="item-cat" style="background:var(--light);color:var(--muted);font-size:.6rem">${ADM_METHOD_LABEL[r.method]||'📊 Aggregate'}${r.session?' · '+admEsc(r.session):''}</span></div>
-          <div class="item-meta">Min JAMB: ${r.minJamb||'—'} ${r.minPostUtme?'· Min Post-UTME: '+r.minPostUtme:''} ${r.cutoffAggregate?'· Cutoff Aggregate: '+r.cutoffAggregate:''} · ${r.minOlevel||5} O-Level credits</div>
+          <div class="item-meta">${r.useCategories&&(r.categories||[]).length?(r.categories.map(c=>admEsc(c.name)+': '+c.minJamb).join(' · ')):'Min JAMB: '+(r.minJamb||'—')} ${!r.useCategories&&r.minPostUtme?'· Min Post-UTME: '+r.minPostUtme:''} ${!r.useCategories&&r.cutoffAggregate?'· Cutoff Aggregate: '+r.cutoffAggregate:''} · O-Level: ${r.olevelMethod==='percentage'?('min '+r.minOlevelPct+'%'):((r.minOlevel||5)+' credits')}</div>
         </div>
         <span class="item-chevron">▼</span>
       </div>
       <div class="item-expand">
-        <div class="item-preview">Required subjects: ${admEsc((r.subjects||[]).join(', '))||'—'}</div>
-        ${r.method==='aggregate'&&(r.jambWeight||r.postWeight)?`<div class="item-meta" style="margin-bottom:8px">Formula: JAMB ${r.jambWeight||0}% + Post-UTME ${r.postWeight||0}%</div>`:''}
+        <div class="item-preview">Required O-Level subjects: ${admEsc((r.subjects||[]).join(', '))||'—'}</div>
+        ${(r.jambSubjects||[]).length?`<div class="item-meta" style="margin-bottom:6px">JAMB subject combination: ${admEsc(r.jambSubjects.join(', '))}</div>`:''}
+        ${r.useCategories&&(r.categories||[]).length?`<div class="item-meta" style="margin-bottom:6px">Categories: ${r.categories.map(c=>`${admEsc(c.name)} (JAMB ${c.minJamb}${c.minPostUtme?', Post-UTME '+c.minPostUtme:''}${c.cutoffAggregate?', Agg. '+c.cutoffAggregate:''})`).join(' · ')}</div>`:''}
+        ${!r.useCategories&&r.method==='aggregate'&&(r.jambWeight||r.postWeight)?`<div class="item-meta" style="margin-bottom:8px">Formula: JAMB ${r.jambWeight||0}% + Post-UTME ${r.postWeight||0}%</div>`:''}
+        ${(r.altCourses||[]).length?`<div class="item-meta" style="margin-bottom:6px">Alternative courses: ${admEsc(r.altCourses.join(', '))}</div>`:''}
         ${r.notes?`<div class="item-meta" style="margin-bottom:8px">${admEsc(r.notes)}</div>`:''}
         <div class="item-actions">
           <button class="btn btn-danger btn-sm" onclick="deleteAdmissionReq(${idx})">🗑 Delete</button>
@@ -4206,21 +4236,77 @@ function toggleAdmMethodFields(){
 }
 window.toggleAdmMethodFields=toggleAdmMethodFields;
 
+function toggleAdmCategoryFields(){
+  const useCategories=document.getElementById('admAddUseCategories').value==='yes';
+  document.getElementById('admGeneralCutoffFields').style.display=useCategories?'none':'block';
+  document.getElementById('admCategoryFields').style.display=useCategories?'block':'none';
+  if(useCategories && !document.getElementById('admCategoryRows').children.length){
+    addAdmCategoryRow('Merit'); addAdmCategoryRow('Catchment'); addAdmCategoryRow('ELDS');
+  }
+}
+window.toggleAdmCategoryFields=toggleAdmCategoryFields;
+
+function addAdmCategoryRow(name,minJamb,minPostUtme,cutoffAggregate){
+  const wrap=document.getElementById('admCategoryRows');
+  const row=document.createElement('div');
+  row.className='form-row adm-cat-row';
+  row.style.gridTemplateColumns='1fr 1fr 1fr 1fr 34px';
+  row.innerHTML=`
+    <input type="text" class="cat-name" placeholder="Category name (e.g. Merit)" value="${name?admEsc(name):''}">
+    <input type="number" class="cat-jamb" placeholder="Min JAMB" min="0" max="400" value="${minJamb||''}">
+    <input type="number" class="cat-postutme" placeholder="Min Post-UTME" min="0" value="${minPostUtme||''}">
+    <input type="number" class="cat-cutoff" placeholder="Cutoff Agg." min="0" max="100" value="${cutoffAggregate||''}">
+    <button type="button" class="remove-row-btn" onclick="this.parentElement.remove()">✕</button>`;
+  wrap.appendChild(row);
+}
+window.addAdmCategoryRow=addAdmCategoryRow;
+
+function toggleAdmOlevelFields(){
+  const method=document.getElementById('admAddOlevelMethod').value;
+  document.getElementById('admOlevelCreditGroup').style.display=method==='credit_count'?'block':'none';
+  document.getElementById('admOlevelPctGroup').style.display=method==='percentage'?'block':'none';
+}
+window.toggleAdmOlevelFields=toggleAdmOlevelFields;
+
 async function addAdmissionReq(){
   const school=document.getElementById('admAddSchool').value.trim();
   const course=document.getElementById('admAddCourse').value.trim();
   const session=document.getElementById('admAddSession').value.trim();
   const method=document.getElementById('admAddMethod').value;
-  const minJamb=parseInt(document.getElementById('admAddMinJamb').value)||0;
-  const minOlevel=parseInt(document.getElementById('admAddMinOlevel').value)||5;
   const subjects=document.getElementById('admAddSubjects').value.split(',').map(s=>s.trim()).filter(Boolean);
-  if(!school||!course||!session||!minJamb||!subjects.length){showStatus('error','Fill in School, Course, Session, Minimum JAMB Score and Required Subjects.');return;}
+  const olevelMethod=document.getElementById('admAddOlevelMethod').value;
+  const useCategories=document.getElementById('admAddUseCategories').value==='yes';
+
+  let categories=[];
+  if(useCategories){
+    categories=[...document.querySelectorAll('.adm-cat-row')].map(row=>({
+      name:row.querySelector('.cat-name').value.trim(),
+      minJamb:parseInt(row.querySelector('.cat-jamb').value)||0,
+      minPostUtme:parseInt(row.querySelector('.cat-postutme').value)||null,
+      cutoffAggregate:parseFloat(row.querySelector('.cat-cutoff').value)||null
+    })).filter(c=>c.name&&c.minJamb);
+  }
+
+  const minJamb=useCategories?(categories.length?Math.min(...categories.map(c=>c.minJamb)):0):(parseInt(document.getElementById('admAddMinJamb').value)||0);
+  const minOlevel=parseInt(document.getElementById('admAddMinOlevel').value)||5;
+  const minOlevelPct=parseFloat(document.getElementById('admAddMinOlevelPct').value)||null;
+
+  if(!school||!course||!session||!subjects.length){showStatus('error','Fill in School, Course, Session and Required O-Level Subjects.');return;}
+  if(useCategories&&!categories.length){showStatus('error','Add at least one category with a name and minimum JAMB score, or switch back to "one cutoff for everyone".');return;}
+  if(!useCategories&&!minJamb){showStatus('error','Fill in Minimum JAMB Score.');return;}
+  if(olevelMethod==='percentage'&&!minOlevelPct){showStatus('error','Enter a Minimum O-Level Percentage.');return;}
+
   const item={
-    school,course,session,method,minJamb,minOlevel,subjects,
-    minPostUtme:parseInt(document.getElementById('admAddMinPostUtme').value)||null,
-    jambWeight:method==='aggregate'?(parseFloat(document.getElementById('admAddJambWeight').value)||null):null,
-    postWeight:method==='aggregate'?(parseFloat(document.getElementById('admAddPostWeight').value)||null):null,
-    cutoffAggregate:parseFloat(document.getElementById('admAddCutoffAggregate').value)||null,
+    school,course,session,method,subjects,
+    useCategories, categories,
+    minJamb, minOlevel,
+    olevelMethod, minOlevelPct,
+    minPostUtme:useCategories?null:(parseInt(document.getElementById('admAddMinPostUtme').value)||null),
+    jambWeight:(!useCategories&&method==='aggregate')?(parseFloat(document.getElementById('admAddJambWeight').value)||null):null,
+    postWeight:(!useCategories&&method==='aggregate')?(parseFloat(document.getElementById('admAddPostWeight').value)||null):null,
+    cutoffAggregate:useCategories?null:(parseFloat(document.getElementById('admAddCutoffAggregate').value)||null),
+    jambSubjects:document.getElementById('admAddJambSubjects').value.split(',').map(s=>s.trim()).filter(Boolean),
+    altCourses:document.getElementById('admAddAltCourses').value.split(',').map(s=>s.trim()).filter(Boolean),
     notes:document.getElementById('admAddNotes').value.trim()
   };
   admissionReqData.unshift(item);
@@ -4236,21 +4322,33 @@ async function addAdmissionReq(){
 window.addAdmissionReq=addAdmissionReq;
 
 function clearAdmissionReqForm(){
-  ['admAddSchool','admAddCourse','admAddSession','admAddMinJamb','admAddMinPostUtme','admAddJambWeight','admAddPostWeight','admAddCutoffAggregate','admAddSubjects','admAddNotes'].forEach(id=>document.getElementById(id).value='');
+  ['admAddSchool','admAddCourse','admAddSession','admAddMinJamb','admAddMinPostUtme','admAddJambWeight','admAddPostWeight','admAddCutoffAggregate','admAddSubjects','admAddJambSubjects','admAddAltCourses','admAddNotes','admAddMinOlevelPct'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('admAddMinOlevel').value='5';
   document.getElementById('admAddMethod').value='aggregate';
+  document.getElementById('admAddUseCategories').value='no';
+  document.getElementById('admAddOlevelMethod').value='credit_count';
+  document.getElementById('admCategoryRows').innerHTML='';
   toggleAdmMethodFields();
+  toggleAdmCategoryFields();
+  toggleAdmOlevelFields();
 }
 window.clearAdmissionReqForm=clearAdmissionReqForm;
 
 // ── CSV BULK UPLOAD ──
-// Columns: school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,minOlevel,subjects,notes
-// subjects column: subjects separated by a semicolon (;) since commas separate CSV columns
+// Columns: school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,olevelMethod,minOlevel,minOlevelPct,subjects,jambSubjects,categories,altCourses,notes
+// subjects / jambSubjects / altCourses: separated by semicolon (;) since commas separate CSV columns.
+// categories: only needed if this school/course uses different cutoffs per candidate category
+// (Merit/Catchment/ELDS, Indigene/Non-Indigene, etc). Format per category is
+// "Name:minJamb:minPostUtme:cutoffAggregate" (leave minPostUtme/cutoffAggregate blank if unused,
+// e.g. "Merit:250::" ), multiple categories separated by | — e.g.
+// "Merit:250:60:65|Catchment:220:50:55|ELDS:200:40:45"
+// If categories is used, leave minJamb/minPostUtme/cutoffAggregate columns blank — they're ignored.
 function downloadAdmCsvTemplate(){
-  const header='school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,minOlevel,subjects,notes';
-  const example1='University of Lagos,Medicine and Surgery,2025/2026,aggregate,280,65,40,60,65,5,English Language;Mathematics;Biology;Chemistry;Physics,"Official cutoff was 250, but based on 2025 admissions most successful candidates scored 280+"';
-  const example2='University of Ibadan,Law,2025/2026,screening,250,,,,,5,English Language;Mathematics;Literature in English;Government,"Screening is document + interview based, no separate Post-UTME score"';
-  const csv=[header,example1,example2].join('\r\n');
+  const header='school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,olevelMethod,minOlevel,minOlevelPct,subjects,jambSubjects,categories,altCourses,notes';
+  const example1='University of Lagos,Medicine and Surgery,2025/2026,aggregate,280,65,40,60,65,credit_count,5,,English Language;Mathematics;Biology;Chemistry;Physics,English Language;Biology;Chemistry;Physics,,Dentistry;Physiology,"Official cutoff was 250, but based on 2025 admissions most successful candidates scored 280+"';
+  const example2='University of Ibadan,Law,2025/2026,screening,250,,,,,percentage,,65,English Language;Mathematics;Literature in English;Government,English Language;Literature in English;Government;CRS,,,"Screening is document + interview based, no separate Post-UTME score"';
+  const example3='Osun State University,Nursing Science,2025/2026,aggregate,,,,,,credit_count,5,,English Language;Mathematics;Biology;Chemistry;Physics,English Language;Biology;Chemistry;Physics,"Indigene:180:50:60|Non-Indigene:220:60:70",Public Health,"Osun indigenes get a lower cutoff — check your state of origin certificate before applying"';
+  const csv=[header,example1,example2,example3].join('\r\n');
   const blob=new Blob([csv],{type:'text/csv'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob); a.download='admission-requirements-template.csv';
@@ -4276,6 +4374,14 @@ function parseCsvLine(line){
   return out.map(s=>s.trim());
 }
 
+function parseAdmCategories(str){
+  if(!str) return [];
+  return str.split('|').map(part=>{
+    const [name,minJamb,minPostUtme,cutoffAggregate]=part.split(':').map(s=>(s||'').trim());
+    return name?{name,minJamb:parseInt(minJamb)||0,minPostUtme:minPostUtme?parseInt(minPostUtme):null,cutoffAggregate:cutoffAggregate?parseFloat(cutoffAggregate):null}:null;
+  }).filter(Boolean);
+}
+
 async function uploadAdmissionCsv(){
   const fileInput=document.getElementById('admCsvFile');
   const resultEl=document.getElementById('admCsvResult');
@@ -4290,7 +4396,7 @@ async function uploadAdmissionCsv(){
     const lines=text.split(/\r?\n/).filter(l=>l.trim());
     if(lines.length<2){ throw new Error('CSV has no data rows.'); }
     const header=parseCsvLine(lines[0]).map(h=>h.trim());
-    const required=['school','course','session','method','minJamb','minOlevel','subjects'];
+    const required=['school','course','session','subjects'];
     const missing=required.filter(r=>!header.includes(r));
     if(missing.length) throw new Error('Missing required column(s): '+missing.join(', '));
 
@@ -4299,17 +4405,27 @@ async function uploadAdmissionCsv(){
       const cols=parseCsvLine(lines[i]);
       const row={}; header.forEach((h,idx)=>row[h]=cols[idx]!==undefined?cols[idx]:'');
       try{
-        if(!row.school||!row.course||!row.session||!row.minJamb||!row.subjects) throw new Error('missing required field');
+        if(!row.school||!row.course||!row.session||!row.subjects) throw new Error('missing required field');
+        const categories=parseAdmCategories(row.categories);
+        const useCategories=categories.length>0;
+        const olevelMethod=row.olevelMethod==='percentage'?'percentage':'credit_count';
+        if(!useCategories&&!row.minJamb) throw new Error('minJamb required when not using categories');
+        if(olevelMethod==='percentage'&&!row.minOlevelPct) throw new Error('minOlevelPct required when olevelMethod is percentage');
         const item={
           school:row.school, course:row.course, session:row.session,
           method:['aggregate','screening','jamb_only'].includes(row.method)?row.method:'aggregate',
-          minJamb:parseInt(row.minJamb)||0,
+          useCategories, categories,
+          minJamb:useCategories?(categories.length?Math.min(...categories.map(c=>c.minJamb)):0):(parseInt(row.minJamb)||0),
+          olevelMethod,
           minOlevel:parseInt(row.minOlevel)||5,
+          minOlevelPct:row.minOlevelPct?parseFloat(row.minOlevelPct):null,
           subjects:(row.subjects||'').split(';').map(s=>s.trim()).filter(Boolean),
-          minPostUtme:row.minPostUtme?parseInt(row.minPostUtme):null,
-          jambWeight:row.jambWeight?parseFloat(row.jambWeight):null,
-          postWeight:row.postWeight?parseFloat(row.postWeight):null,
-          cutoffAggregate:row.cutoffAggregate?parseFloat(row.cutoffAggregate):null,
+          jambSubjects:(row.jambSubjects||'').split(';').map(s=>s.trim()).filter(Boolean),
+          altCourses:(row.altCourses||'').split(';').map(s=>s.trim()).filter(Boolean),
+          minPostUtme:(!useCategories&&row.minPostUtme)?parseInt(row.minPostUtme):null,
+          jambWeight:(!useCategories&&row.jambWeight)?parseFloat(row.jambWeight):null,
+          postWeight:(!useCategories&&row.postWeight)?parseFloat(row.postWeight):null,
+          cutoffAggregate:(!useCategories&&row.cutoffAggregate)?parseFloat(row.cutoffAggregate):null,
           notes:row.notes||''
         };
         await fbAdd('fs_admission_requirements',item,'CSV import: '+item.school+' — '+item.course);
@@ -4375,8 +4491,8 @@ function renderAdmissionSubmissions(){
         <span class="item-chevron">▼</span>
       </div>
       <div class="item-expand">
-        <div class="item-meta" style="margin-bottom:6px">📞 ${esc(s.phone)||'—'} ${s.email?'· ✉️ '+esc(s.email):''}</div>
-        <div class="item-meta" style="margin-bottom:6px">JAMB: ${esc(s.jambScore)||'—'} · Post-UTME/DE: ${esc(s.postUtmeScore)||'—'}</div>
+        <div class="item-meta" style="margin-bottom:6px">📞 ${esc(s.phone)||'—'} ${s.email?'· ✉️ '+esc(s.email):''} ${s.category?'· Category: '+esc(s.category):''}</div>
+        <div class="item-meta" style="margin-bottom:6px">JAMB: ${esc(s.jambScore)||'—'} · Post-UTME/DE: ${esc(s.postUtmeScore)||'—'} ${(s.jambSubjects||[]).length?'· JAMB Subjects: '+esc(s.jambSubjects.join(', ')):''}</div>
         ${isPaid?`<div class="item-meta" style="margin-bottom:6px">Payment ref: ${esc(s.paymentRef)||'—'} · Amount: ₦${esc(s.amountPaid)||'—'}</div>`:''}
         <div class="item-meta">Time: ${s.createdAt?.toDate?s.createdAt.toDate().toLocaleString():'—'}</div>
       </div>
