@@ -176,6 +176,10 @@ body.dark .sidebar-close-btn{background:#0f172a;color:#94a3b8}
 .sk-tags{display:flex;gap:6px;margin-top:4px}
 .sk-img{height:120px;width:100%;border-radius:8px;margin-bottom:10px}
 .skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--surface-alt,#f0f4ff) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+.csv-progress-track{width:100%;height:10px;background:var(--light);border-radius:6px;overflow:hidden;position:relative}
+body.dark .csv-progress-track{background:#0f172a}
+.csv-progress-fill{height:100%;width:0%;border-radius:6px;background:linear-gradient(90deg,#f97316,#fbbf24,#22c55e);background-size:200% 100%;animation:csvProgressShine 1.2s linear infinite;transition:width .25s ease}
+@keyframes csvProgressShine{0%{background-position:0% 0}100%{background-position:200% 0}}
 body.dark .skeleton{background:linear-gradient(90deg,#2a3550 25%,#1a2236 50%,#2a3550 75%);background-size:200% 100%}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -1574,6 +1578,26 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="form-group"><label>Required O-Level Subjects (comma-separated) *</label><input type="text" id="admAddSubjects" placeholder="e.g. English Language, Mathematics, Biology, Chemistry, Physics"></div>
           <div class="form-group"><label>Required JAMB Subject Combination (comma-separated, usually 4) <span style="font-weight:400;color:var(--muted)">(optional — separate from O-Level subjects above)</span></label><input type="text" id="admAddJambSubjects" placeholder="e.g. English Language, Biology, Chemistry, Physics"></div>
           <div class="form-group"><label>Alternative/Substitute Courses (comma-separated) <span style="font-weight:400;color:var(--muted)">(optional)</span></label><input type="text" id="admAddAltCourses" placeholder="e.g. Microbiology, Biochemistry — shown as suggestions if this course is a stretch"></div>
+
+          <div class="form-group">
+            <label>Does this course accept Direct Entry candidates?</label>
+            <select id="admAddAcceptsDE" onchange="toggleAdmDeFields()">
+              <option value="yes">Yes</option>
+              <option value="no">No — UTME only</option>
+            </select>
+          </div>
+          <div class="form-group" id="admDeTypesGroup">
+            <label>Which Direct Entry qualifications does this course accept? <span style="font-weight:400;color:var(--muted)">(leave all unchecked if it accepts any)</span></label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:6px">
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:.8rem"><input type="checkbox" class="adm-de-type" value="A-Level"> GCE A-Level</label>
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:.8rem"><input type="checkbox" class="adm-de-type" value="IJMB"> IJMB</label>
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:.8rem"><input type="checkbox" class="adm-de-type" value="JUPEB"> JUPEB</label>
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:.8rem"><input type="checkbox" class="adm-de-type" value="ND"> ND</label>
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:.8rem"><input type="checkbox" class="adm-de-type" value="HND"> HND</label>
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:.8rem"><input type="checkbox" class="adm-de-type" value="NCE"> NCE</label>
+            </div>
+          </div>
+
           <div class="form-group"><label>Notes / Previous Year's Experience (shown to students)</label><textarea id="admAddNotes" style="min-height:70px" placeholder="e.g. 'Official cutoff was 200, but based on 2025 admissions, students were admitted from 230+ due to high competition.'"></textarea></div>
           <div class="btn-row">
             <button class="btn btn-success" onclick="addAdmissionReq()" id="addAdmReqBtn">🎯 Add Requirement</button>
@@ -1588,6 +1612,12 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="form-group"><label>CSV File</label><input type="file" id="admCsvFile" accept=".csv"></div>
           <div class="btn-row">
             <button class="btn btn-primary" onclick="uploadAdmissionCsv()" id="admCsvBtn">📤 Upload &amp; Import</button>
+          </div>
+          <div id="admCsvProgressWrap" style="display:none;margin-top:14px">
+            <div class="csv-progress-track">
+              <div class="csv-progress-fill" id="admCsvProgressBar"></div>
+            </div>
+            <div class="form-hint" style="margin-top:6px;text-align:center" id="admCsvProgressLabel"></div>
           </div>
           <div id="admCsvResult" style="margin-top:12px;font-size:.8rem"></div>
         </div>
@@ -4200,6 +4230,7 @@ function renderAdmissionReqs(){
         ${r.useCategories&&(r.categories||[]).length?`<div class="item-meta" style="margin-bottom:6px">Categories: ${r.categories.map(c=>`${admEsc(c.name)} (JAMB ${c.minJamb}${c.minPostUtme?', Post-UTME '+c.minPostUtme:''}${c.cutoffAggregate?', Agg. '+c.cutoffAggregate:''})`).join(' · ')}</div>`:''}
         ${!r.useCategories&&r.method==='aggregate'&&(r.jambWeight||r.postWeight)?`<div class="item-meta" style="margin-bottom:8px">Formula: JAMB ${r.jambWeight||0}% + Post-UTME ${r.postWeight||0}%</div>`:''}
         ${(r.altCourses||[]).length?`<div class="item-meta" style="margin-bottom:6px">Alternative courses: ${admEsc(r.altCourses.join(', '))}</div>`:''}
+        <div class="item-meta" style="margin-bottom:6px">Direct Entry: ${r.acceptsDE===false?'❌ Not accepted':(r.deAcceptedTypes&&r.deAcceptedTypes.length?'✅ Accepted via '+admEsc(r.deAcceptedTypes.join(', ')):'✅ Accepted (any qualification)')}</div>
         ${r.notes?`<div class="item-meta" style="margin-bottom:8px">${admEsc(r.notes)}</div>`:''}
         <div class="item-actions">
           <button class="btn btn-danger btn-sm" onclick="deleteAdmissionReq(${idx})">🗑 Delete</button>
@@ -4268,6 +4299,12 @@ function toggleAdmOlevelFields(){
 }
 window.toggleAdmOlevelFields=toggleAdmOlevelFields;
 
+function toggleAdmDeFields(){
+  const accepts=document.getElementById('admAddAcceptsDE').value==='yes';
+  document.getElementById('admDeTypesGroup').style.display=accepts?'block':'none';
+}
+window.toggleAdmDeFields=toggleAdmDeFields;
+
 async function addAdmissionReq(){
   const school=document.getElementById('admAddSchool').value.trim();
   const course=document.getElementById('admAddCourse').value.trim();
@@ -4296,6 +4333,9 @@ async function addAdmissionReq(){
   if(!useCategories&&!minJamb){showStatus('error','Fill in Minimum JAMB Score.');return;}
   if(olevelMethod==='percentage'&&!minOlevelPct){showStatus('error','Enter a Minimum O-Level Percentage.');return;}
 
+  const acceptsDE=document.getElementById('admAddAcceptsDE').value==='yes';
+  const deAcceptedTypes=acceptsDE?[...document.querySelectorAll('.adm-de-type:checked')].map(c=>c.value):[];
+
   const item={
     school,course,session,method,subjects,
     useCategories, categories,
@@ -4307,6 +4347,7 @@ async function addAdmissionReq(){
     cutoffAggregate:useCategories?null:(parseFloat(document.getElementById('admAddCutoffAggregate').value)||null),
     jambSubjects:document.getElementById('admAddJambSubjects').value.split(',').map(s=>s.trim()).filter(Boolean),
     altCourses:document.getElementById('admAddAltCourses').value.split(',').map(s=>s.trim()).filter(Boolean),
+    acceptsDE, deAcceptedTypes,
     notes:document.getElementById('admAddNotes').value.trim()
   };
   admissionReqData.unshift(item);
@@ -4327,27 +4368,32 @@ function clearAdmissionReqForm(){
   document.getElementById('admAddMethod').value='aggregate';
   document.getElementById('admAddUseCategories').value='no';
   document.getElementById('admAddOlevelMethod').value='credit_count';
+  document.getElementById('admAddAcceptsDE').value='yes';
   document.getElementById('admCategoryRows').innerHTML='';
+  document.querySelectorAll('.adm-de-type').forEach(c=>c.checked=false);
   toggleAdmMethodFields();
   toggleAdmCategoryFields();
   toggleAdmOlevelFields();
+  toggleAdmDeFields();
 }
 window.clearAdmissionReqForm=clearAdmissionReqForm;
 
 // ── CSV BULK UPLOAD ──
-// Columns: school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,olevelMethod,minOlevel,minOlevelPct,subjects,jambSubjects,categories,altCourses,notes
-// subjects / jambSubjects / altCourses: separated by semicolon (;) since commas separate CSV columns.
+// Columns: school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,olevelMethod,minOlevel,minOlevelPct,subjects,jambSubjects,categories,altCourses,acceptsDE,deAcceptedTypes,notes
+// subjects / jambSubjects / altCourses / deAcceptedTypes: separated by semicolon (;) since commas separate CSV columns.
 // categories: only needed if this school/course uses different cutoffs per candidate category
 // (Merit/Catchment/ELDS, Indigene/Non-Indigene, etc). Format per category is
 // "Name:minJamb:minPostUtme:cutoffAggregate" (leave minPostUtme/cutoffAggregate blank if unused,
 // e.g. "Merit:250::" ), multiple categories separated by | — e.g.
 // "Merit:250:60:65|Catchment:220:50:55|ELDS:200:40:45"
 // If categories is used, leave minJamb/minPostUtme/cutoffAggregate columns blank — they're ignored.
+// acceptsDE: yes/no. deAcceptedTypes: which of A-Level;IJMB;JUPEB;ND;HND;NCE are
+// accepted — leave blank to mean "any qualification accepted".
 function downloadAdmCsvTemplate(){
-  const header='school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,olevelMethod,minOlevel,minOlevelPct,subjects,jambSubjects,categories,altCourses,notes';
-  const example1='University of Lagos,Medicine and Surgery,2025/2026,aggregate,280,65,40,60,65,credit_count,5,,English Language;Mathematics;Biology;Chemistry;Physics,English Language;Biology;Chemistry;Physics,,Dentistry;Physiology,"Official cutoff was 250, but based on 2025 admissions most successful candidates scored 280+"';
-  const example2='University of Ibadan,Law,2025/2026,screening,250,,,,,percentage,,65,English Language;Mathematics;Literature in English;Government,English Language;Literature in English;Government;CRS,,,"Screening is document + interview based, no separate Post-UTME score"';
-  const example3='Osun State University,Nursing Science,2025/2026,aggregate,,,,,,credit_count,5,,English Language;Mathematics;Biology;Chemistry;Physics,English Language;Biology;Chemistry;Physics,"Indigene:180:50:60|Non-Indigene:220:60:70",Public Health,"Osun indigenes get a lower cutoff — check your state of origin certificate before applying"';
+  const header='school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,olevelMethod,minOlevel,minOlevelPct,subjects,jambSubjects,categories,altCourses,acceptsDE,deAcceptedTypes,notes';
+  const example1='University of Lagos,Medicine and Surgery,2025/2026,aggregate,280,65,40,60,65,credit_count,5,,English Language;Mathematics;Biology;Chemistry;Physics,English Language;Biology;Chemistry;Physics,,Dentistry;Physiology,yes,IJMB;JUPEB,"Official cutoff was 250, but based on 2025 admissions most successful candidates scored 280+. DE only accepted via IJMB or JUPEB — not ND/HND."';
+  const example2='University of Ibadan,Law,2025/2026,screening,250,,,,,percentage,,65,English Language;Mathematics;Literature in English;Government,English Language;Literature in English;Government;CRS,,,no,,"Screening is document + interview based, no separate Post-UTME score. This course does not accept Direct Entry."';
+  const example3='Osun State University,Nursing Science,2025/2026,aggregate,,,,,,credit_count,5,,English Language;Mathematics;Biology;Chemistry;Physics,English Language;Biology;Chemistry;Physics,"Indigene:180:50:60|Non-Indigene:220:60:70",Public Health,yes,,"Osun indigenes get a lower cutoff — check your state of origin certificate before applying. Accepts any DE qualification."';
   const csv=[header,example1,example2,example3].join('\r\n');
   const blob=new Blob([csv],{type:'text/csv'});
   const a=document.createElement('a');
@@ -4382,6 +4428,16 @@ function parseAdmCategories(str){
   }).filter(Boolean);
 }
 
+function setAdmCsvProgress(pct,label){
+  const bar=document.getElementById('admCsvProgressBar');
+  const wrap=document.getElementById('admCsvProgressWrap');
+  const lbl=document.getElementById('admCsvProgressLabel');
+  if(!bar) return;
+  wrap.style.display=pct==null?'none':'block';
+  if(pct!=null){ bar.style.width=pct+'%'; }
+  if(lbl) lbl.textContent=label||'';
+}
+
 async function uploadAdmissionCsv(){
   const fileInput=document.getElementById('admCsvFile');
   const resultEl=document.getElementById('admCsvResult');
@@ -4390,6 +4446,7 @@ async function uploadAdmissionCsv(){
 
   const btn=document.getElementById('admCsvBtn'); btn.disabled=true; btn.textContent='Importing…';
   resultEl.innerHTML='';
+  setAdmCsvProgress(0,'Reading file…');
 
   try{
     const text=await file.text();
@@ -4400,8 +4457,11 @@ async function uploadAdmissionCsv(){
     const missing=required.filter(r=>!header.includes(r));
     if(missing.length) throw new Error('Missing required column(s): '+missing.join(', '));
 
+    const totalRows=lines.length-1;
     let added=0, failed=0; const errors=[];
     for(let i=1;i<lines.length;i++){
+      const rowNum=i;
+      setAdmCsvProgress(Math.round((rowNum/totalRows)*100),`Importing row ${rowNum} of ${totalRows}…`);
       const cols=parseCsvLine(lines[i]);
       const row={}; header.forEach((h,idx)=>row[h]=cols[idx]!==undefined?cols[idx]:'');
       try{
@@ -4426,6 +4486,8 @@ async function uploadAdmissionCsv(){
           jambWeight:(!useCategories&&row.jambWeight)?parseFloat(row.jambWeight):null,
           postWeight:(!useCategories&&row.postWeight)?parseFloat(row.postWeight):null,
           cutoffAggregate:(!useCategories&&row.cutoffAggregate)?parseFloat(row.cutoffAggregate):null,
+          acceptsDE:(row.acceptsDE||'yes').toLowerCase()!=='no',
+          deAcceptedTypes:(row.deAcceptedTypes||'').split(';').map(s=>s.trim()).filter(Boolean),
           notes:row.notes||''
         };
         await fbAdd('fs_admission_requirements',item,'CSV import: '+item.school+' — '+item.course);
@@ -4433,6 +4495,7 @@ async function uploadAdmissionCsv(){
       }catch(e){ failed++; errors.push('Row '+(i+1)+': '+e.message); }
     }
 
+    setAdmCsvProgress(100,'Finishing up…');
     admissionReqData=await fbLoad('fs_admission_requirements');
     renderAdmissionReqs(); updateBadges();
     resultEl.innerHTML=`<div style="color:var(--green,#15803d);font-weight:700">✅ Imported ${added} requirement(s).</div>`+
@@ -4444,6 +4507,7 @@ async function uploadAdmissionCsv(){
     showStatus('error','CSV import failed: '+e.message);
   }
   btn.disabled=false; btn.textContent='📤 Upload & Import';
+  setTimeout(()=>setAdmCsvProgress(null),1200);
 }
 window.uploadAdmissionCsv=uploadAdmissionCsv;
 
