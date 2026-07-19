@@ -627,7 +627,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     <div class="admin-section active" id="section-dashboard">
       <div class="dash-welcome">
         <div class="welcome-text">
-          <h2>Welcome back, Admin 👋</h2>
+          <h2 id="welcomeHeading">Welcome back, Admin 👋</h2>
           <p>Manage all content for Big Quams Media® from here.<br>Tap the ☰ menu to jump to any section.</p>
         </div>
         <img class="welcome-img" src="https://i.imgur.com/lYJXUyY.jpeg" alt="BQM">
@@ -2392,6 +2392,158 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
   </div>
 </div>
 
+<!-- Edit Review Modal -->
+<div class="modal-overlay" id="editReviewModal" onclick="handleOverlay(event,'editReviewModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Review</h3><button class="modal-close" onclick="closeModal('editReviewModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editReviewIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Student Name *</label><input type="text" id="eRevName"></div>
+        <div class="form-group"><label>Star Rating</label>
+          <select id="eRevStars"><option value="5">★★★★★ (5)</option><option value="4">★★★★ (4)</option><option value="3">★★★ (3)</option><option value="2">★★ (2)</option><option value="1">★ (1)</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Review Message *</label><textarea id="eRevMessage" style="min-height:80px"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Location / School</label><input type="text" id="eRevLocation"></div>
+        <div class="form-group"><label>Date</label><input type="text" id="eRevDate"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveEditReview()" id="saveReviewBtn">Save Changes</button>
+        <button class="btn btn-ghost" onclick="closeModal('editReviewModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Q&A Modal -->
+<div class="modal-overlay" id="editQAModal" onclick="handleOverlay(event,'editQAModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Q&amp;A</h3><button class="modal-close" onclick="closeModal('editQAModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editQAIdx">
+      <div class="form-group"><label>Question *</label><textarea id="eQaQ" style="min-height:60px"></textarea></div>
+      <div class="form-group"><label>Answer *</label><textarea id="eQaA" style="min-height:100px"></textarea></div>
+      <div class="form-group"><label>Category</label>
+        <select id="eQaCat"><option>General</option><option>Admissions</option><option>JAMB</option><option>Post-UTME</option><option>Scholarships</option><option>NELFUND</option></select>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveEditQA()" id="saveQABtn">Save Changes</button>
+        <button class="btn btn-ghost" onclick="closeModal('editQAModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Calendar Event Modal -->
+<div class="modal-overlay" id="editCalModal" onclick="handleOverlay(event,'editCalModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Calendar Event</h3><button class="modal-close" onclick="closeModal('editCalModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editCalIdx">
+      <div class="form-row">
+        <div class="form-group"><label>Event Title *</label><input type="text" id="eCalTitle"></div>
+        <div class="form-group"><label>Date *</label><input type="date" id="eCalDate"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Category</label>
+          <select id="eCalCat"><option>Event</option><option>JAMB</option><option>Post-UTME</option><option>WAEC/NECO</option><option>Scholarship</option><option>Screening</option></select>
+        </div>
+        <div class="form-group"><label>Color</label><input type="color" id="eCalColor" style="height:44px;padding:4px"></div>
+      </div>
+      <div class="form-group"><label>Description</label><textarea id="eCalDesc" style="min-height:70px"></textarea></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveEditCal()" id="saveCalBtn">Save Changes</button>
+        <button class="btn btn-ghost" onclick="closeModal('editCalModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Admission Requirement Modal -->
+<div class="modal-overlay" id="editAdmModal" onclick="handleOverlay(event,'editAdmModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✏️ Edit Admission Requirement</h3><button class="modal-close" onclick="closeModal('editAdmModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editAdmIdx">
+      <div class="form-row">
+        <div class="form-group"><label>School Name *</label><input type="text" id="eAdmSchool"></div>
+        <div class="form-group"><label>Course *</label><input type="text" id="eAdmCourse"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Academic Session *</label><input type="text" id="eAdmSession"></div>
+        <div class="form-group"><label>Admission Method *</label>
+          <select id="eAdmMethod" onchange="toggleEAdmMethodFields()">
+            <option value="aggregate">Aggregate (JAMB + Post-UTME weighted)</option>
+            <option value="screening">Screening (no Post-UTME score)</option>
+            <option value="jamb_only">JAMB Score Only</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Different cutoffs by candidate category?</label>
+        <select id="eAdmUseCategories" onchange="toggleEAdmCategoryFields()">
+          <option value="no">No — one cutoff for everyone</option>
+          <option value="yes">Yes — use categories below</option>
+        </select>
+      </div>
+      <div id="eAdmGeneralCutoffFields">
+        <div class="form-row">
+          <div class="form-group"><label>Minimum JAMB Score *</label><input type="number" id="eAdmMinJamb" min="0" max="400"></div>
+          <div class="form-group"><label>Minimum Post-UTME/DE Score</label><input type="number" id="eAdmMinPostUtme" min="0"></div>
+        </div>
+        <div class="form-row" id="eAdmWeightRow">
+          <div class="form-group"><label>JAMB Weight %</label><input type="number" id="eAdmJambWeight" min="0" max="100"></div>
+          <div class="form-group"><label>Post-UTME Weight %</label><input type="number" id="eAdmPostWeight" min="0" max="100"></div>
+        </div>
+        <div class="form-group"><label>Cutoff Aggregate (out of 100)</label><input type="number" id="eAdmCutoffAggregate" min="0" max="100"></div>
+      </div>
+      <div id="eAdmCategoryFields" style="display:none">
+        <div class="form-hint" style="margin-bottom:10px">One row per category (Merit, Catchment, ELDS — or Indigene, Non-Indigene).</div>
+        <div id="eAdmCategoryRows"></div>
+        <button type="button" class="add-row-btn" onclick="addEAdmCategoryRow()" style="margin-bottom:10px">+ Add Category</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>O-Level Scoring Method *</label>
+          <select id="eAdmOlevelMethod" onchange="toggleEAdmOlevelFields()">
+            <option value="credit_count">Count of Credit Passes</option>
+            <option value="percentage">Percentage Score</option>
+          </select>
+        </div>
+        <div class="form-group" id="eAdmOlevelCreditGroup"><label>Minimum O-Level Credits *</label><input type="number" id="eAdmMinOlevel" min="1" max="9"></div>
+        <div class="form-group" id="eAdmOlevelPctGroup" style="display:none"><label>Minimum O-Level %</label><input type="number" id="eAdmMinOlevelPct" min="0" max="100"></div>
+      </div>
+      <div class="form-group"><label>Required O-Level Subjects (comma-separated) *</label><input type="text" id="eAdmSubjects"></div>
+      <div class="form-group"><label>Required JAMB Subject Combination (comma-separated)</label><input type="text" id="eAdmJambSubjects"></div>
+      <div class="form-group"><label>Alternative/Substitute Courses (comma-separated)</label><input type="text" id="eAdmAltCourses"></div>
+      <div class="form-group">
+        <label>Accepts Direct Entry candidates?</label>
+        <select id="eAdmAcceptsDE" onchange="toggleEAdmDeFields()">
+          <option value="yes">Yes</option>
+          <option value="no">No — UTME only</option>
+        </select>
+      </div>
+      <div class="form-group" id="eAdmDeTypesGroup">
+        <label>Which DE qualifications does this course accept? <span style="font-weight:400;color:var(--muted)">(leave all unchecked = any)</span></label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:6px">
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:.8rem"><input type="checkbox" class="e-adm-de-type" value="A-Level"> GCE A-Level</label>
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:.8rem"><input type="checkbox" class="e-adm-de-type" value="IJMB"> IJMB</label>
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:.8rem"><input type="checkbox" class="e-adm-de-type" value="JUPEB"> JUPEB</label>
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:.8rem"><input type="checkbox" class="e-adm-de-type" value="ND"> ND</label>
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:.8rem"><input type="checkbox" class="e-adm-de-type" value="HND"> HND</label>
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:.8rem"><input type="checkbox" class="e-adm-de-type" value="NCE"> NCE</label>
+        </div>
+      </div>
+      <div class="form-group"><label>Notes / Previous Year's Experience</label><textarea id="eAdmNotes" style="min-height:70px"></textarea></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveEditAdm()" id="saveAdmBtn">Save Changes</button>
+        <button class="btn btn-ghost" onclick="closeModal('editAdmModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Edit CBT Modal -->
 <div class="modal-overlay" id="editCBTModal" onclick="handleOverlay(event,'editCBTModal')">
   <div class="modal-box">
@@ -2766,9 +2918,16 @@ async function enterAdminPanel(){
   if(badge) badge.textContent=(isCEO?'👑 Quams':resolvedNickname)+' · '+(isCEO?'CEO':'Admin');
   const authorField=document.getElementById('addAuthor');
   if(authorField) authorField.value=isCEO?'Big Quams Media®':resolvedNickname;
+  updateWelcomeHeading(isCEO?'Quams':resolvedNickname);
   init();
 }
 window.enterAdminPanel=enterAdminPanel;
+
+function updateWelcomeHeading(name){
+  const h=document.getElementById('welcomeHeading');
+  if(h) h.textContent='Welcome back, '+(name||'Admin')+' 👋🏽';
+}
+window.updateWelcomeHeading=updateWelcomeHeading;
 
 // ── Logout ──
 function doLogout(){
@@ -3160,7 +3319,7 @@ window.exportActivityLog=exportActivityLog;
 if(localStorage.getItem('bqm_auth')==='1'){
   // Firebase auth only
   const savedUser=localStorage.getItem('bqm_user');
-  if(savedUser){try{const u=JSON.parse(savedUser);const nick=u.nickname||(u.isCEO?'Quams':u.name||'Admin');const b=document.getElementById('topBadge');if(b)b.textContent=(u.isCEO?'👑 Quams':nick)+' · '+(u.isCEO?'CEO':'Admin');setTimeout(()=>{const af=document.getElementById('addAuthor');if(af)af.value=u.isCEO?'BIG QUAMS MEDIA':(nick||'BIG QUAMS MEDIA');},400);}catch(e){}}
+  if(savedUser){try{const u=JSON.parse(savedUser);const nick=u.nickname||(u.isCEO?'Quams':u.name||'Admin');const b=document.getElementById('topBadge');if(b)b.textContent=(u.isCEO?'👑 Quams':nick)+' · '+(u.isCEO?'CEO':'Admin');updateWelcomeHeading(u.isCEO?'Quams':nick);setTimeout(()=>{const af=document.getElementById('addAuthor');if(af)af.value=u.isCEO?'BIG QUAMS MEDIA':(nick||'BIG QUAMS MEDIA');},400);}catch(e){}}
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminApp').style.display='block';
   setTimeout(()=>init(),300);
@@ -4233,11 +4392,134 @@ function renderAdmissionReqs(){
         <div class="item-meta" style="margin-bottom:6px">Direct Entry: ${r.acceptsDE===false?'❌ Not accepted':(r.deAcceptedTypes&&r.deAcceptedTypes.length?'✅ Accepted via '+admEsc(r.deAcceptedTypes.join(', ')):'✅ Accepted (any qualification)')}</div>
         ${r.notes?`<div class="item-meta" style="margin-bottom:8px">${admEsc(r.notes)}</div>`:''}
         <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditAdm(${idx})">✏️ Edit</button>
           <button class="btn btn-danger btn-sm" onclick="deleteAdmissionReq(${idx})">🗑 Delete</button>
         </div>
       </div>
     </div>`).join('')+'</div>';
 }
+
+function toggleEAdmMethodFields(){
+  const method=document.getElementById('eAdmMethod').value;
+  document.getElementById('eAdmWeightRow').style.display=method==='aggregate'?'grid':'none';
+}
+window.toggleEAdmMethodFields=toggleEAdmMethodFields;
+
+function toggleEAdmCategoryFields(){
+  const useCategories=document.getElementById('eAdmUseCategories').value==='yes';
+  document.getElementById('eAdmGeneralCutoffFields').style.display=useCategories?'none':'block';
+  document.getElementById('eAdmCategoryFields').style.display=useCategories?'block':'none';
+}
+window.toggleEAdmCategoryFields=toggleEAdmCategoryFields;
+
+function addEAdmCategoryRow(name,minJamb,minPostUtme,cutoffAggregate){
+  const wrap=document.getElementById('eAdmCategoryRows');
+  const row=document.createElement('div');
+  row.className='form-row e-adm-cat-row';
+  row.style.gridTemplateColumns='1fr 1fr 1fr 1fr 34px';
+  row.innerHTML=`
+    <input type="text" class="e-cat-name" placeholder="Category name" value="${name?admEsc(name):''}">
+    <input type="number" class="e-cat-jamb" placeholder="Min JAMB" min="0" max="400" value="${minJamb||''}">
+    <input type="number" class="e-cat-postutme" placeholder="Min Post-UTME" min="0" value="${minPostUtme||''}">
+    <input type="number" class="e-cat-cutoff" placeholder="Cutoff Agg." min="0" max="100" value="${cutoffAggregate||''}">
+    <button type="button" class="remove-row-btn" onclick="this.parentElement.remove()">✕</button>`;
+  wrap.appendChild(row);
+}
+window.addEAdmCategoryRow=addEAdmCategoryRow;
+
+function toggleEAdmOlevelFields(){
+  const method=document.getElementById('eAdmOlevelMethod').value;
+  document.getElementById('eAdmOlevelCreditGroup').style.display=method==='credit_count'?'block':'none';
+  document.getElementById('eAdmOlevelPctGroup').style.display=method==='percentage'?'block':'none';
+}
+window.toggleEAdmOlevelFields=toggleEAdmOlevelFields;
+
+function toggleEAdmDeFields(){
+  const accepts=document.getElementById('eAdmAcceptsDE').value==='yes';
+  document.getElementById('eAdmDeTypesGroup').style.display=accepts?'block':'none';
+}
+window.toggleEAdmDeFields=toggleEAdmDeFields;
+
+function openEditAdm(idx){
+  const r=admissionReqData[idx];
+  document.getElementById('editAdmIdx').value=idx;
+  document.getElementById('eAdmSchool').value=r.school||'';
+  document.getElementById('eAdmCourse').value=r.course||'';
+  document.getElementById('eAdmSession').value=r.session||'';
+  document.getElementById('eAdmMethod').value=r.method||'aggregate';
+  document.getElementById('eAdmUseCategories').value=r.useCategories?'yes':'no';
+  document.getElementById('eAdmMinJamb').value=r.useCategories?'':(r.minJamb||'');
+  document.getElementById('eAdmMinPostUtme').value=r.minPostUtme||'';
+  document.getElementById('eAdmJambWeight').value=r.jambWeight||'';
+  document.getElementById('eAdmPostWeight').value=r.postWeight||'';
+  document.getElementById('eAdmCutoffAggregate').value=r.cutoffAggregate||'';
+  document.getElementById('eAdmOlevelMethod').value=r.olevelMethod||'credit_count';
+  document.getElementById('eAdmMinOlevel').value=r.minOlevel||5;
+  document.getElementById('eAdmMinOlevelPct').value=r.minOlevelPct||'';
+  document.getElementById('eAdmSubjects').value=(r.subjects||[]).join(', ');
+  document.getElementById('eAdmJambSubjects').value=(r.jambSubjects||[]).join(', ');
+  document.getElementById('eAdmAltCourses').value=(r.altCourses||[]).join(', ');
+  document.getElementById('eAdmAcceptsDE').value=r.acceptsDE===false?'no':'yes';
+  document.getElementById('eAdmNotes').value=r.notes||'';
+
+  document.getElementById('eAdmCategoryRows').innerHTML='';
+  (r.categories||[]).forEach(c=>addEAdmCategoryRow(c.name,c.minJamb,c.minPostUtme,c.cutoffAggregate));
+
+  document.querySelectorAll('.e-adm-de-type').forEach(c=>{ c.checked=(r.deAcceptedTypes||[]).includes(c.value); });
+
+  toggleEAdmMethodFields(); toggleEAdmCategoryFields(); toggleEAdmOlevelFields(); toggleEAdmDeFields();
+  openModal('editAdmModal');
+}
+window.openEditAdm=openEditAdm;
+
+async function saveEditAdm(){
+  const idx=parseInt(document.getElementById('editAdmIdx').value);
+  const old={...admissionReqData[idx]};
+
+  const useCategories=document.getElementById('eAdmUseCategories').value==='yes';
+  const categories=useCategories?[...document.querySelectorAll('.e-adm-cat-row')].map(row=>({
+    name:row.querySelector('.e-cat-name').value.trim(),
+    minJamb:parseInt(row.querySelector('.e-cat-jamb').value)||0,
+    minPostUtme:parseInt(row.querySelector('.e-cat-postutme').value)||null,
+    cutoffAggregate:parseFloat(row.querySelector('.e-cat-cutoff').value)||null
+  })).filter(c=>c.name&&c.minJamb):[];
+
+  const method=document.getElementById('eAdmMethod').value;
+  const olevelMethod=document.getElementById('eAdmOlevelMethod').value;
+  const acceptsDE=document.getElementById('eAdmAcceptsDE').value==='yes';
+  const deAcceptedTypes=acceptsDE?[...document.querySelectorAll('.e-adm-de-type:checked')].map(c=>c.value):[];
+
+  const updated={
+    school:document.getElementById('eAdmSchool').value.trim(),
+    course:document.getElementById('eAdmCourse').value.trim(),
+    session:document.getElementById('eAdmSession').value.trim(),
+    method, useCategories, categories,
+    minJamb:useCategories?(categories.length?Math.min(...categories.map(c=>c.minJamb)):0):(parseInt(document.getElementById('eAdmMinJamb').value)||0),
+    minPostUtme:useCategories?null:(parseInt(document.getElementById('eAdmMinPostUtme').value)||null),
+    jambWeight:(!useCategories&&method==='aggregate')?(parseFloat(document.getElementById('eAdmJambWeight').value)||null):null,
+    postWeight:(!useCategories&&method==='aggregate')?(parseFloat(document.getElementById('eAdmPostWeight').value)||null):null,
+    cutoffAggregate:useCategories?null:(parseFloat(document.getElementById('eAdmCutoffAggregate').value)||null),
+    olevelMethod,
+    minOlevel:parseInt(document.getElementById('eAdmMinOlevel').value)||5,
+    minOlevelPct:parseFloat(document.getElementById('eAdmMinOlevelPct').value)||null,
+    subjects:document.getElementById('eAdmSubjects').value.split(',').map(s=>s.trim()).filter(Boolean),
+    jambSubjects:document.getElementById('eAdmJambSubjects').value.split(',').map(s=>s.trim()).filter(Boolean),
+    altCourses:document.getElementById('eAdmAltCourses').value.split(',').map(s=>s.trim()).filter(Boolean),
+    acceptsDE, deAcceptedTypes,
+    notes:document.getElementById('eAdmNotes').value.trim()
+  };
+
+  if(!updated.school||!updated.course||!updated.session||!updated.subjects.length){showStatus('error','Fill in School, Course, Session and Required O-Level Subjects.');return;}
+
+  Object.assign(admissionReqData[idx],updated);
+  try{
+    const item=admissionReqData[idx];
+    if(item&&item._id) await fbUpdate('fs_admission_requirements',item._id,updated,'Edit admission requirement: '+updated.school+' — '+updated.course);
+    admissionReqData=await fbLoad('fs_admission_requirements');
+    closeModal('editAdmModal'); renderAdmissionReqs(); updateBadges(); showStatus('success','✅ Requirement updated!');
+  }catch(e){ Object.assign(admissionReqData[idx],old); showStatus('error',e.message); }
+}
+window.saveEditAdm=saveEditAdm;
 
 async function deleteAllForSchool(){
   const filterEl=document.getElementById('admSchoolFilter');
@@ -4596,19 +4878,50 @@ function renderReviews(){
       <div class="item-header" onclick="toggleExpand(this)">
         <div class="item-num">${'★'.repeat(r.stars||5)}</div>
         <div class="item-info">
-          <div class="item-title">${r.name}</div>
-          <div class="item-meta">${r.location||''} ${r.date?' · '+r.date:''}</div>
+          <div class="item-title">${admEsc(r.name)}</div>
+          <div class="item-meta">${admEsc(r.location)||''} ${r.date?' · '+admEsc(r.date):''}</div>
         </div>
         <span class="item-chevron">▼</span>
       </div>
       <div class="item-expand">
-        <div class="item-preview">"${r.message||''}"</div>
+        <div class="item-preview">"${admEsc(r.message)||''}"</div>
         <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditReview(${idx})">✏️ Edit</button>
           <button class="btn btn-danger btn-sm" onclick="deleteReview(${idx})">🗑 Delete</button>
         </div>
       </div>
     </div>`).join('')+'</div>';
 }
+
+function openEditReview(idx){
+  const r=reviewsData[idx];
+  document.getElementById('editReviewIdx').value=idx;
+  document.getElementById('eRevName').value=r.name||'';
+  document.getElementById('eRevStars').value=r.stars||5;
+  document.getElementById('eRevMessage').value=r.message||'';
+  document.getElementById('eRevLocation').value=r.location||'';
+  document.getElementById('eRevDate').value=r.date||'';
+  openModal('editReviewModal');
+}
+window.openEditReview=openEditReview;
+
+async function saveEditReview(){
+  const idx=parseInt(document.getElementById('editReviewIdx').value);
+  const old={...reviewsData[idx]};
+  Object.assign(reviewsData[idx],{
+    name:document.getElementById('eRevName').value.trim(),
+    stars:parseInt(document.getElementById('eRevStars').value)||5,
+    message:document.getElementById('eRevMessage').value.trim(),
+    location:document.getElementById('eRevLocation').value.trim(),
+    date:document.getElementById('eRevDate').value.trim()
+  });
+  try{
+    const item=reviewsData[idx];
+    if(item&&item._id) await fbUpdate('fs_reviews',item._id,{name:item.name,stars:item.stars,message:item.message,location:item.location,date:item.date},'Edit review: '+item.name);
+    reviewsData=await fbLoad('fs_reviews'); closeModal('editReviewModal'); renderReviews(); showStatus('success','✅ Review updated!');
+  }catch(e){ Object.assign(reviewsData[idx],old); showStatus('error',e.message); }
+}
+window.saveEditReview=saveEditReview;
 
 async function addReview(){
   const name=document.getElementById('rAddName').value.trim();
@@ -4643,19 +4956,46 @@ function renderQA(){
       <div class="item-header" onclick="toggleExpand(this)">
         <div class="item-num">❓</div>
         <div class="item-info">
-          <div class="item-title">${q.question||q.q}</div>
-          <div class="item-meta"><span class="item-cat">${q.category||'General'}</span></div>
+          <div class="item-title">${admEsc(q.question||q.q)}</div>
+          <div class="item-meta"><span class="item-cat">${admEsc(q.category)||'General'}</span></div>
         </div>
         <span class="item-chevron">▼</span>
       </div>
       <div class="item-expand">
-        <div class="item-preview"><strong>A:</strong> ${q.answer||q.a||''}</div>
+        <div class="item-preview"><strong>A:</strong> ${admEsc(q.answer||q.a)||''}</div>
         <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditQA(${idx})">✏️ Edit</button>
           <button class="btn btn-danger btn-sm" onclick="deleteQA(${idx})">🗑 Delete</button>
         </div>
       </div>
     </div>`).join('')+'</div>';
 }
+
+function openEditQA(idx){
+  const q=qaData[idx];
+  document.getElementById('editQAIdx').value=idx;
+  document.getElementById('eQaQ').value=q.question||q.q||'';
+  document.getElementById('eQaA').value=q.answer||q.a||'';
+  document.getElementById('eQaCat').value=q.category||'General';
+  openModal('editQAModal');
+}
+window.openEditQA=openEditQA;
+
+async function saveEditQA(){
+  const idx=parseInt(document.getElementById('editQAIdx').value);
+  const old={...qaData[idx]};
+  Object.assign(qaData[idx],{
+    question:document.getElementById('eQaQ').value.trim(),
+    answer:document.getElementById('eQaA').value.trim(),
+    category:document.getElementById('eQaCat').value
+  });
+  try{
+    const item=qaData[idx];
+    if(item&&item._id) await fbUpdate('fs_qa',item._id,{question:item.question,answer:item.answer,category:item.category},'Edit Q&A');
+    qaData=await fbLoad('fs_qa'); closeModal('editQAModal'); renderQA(); showStatus('success','✅ Q&A updated!');
+  }catch(e){ Object.assign(qaData[idx],old); showStatus('error',e.message); }
+}
+window.saveEditQA=saveEditQA;
 
 async function addQA(){
   const question=document.getElementById('qaAddQ').value.trim();
@@ -4697,20 +5037,52 @@ function renderCalendar(){
           <div class="cal-day">${isNaN(d)?'—':d.getDate()}</div>
         </div>
         <div class="item-info">
-          <div class="item-title" style="${past?'color:var(--muted);text-decoration:line-through':''}">${c.title}</div>
-          <div class="item-meta"><span class="item-cat">${c.category||'Event'}</span>${past?' · Past':''}</div>
+          <div class="item-title" style="${past?'color:var(--muted);text-decoration:line-through':''}">${admEsc(c.title)}</div>
+          <div class="item-meta"><span class="item-cat">${admEsc(c.category)||'Event'}</span>${past?' · Past':''}</div>
         </div>
         <span class="item-chevron">▼</span>
       </div>
       <div class="item-expand">
-        ${c.description?`<div class="item-preview">${c.description}</div>`:''}
+        ${c.description?`<div class="item-preview">${admEsc(c.description)}</div>`:''}
         <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditCal(${realIdx})">✏️ Edit</button>
           <button class="btn btn-danger btn-sm" onclick="deleteCalEvent(${realIdx})">🗑 Delete</button>
         </div>
       </div>
     </div>`;
   }).join('')+'</div>';
 }
+
+function openEditCal(idx){
+  const c=calData[idx];
+  document.getElementById('editCalIdx').value=idx;
+  document.getElementById('eCalTitle').value=c.title||'';
+  document.getElementById('eCalDate').value=c.date||c.dateObj||'';
+  document.getElementById('eCalCat').value=c.category||'Event';
+  document.getElementById('eCalColor').value=c.color||'#1a3fa8';
+  document.getElementById('eCalDesc').value=c.description||'';
+  openModal('editCalModal');
+}
+window.openEditCal=openEditCal;
+
+async function saveEditCal(){
+  const idx=parseInt(document.getElementById('editCalIdx').value);
+  const old={...calData[idx]};
+  const date=document.getElementById('eCalDate').value;
+  Object.assign(calData[idx],{
+    title:document.getElementById('eCalTitle').value.trim(),
+    date, dateObj:date,
+    category:document.getElementById('eCalCat').value,
+    color:document.getElementById('eCalColor').value,
+    description:document.getElementById('eCalDesc').value.trim()
+  });
+  try{
+    const item=calData[idx];
+    if(item&&item._id) await fbUpdate('fs_calendar',item._id,{title:item.title,date:item.date,category:item.category,color:item.color,description:item.description},'Edit event: '+item.title);
+    calData=await fbLoad('fs_calendar','title','asc'); closeModal('editCalModal'); renderCalendar(); showStatus('success','✅ Event updated!');
+  }catch(e){ Object.assign(calData[idx],old); showStatus('error',e.message); }
+}
+window.saveEditCal=saveEditCal;
 
 async function addCalEvent(){
   const title=document.getElementById('calAddTitle').value.trim();
