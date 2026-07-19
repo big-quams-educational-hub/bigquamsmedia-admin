@@ -1636,7 +1636,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="admin-panel" id="adm-tab-settings">
         <div class="section-card">
           <div class="card-title">💰 Calculator Price</div>
-          <div class="form-group"><label>Price (₦)</label><input type="number" id="admPrice" placeholder="e.g. 500" min="0"></div>
+          <div class="form-group"><label>Price (₦)</label><input type="number" id="admPrice" placeholder="e.g. 500" min="0"><div class="form-hint">Set to 0 to make the calculator free — students will get their result instantly with no payment step.</div></div>
           <div class="btn-row">
             <button class="btn btn-primary" onclick="saveAdmissionPrice()">💾 Save Price</button>
           </div>
@@ -4821,11 +4821,15 @@ function renderAdmissionSubmissions(){
     return bt-at;
   });
   const paidCount=sorted.filter(s=>s.status==='paid').length;
+  const freeCount=sorted.filter(s=>s.status==='free').length;
   const startedOnlyCount=sorted.filter(s=>s.status==='started').length;
-  el.innerHTML=`<div class="form-hint" style="margin-bottom:10px">${paidCount} paid · ${startedOnlyCount} started (may include abandoned or in-progress attempts)</div>`+
+  el.innerHTML=`<div class="form-hint" style="margin-bottom:10px">${paidCount} paid · ${freeCount} free · ${startedOnlyCount} started (may include abandoned or in-progress attempts)</div>`+
     '<div class="items-list">'+sorted.map(s=>{
     const isPaid=s.status==='paid';
-    const badge=isPaid?'<span style="background:#dcfce7;color:#15803d;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:10px">✅ PAID</span>':'<span style="background:#fef9c3;color:#92400e;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:10px">⏳ STARTED (not confirmed paid)</span>';
+    const isFree=s.status==='free';
+    const badge=isPaid?'<span style="background:#dcfce7;color:#15803d;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:10px">✅ PAID</span>'
+      :isFree?'<span style="background:#dbeafe;color:#1d4ed8;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:10px">🎁 FREE</span>'
+      :'<span style="background:#fef9c3;color:#92400e;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:10px">⏳ STARTED (not confirmed paid)</span>';
     return`
     <div class="content-item">
       <div class="item-header" onclick="toggleExpand(this)">
@@ -4840,18 +4844,21 @@ function renderAdmissionSubmissions(){
         <div class="item-meta" style="margin-bottom:6px">📞 ${esc(s.phone)||'—'} ${s.email?'· ✉️ '+esc(s.email):''} ${s.category?'· Category: '+esc(s.category):''}</div>
         <div class="item-meta" style="margin-bottom:6px">JAMB: ${esc(s.jambScore)||'—'} · Post-UTME/DE: ${esc(s.postUtmeScore)||'—'} ${(s.jambSubjects||[]).length?'· JAMB Subjects: '+esc(s.jambSubjects.join(', ')):''}</div>
         ${isPaid?`<div class="item-meta" style="margin-bottom:6px">Payment ref: ${esc(s.paymentRef)||'—'} · Amount: ₦${esc(s.amountPaid)||'—'}</div>`:''}
+        ${isFree?`<div class="item-meta" style="margin-bottom:6px">Used free access</div>`:''}
         <div class="item-meta">Time: ${s.createdAt?.toDate?s.createdAt.toDate().toLocaleString():'—'}</div>
       </div>
     </div>`;}).join('')+'</div>';
 }
 
 async function saveAdmissionPrice(){
-  const price=parseInt(document.getElementById('admPrice').value)||0;
-  if(!price){showStatus('error','Enter a price greater than 0.');return;}
+  const raw=document.getElementById('admPrice').value.trim();
+  if(raw===''){showStatus('error','Enter a price — use 0 to make it free.');return;}
+  const price=parseInt(raw);
+  if(isNaN(price)||price<0){showStatus('error','Enter a valid price of 0 or more.');return;}
   try{
     await window.setDoc(window.doc(window.db,'fs_admission_settings','price'),{price});
-    logAdminActivity('edit','config','Update admission calculator price to ₦'+price);
-    showStatus('success','💾 Price saved — ₦'+price);
+    logAdminActivity('edit','config','Update admission calculator price to '+(price===0?'FREE':'₦'+price));
+    showStatus('success',price===0?'💾 Saved — calculator is now free!':'💾 Price saved — ₦'+price);
   }catch(e){ showStatus('error','❌ '+e.message); }
 }
 window.saveAdmissionPrice=saveAdmissionPrice;
@@ -4859,9 +4866,9 @@ window.saveAdmissionPrice=saveAdmissionPrice;
 async function loadAdmissionPriceForm(){
   try{
     const sd=await window.getDoc(window.doc(window.db,'fs_admission_settings','price'));
-    if(sd.exists()&&sd.data().price){
+    if(sd.exists()&&sd.data().price!=null){
       const el=document.getElementById('admPrice');
-      if(el&&!el.value) el.value=sd.data().price;
+      if(el&&el.value==='') el.value=sd.data().price;
     }
   }catch(e){console.warn('loadAdmissionPriceForm:',e.message);}
 }
