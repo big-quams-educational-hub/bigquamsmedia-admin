@@ -1574,6 +1574,14 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             </div>
             <div class="form-group" id="admOlevelCreditGroup"><label>Minimum O-Level Credits *</label><input type="number" id="admAddMinOlevel" value="5" min="1" max="9"></div>
             <div class="form-group" id="admOlevelPctGroup" style="display:none"><label>Minimum O-Level Percentage *</label><input type="number" id="admAddMinOlevelPct" placeholder="e.g. 60" min="0" max="100"></div>
+            <div class="form-group"><label>Max O-Level Sittings *</label>
+              <select id="admAddMaxSittings">
+                <option value="1">1 sitting only</option>
+                <option value="2" selected>2 sittings (standard)</option>
+                <option value="3">3 sittings</option>
+              </select>
+              <div class="form-hint">Most schools allow 2; some (e.g. Medicine, Pharmacy, Nursing at certain schools) require 1 sitting only.</div>
+            </div>
           </div>
           <div class="form-group"><label>Required O-Level Subjects (comma-separated) *</label><input type="text" id="admAddSubjects" placeholder="e.g. English Language, Mathematics, Biology, Chemistry, Physics"></div>
           <div class="form-group"><label>Required JAMB Subject Combination (comma-separated, usually 4) <span style="font-weight:400;color:var(--muted)">(optional — separate from O-Level subjects above)</span></label><input type="text" id="admAddJambSubjects" placeholder="e.g. English Language, Biology, Chemistry, Physics"></div>
@@ -2513,6 +2521,13 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         </div>
         <div class="form-group" id="eAdmOlevelCreditGroup"><label>Minimum O-Level Credits *</label><input type="number" id="eAdmMinOlevel" min="1" max="9"></div>
         <div class="form-group" id="eAdmOlevelPctGroup" style="display:none"><label>Minimum O-Level %</label><input type="number" id="eAdmMinOlevelPct" min="0" max="100"></div>
+        <div class="form-group"><label>Max O-Level Sittings *</label>
+          <select id="eAdmMaxSittings">
+            <option value="1">1 sitting only</option>
+            <option value="2">2 sittings (standard)</option>
+            <option value="3">3 sittings</option>
+          </select>
+        </div>
       </div>
       <div class="form-group"><label>Required O-Level Subjects (comma-separated) *</label><input type="text" id="eAdmSubjects"></div>
       <div class="form-group"><label>Required JAMB Subject Combination (comma-separated)</label><input type="text" id="eAdmJambSubjects"></div>
@@ -4379,7 +4394,7 @@ function renderAdmissionReqs(){
         <div class="item-num" style="font-size:1.1rem">🎯</div>
         <div class="item-info">
           <div class="item-title">${admEsc(r.school)} — ${admEsc(r.course)} <span class="item-cat" style="background:var(--light);color:var(--muted);font-size:.6rem">${ADM_METHOD_LABEL[r.method]||'📊 Aggregate'}${r.session?' · '+admEsc(r.session):''}</span></div>
-          <div class="item-meta">${r.useCategories&&(r.categories||[]).length?(r.categories.map(c=>admEsc(c.name)+': '+c.minJamb).join(' · ')):'Min JAMB: '+(r.minJamb||'—')} ${!r.useCategories&&r.minPostUtme?'· Min Post-UTME: '+r.minPostUtme:''} ${!r.useCategories&&r.cutoffAggregate?'· Cutoff Aggregate: '+r.cutoffAggregate:''} · O-Level: ${r.olevelMethod==='percentage'?('min '+r.minOlevelPct+'%'):((r.minOlevel||5)+' credits')}</div>
+          <div class="item-meta">${r.useCategories&&(r.categories||[]).length?(r.categories.map(c=>admEsc(c.name)+': '+c.minJamb).join(' · ')):'Min JAMB: '+(r.minJamb||'—')} ${!r.useCategories&&r.minPostUtme?'· Min Post-UTME: '+r.minPostUtme:''} ${!r.useCategories&&r.cutoffAggregate?'· Cutoff Aggregate: '+r.cutoffAggregate:''} · O-Level: ${r.olevelMethod==='percentage'?('min '+r.minOlevelPct+'%'):((r.minOlevel||5)+' credits')} · ${(r.maxSittings||2)===1?'⚠️ 1 sitting only':(r.maxSittings||2)+' sittings max'}</div>
         </div>
         <span class="item-chevron">▼</span>
       </div>
@@ -4456,6 +4471,7 @@ function openEditAdm(idx){
   document.getElementById('eAdmOlevelMethod').value=r.olevelMethod||'credit_count';
   document.getElementById('eAdmMinOlevel').value=r.minOlevel||5;
   document.getElementById('eAdmMinOlevelPct').value=r.minOlevelPct||'';
+  document.getElementById('eAdmMaxSittings').value=r.maxSittings||2;
   document.getElementById('eAdmSubjects').value=(r.subjects||[]).join(', ');
   document.getElementById('eAdmJambSubjects').value=(r.jambSubjects||[]).join(', ');
   document.getElementById('eAdmAltCourses').value=(r.altCourses||[]).join(', ');
@@ -4502,6 +4518,7 @@ async function saveEditAdm(){
     olevelMethod,
     minOlevel:parseInt(document.getElementById('eAdmMinOlevel').value)||5,
     minOlevelPct:parseFloat(document.getElementById('eAdmMinOlevelPct').value)||null,
+    maxSittings:parseInt(document.getElementById('eAdmMaxSittings').value)||2,
     subjects:document.getElementById('eAdmSubjects').value.split(',').map(s=>s.trim()).filter(Boolean),
     jambSubjects:document.getElementById('eAdmJambSubjects').value.split(',').map(s=>s.trim()).filter(Boolean),
     altCourses:document.getElementById('eAdmAltCourses').value.split(',').map(s=>s.trim()).filter(Boolean),
@@ -4609,6 +4626,7 @@ async function addAdmissionReq(){
   const minJamb=useCategories?(categories.length?Math.min(...categories.map(c=>c.minJamb)):0):(parseInt(document.getElementById('admAddMinJamb').value)||0);
   const minOlevel=parseInt(document.getElementById('admAddMinOlevel').value)||5;
   const minOlevelPct=parseFloat(document.getElementById('admAddMinOlevelPct').value)||null;
+  const maxSittings=parseInt(document.getElementById('admAddMaxSittings').value)||2;
 
   if(!school||!course||!session||!subjects.length){showStatus('error','Fill in School, Course, Session and Required O-Level Subjects.');return;}
   if(useCategories&&!categories.length){showStatus('error','Add at least one category with a name and minimum JAMB score, or switch back to "one cutoff for everyone".');return;}
@@ -4623,6 +4641,7 @@ async function addAdmissionReq(){
     useCategories, categories,
     minJamb, minOlevel,
     olevelMethod, minOlevelPct,
+    maxSittings,
     minPostUtme:useCategories?null:(parseInt(document.getElementById('admAddMinPostUtme').value)||null),
     jambWeight:(!useCategories&&method==='aggregate')?(parseFloat(document.getElementById('admAddJambWeight').value)||null):null,
     postWeight:(!useCategories&&method==='aggregate')?(parseFloat(document.getElementById('admAddPostWeight').value)||null):null,
@@ -4647,6 +4666,7 @@ window.addAdmissionReq=addAdmissionReq;
 function clearAdmissionReqForm(){
   ['admAddSchool','admAddCourse','admAddSession','admAddMinJamb','admAddMinPostUtme','admAddJambWeight','admAddPostWeight','admAddCutoffAggregate','admAddSubjects','admAddJambSubjects','admAddAltCourses','admAddNotes','admAddMinOlevelPct'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('admAddMinOlevel').value='5';
+  document.getElementById('admAddMaxSittings').value='2';
   document.getElementById('admAddMethod').value='aggregate';
   document.getElementById('admAddUseCategories').value='no';
   document.getElementById('admAddOlevelMethod').value='credit_count';
@@ -4661,8 +4681,11 @@ function clearAdmissionReqForm(){
 window.clearAdmissionReqForm=clearAdmissionReqForm;
 
 // ── CSV BULK UPLOAD ──
-// Columns: school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,olevelMethod,minOlevel,minOlevelPct,subjects,jambSubjects,categories,altCourses,acceptsDE,deAcceptedTypes,notes
+// Columns: school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,olevelMethod,minOlevel,minOlevelPct,maxSittings,subjects,jambSubjects,categories,altCourses,acceptsDE,deAcceptedTypes,notes
 // subjects / jambSubjects / altCourses / deAcceptedTypes: separated by semicolon (;) since commas separate CSV columns.
+// maxSittings: 1, 2 (standard/default if blank), or 3 — max number of O-Level sittings allowed. Most schools
+// allow 2; competitive courses at some schools (Medicine, Pharmacy, Nursing, etc.) require 1 sitting only —
+// always check per-course, don't assume the school's general rule applies to every course.
 // categories: only needed if this school/course uses different cutoffs per candidate category
 // (Merit/Catchment/ELDS, Indigene/Non-Indigene, etc). Format per category is
 // "Name:minJamb:minPostUtme:cutoffAggregate" (leave minPostUtme/cutoffAggregate blank if unused,
@@ -4672,10 +4695,10 @@ window.clearAdmissionReqForm=clearAdmissionReqForm;
 // acceptsDE: yes/no. deAcceptedTypes: which of A-Level;IJMB;JUPEB;ND;HND;NCE are
 // accepted — leave blank to mean "any qualification accepted".
 function downloadAdmCsvTemplate(){
-  const header='school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,olevelMethod,minOlevel,minOlevelPct,subjects,jambSubjects,categories,altCourses,acceptsDE,deAcceptedTypes,notes';
-  const example1='University of Lagos,Medicine and Surgery,2025/2026,aggregate,280,65,40,60,65,credit_count,5,,English Language;Mathematics;Biology;Chemistry;Physics,English Language;Biology;Chemistry;Physics,,Dentistry;Physiology,yes,IJMB;JUPEB,"Official cutoff was 250, but based on 2025 admissions most successful candidates scored 280+. DE only accepted via IJMB or JUPEB — not ND/HND."';
-  const example2='University of Ibadan,Law,2025/2026,screening,250,,,,,percentage,,65,English Language;Mathematics;Literature in English;Government,English Language;Literature in English;Government;CRS,,,no,,"Screening is document + interview based, no separate Post-UTME score. This course does not accept Direct Entry."';
-  const example3='Osun State University,Nursing Science,2025/2026,aggregate,,,,,,credit_count,5,,English Language;Mathematics;Biology;Chemistry;Physics,English Language;Biology;Chemistry;Physics,"Indigene:180:50:60|Non-Indigene:220:60:70",Public Health,yes,,"Osun indigenes get a lower cutoff — check your state of origin certificate before applying. Accepts any DE qualification."';
+  const header='school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,olevelMethod,minOlevel,minOlevelPct,maxSittings,subjects,jambSubjects,categories,altCourses,acceptsDE,deAcceptedTypes,notes';
+  const example1='University of Lagos,Medicine and Surgery,2025/2026,aggregate,280,65,40,60,65,credit_count,5,,1,English Language;Mathematics;Biology;Chemistry;Physics,English Language;Biology;Chemistry;Physics,,Dentistry;Physiology,yes,IJMB;JUPEB,"Official cutoff was 250, but based on 2025 admissions most successful candidates scored 280+. DE only accepted via IJMB or JUPEB — not ND/HND. This course requires O-Level credits from ONE sitting only."';
+  const example2='University of Ibadan,Law,2025/2026,screening,250,,,,,percentage,,65,2,English Language;Mathematics;Literature in English;Government,English Language;Literature in English;Government;CRS,,,no,,"Screening is document + interview based, no separate Post-UTME score. This course does not accept Direct Entry."';
+  const example3='Osun State University,Nursing Science,2025/2026,aggregate,,,,,,credit_count,5,,1,English Language;Mathematics;Biology;Chemistry;Physics,English Language;Biology;Chemistry;Physics,"Indigene:180:50:60|Non-Indigene:220:60:70",Public Health,yes,,"Osun indigenes get a lower cutoff — check your state of origin certificate before applying. Accepts any DE qualification. Nursing requires ONE sitting only, unlike most other courses at this school."';
   const csv=[header,example1,example2,example3].join('\r\n');
   const blob=new Blob([csv],{type:'text/csv'});
   const a=document.createElement('a');
@@ -4761,6 +4784,7 @@ async function uploadAdmissionCsv(){
           olevelMethod,
           minOlevel:parseInt(row.minOlevel)||5,
           minOlevelPct:row.minOlevelPct?parseFloat(row.minOlevelPct):null,
+          maxSittings:row.maxSittings?(parseInt(row.maxSittings)||2):2,
           subjects:(row.subjects||'').split(';').map(s=>s.trim()).filter(Boolean),
           jambSubjects:(row.jambSubjects||'').split(';').map(s=>s.trim()).filter(Boolean),
           altCourses:(row.altCourses||'').split(';').map(s=>s.trim()).filter(Boolean),
