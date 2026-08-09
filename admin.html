@@ -1630,7 +1630,13 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           </div>
           <div id="admCsvResult" style="margin-top:12px;font-size:.8rem"></div>
         </div>
-      </div>
+
+        <div class="section-card">
+          <div class="card-title">📥 Export Data (Download as CSV/ZIP)</div>
+          <p class="form-hint" style="margin-bottom:12px">Download existing requirements back out as CSV — pick specific schools, or export everything. Multiple schools download as a single ZIP (one CSV per school); a single school downloads as a plain CSV.</p>
+          <button class="btn btn-primary" onclick="openExportAdmModal()">📥 Choose Schools to Export</button>
+        </div>
+        </div>
 
       <div class="admin-panel" id="adm-tab-submissions">
         <div class="section-card">
@@ -2561,6 +2567,25 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 </div>
 
 <!-- Edit CBT Modal -->
+<div class="modal-overlay" id="exportAdmCsvModal" onclick="handleOverlay(event,'exportAdmCsvModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3>📥 Export Admission Requirements</h3><button class="modal-close" onclick="closeModal('exportAdmCsvModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="btn-row" style="margin-bottom:10px">
+        <button class="btn btn-ghost btn-sm" onclick="setAllExportSchools(true)">☑️ Select All</button>
+        <button class="btn btn-ghost btn-sm" onclick="setAllExportSchools(false)">☐ Deselect All</button>
+      </div>
+      <div class="form-hint" style="margin-bottom:10px" id="exportAdmSummary"></div>
+      <div id="exportAdmSchoolList" style="max-height:340px;overflow-y:auto;border:1px solid var(--border,#e2e8f0);border-radius:8px;padding:10px"></div>
+      <div class="btn-row" style="margin-top:16px">
+        <button class="btn btn-primary" onclick="downloadExportAdmCsv()" id="exportAdmDownloadBtn">📥 Download Selected</button>
+        <button class="btn btn-ghost" onclick="closeModal('exportAdmCsvModal')">Cancel</button>
+      </div>
+      <div id="exportAdmResult" style="margin-top:10px;font-size:.8rem"></div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="editCBTModal" onclick="handleOverlay(event,'editCBTModal')">
   <div class="modal-box">
     <div class="modal-header"><h3>✏️ Edit CBT Question</h3><button class="modal-close" onclick="closeModal('editCBTModal')">✕</button></div>
@@ -2599,6 +2624,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 </div>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
@@ -4708,6 +4734,129 @@ function downloadAdmCsvTemplate(){
 }
 window.downloadAdmCsvTemplate=downloadAdmCsvTemplate;
 
+// Escapes a single CSV field: wraps in quotes (doubling any internal quotes)
+// whenever the value contains a comma, quote, or newline — standard CSV rule.
+function csvField(val){
+  const s=(val===null||val===undefined)?'':String(val);
+  if(/[",\r\n]/.test(s)) return '"'+s.replace(/"/g,'""')+'"';
+  return s;
+}
+
+// Reverses the CSV import mapping: turns a stored requirement object back
+// into one CSV row, in the exact same column order the importer/template use,
+// so an exported file re-imports cleanly with zero data loss (round-trips).
+function admReqToCsvRow(r){
+  const categoriesStr=(r.useCategories&&(r.categories||[]).length)
+    ? r.categories.map(c=>[c.name,c.minJamb,c.minPostUtme,c.cutoffAggregate].map(v=>v===null||v===undefined?'':v).join(':')).join('|')
+    : '';
+  const cols=[
+    r.school, r.course, r.session,
+    r.method||'aggregate',
+    r.useCategories?'':(r.minJamb??''),
+    r.useCategories?'':(r.minPostUtme??''),
+    r.useCategories?'':(r.jambWeight??''),
+    r.useCategories?'':(r.postWeight??''),
+    r.useCategories?'':(r.cutoffAggregate??''),
+    r.olevelMethod||'credit_count',
+    r.olevelMethod==='percentage'?'':(r.minOlevel??5),
+    r.olevelMethod==='percentage'?(r.minOlevelPct??''):'',
+    r.maxSittings||2,
+    (r.subjects||[]).join(';'),
+    (r.jambSubjects||[]).join(';'),
+    categoriesStr,
+    (r.altCourses||[]).join(';'),
+    r.acceptsDE===false?'no':'yes',
+    (r.deAcceptedTypes||[]).join(';'),
+    r.notes||''
+  ];
+  return cols.map(csvField).join(',');
+}
+
+const EXPORT_ADM_CSV_HEADER='school,course,session,method,minJamb,minPostUtme,jambWeight,postWeight,cutoffAggregate,olevelMethod,minOlevel,minOlevelPct,maxSittings,subjects,jambSubjects,categories,altCourses,acceptsDE,deAcceptedTypes,notes';
+
+function schoolToFilename(school){
+  return school.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'')+'_admission_requirements.csv';
+}
+
+function openExportAdmModal(){
+  const schools=[...new Set(admissionReqData.map(r=>r.school))].sort();
+  const listEl=document.getElementById('exportAdmSchoolList');
+  if(!schools.length){
+    listEl.innerHTML='<div class="form-hint">No admission requirements in the database yet.</div>';
+    document.getElementById('exportAdmSummary').textContent='';
+  }else{
+    listEl.innerHTML=schools.map(s=>{
+      const count=admissionReqData.filter(r=>r.school===s).length;
+      const safeId='exp_'+s.replace(/[^a-zA-Z0-9]/g,'_');
+      return `<label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:.82rem;cursor:pointer">
+        <input type="checkbox" class="export-adm-school-cb" value="${admEsc(s)}" id="${safeId}" onchange="updateExportAdmSummary()">
+        <span>${admEsc(s)} <span style="color:var(--muted)">(${count} course${count===1?'':'s'})</span></span>
+      </label>`;
+    }).join('');
+  }
+  document.getElementById('exportAdmResult').innerHTML='';
+  updateExportAdmSummary();
+  openModal('exportAdmCsvModal');
+}
+window.openExportAdmModal=openExportAdmModal;
+
+function setAllExportSchools(checked){
+  document.querySelectorAll('.export-adm-school-cb').forEach(cb=>cb.checked=checked);
+  updateExportAdmSummary();
+}
+window.setAllExportSchools=setAllExportSchools;
+
+function updateExportAdmSummary(){
+  const total=document.querySelectorAll('.export-adm-school-cb').length;
+  const checked=document.querySelectorAll('.export-adm-school-cb:checked').length;
+  document.getElementById('exportAdmSummary').textContent=
+    total?`${checked} of ${total} school(s) selected`:'';
+}
+window.updateExportAdmSummary=updateExportAdmSummary;
+
+async function downloadExportAdmCsv(){
+  const checked=[...document.querySelectorAll('.export-adm-school-cb:checked')].map(cb=>cb.value);
+  const resultEl=document.getElementById('exportAdmResult');
+  if(!checked.length){ resultEl.innerHTML='<span style="color:#b91c1c">Pick at least one school first.</span>'; return; }
+
+  const btn=document.getElementById('exportAdmDownloadBtn');
+  btn.disabled=true; btn.textContent='Preparing…';
+
+  try{
+    // Single school -> plain CSV, no need to zip just one file.
+    if(checked.length===1){
+      const school=checked[0];
+      const rows=admissionReqData.filter(r=>r.school===school);
+      const csv=[EXPORT_ADM_CSV_HEADER, ...rows.map(admReqToCsvRow)].join('\r\n');
+      const blob=new Blob([csv],{type:'text/csv'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download=schoolToFilename(school);
+      document.body.appendChild(a); a.click(); a.remove();
+      resultEl.innerHTML=`<span style="color:var(--green,#15803d)">✅ Downloaded ${rows.length} requirement(s) for ${admEsc(school)}.</span>`;
+    }else{
+      // Multiple schools -> ZIP, one CSV per school.
+      const zip=new JSZip();
+      let totalRows=0;
+      checked.forEach(school=>{
+        const rows=admissionReqData.filter(r=>r.school===school);
+        totalRows+=rows.length;
+        const csv=[EXPORT_ADM_CSV_HEADER, ...rows.map(admReqToCsvRow)].join('\r\n');
+        zip.file(schoolToFilename(school), csv);
+      });
+      const blob=await zip.generateAsync({type:'blob'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download=`admission-requirements-export-${checked.length}-schools.zip`;
+      document.body.appendChild(a); a.click(); a.remove();
+      resultEl.innerHTML=`<span style="color:var(--green,#15803d)">✅ Downloaded ${checked.length} school(s), ${totalRows} requirement(s) total, as a ZIP.</span>`;
+    }
+  }catch(e){
+    resultEl.innerHTML=`<span style="color:#b91c1c">❌ Export failed: ${admEsc(e.message)}</span>`;
+  }
+  btn.disabled=false; btn.textContent='📥 Download Selected';
+}
+window.downloadExportAdmCsv=downloadExportAdmCsv;
+
 // Minimal CSV line parser that respects double-quoted fields containing commas.
 function parseCsvLine(line){
   const out=[]; let cur=''; let inQuotes=false;
@@ -4744,21 +4893,10 @@ function setAdmCsvProgress(pct,label){
   if(lbl) lbl.textContent=label||'';
 }
 
-// Builds a lookup key for duplicate detection: school + course + session,
-// case-insensitive and whitespace-trimmed, since that's what uniquely
-// identifies "the same requirement" from a user's point of view.
-function admReqKey(school, course, session){
-  return [school,course,session].map(s=>(s||'').toLowerCase().trim().replace(/\s+/g,' ')).join('|');
-}
-
-// Imports a single already-read CSV text blob. Returns {added, failed, duplicates, errors, dupeRows}.
+// Imports a single already-read CSV text blob. Returns {added, failed, errors}.
 // Shared by both the single- and multi-file upload paths so the row-parsing
 // logic (required fields, categories, maxSittings, etc.) only lives in one place.
-// existingKeys: a Set of admReqKey() values already in the database or already
-// added earlier in this same upload batch — mutated in place as new rows are added,
-// so duplicates ACROSS multiple files in one batch are also caught, not just
-// duplicates of pre-existing database records.
-async function importAdmissionCsvText(text, existingKeys, onRowProgress){
+async function importAdmissionCsvText(text, onRowProgress){
   const lines=text.split(/\r?\n/).filter(l=>l.trim());
   if(lines.length<2){ throw new Error('CSV has no data rows.'); }
   const header=parseCsvLine(lines[0]).map(h=>h.trim());
@@ -4767,21 +4905,13 @@ async function importAdmissionCsvText(text, existingKeys, onRowProgress){
   if(missing.length) throw new Error('Missing required column(s): '+missing.join(', '));
 
   const totalRows=lines.length-1;
-  let added=0, failed=0, duplicates=0; const errors=[]; const dupeRows=[];
+  let added=0, failed=0; const errors=[];
   for(let i=1;i<lines.length;i++){
     if(onRowProgress) onRowProgress(i,totalRows);
     const cols=parseCsvLine(lines[i]);
     const row={}; header.forEach((h,idx)=>row[h]=cols[idx]!==undefined?cols[idx]:'');
     try{
       if(!row.school||!row.course||!row.session||!row.subjects) throw new Error('missing required field');
-
-      const key=admReqKey(row.school,row.course,row.session);
-      if(existingKeys.has(key)){
-        duplicates++;
-        dupeRows.push(`${row.school} — ${row.course} (${row.session})`);
-        continue;
-      }
-
       const categories=parseAdmCategories(row.categories);
       const useCategories=categories.length>0;
       const olevelMethod=row.olevelMethod==='percentage'?'percentage':'credit_count';
@@ -4808,11 +4938,10 @@ async function importAdmissionCsvText(text, existingKeys, onRowProgress){
         notes:row.notes||''
       };
       await fbAdd('fs_admission_requirements',item,'CSV import: '+item.school+' — '+item.course);
-      existingKeys.add(key);
       added++;
     }catch(e){ failed++; errors.push('Row '+(i+1)+': '+e.message); }
   }
-  return {added,failed,duplicates,errors,dupeRows};
+  return {added,failed,errors};
 }
 
 async function uploadAdmissionCsv(){
@@ -4824,14 +4953,8 @@ async function uploadAdmissionCsv(){
   const btn=document.getElementById('admCsvBtn'); btn.disabled=true;
   resultEl.innerHTML='';
 
-  // Duplicate = same school + course + session as something already in the
-  // database, OR already added earlier in this same batch (e.g. the same
-  // school's CSV accidentally selected twice). Existing rows are never
-  // touched — duplicates are simply skipped, not overwritten.
-  const existingKeys=new Set(admissionReqData.map(r=>admReqKey(r.school,r.course,r.session)));
-
-  const perFileResults=[]; // {name, added, failed, duplicates, errors, dupeRows}
-  let grandAdded=0, grandFailed=0, grandDupes=0;
+  const perFileResults=[]; // {name, added, failed, errors}
+  let grandAdded=0, grandFailed=0;
 
   try{
     for(let f=0;f<files.length;f++){
@@ -4841,19 +4964,19 @@ async function uploadAdmissionCsv(){
       let fileResult;
       try{
         const text=await file.text();
-        fileResult=await importAdmissionCsvText(text, existingKeys, (rowNum,totalRows)=>{
+        fileResult=await importAdmissionCsvText(text,(rowNum,totalRows)=>{
+          const filePct=Math.round((rowNum/totalRows)*100);
           const overallPct=Math.round(((f+(rowNum/totalRows))/files.length)*100);
           setAdmCsvProgress(overallPct, files.length>1
             ? `File ${f+1}/${files.length}: ${file.name} — row ${rowNum} of ${totalRows}…`
             : `Importing row ${rowNum} of ${totalRows}…`);
         });
       }catch(e){
-        fileResult={added:0,failed:0,duplicates:0,errors:[],dupeRows:[],fileError:e.message};
+        fileResult={added:0,failed:0,errors:[],fileError:e.message};
       }
       perFileResults.push({name:file.name, ...fileResult});
       grandAdded+=fileResult.added||0;
       grandFailed+=fileResult.failed||0;
-      grandDupes+=fileResult.duplicates||0;
     }
 
     setAdmCsvProgress(100,'Finishing up…');
@@ -4861,25 +4984,19 @@ async function uploadAdmissionCsv(){
     renderAdmissionReqs(); updateBadges();
 
     let html=`<div style="color:var(--green,#15803d);font-weight:700">✅ Imported ${grandAdded} requirement(s)${files.length>1?` across ${files.length} file(s)`:''}.</div>`;
-    if(grandDupes) html+=`<div style="color:#b45309;margin-top:6px">⏭️ Skipped ${grandDupes} duplicate row(s) — already in the database (matched by school + course + session), left untouched.</div>`;
     if(files.length>1){
       html+=`<div style="margin-top:10px;font-size:.78rem">`+
         perFileResults.map(r=>r.fileError
           ? `📄 <b>${admEsc(r.name)}</b>: <span style="color:#b91c1c">❌ ${admEsc(r.fileError)}</span>`
-          : `📄 <b>${admEsc(r.name)}</b>: ${r.added} added${r.duplicates?`, ${r.duplicates} duplicate`:''}${r.failed?`, <span style="color:#b91c1c">${r.failed} failed</span>`:''}`
+          : `📄 <b>${admEsc(r.name)}</b>: ${r.added} added${r.failed?`, <span style="color:#b91c1c">${r.failed} failed</span>`:''}`
         ).join('<br>')+`</div>`;
-    }
-    if(grandDupes){
-      const allDupes=perFileResults.flatMap(r=>(r.dupeRows||[]).map(d=>(files.length>1?r.name+' — ':'')+d));
-      html+=`<details style="margin-top:8px"><summary style="cursor:pointer;color:#b45309;font-size:.78rem">Show skipped duplicates (${grandDupes})</summary>`+
-        `<div style="font-size:.76rem;margin-top:6px;color:var(--muted)">${allDupes.map(d=>admEsc(d)).join('<br>')}</div></details>`;
     }
     if(grandFailed){
       const allErrors=perFileResults.flatMap(r=>(r.errors||[]).map(e=>(files.length>1?r.name+' — ':'')+e));
       html+=`<div style="color:#b91c1c;margin-top:10px">⚠️ ${grandFailed} row(s) failed total:<br>${allErrors.map(e=>admEsc(e)).join('<br>')}</div>`;
     }
     resultEl.innerHTML=html;
-    showStatus('success','📤 CSV import complete: '+grandAdded+' added, '+grandDupes+' duplicate(s) skipped, '+grandFailed+' failed'+(files.length>1?` across ${files.length} files`:'')+'.');
+    showStatus('success','📤 CSV import complete: '+grandAdded+' added, '+grandFailed+' failed'+(files.length>1?` across ${files.length} files`:'')+'.');
     fileInput.value='';
   }catch(e){
     resultEl.innerHTML=`<div style="color:#b91c1c">❌ ${admEsc(e.message)}</div>`;
