@@ -218,6 +218,64 @@ body.dark .form-group label{color:#94a3b8}
 .form-group textarea{resize:vertical;min-height:100px;line-height:1.6}
 .form-hint{font-size:0.68rem;color:var(--muted);margin-top:3px;line-height:1.4}
 
+/* ─── HEADLINE INPUT (prominent, auto-bold) ─── */
+.headline-input{font-family:'Montserrat',sans-serif!important;font-size:1.05rem!important;font-weight:800!important;color:var(--blue-dk,#0c1f6e)}
+body.dark .headline-input{color:#fff!important}
+.headline-input::placeholder{font-weight:600;color:var(--muted);opacity:.6}
+
+/* ─── WIDE NEWS BODY EDITOR ─── */
+.editor-wrap{width:100%}
+.editor-toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;padding:8px;background:var(--light);border:1.5px solid var(--border);border-radius:9px 9px 0 0}
+body.dark .editor-toolbar{background:#0f172a}
+.editor-tbtn{background:var(--card);border:1.5px solid var(--border);border-radius:6px;padding:6px 11px;font-size:.8rem;font-weight:700;color:var(--text);cursor:pointer;min-height:32px;font-family:'Roboto',sans-serif}
+.editor-tbtn:hover{border-color:var(--blue);color:var(--blue)}
+.editor-tbtn i{font-style:italic}
+.article-textarea{width:100%;min-height:220px;border-radius:0 0 9px 9px!important;margin-top:-1px;font-size:.95rem;line-height:1.75}
+@media(min-width:700px){.article-textarea{min-height:340px}}
+@media(min-width:1000px){.article-textarea{min-height:440px;font-size:1rem}}
+.editor-hint{font-size:.68rem;color:var(--muted);margin-top:6px;line-height:1.5}
+.editor-hint code{background:var(--light);padding:1px 5px;border-radius:4px;font-family:monospace}
+body.dark .editor-hint code{background:#0f172a}
+
+/* ─── WIDE EDITOR MODE (News tab) ─── */
+body.wide-editor .admin-main{max-width:1000px}
+@media(min-width:900px){body.wide-editor .admin-main{max-width:min(1400px,96vw)}}
+.modal-box.wide-modal{max-width:640px}
+@media(min-width:900px){.modal-box.wide-modal{max-width:880px}}
+@media(min-width:1200px){.modal-box.wide-modal{max-width:1040px}}
+
+/* ─── FORMATTING RULES CARD ─── */
+.rules-card{background:var(--light);border:1.5px solid var(--border);border-radius:10px;margin-bottom:14px;overflow:hidden}
+body.dark .rules-card{background:#0f172a}
+.rules-card summary{cursor:pointer;padding:12px 14px;font-size:.82rem;font-weight:800;color:var(--blue-dk,#0c1f6e);list-style:none;display:flex;align-items:center;gap:8px}
+body.dark .rules-card summary{color:#93c5fd}
+.rules-card summary::-webkit-details-marker{display:none}
+.rules-card summary::after{content:'▾';margin-left:auto;font-size:.7rem;color:var(--muted)}
+.rules-card[open] summary::after{content:'▴'}
+.rules-card-body{padding:0 16px 14px;font-size:.78rem;line-height:1.65;color:var(--text)}
+.rules-card-body h5{font-size:.76rem;font-weight:800;margin:10px 0 3px;color:var(--text)}
+.rules-card-body ul{margin:0 0 4px 18px}
+.rules-card-body li{margin-bottom:3px}
+.rules-card-body code{background:var(--card);border:1px solid var(--border);padding:1px 5px;border-radius:4px;font-family:monospace}
+.preview-toggle{display:flex;gap:6px;margin-bottom:10px}
+.preview-pane{display:none;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:0;overflow:hidden;margin-top:4px}
+.preview-pane.open{display:block}
+.preview-pane-hdr{background:var(--light);padding:8px 14px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border)}
+body.dark .preview-pane-hdr{background:#0f172a}
+.preview-body{padding:20px 22px;max-width:680px;margin:0 auto}
+.preview-cat{display:inline-block;font-size:.62rem;font-weight:800;padding:3px 10px;border-radius:20px;margin-bottom:10px;background:#dbeafe;color:#1d4ed8}
+.preview-title{font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:8px}
+.preview-meta{font-size:.72rem;color:var(--muted);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.preview-img{width:100%;max-height:280px;object-fit:cover;border-radius:10px;margin-bottom:14px}
+.preview-content{font-size:.9rem;color:var(--text);line-height:1.85}
+.preview-content p{margin:0 0 14px}
+.preview-content ul,.preview-content ol{margin:4px 0 14px;padding-left:22px}
+.preview-content li{margin-bottom:6px}
+.preview-content strong{font-weight:800}
+.preview-content em{font-style:italic}
+.preview-content a{color:var(--blue);text-decoration:underline}
+.preview-empty{color:var(--muted);font-size:.85rem;text-align:center;padding:30px 0}
+
 /* ─── BUTTONS ─── */
 .btn{padding:10px 18px;border-radius:9px;font-weight:600;font-size:0.84rem;cursor:pointer;border:none;font-family:'Roboto',sans-serif;transition:.15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;min-height:var(--touch);touch-action:manipulation}
 .btn:disabled{opacity:0.5;cursor:not-allowed}
@@ -672,29 +730,66 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="admin-panel" id="news-tab-add">
         <div class="section-card">
           <div class="card-title">➕ Add New Article</div>
+          <details class="rules-card" open>
+            <summary>📖 News Writing &amp; Formatting Rules</summary>
+            <div class="rules-card-body">
+              <p>Type using familiar WhatsApp-style shortcuts below — they're converted into clean, professional web formatting automatically. The published article will <strong>never</strong> look like a WhatsApp chat.</p>
+              <h5>Bold — <code>*text*</code></h5>
+              <ul><li>Use for important facts, key terms, dates, names, warnings and important statements.</li><li>Don't bold entire paragraphs.</li></ul>
+              <h5>Italic — <code>_text_</code></h5>
+              <ul><li>Use for light emphasis, terminology, titles, or publication names.</li><li>Avoid excessive italics.</li></ul>
+              <h5>Bulleted lists — lines starting with <code>- </code></h5>
+              <ul><li>Use for several related items with no particular order — e.g. requirements, available courses, documents needed.</li></ul>
+              <h5>Numbered lists — lines starting with <code>1. </code></h5>
+              <ul><li>Use for steps, procedures, rankings, or instructions — e.g. steps for checking examination results.</li></ul>
+              <h5>Links — <code>[descriptive text](https://example.com)</code></h5>
+              <ul><li>Always use descriptive anchor text rather than a raw URL — e.g. "Read the full admission requirements" instead of pasting the link directly.</li></ul>
+            </div>
+          </details>
           <div class="form-row">
-            <div class="form-group"><label>Headline *</label><input type="text" id="addTitle" placeholder="Article title"></div>
+            <div class="form-group"><label>Headline *</label><input type="text" class="headline-input" id="addTitle" placeholder="e.g. WAEC Announces New Guidelines for 2026 Examination" oninput="updateNewsPreview('add')"></div>
             <div class="form-group"><label>Category *</label>
-              <select id="addCategory"><option value="">— Select —</option><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select>
+              <select id="addCategory" onchange="updateNewsPreview('add')"><option value="">— Select —</option><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select>
             </div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label>Date</label><input type="text" id="addDate"></div>
-            <div class="form-group">
-              <label>Cover Image</label>
-              <div class="img-upload-box" onclick="document.getElementById('addImageFile').click()">
-                <input type="file" id="addImageFile" accept="image/*" onchange="previewImg(this,'addImgPreview','addImgClear','addImageB64')">
-                <div class="upload-label"><span>🖼️</span>Tap to upload image</div>
-              </div>
-              <img id="addImgPreview" class="img-preview" alt="preview">
-              <span id="addImgClear" class="img-clear" onclick="clearImg('addImageFile','addImgPreview','addImgClear','addImageB64')">✕ Remove image</span>
-              <input type="hidden" id="addImageB64">
-            </div>
+            <div class="form-group"><label>Published Date</label><input type="text" id="addDate" onchange="updateNewsPreview('add')"></div>
+            <div class="form-group"><label>Updated Date <span style="text-transform:none;font-weight:400">(optional)</span></label><input type="text" id="addUpdatedDate" placeholder="Leave blank if not updated" onchange="updateNewsPreview('add')"></div>
           </div>
-          <div class="form-group"><label>Full Article Content *</label><textarea id="addFullContent" placeholder="Write the full article here…"></textarea></div>
+          <div class="form-group">
+            <label>Cover Image</label>
+            <div class="img-upload-box" onclick="document.getElementById('addImageFile').click()">
+              <input type="file" id="addImageFile" accept="image/*" onchange="previewImg(this,'addImgPreview','addImgClear','addImageB64');updateNewsPreview('add')">
+              <div class="upload-label"><span>🖼️</span>Tap to upload image</div>
+            </div>
+            <img id="addImgPreview" class="img-preview" alt="preview">
+            <span id="addImgClear" class="img-clear" onclick="clearImg('addImageFile','addImgPreview','addImgClear','addImageB64');updateNewsPreview('add')">✕ Remove image</span>
+            <input type="hidden" id="addImageB64">
+          </div>
+          <div class="form-group">
+            <label>Full Article Content *</label>
+            <div class="editor-wrap">
+              <div class="editor-toolbar">
+                <button type="button" class="editor-tbtn" onclick="wrapSelection('addFullContent','*')"><b>B</b> Bold</button>
+                <button type="button" class="editor-tbtn" onclick="wrapSelection('addFullContent','_')"><i>I</i> Italic</button>
+                <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','- ')">• Bullet list</button>
+                <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','1. ')">1. Numbered list</button>
+                <button type="button" class="editor-tbtn" onclick="insertLink('addFullContent')">🔗 Insert link</button>
+              </div>
+              <textarea class="article-textarea" id="addFullContent" placeholder="Write the full article here…" oninput="updateNewsPreview('add')"></textarea>
+            </div>
+            <div class="editor-hint">Use <code>*text*</code> for <b>bold</b>, <code>_text_</code> for <i>italic</i>, lines starting with <code>- </code> for bullet lists, <code>1. </code> for numbered lists. These are converted into clean web formatting on the published page — the article will never look like a WhatsApp chat.</div>
+          </div>
           <div class="form-row">
             <div class="form-group"><label>Pin to Top?</label><select id="addPinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top (max 3)</option></select></div>
-            <div class="form-group"><label>Author</label><input type="text" id="addAuthor" value="BIG QUAMS MEDIA"></div>
+            <div class="form-group"><label>Author</label><input type="text" id="addAuthor" value="BIG QUAMS MEDIA" onchange="updateNewsPreview('add')"></div>
+          </div>
+          <div class="preview-toggle">
+            <button type="button" class="btn btn-outline btn-sm" onclick="togglePreview('add')" id="addPreviewToggleBtn">👁 Show Live Preview</button>
+          </div>
+          <div class="preview-pane" id="addPreviewPane">
+            <div class="preview-pane-hdr">📱 Approximate published appearance</div>
+            <div class="preview-body" id="addPreviewBody"></div>
           </div>
           <div class="btn-row">
             <button class="btn btn-success" onclick="addNews()" id="addNewsBtn">🚀 Publish Article</button>
@@ -2310,21 +2405,57 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 
 <!-- Edit News Modal -->
 <div class="modal-overlay" id="editNewsModal" onclick="handleOverlay(event,'editNewsModal')">
-  <div class="modal-box">
+  <div class="modal-box wide-modal">
     <div class="modal-header"><h3>✏️ Edit Article</h3><button class="modal-close" onclick="closeModal('editNewsModal')">✕</button></div>
     <div class="modal-body">
       <input type="hidden" id="editNewsIdx">
+      <details class="rules-card">
+        <summary>📖 News Writing &amp; Formatting Rules</summary>
+        <div class="rules-card-body">
+          <h5>Bold — <code>*text*</code></h5>
+          <ul><li>Important facts, key terms, dates, names, warnings. Don't bold whole paragraphs.</li></ul>
+          <h5>Italic — <code>_text_</code></h5>
+          <ul><li>Light emphasis, terminology, titles, publication names. Use sparingly.</li></ul>
+          <h5>Bulleted lists — <code>- item</code></h5>
+          <ul><li>Unordered related items — requirements, courses, documents.</li></ul>
+          <h5>Numbered lists — <code>1. item</code></h5>
+          <ul><li>Steps, procedures, rankings, instructions.</li></ul>
+          <h5>Links — <code>[text](url)</code></h5>
+          <ul><li>Descriptive anchor text, never a raw URL.</li></ul>
+        </div>
+      </details>
       <div class="form-row">
-        <div class="form-group"><label>Headline *</label><input type="text" id="eNewsTitle"></div>
+        <div class="form-group"><label>Headline *</label><input type="text" class="headline-input" id="eNewsTitle" oninput="updateNewsPreview('e')"></div>
         <div class="form-group"><label>Category *</label>
-          <select id="eNewsCategory"><option value="">— Select —</option><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select>
+          <select id="eNewsCategory" onchange="updateNewsPreview('e')"><option value="">— Select —</option><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select>
         </div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Date</label><input type="text" id="eNewsDate"></div>
-        <div class="form-group"><label>Author</label><input type="text" id="eNewsAuthor"></div>
+        <div class="form-group"><label>Published Date</label><input type="text" id="eNewsDate" onchange="updateNewsPreview('e')"></div>
+        <div class="form-group"><label>Updated Date <span style="text-transform:none;font-weight:400">(optional)</span></label><input type="text" id="eNewsUpdatedDate" placeholder="Leave blank if not updated" onchange="updateNewsPreview('e')"></div>
       </div>
-      <div class="form-group"><label>Full Content *</label><textarea id="eNewsFullContent"></textarea></div>
+      <div class="form-group"><label>Author</label><input type="text" id="eNewsAuthor" onchange="updateNewsPreview('e')"></div>
+      <div class="form-group">
+        <label>Full Content *</label>
+        <div class="editor-wrap">
+          <div class="editor-toolbar">
+            <button type="button" class="editor-tbtn" onclick="wrapSelection('eNewsFullContent','*')"><b>B</b> Bold</button>
+            <button type="button" class="editor-tbtn" onclick="wrapSelection('eNewsFullContent','_')"><i>I</i> Italic</button>
+            <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','- ')">• Bullet list</button>
+            <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','1. ')">1. Numbered list</button>
+            <button type="button" class="editor-tbtn" onclick="insertLink('eNewsFullContent')">🔗 Insert link</button>
+          </div>
+          <textarea class="article-textarea" id="eNewsFullContent" oninput="updateNewsPreview('e')"></textarea>
+        </div>
+        <div class="editor-hint">Use <code>*text*</code> for bold, <code>_text_</code> for italic, <code>- </code> for bullet lists, <code>1. </code> for numbered lists.</div>
+      </div>
+      <div class="preview-toggle">
+        <button type="button" class="btn btn-outline btn-sm" onclick="togglePreview('e')" id="ePreviewToggleBtn">👁 Show Live Preview</button>
+      </div>
+      <div class="preview-pane" id="ePreviewPane">
+        <div class="preview-pane-hdr">📱 Approximate published appearance</div>
+        <div class="preview-body" id="ePreviewBody"></div>
+      </div>
       <div class="btn-row">
         <button class="btn btn-primary" onclick="saveEditNews()" id="saveNewsBtn">Save Changes</button>
         <button class="btn btn-ghost" onclick="closeModal('editNewsModal')">Cancel</button>
@@ -3533,6 +3664,7 @@ function switchSection(name){
   });
   closeSidebar();
   window.scrollTo({top:0,behavior:'smooth'});
+  if(name!=='news') document.body.classList.remove('wide-editor');
   // Section-specific hooks
   if(name==='activitylog') setTimeout(refreshActivityLog,100);
   if(name==='postutmecbt') setTimeout(loadPUCBTQuestions,100);
@@ -3581,6 +3713,7 @@ function switchTab(sec,tab){
   secEl.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
   const panel=document.getElementById(`${sec}-tab-${tab}`);
   if(panel) panel.classList.add('active');
+  if(sec==='news') document.body.classList.toggle('wide-editor',tab==='add');
 }
 window.switchTab=switchTab;
 
@@ -3742,10 +3875,113 @@ function articleUrl(item){
 }
 window.articleUrl=articleUrl;
 
+// ── WhatsApp-style body → professional web typography (mirrors newsroom.html) ──
+function formatArticleBody(raw){
+  if(!raw) return '';
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const inline=line=>{
+    let t=esc(line);
+    t=t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,(m,txt,url)=>`<a href="${url}" target="_blank" rel="noopener">${txt}</a>`);
+    t=t.replace(/(https?:\/\/[^\s<>"']+)/g,u=>u.match(/^<a /)?u:`<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
+    t=t.replace(/\*([^\*\n]+)\*/g,'<strong>$1</strong>');
+    t=t.replace(/_([^_\n]+)_/g,'<em>$1</em>');
+    return t;
+  };
+  const lines=raw.replace(/\r\n/g,'\n').split('\n');
+  let html='',buf=[],mode=null;
+  const flush=()=>{
+    if(!buf.length){mode=null;return;}
+    if(mode==='ul') html+='<ul>'+buf.map(l=>`<li>${inline(l)}</li>`).join('')+'</ul>';
+    else if(mode==='ol') html+='<ol>'+buf.map(l=>`<li>${inline(l)}</li>`).join('')+'</ol>';
+    else html+=`<p>${buf.map(inline).join('<br>')}</p>`;
+    buf=[];mode=null;
+  };
+  lines.forEach(line=>{
+    const t=line.trim();
+    if(!t){flush();return;}
+    const bullet=/^[-•]\s+(.*)/.exec(t);
+    const numbered=/^\d+[.)]\s+(.*)/.exec(t);
+    if(bullet){ if(mode&&mode!=='ul') flush(); mode='ul'; buf.push(bullet[1]); }
+    else if(numbered){ if(mode&&mode!=='ol') flush(); mode='ol'; buf.push(numbered[1]); }
+    else { if(mode&&mode!=='p') flush(); mode='p'; buf.push(t); }
+  });
+  flush();
+  return html;
+}
+
+// ── Editor toolbar helpers (WhatsApp-style shortcuts inserted at cursor) ──
+function wrapSelection(taId,marker){
+  const ta=document.getElementById(taId); if(!ta) return;
+  const s=ta.selectionStart,e=ta.selectionEnd;
+  const sel=ta.value.slice(s,e)||'text';
+  ta.value=ta.value.slice(0,s)+marker+sel+marker+ta.value.slice(e);
+  ta.focus(); ta.selectionStart=s+marker.length; ta.selectionEnd=s+marker.length+sel.length;
+  ta.dispatchEvent(new Event('input'));
+}
+window.wrapSelection=wrapSelection;
+
+function insertListPrefix(taId,prefix){
+  const ta=document.getElementById(taId); if(!ta) return;
+  const s=ta.selectionStart,e=ta.selectionEnd;
+  const before=ta.value.slice(0,s),after=ta.value.slice(e);
+  const needsNL=before.length&&!before.endsWith('\n');
+  const insert=(needsNL?'\n':'')+prefix+(ta.value.slice(s,e)||'List item');
+  ta.value=before+insert+after;
+  ta.focus(); const pos=before.length+insert.length; ta.selectionStart=ta.selectionEnd=pos;
+  ta.dispatchEvent(new Event('input'));
+}
+window.insertListPrefix=insertListPrefix;
+
+function insertLink(taId){
+  const ta=document.getElementById(taId); if(!ta) return;
+  const url=prompt('Paste the link URL:'); if(!url) return;
+  const text=prompt('Link text (what readers will see):','Read more')||url;
+  const s=ta.selectionStart,e=ta.selectionEnd;
+  const insert=`[${text}](${url})`;
+  ta.value=ta.value.slice(0,s)+insert+ta.value.slice(e);
+  ta.focus(); ta.selectionStart=ta.selectionEnd=s+insert.length;
+  ta.dispatchEvent(new Event('input'));
+}
+window.insertLink=insertLink;
+
+// ── Live preview (Add / Edit share the same 'prefix' pattern: add* / eNews*) ──
+function togglePreview(which){
+  const pane=document.getElementById(which==='add'?'addPreviewPane':'ePreviewPane');
+  const btn=document.getElementById(which==='add'?'addPreviewToggleBtn':'ePreviewToggleBtn');
+  const open=pane.classList.toggle('open');
+  btn.textContent=open?'🙈 Hide Live Preview':'👁 Show Live Preview';
+  if(open) updateNewsPreview(which);
+}
+window.togglePreview=togglePreview;
+
+function updateNewsPreview(which){
+  const ids=which==='add'
+    ?{title:'addTitle',cat:'addCategory',date:'addDate',upd:'addUpdatedDate',author:'addAuthor',img:'addImageB64',body:'addFullContent',pane:'addPreviewPane',out:'addPreviewBody'}
+    :{title:'eNewsTitle',cat:'eNewsCategory',date:'eNewsDate',upd:'eNewsUpdatedDate',author:'eNewsAuthor',img:null,body:'eNewsFullContent',pane:'ePreviewPane',out:'ePreviewBody'};
+  const pane=document.getElementById(ids.pane); if(!pane||!pane.classList.contains('open')) return;
+  const title=(document.getElementById(ids.title)?.value||'').trim();
+  const cat=document.getElementById(ids.cat)?.value||'';
+  const date=document.getElementById(ids.date)?.value||'';
+  const upd=document.getElementById(ids.upd)?.value||'';
+  const author=document.getElementById(ids.author)?.value||'';
+  const img=ids.img?document.getElementById(ids.img)?.value:'';
+  const body=document.getElementById(ids.body)?.value||'';
+  const out=document.getElementById(ids.out); if(!out) return;
+  if(!title&&!body){out.innerHTML='<div class="preview-empty">Start typing to see a live preview of the published article…</div>';return;}
+  out.innerHTML=`
+    ${img?`<img class="preview-img" src="${img}" alt="">`:''}
+    <span class="preview-cat">${cat||'News'}</span>
+    <div class="preview-title">${title||'Untitled article'}</div>
+    <div class="preview-meta">Published ${date||'—'}${upd&&upd!==date?' · Updated '+upd:''}${author?' · ✍️ '+author:''}</div>
+    <div class="preview-content">${formatArticleBody(body)||'<div class="preview-empty">Article body preview will appear here…</div>'}</div>`;
+}
+window.updateNewsPreview=updateNewsPreview;
+
 async function addNews(){
   const title=document.getElementById('addTitle').value.trim();
   const category=document.getElementById('addCategory').value;
   const date=document.getElementById('addDate').value.trim();
+  const updatedDate=document.getElementById('addUpdatedDate').value.trim();
   const image=document.getElementById('addImageB64').value;
   const fullContent=document.getElementById('addFullContent').value.trim();
   const pinned=document.getElementById('addPinned').value==='true';
@@ -3760,8 +3996,9 @@ async function addNews(){
   const slug=makeSlug(title);
   const btn=document.getElementById('addNewsBtn'); btn.disabled=true; btn.textContent='Publishing…';
   try{
-    const item={title,category,date,author,slug,fullContent,pinned:pinned||false,createdAt:window.serverTimestamp()};
+    const item={title,category,date,author,slug,fullContent,pinned:pinned||false,likes:0,createdAt:window.serverTimestamp()};
     if(image) item.image=image;
+    if(updatedDate) item.updatedDate=updatedDate;
     const ref=await window.addDoc(window.collection(window.db,'fs_news'),item);
     // Update doc with its own Firestore ID so articleUrl stays stable
     await window.updateDoc(window.doc(window.db,'fs_news',ref.id),{_docId:ref.id});
@@ -3774,11 +4011,15 @@ async function addNews(){
 window.addNews=addNews;
 
 function clearNewsForm(){
-  ['addTitle','addFullContent'].forEach(id=>document.getElementById(id).value='');
+  ['addTitle','addFullContent','addUpdatedDate'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('addCategory').value=''; document.getElementById('addPinned').value='false';
   document.getElementById('addAuthor').value='BIG QUAMS MEDIA';
   document.getElementById('addDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
   clearImg('addImageFile','addImgPreview','addImgClear','addImageB64');
+  const pane=document.getElementById('addPreviewPane');
+  if(pane) pane.classList.remove('open');
+  const btn=document.getElementById('addPreviewToggleBtn');
+  if(btn) btn.textContent='👁 Show Live Preview';
 }
 window.clearNewsForm=clearNewsForm;
 
@@ -3819,8 +4060,13 @@ function openEditNews(idx){
   document.getElementById('eNewsTitle').value=n.title||'';
   document.getElementById('eNewsCategory').value=n.category||'';
   document.getElementById('eNewsDate').value=n.date||'';
+  document.getElementById('eNewsUpdatedDate').value=n.updatedDate||'';
   document.getElementById('eNewsAuthor').value=n.author||'BIG QUAMS MEDIA';
   document.getElementById('eNewsFullContent').value=n.fullContent||'';
+  const pane=document.getElementById('ePreviewPane');
+  if(pane) pane.classList.remove('open');
+  const btn=document.getElementById('ePreviewToggleBtn');
+  if(btn) btn.textContent='👁 Show Live Preview';
   openModal('editNewsModal');
 }
 window.openEditNews=openEditNews;
@@ -3833,7 +4079,7 @@ async function saveEditNews(){
   if(!t||!f){showStatus('error','Fill in Title and Content.');return;}
   try{
     const slug=makeSlug(t);
-    const updates={title:t,slug,category:document.getElementById('eNewsCategory').value,date:document.getElementById('eNewsDate').value,author:document.getElementById('eNewsAuthor').value.trim(),fullContent:f};
+    const updates={title:t,slug,category:document.getElementById('eNewsCategory').value,date:document.getElementById('eNewsDate').value,updatedDate:document.getElementById('eNewsUpdatedDate').value.trim(),author:document.getElementById('eNewsAuthor').value.trim(),fullContent:f};
     if(item._id) await window.updateDoc(window.doc(window.db,'fs_news',item._id),updates);
     logAdminActivity('edit','news','Edit: '+t);
     await loadNewsFromFirebase();
