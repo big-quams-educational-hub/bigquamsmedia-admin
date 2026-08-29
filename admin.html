@@ -239,10 +239,19 @@ body.dark .editor-hint code{background:#0f172a}
 
 /* ─── WIDE EDITOR MODE (News tab) ─── */
 body.wide-editor .admin-main{max-width:1000px}
-@media(min-width:900px){body.wide-editor .admin-main{max-width:min(1400px,96vw)}}
+@media(min-width:900px){body.wide-editor .admin-main{max-width:min(1200px,97vw)}}
+@media(min-width:1300px){body.wide-editor .admin-main{max-width:min(1600px,97vw)}}
 .modal-box.wide-modal{max-width:640px}
 @media(min-width:900px){.modal-box.wide-modal{max-width:880px}}
 @media(min-width:1200px){.modal-box.wide-modal{max-width:1040px}}
+
+/* ─── FULLSCREEN DISTRACTION-FREE WRITING (WordPress-style) ─── */
+.editor-wrap.fullscreen-editor{position:fixed;inset:0;z-index:900;background:var(--bg,#f4f6fb);display:flex;flex-direction:column;padding:0}
+body.dark .editor-wrap.fullscreen-editor{background:#0d1117}
+.editor-wrap.fullscreen-editor .editor-toolbar{border-radius:0;padding:12px max(16px,4vw);flex-shrink:0}
+.editor-wrap.fullscreen-editor .article-textarea{flex:1;min-height:0!important;border-radius:0!important;max-width:900px;margin:0 auto;width:calc(100% - 32px);font-size:1.05rem;padding:24px}
+.fs-close-bar{display:none;flex-shrink:0;padding:10px max(16px,4vw);text-align:right}
+.editor-wrap.fullscreen-editor .fs-close-bar{display:block}
 
 /* ─── FORMATTING RULES CARD ─── */
 .rules-card{background:var(--light);border:1.5px solid var(--border);border-radius:10px;margin-bottom:14px;overflow:hidden}
@@ -273,6 +282,11 @@ body.dark .preview-pane-hdr{background:#0f172a}
 .preview-content li{margin-bottom:6px}
 .preview-content strong{font-weight:800}
 .preview-content em{font-style:italic}
+.preview-content s{opacity:.65}
+.preview-content code{background:var(--light);border:1px solid var(--border);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:.88em}
+body.dark .preview-content code{background:#0f172a}
+.preview-content blockquote{margin:0 0 14px;padding:8px 16px;border-left:3px solid var(--blue);background:var(--light);border-radius:0 8px 8px 0;font-style:italic;color:var(--muted)}
+body.dark .preview-content blockquote{background:#0f172a}
 .preview-content a{color:var(--blue);text-decoration:underline}
 .preview-empty{color:var(--muted);font-size:.85rem;text-align:center;padding:30px 0}
 
@@ -738,6 +752,12 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
               <ul><li>Use for important facts, key terms, dates, names, warnings and important statements.</li><li>Don't bold entire paragraphs.</li></ul>
               <h5>Italic — <code>_text_</code></h5>
               <ul><li>Use for light emphasis, terminology, titles, or publication names.</li><li>Avoid excessive italics.</li></ul>
+              <h5>Strikethrough — <code>~text~</code></h5>
+              <ul><li>Use to show a correction — e.g. a cancelled date or a withdrawn figure.</li></ul>
+              <h5>Monospace — <code>`text`</code></h5>
+              <ul><li>Use for codes, portal URLs typed as text, reference/matric numbers, or short technical values.</li></ul>
+              <h5>Pull-quote — lines starting with <code>&gt; </code></h5>
+              <ul><li>Use to set off an official statement or a direct quote from a spokesperson.</li></ul>
               <h5>Bulleted lists — lines starting with <code>- </code></h5>
               <ul><li>Use for several related items with no particular order — e.g. requirements, available courses, documents needed.</li></ul>
               <h5>Numbered lists — lines starting with <code>1. </code></h5>
@@ -768,17 +788,23 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           </div>
           <div class="form-group">
             <label>Full Article Content *</label>
-            <div class="editor-wrap">
+            <div class="editor-wrap" id="addEditorWrap">
               <div class="editor-toolbar">
                 <button type="button" class="editor-tbtn" onclick="wrapSelection('addFullContent','*')"><b>B</b> Bold</button>
                 <button type="button" class="editor-tbtn" onclick="wrapSelection('addFullContent','_')"><i>I</i> Italic</button>
+                <button type="button" class="editor-tbtn" onclick="wrapSelection('addFullContent','~')"><s>S</s> Strikethrough</button>
+                <button type="button" class="editor-tbtn" onclick="wrapSelection('addFullContent','`')">&lt;/&gt; Monospace</button>
                 <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','- ')">• Bullet list</button>
                 <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','1. ')">1. Numbered list</button>
+                <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','&gt; ')">❝ Quote</button>
                 <button type="button" class="editor-tbtn" onclick="insertLink('addFullContent')">🔗 Insert link</button>
+                <button type="button" class="editor-tbtn" onclick="toggleFullscreenEditor('addEditorWrap','addFullContent')" style="margin-left:auto">⛶ Fullscreen</button>
+              </div>
+              <div class="fs-close-bar"><button type="button" class="btn btn-ghost btn-sm" onclick="toggleFullscreenEditor('addEditorWrap','addFullContent')">✕ Exit fullscreen</button></div>
               </div>
               <textarea class="article-textarea" id="addFullContent" placeholder="Write the full article here…" oninput="updateNewsPreview('add')"></textarea>
             </div>
-            <div class="editor-hint">Use <code>*text*</code> for <b>bold</b>, <code>_text_</code> for <i>italic</i>, lines starting with <code>- </code> for bullet lists, <code>1. </code> for numbered lists. These are converted into clean web formatting on the published page — the article will never look like a WhatsApp chat.</div>
+            <div class="editor-hint">Use <code>*text*</code> for <b>bold</b>, <code>_text_</code> for <i>italic</i>, <code>~text~</code> for <s>strikethrough</s>, <code>`text`</code> for monospace, <code>&gt; </code> for a pull-quote, lines starting with <code>- </code> for bullet lists, <code>1. </code> for numbered lists. These are converted into clean web formatting on the published page — the article will never look like a WhatsApp chat.</div>
           </div>
           <div class="form-row">
             <div class="form-group"><label>Pin to Top?</label><select id="addPinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top (max 3)</option></select></div>
@@ -2416,6 +2442,12 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <ul><li>Important facts, key terms, dates, names, warnings. Don't bold whole paragraphs.</li></ul>
           <h5>Italic — <code>_text_</code></h5>
           <ul><li>Light emphasis, terminology, titles, publication names. Use sparingly.</li></ul>
+          <h5>Strikethrough — <code>~text~</code></h5>
+          <ul><li>Corrections — a cancelled date or withdrawn figure.</li></ul>
+          <h5>Monospace — <code>`text`</code></h5>
+          <ul><li>Codes, reference/matric numbers, short technical values.</li></ul>
+          <h5>Pull-quote — <code>&gt; text</code></h5>
+          <ul><li>Official statements or direct quotes.</li></ul>
           <h5>Bulleted lists — <code>- item</code></h5>
           <ul><li>Unordered related items — requirements, courses, documents.</li></ul>
           <h5>Numbered lists — <code>1. item</code></h5>
@@ -2437,17 +2469,23 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="form-group"><label>Author</label><input type="text" id="eNewsAuthor" onchange="updateNewsPreview('e')"></div>
       <div class="form-group">
         <label>Full Content *</label>
-        <div class="editor-wrap">
+        <div class="editor-wrap" id="eEditorWrap">
           <div class="editor-toolbar">
             <button type="button" class="editor-tbtn" onclick="wrapSelection('eNewsFullContent','*')"><b>B</b> Bold</button>
             <button type="button" class="editor-tbtn" onclick="wrapSelection('eNewsFullContent','_')"><i>I</i> Italic</button>
+            <button type="button" class="editor-tbtn" onclick="wrapSelection('eNewsFullContent','~')"><s>S</s> Strikethrough</button>
+            <button type="button" class="editor-tbtn" onclick="wrapSelection('eNewsFullContent','`')">&lt;/&gt; Monospace</button>
             <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','- ')">• Bullet list</button>
             <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','1. ')">1. Numbered list</button>
+            <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','&gt; ')">❝ Quote</button>
             <button type="button" class="editor-tbtn" onclick="insertLink('eNewsFullContent')">🔗 Insert link</button>
+            <button type="button" class="editor-tbtn" onclick="toggleFullscreenEditor('eEditorWrap','eNewsFullContent')" style="margin-left:auto">⛶ Fullscreen</button>
+          </div>
+          <div class="fs-close-bar"><button type="button" class="btn btn-ghost btn-sm" onclick="toggleFullscreenEditor('eEditorWrap','eNewsFullContent')">✕ Exit fullscreen</button></div>
           </div>
           <textarea class="article-textarea" id="eNewsFullContent" oninput="updateNewsPreview('e')"></textarea>
         </div>
-        <div class="editor-hint">Use <code>*text*</code> for bold, <code>_text_</code> for italic, <code>- </code> for bullet lists, <code>1. </code> for numbered lists.</div>
+        <div class="editor-hint">Use <code>*text*</code> for bold, <code>_text_</code> for italic, <code>~text~</code> for strikethrough, <code>`text`</code> for monospace, <code>&gt; </code> for a pull-quote, <code>- </code> for bullet lists, <code>1. </code> for numbered lists.</div>
       </div>
       <div class="preview-toggle">
         <button type="button" class="btn btn-outline btn-sm" onclick="togglePreview('e')" id="ePreviewToggleBtn">👁 Show Live Preview</button>
@@ -3771,7 +3809,7 @@ function renderNews(){
       ${item.image?`<img src="${item.image}" style="width:100%;max-height:80px;object-fit:cover;border-radius:6px;margin-bottom:6px;" alt="">`:''}
       <div class="item-body">
         <div class="item-title">${item.title}</div>
-        <div class="item-meta"><span class="item-cat">${item.category||'News'}</span> ${item.date||''} ${item.author?'· ✍️ <strong>'+item.author+'</strong>':''}</div>
+        <div class="item-meta"><span class="item-cat">${item.category||'News'}</span> ${item.date||''} ${item.author?'· ✍️ <strong>'+item.author+'</strong>':''} · 👁 ${item.views||0} · ❤️ ${item.likes||0}</div>
         <div class="item-preview">${previewText}…</div>
         <div style="margin:6px 0;padding:8px 10px;background:var(--light);border-radius:8px;border:1px solid var(--border);display:flex;gap:8px;align-items:center;">
           <img src="${previewImg}" style="width:36px;height:36px;border-radius:4px;object-fit:cover;flex-shrink:0;" onerror="this.src='https://bigquamsmedia.com.ng/logo.png'">
@@ -3883,8 +3921,10 @@ function formatArticleBody(raw){
     let t=esc(line);
     t=t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,(m,txt,url)=>`<a href="${url}" target="_blank" rel="noopener">${txt}</a>`);
     t=t.replace(/(https?:\/\/[^\s<>"']+)/g,u=>u.match(/^<a /)?u:`<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
+    t=t.replace(/`([^`\n]+)`/g,'<code>$1</code>');
     t=t.replace(/\*([^\*\n]+)\*/g,'<strong>$1</strong>');
     t=t.replace(/_([^_\n]+)_/g,'<em>$1</em>');
+    t=t.replace(/~([^~\n]+)~/g,'<s>$1</s>');
     return t;
   };
   const lines=raw.replace(/\r\n/g,'\n').split('\n');
@@ -3893,6 +3933,7 @@ function formatArticleBody(raw){
     if(!buf.length){mode=null;return;}
     if(mode==='ul') html+='<ul>'+buf.map(l=>`<li>${inline(l)}</li>`).join('')+'</ul>';
     else if(mode==='ol') html+='<ol>'+buf.map(l=>`<li>${inline(l)}</li>`).join('')+'</ol>';
+    else if(mode==='bq') html+='<blockquote>'+buf.map(inline).join('<br>')+'</blockquote>';
     else html+=`<p>${buf.map(inline).join('<br>')}</p>`;
     buf=[];mode=null;
   };
@@ -3901,8 +3942,10 @@ function formatArticleBody(raw){
     if(!t){flush();return;}
     const bullet=/^[-•]\s+(.*)/.exec(t);
     const numbered=/^\d+[.)]\s+(.*)/.exec(t);
+    const quote=/^>\s?(.*)/.exec(t);
     if(bullet){ if(mode&&mode!=='ul') flush(); mode='ul'; buf.push(bullet[1]); }
     else if(numbered){ if(mode&&mode!=='ol') flush(); mode='ol'; buf.push(numbered[1]); }
+    else if(quote){ if(mode&&mode!=='bq') flush(); mode='bq'; buf.push(quote[1]); }
     else { if(mode&&mode!=='p') flush(); mode='p'; buf.push(t); }
   });
   flush();
@@ -3943,6 +3986,22 @@ function insertLink(taId){
   ta.dispatchEvent(new Event('input'));
 }
 window.insertLink=insertLink;
+
+function toggleFullscreenEditor(wrapId,taId){
+  const wrap=document.getElementById(wrapId); if(!wrap) return;
+  const on=wrap.classList.toggle('fullscreen-editor');
+  document.body.style.overflow=on?'hidden':'';
+  if(on){
+    const esc=e=>{if(e.key==='Escape'){toggleFullscreenEditor(wrapId,taId);}};
+    wrap._escHandler=esc;
+    document.addEventListener('keydown',esc);
+    setTimeout(()=>document.getElementById(taId)?.focus(),50);
+  } else if(wrap._escHandler){
+    document.removeEventListener('keydown',wrap._escHandler);
+    wrap._escHandler=null;
+  }
+}
+window.toggleFullscreenEditor=toggleFullscreenEditor;
 
 // ── Live preview (Add / Edit share the same 'prefix' pattern: add* / eNews*) ──
 function togglePreview(which){
@@ -3996,7 +4055,7 @@ async function addNews(){
   const slug=makeSlug(title);
   const btn=document.getElementById('addNewsBtn'); btn.disabled=true; btn.textContent='Publishing…';
   try{
-    const item={title,category,date,author,slug,fullContent,pinned:pinned||false,likes:0,createdAt:window.serverTimestamp()};
+    const item={title,category,date,author,slug,fullContent,pinned:pinned||false,likes:0,views:0,createdAt:window.serverTimestamp()};
     if(image) item.image=image;
     if(updatedDate) item.updatedDate=updatedDate;
     const ref=await window.addDoc(window.collection(window.db,'fs_news'),item);
