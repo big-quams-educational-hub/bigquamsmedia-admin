@@ -6,6 +6,7 @@
 <title>Admin Panel | BIG QUAMS MEDIA®</title>
 <meta name="robots" content="noindex,nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -581,7 +582,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 
   <!-- TOPBAR -->
   <div class="topbar">
-    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" title="Menu" aria-label="Open navigation menu">☰</button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" title="Menu" aria-label="Open navigation menu"><i class="fas fa-bars"></i></button>
     <div class="topbar-logo">
       <img src="https://i.imgur.com/lYJXUyY.jpeg" alt="Logo">
       <div><div class="topbar-brand">BIG QUAMS MEDIA®</div><span class="topbar-sub">News Admin Panel</span></div>
@@ -611,7 +612,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <img src="https://i.imgur.com/lYJXUyY.jpeg" alt="Logo">
           <span>BQM Admin</span>
         </div>
-        <button class="sidebar-close-btn" onclick="closeSidebar()" title="Close menu" aria-label="Close navigation menu">✕</button>
+        <button class="sidebar-close-btn" onclick="closeSidebar()" title="Close menu" aria-label="Close navigation menu"><i class="fas fa-xmark"></i></button>
       </div>
 
       <button class="section-tab active" onclick="switchSection('dashboard')">
@@ -814,7 +815,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
               <div class="upload-label"><span>🖼️</span>Tap to upload image</div>
             </div>
             <img id="addImgPreview" class="img-preview" alt="preview">
-            <span id="addImgClear" class="img-clear" onclick="clearImg('addImageFile','addImgPreview','addImgClear','addImageB64');updateNewsPreview('add')">✕ Remove image</span>
+            <span id="addImgClear" class="img-clear" onclick="clearImg('addImageFile','addImgPreview','addImgClear','addImageB64');updateNewsPreview('add')"><i class="fas fa-xmark"></i> Remove image</span>
             <input type="hidden" id="addImageB64">
           </div>
           <div class="form-group">
@@ -830,7 +831,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
                 <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','1. ')">1. List</button>
                 <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','## ')">H Heading</button>
                 <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','&gt; ')">❝ Quote</button>
-                <button type="button" class="editor-tbtn" onclick="insertLink('addFullContent')">🔗 Link</button>
+                <button type="button" class="editor-tbtn" onclick="insertLink('addFullContent')"><i class="fas fa-link"></i> Link</button>
                 <button type="button" class="editor-tbtn" onclick="removeFormatting('addFullContent')" title="Remove formatting">Tx Clear</button>
                 <div class="editor-more">
                   <button type="button" class="editor-tbtn" onclick="toggleMoreMenu(this)">⋯ More ▾</button>
@@ -843,13 +844,13 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
                 </div>
                 <button type="button" class="editor-tbtn" onclick="toggleFullscreenEditor('addEditorWrap','addFullContent')" style="margin-left:auto">⛶ Fullscreen</button>
               </div>
-              <div class="fs-close-bar"><button type="button" class="btn btn-ghost btn-sm" onclick="toggleFullscreenEditor('addEditorWrap','addFullContent')">✕ Exit fullscreen</button></div>
+              <div class="fs-close-bar"><button type="button" class="btn btn-ghost btn-sm" onclick="toggleFullscreenEditor('addEditorWrap','addFullContent')"><i class="fas fa-xmark"></i> Exit fullscreen</button></div>
               <div class="find-replace-bar" id="addFindReplace">
                 <input type="text" placeholder="Find…" id="addFindText">
                 <input type="text" placeholder="Replace with…" id="addReplaceText">
                 <button type="button" class="btn btn-outline btn-sm" onclick="findReplace('addFullContent','addFindText','addReplaceText',false)">Replace next</button>
                 <button type="button" class="btn btn-outline btn-sm" onclick="findReplace('addFullContent','addFindText','addReplaceText',true)">Replace all</button>
-                <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFindReplace('addFindReplace')">✕</button>
+                <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFindReplace('addFindReplace')"><i class="fas fa-xmark"></i></button>
               </div>
               <textarea class="article-textarea" id="addFullContent" placeholder="Write the full article here…" oninput="updateNewsPreview('add');updateWordCount('add');queueAutosave('add')"></textarea>
               <div class="editor-footer">
@@ -977,7 +978,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
                 <div class="upload-label"><span>📖</span>Upload cover image</div>
               </div>
               <img id="bAddCoverPreview" class="img-preview" alt="cover">
-              <span id="bAddCoverClear" class="img-clear" onclick="clearImg('bAddCoverFile','bAddCoverPreview','bAddCoverClear','bAddCoverB64')">✕ Remove</span>
+              <span id="bAddCoverClear" class="img-clear" onclick="clearImg('bAddCoverFile','bAddCoverPreview','bAddCoverClear','bAddCoverB64')"><i class="fas fa-xmark"></i> Remove</span>
               <input type="hidden" id="bAddCoverB64">
             </div>
             <div class="form-group">
@@ -1067,7 +1068,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
               <div class="upload-label"><span>🧑‍🎓</span>Upload student photo (optional)</div>
             </div>
             <img id="spAddPhotoPreview" class="img-preview" alt="photo">
-            <span id="spAddPhotoClear" class="img-clear" onclick="clearImg('spAddPhotoFile','spAddPhotoPreview','spAddPhotoClear','spAddPhotoB64')">✕ Remove</span>
+            <span id="spAddPhotoClear" class="img-clear" onclick="clearImg('spAddPhotoFile','spAddPhotoPreview','spAddPhotoClear','spAddPhotoB64')"><i class="fas fa-xmark"></i> Remove</span>
             <input type="hidden" id="spAddPhotoB64">
           </div>
           <div class="btn-row">
@@ -2012,7 +2013,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <h2 class="section-title-h2">📊 Results Checker</h2>
       </div>
       <div class="section-card">
-        <div class="card-title">🔗 Portal Links &amp; Instructions</div>
+        <div class="card-title"><i class="fas fa-link"></i> Portal Links &amp; Instructions</div>
         <div class="nelfund-highlight">
           <h4>ℹ️ Managing the Results Checker</h4>
           <p>Update the portal links and step-by-step instructions for each result checking body. These instructions are shown on the results.html page.</p>
@@ -2436,7 +2437,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="card-title" style="margin-bottom:10px">Quick Links</div>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
             <button class="btn btn-ghost btn-sm" onclick="switchSection('dyk')">💡 Manage DYK Facts</button>
-            <a href="https://bigquamsmedia.com.ng/daily.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm">🔗 View Daily Hub Page</a>
+            <a href="https://bigquamsmedia.com.ng/daily.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm"><i class="fas fa-link"></i> View Daily Hub Page</a>
           </div>
         </div>
       </div>
@@ -2466,7 +2467,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--blue-main)">6</div>
           <div style="font-size:.72rem;color:var(--muted)">stories in campus-life.html</div>
           <div style="margin-top:12px">
-            <a href="https://bigquamsmedia.com.ng/campus-life.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm">🔗 View Campus Life Page</a>
+            <a href="https://bigquamsmedia.com.ng/campus-life.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm"><i class="fas fa-link"></i> View Campus Life Page</a>
           </div>
         </div>
       </div>
@@ -2478,7 +2479,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;line-height:1.6">Polls currently rotate daily by day of year from the POLLS array in campus-life.html. To add a new poll, add it to the POLLS array in campus-life.html with this format:</p>
           <pre style="background:var(--light);border-radius:8px;padding:12px;font-size:.72rem;overflow-x:auto;color:var(--text)">{id:'p5',q:'Your poll question here?',opts:['Option A','Option B','Option C','Option D'],votes:[0,0,0,0],label:'Category'}</pre>
           <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-            <a href="https://bigquamsmedia.com.ng/campus-life.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm">🔗 View Polls</a>
+            <a href="https://bigquamsmedia.com.ng/campus-life.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm"><i class="fas fa-link"></i> View Polls</a>
           </div>
         </div>
       </div>
@@ -2490,7 +2491,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;line-height:1.6">WYR questions are in the WYR array in campus-life.html. To add a new one, append to the array with this format:</p>
           <pre style="background:var(--light);border-radius:8px;padding:12px;font-size:.72rem;overflow-x:auto;color:var(--text)">{a:'First option here',b:'Second option here'}</pre>
           <div style="margin-top:14px">
-            <a href="https://bigquamsmedia.com.ng/campus-life.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm">🔗 View Would You Rather</a>
+            <a href="https://bigquamsmedia.com.ng/campus-life.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm"><i class="fas fa-link"></i> View Would You Rather</a>
           </div>
         </div>
       </div>
@@ -2505,7 +2506,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit News Modal -->
 <div class="modal-overlay" id="editNewsModal" onclick="handleOverlay(event,'editNewsModal')">
   <div class="modal-box wide-modal">
-    <div class="modal-header"><h3>✏️ Edit Article</h3><button class="modal-close" onclick="closeModal('editNewsModal')">✕</button></div>
+    <div class="modal-header"><h3>✏️ Edit Article</h3><button class="modal-close" onclick="closeModal('editNewsModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editNewsIdx">
       <details class="rules-card">
@@ -2569,7 +2570,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','1. ')">1. List</button>
             <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','## ')">H Heading</button>
             <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','&gt; ')">❝ Quote</button>
-            <button type="button" class="editor-tbtn" onclick="insertLink('eNewsFullContent')">🔗 Link</button>
+            <button type="button" class="editor-tbtn" onclick="insertLink('eNewsFullContent')"><i class="fas fa-link"></i> Link</button>
             <button type="button" class="editor-tbtn" onclick="removeFormatting('eNewsFullContent')" title="Remove formatting">Tx Clear</button>
             <div class="editor-more">
               <button type="button" class="editor-tbtn" onclick="toggleMoreMenu(this)">⋯ More ▾</button>
@@ -2582,13 +2583,13 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             </div>
             <button type="button" class="editor-tbtn" onclick="toggleFullscreenEditor('eEditorWrap','eNewsFullContent')" style="margin-left:auto">⛶ Fullscreen</button>
           </div>
-          <div class="fs-close-bar"><button type="button" class="btn btn-ghost btn-sm" onclick="toggleFullscreenEditor('eEditorWrap','eNewsFullContent')">✕ Exit fullscreen</button></div>
+          <div class="fs-close-bar"><button type="button" class="btn btn-ghost btn-sm" onclick="toggleFullscreenEditor('eEditorWrap','eNewsFullContent')"><i class="fas fa-xmark"></i> Exit fullscreen</button></div>
           <div class="find-replace-bar" id="eFindReplace">
             <input type="text" placeholder="Find…" id="eFindText">
             <input type="text" placeholder="Replace with…" id="eReplaceText">
             <button type="button" class="btn btn-outline btn-sm" onclick="findReplace('eNewsFullContent','eFindText','eReplaceText',false)">Replace next</button>
             <button type="button" class="btn btn-outline btn-sm" onclick="findReplace('eNewsFullContent','eFindText','eReplaceText',true)">Replace all</button>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFindReplace('eFindReplace')">✕</button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFindReplace('eFindReplace')"><i class="fas fa-xmark"></i></button>
           </div>
           <textarea class="article-textarea" id="eNewsFullContent" oninput="updateNewsPreview('e');updateWordCount('e')"></textarea>
           <div class="editor-footer">
@@ -2619,7 +2620,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Book Modal -->
 <div class="modal-overlay" id="editBookModal" onclick="handleOverlay(event,'editBookModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3>✏️ Edit Book</h3><button class="modal-close" onclick="closeModal('editBookModal')">✕</button></div>
+    <div class="modal-header"><h3>✏️ Edit Book</h3><button class="modal-close" onclick="closeModal('editBookModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editBookIdx">
       <div class="form-row">
@@ -2644,7 +2645,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Post-UTME School Modal -->
 <div class="modal-overlay" id="editSchoolModal" onclick="handleOverlay(event,'editSchoolModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3>✏️ Edit School</h3><button class="modal-close" onclick="closeModal('editSchoolModal')">✕</button></div>
+    <div class="modal-header"><h3>✏️ Edit School</h3><button class="modal-close" onclick="closeModal('editSchoolModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editSchoolIdx">
       <div class="form-row">
@@ -2668,7 +2669,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Subject Combo Modal -->
 <div class="modal-overlay" id="editComboModal" onclick="handleOverlay(event,'editComboModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3>✏️ Edit Course Combination</h3><button class="modal-close" onclick="closeModal('editComboModal')">✕</button></div>
+    <div class="modal-header"><h3>✏️ Edit Course Combination</h3><button class="modal-close" onclick="closeModal('editComboModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editComboIdx">
       <div class="form-row">
@@ -2693,7 +2694,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Review Modal -->
 <div class="modal-overlay" id="editReviewModal" onclick="handleOverlay(event,'editReviewModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3>✏️ Edit Review</h3><button class="modal-close" onclick="closeModal('editReviewModal')">✕</button></div>
+    <div class="modal-header"><h3>✏️ Edit Review</h3><button class="modal-close" onclick="closeModal('editReviewModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editReviewIdx">
       <div class="form-row">
@@ -2718,7 +2719,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Q&A Modal -->
 <div class="modal-overlay" id="editQAModal" onclick="handleOverlay(event,'editQAModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3>✏️ Edit Q&amp;A</h3><button class="modal-close" onclick="closeModal('editQAModal')">✕</button></div>
+    <div class="modal-header"><h3>✏️ Edit Q&amp;A</h3><button class="modal-close" onclick="closeModal('editQAModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editQAIdx">
       <div class="form-group"><label>Question *</label><textarea id="eQaQ" style="min-height:60px"></textarea></div>
@@ -2737,7 +2738,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Calendar Event Modal -->
 <div class="modal-overlay" id="editCalModal" onclick="handleOverlay(event,'editCalModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3>✏️ Edit Calendar Event</h3><button class="modal-close" onclick="closeModal('editCalModal')">✕</button></div>
+    <div class="modal-header"><h3>✏️ Edit Calendar Event</h3><button class="modal-close" onclick="closeModal('editCalModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editCalIdx">
       <div class="form-row">
@@ -2762,7 +2763,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Admission Requirement Modal -->
 <div class="modal-overlay" id="editAdmModal" onclick="handleOverlay(event,'editAdmModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3>✏️ Edit Admission Requirement</h3><button class="modal-close" onclick="closeModal('editAdmModal')">✕</button></div>
+    <div class="modal-header"><h3>✏️ Edit Admission Requirement</h3><button class="modal-close" onclick="closeModal('editAdmModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editAdmIdx">
       <div class="form-row">
@@ -2852,7 +2853,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit CBT Modal -->
 <div class="modal-overlay" id="exportAdmCsvModal" onclick="handleOverlay(event,'exportAdmCsvModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3>📥 Export Admission Requirements</h3><button class="modal-close" onclick="closeModal('exportAdmCsvModal')">✕</button></div>
+    <div class="modal-header"><h3>📥 Export Admission Requirements</h3><button class="modal-close" onclick="closeModal('exportAdmCsvModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <div class="btn-row" style="margin-bottom:10px">
         <button class="btn btn-ghost btn-sm" onclick="setAllExportSchools(true)">☑️ Select All</button>
@@ -2871,7 +2872,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 
 <div class="modal-overlay" id="editCBTModal" onclick="handleOverlay(event,'editCBTModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3>✏️ Edit CBT Question</h3><button class="modal-close" onclick="closeModal('editCBTModal')">✕</button></div>
+    <div class="modal-header"><h3>✏️ Edit CBT Question</h3><button class="modal-close" onclick="closeModal('editCBTModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editCBTDocId">
       <div class="form-row">
@@ -3796,13 +3797,13 @@ function toggleSidebar(){
 function openSidebar(){
   document.getElementById('adminSidebar').classList.add('open');
   document.getElementById('sidebarBackdrop').classList.add('show');
-  document.getElementById('hamburgerBtn').textContent='✕';
+  document.getElementById('hamburgerBtn').innerHTML='<i class="fas fa-xmark"></i>';
   document.body.style.overflow='hidden';
 }
 function closeSidebar(){
   document.getElementById('adminSidebar').classList.remove('open');
   document.getElementById('sidebarBackdrop').classList.remove('show');
-  document.getElementById('hamburgerBtn').textContent='☰';
+  document.getElementById('hamburgerBtn').innerHTML='<i class="fas fa-bars"></i>';
   document.body.style.overflow='';
 }
 window.toggleSidebar=toggleSidebar;
@@ -3904,7 +3905,7 @@ function getShareUrl(type,idx){
   const map={news:SITE_BASE+'/newsroom.html?article='+idx,dyk:SITE_BASE+'/dyk.html?item='+idx,spotlight:SITE_BASE+'/spotlight.html?item='+idx,book:SITE_BASE+'/elibrary.html?book='+idx};
   return map[type]||SITE_BASE;
 }
-function copyLink(url){ navigator.clipboard?navigator.clipboard.writeText(url).then(()=>showStatus('success','🔗 Link copied!')):showStatus('success','🔗 '+url); }
+function copyLink(url){ navigator.clipboard?navigator.clipboard.writeText(url).then(()=>showStatus('success','<i class="fas fa-link"></i> Link copied!')):showStatus('success','<i class="fas fa-link"></i> '+url); }
 window.copyLink=copyLink;
 
 // ════════════════════════════════════
@@ -3931,14 +3932,14 @@ function renderNews(){
         <div style="margin:6px 0;padding:8px 10px;background:var(--light);border-radius:8px;border:1px solid var(--border);display:flex;gap:8px;align-items:center;">
           <img src="${previewImg}" style="width:36px;height:36px;border-radius:4px;object-fit:cover;flex-shrink:0;" onerror="this.src='https://bigquamsmedia.com.ng/logo.png'">
           <div style="overflow:hidden;">
-            <div style="font-size:0.7rem;color:var(--muted);font-weight:600;">🔗 ARTICLE LINK</div>
+            <div style="font-size:0.7rem;color:var(--muted);font-weight:600;"><i class="fas fa-link"></i> ARTICLE LINK</div>
             <div style="font-size:0.72rem;color:#2563eb;word-break:break-all;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${url}</div>
           </div>
         </div>
         <div class="item-actions">
           <button class="btn btn-outline btn-sm" onclick="openEditNews(${idx})">✏️ Edit</button>
           <button class="btn ${pin?'btn-warning':'btn-ghost'} btn-sm" onclick="togglePin(${idx})">${pin?'📌 Unpin':'📌 Pin'}</button>
-          <button class="btn btn-ghost btn-sm" id="copyBtn-${docId}" onclick="copyArticleLink(${idx},'copyBtn-${docId}')">🔗 Copy Link</button>
+          <button class="btn btn-ghost btn-sm" id="copyBtn-${docId}" onclick="copyArticleLink(${idx},'copyBtn-${docId}')"><i class="fas fa-link"></i> Copy Link</button>
           <button class="btn btn-danger btn-sm" onclick="deleteNews(${idx})">🗑 Delete</button>
         </div>
       </div></div>`;
@@ -3949,14 +3950,15 @@ function copyArticleLink(idx,btnId){
   const item=newsData[idx]; if(!item) return;
   const articleLink=articleUrl(item);
   const text=item.title+'\n\nRead more: '+articleLink;
+  const COPY_LABEL='<i class="fas fa-link"></i> Copy Link';
   navigator.clipboard.writeText(text).then(()=>{
     const btn=document.getElementById(btnId);
-    if(btn){btn.textContent='✅ Copied!';btn.style.color='#16a34a';}
-    setTimeout(()=>{if(btn){btn.textContent='🔗 Copy Link';btn.style.color='';}},2500);
+    if(btn){btn.innerHTML='<i class="fas fa-check"></i> Copied!';btn.style.color='#16a34a';}
+    setTimeout(()=>{if(btn){btn.innerHTML=COPY_LABEL;btn.style.color='';}},2500);
   }).catch(()=>{
     const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
     const btn=document.getElementById(btnId);
-    if(btn){btn.textContent='✅ Copied!';setTimeout(()=>btn.textContent='🔗 Copy Link',2500);}
+    if(btn){btn.innerHTML='<i class="fas fa-check"></i> Copied!';setTimeout(()=>btn.innerHTML=COPY_LABEL,2500);}
   });
 }
 window.copyArticleLink=copyArticleLink;
@@ -4436,7 +4438,7 @@ function openMyProfileModal(){
     modal.onclick=e=>{if(e.target===modal) closeModal('myProfileModal');};
     modal.innerHTML=`
       <div class="modal-box">
-        <div class="modal-header"><h3>👤 My Author Profile</h3><button class="modal-close" onclick="closeModal('myProfileModal')">✕</button></div>
+        <div class="modal-header"><h3>👤 My Author Profile</h3><button class="modal-close" onclick="closeModal('myProfileModal')"><i class="fas fa-xmark"></i></button></div>
         <div class="modal-body">
           <div class="form-group" style="text-align:center">
             <img id="myProfilePhotoPreview" src="" alt="" style="width:88px;height:88px;border-radius:50%;object-fit:cover;display:none;margin:0 auto 10px;border:2px solid var(--border)">
@@ -4991,7 +4993,7 @@ function renderPostUtme(){
         </div>
         <div class="item-actions">
           <button class="btn btn-outline btn-sm" onclick="openEditSchool(${idx})">✏️ Edit</button>
-          ${s.link?`<a href="${s.link}" target="_blank" class="btn btn-ghost btn-sm">🔗 Portal</a>`:''}
+          ${s.link?`<a href="${s.link}" target="_blank" class="btn btn-ghost btn-sm"><i class="fas fa-link"></i> Portal</a>`:''}
           <button class="btn btn-danger btn-sm" onclick="deleteSchool(${idx})">🗑 Delete</button>
         </div>
       </div>
@@ -5276,7 +5278,7 @@ function addEAdmCategoryRow(name,minJamb,minPostUtme,cutoffAggregate){
     <input type="number" class="e-cat-jamb" placeholder="Min JAMB" min="0" max="400" value="${minJamb||''}">
     <input type="number" class="e-cat-postutme" placeholder="Min Post-UTME" min="0" value="${minPostUtme||''}">
     <input type="number" class="e-cat-cutoff" placeholder="Cutoff Agg." min="0" max="100" value="${cutoffAggregate||''}">
-    <button type="button" class="remove-row-btn" onclick="this.parentElement.remove()">✕</button>`;
+    <button type="button" class="remove-row-btn" onclick="this.parentElement.remove()"><i class="fas fa-xmark"></i></button>`;
   wrap.appendChild(row);
 }
 window.addEAdmCategoryRow=addEAdmCategoryRow;
@@ -5425,7 +5427,7 @@ function addAdmCategoryRow(name,minJamb,minPostUtme,cutoffAggregate){
     <input type="number" class="cat-jamb" placeholder="Min JAMB" min="0" max="400" value="${minJamb||''}">
     <input type="number" class="cat-postutme" placeholder="Min Post-UTME" min="0" value="${minPostUtme||''}">
     <input type="number" class="cat-cutoff" placeholder="Cutoff Agg." min="0" max="100" value="${cutoffAggregate||''}">
-    <button type="button" class="remove-row-btn" onclick="this.parentElement.remove()">✕</button>`;
+    <button type="button" class="remove-row-btn" onclick="this.parentElement.remove()"><i class="fas fa-xmark"></i></button>`;
   wrap.appendChild(row);
 }
 window.addAdmCategoryRow=addAdmCategoryRow;
