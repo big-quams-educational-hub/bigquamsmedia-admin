@@ -117,6 +117,10 @@ body.dark .admin-badge-name{color:#93c5fd}
 .site-link{color:rgba(255,255,255,0.8);font-size:0.7rem;text-decoration:none;white-space:nowrap;display:none}
 @media(min-width:860px){.site-link{display:inline}}
 .dark-toggle{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:white;width:34px;height:34px;min-width:34px;border-radius:8px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;transition:.2s}
+.myprofile-btn{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:white;width:34px;height:34px;min-width:34px;border-radius:8px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;gap:6px;transition:.2s;white-space:nowrap;overflow:hidden}
+.myprofile-btn:hover{background:rgba(255,255,255,0.22)}
+.myprofile-btn .mp-label{display:none}
+@media(min-width:680px){.myprofile-btn{width:auto;padding:0 12px;font-size:0.72rem;font-weight:600}.myprofile-btn .mp-label{display:inline}}
 .dark-toggle:hover{background:rgba(255,255,255,0.22)}
 .logout-btn{background:rgba(220,38,38,0.25);border:1px solid rgba(220,38,38,0.4);color:white;padding:6px 10px;border-radius:8px;font-size:0.7rem;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap}
 @media(min-width:480px){.logout-btn{padding:6px 14px;font-size:0.74rem}}
@@ -589,7 +593,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     </div>
     <div class="topbar-right">
       <span class="topbar-badge" id="topBadge" title="Data summary">Loading…</span>
-      <button class="site-link" onclick="openMyProfileModal()" title="Edit your author profile — photo, bio, byline name" style="cursor:pointer"><i class="fas fa-user"></i> My Profile</button>
+      <button class="myprofile-btn" onclick="openMyProfileModal()" title="Edit your author profile — photo, bio, byline name"><i class="fas fa-user"></i><span class="mp-label">My Profile</span></button>
       <a href="../index.html" target="_blank" class="site-link">View Site ↗</a>
       <button class="dark-toggle" id="darkToggleBtn" onclick="toggleDark()" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
       <button class="logout-btn" onclick="doLogout()">Log Out</button>
