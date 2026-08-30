@@ -230,6 +230,24 @@ body.dark .editor-toolbar{background:#0f172a}
 .editor-tbtn{background:var(--card);border:1.5px solid var(--border);border-radius:6px;padding:6px 11px;font-size:.8rem;font-weight:700;color:var(--text);cursor:pointer;min-height:32px;font-family:'Roboto',sans-serif}
 .editor-tbtn:hover{border-color:var(--blue);color:var(--blue)}
 .editor-tbtn i{font-style:italic}
+.editor-tbtn-sep{width:1px;background:var(--border);align-self:stretch;margin:0 2px}
+.editor-more{position:relative}
+.editor-more-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--card);border:1.5px solid var(--border);border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:20;min-width:170px;overflow:hidden}
+.editor-more-menu.open{display:block}
+.editor-more-menu button{display:block;width:100%;text-align:left;background:none;border:0;padding:10px 14px;font-size:.8rem;font-weight:600;color:var(--text);cursor:pointer;border-bottom:1px solid var(--border)}
+.editor-more-menu button:last-child{border-bottom:0}
+.editor-more-menu button:hover{background:var(--light)}
+body.dark .editor-more-menu button:hover{background:#0f172a}
+.find-replace-bar{display:none;gap:6px;flex-wrap:wrap;padding:10px;background:var(--light);border:1.5px solid var(--border);border-top:0;align-items:center}
+body.dark .find-replace-bar{background:#0f172a}
+.find-replace-bar.open{display:flex}
+.find-replace-bar input{flex:1;min-width:120px;padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.82rem;background:var(--card);color:var(--text)}
+.editor-footer{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;font-size:.68rem;color:var(--muted);border:1.5px solid var(--border);border-top:0;border-radius:0 0 9px 9px;background:var(--light)}
+body.dark .editor-footer{background:#0f172a}
+.editor-wrap.fullscreen-editor .editor-footer{border-radius:0;flex-shrink:0;padding:8px max(16px,4vw)}
+.autosave-status{font-style:italic}
+.autosave-status.saving{color:var(--blue)}
+.autosave-status.saved{color:#16a34a}
 .article-textarea{width:100%;min-height:220px;border-radius:0 0 9px 9px!important;margin-top:-1px;font-size:.95rem;line-height:1.75}
 @media(min-width:700px){.article-textarea{min-height:340px}}
 @media(min-width:1000px){.article-textarea{min-height:440px;font-size:1rem}}
@@ -246,7 +264,7 @@ body.wide-editor .admin-main{max-width:1000px}
 @media(min-width:1200px){.modal-box.wide-modal{max-width:1040px}}
 
 /* ─── FULLSCREEN DISTRACTION-FREE WRITING (WordPress-style) ─── */
-.editor-wrap.fullscreen-editor{position:fixed;inset:0;z-index:900;background:var(--bg,#f4f6fb);display:flex;flex-direction:column;padding:0}
+.editor-wrap.fullscreen-editor{position:fixed;inset:0;z-index:99999;background:var(--bg,#f4f6fb);display:flex;flex-direction:column;padding:0}
 body.dark .editor-wrap.fullscreen-editor{background:#0d1117}
 .editor-wrap.fullscreen-editor .editor-toolbar{border-radius:0;padding:12px max(16px,4vw);flex-shrink:0}
 .editor-wrap.fullscreen-editor .article-textarea{flex:1;min-height:0!important;border-radius:0!important;max-width:900px;margin:0 auto;width:calc(100% - 32px);font-size:1.05rem;padding:24px}
@@ -266,7 +284,13 @@ body.dark .rules-card summary{color:#93c5fd}
 .rules-card-body ul{margin:0 0 4px 18px}
 .rules-card-body li{margin-bottom:3px}
 .rules-card-body code{background:var(--card);border:1px solid var(--border);padding:1px 5px;border-radius:4px;font-family:monospace}
-.preview-toggle{display:flex;gap:6px;margin-bottom:10px}
+.preview-toggle{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+.preview-device-toggle{display:none;gap:4px;margin-left:auto}
+.preview-device-toggle.show{display:flex}
+.preview-device-btn{background:var(--light);border:1.5px solid var(--border);border-radius:7px;padding:6px 12px;font-size:.75rem;font-weight:700;color:var(--muted);cursor:pointer}
+body.dark .preview-device-btn{background:#0f172a}
+.preview-device-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.preview-pane.mobile-preview .preview-body{max-width:360px;border-left:1px solid var(--border);border-right:1px solid var(--border);padding-left:14px;padding-right:14px}
 .preview-pane{display:none;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:0;overflow:hidden;margin-top:4px}
 .preview-pane.open{display:block}
 .preview-pane-hdr{background:var(--light);padding:8px 14px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border)}
@@ -287,6 +311,12 @@ body.dark .preview-pane-hdr{background:#0f172a}
 body.dark .preview-content code{background:#0f172a}
 .preview-content blockquote{margin:0 0 14px;padding:8px 16px;border-left:3px solid var(--blue);background:var(--light);border-radius:0 8px 8px 0;font-style:italic;color:var(--muted)}
 body.dark .preview-content blockquote{background:#0f172a}
+.preview-content h3.art-h{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;margin:16px 0 8px}
+.preview-content .art-table-wrap{overflow-x:auto;margin:0 0 14px}
+.preview-content .art-table{width:100%;border-collapse:collapse;font-size:.8rem;min-width:360px}
+.preview-content .art-table th,.preview-content .art-table td{border:1px solid var(--border);padding:6px 10px;text-align:left}
+.preview-content .art-table th{background:var(--light);font-weight:800}
+body.dark .preview-content .art-table th{background:#0f172a}
 .preview-content a{color:var(--blue);text-decoration:underline}
 .preview-empty{color:var(--muted);font-size:.85rem;text-align:center;padding:30px 0}
 
@@ -557,7 +587,8 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div><div class="topbar-brand">BIG QUAMS MEDIA®</div><span class="topbar-sub">News Admin Panel</span></div>
     </div>
     <div class="topbar-right">
-      <span class="topbar-badge" id="topBadge">Loading…</span>
+      <span class="topbar-badge" id="topBadge" title="Data summary">Loading…</span>
+      <button class="site-link" onclick="openMyProfileModal()" title="Edit your author profile — photo, bio, byline name" style="cursor:pointer">👤 My Profile</button>
       <a href="../index.html" target="_blank" class="site-link">View Site ↗</a>
       <button class="dark-toggle" id="darkToggleBtn" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
       <button class="logout-btn" onclick="doLogout()">Log Out</button>
@@ -790,28 +821,70 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <label>Full Article Content *</label>
             <div class="editor-wrap" id="addEditorWrap">
               <div class="editor-toolbar">
+                <button type="button" class="editor-tbtn" onclick="document.execCommand('undo')" title="Undo">↶ Undo</button>
+                <button type="button" class="editor-tbtn" onclick="document.execCommand('redo')" title="Redo">↷ Redo</button>
+                <span class="editor-tbtn-sep"></span>
                 <button type="button" class="editor-tbtn" onclick="wrapSelection('addFullContent','*')"><b>B</b> Bold</button>
                 <button type="button" class="editor-tbtn" onclick="wrapSelection('addFullContent','_')"><i>I</i> Italic</button>
-                <button type="button" class="editor-tbtn" onclick="wrapSelection('addFullContent','~')"><s>S</s> Strikethrough</button>
-                <button type="button" class="editor-tbtn" onclick="wrapSelection('addFullContent','`')">&lt;/&gt; Monospace</button>
-                <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','- ')">• Bullet list</button>
-                <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','1. ')">1. Numbered list</button>
+                <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','- ')">• List</button>
+                <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','1. ')">1. List</button>
+                <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','## ')">H Heading</button>
                 <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','&gt; ')">❝ Quote</button>
-                <button type="button" class="editor-tbtn" onclick="insertLink('addFullContent')">🔗 Insert link</button>
+                <button type="button" class="editor-tbtn" onclick="insertLink('addFullContent')">🔗 Link</button>
+                <button type="button" class="editor-tbtn" onclick="removeFormatting('addFullContent')" title="Remove formatting">Tx Clear</button>
+                <div class="editor-more">
+                  <button type="button" class="editor-tbtn" onclick="toggleMoreMenu(this)">⋯ More ▾</button>
+                  <div class="editor-more-menu">
+                    <button type="button" onclick="wrapSelection('addFullContent','~');closeMoreMenus()"><s>S</s> Strikethrough</button>
+                    <button type="button" onclick="wrapSelection('addFullContent','\`');closeMoreMenus()">&lt;/&gt; Monospace</button>
+                    <button type="button" onclick="insertTable('addFullContent');closeMoreMenus()">▦ Insert table</button>
+                    <button type="button" onclick="toggleFindReplace('addFindReplace');closeMoreMenus()">🔍 Find &amp; replace</button>
+                  </div>
+                </div>
                 <button type="button" class="editor-tbtn" onclick="toggleFullscreenEditor('addEditorWrap','addFullContent')" style="margin-left:auto">⛶ Fullscreen</button>
               </div>
               <div class="fs-close-bar"><button type="button" class="btn btn-ghost btn-sm" onclick="toggleFullscreenEditor('addEditorWrap','addFullContent')">✕ Exit fullscreen</button></div>
+              <div class="find-replace-bar" id="addFindReplace">
+                <input type="text" placeholder="Find…" id="addFindText">
+                <input type="text" placeholder="Replace with…" id="addReplaceText">
+                <button type="button" class="btn btn-outline btn-sm" onclick="findReplace('addFullContent','addFindText','addReplaceText',false)">Replace next</button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="findReplace('addFullContent','addFindText','addReplaceText',true)">Replace all</button>
+                <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFindReplace('addFindReplace')">✕</button>
               </div>
-              <textarea class="article-textarea" id="addFullContent" placeholder="Write the full article here…" oninput="updateNewsPreview('add')"></textarea>
+              <textarea class="article-textarea" id="addFullContent" placeholder="Write the full article here…" oninput="updateNewsPreview('add');updateWordCount('add');queueAutosave('add')"></textarea>
+              <div class="editor-footer">
+                <span class="word-count" id="addWordCount">0 words · 0 characters</span>
+                <span class="autosave-status" id="addAutosaveStatus"></span>
+              </div>
             </div>
-            <div class="editor-hint">Use <code>*text*</code> for <b>bold</b>, <code>_text_</code> for <i>italic</i>, <code>~text~</code> for <s>strikethrough</s>, <code>`text`</code> for monospace, <code>&gt; </code> for a pull-quote, lines starting with <code>- </code> for bullet lists, <code>1. </code> for numbered lists. These are converted into clean web formatting on the published page — the article will never look like a WhatsApp chat.</div>
+            <div class="editor-hint">Use <code>*text*</code> for <b>bold</b>, <code>_text_</code> for <i>italic</i>, <code>~text~</code> for <s>strikethrough</s>, <code>`text`</code> for monospace, <code>## </code> for a heading, <code>&gt; </code> for a pull-quote, <code>- </code> / <code>1. </code> for lists. Converted into clean web formatting — never a WhatsApp look on the published page.</div>
           </div>
           <div class="form-row">
             <div class="form-group"><label>Pin to Top?</label><select id="addPinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top (max 3)</option></select></div>
-            <div class="form-group"><label>Author</label><input type="text" id="addAuthor" value="BIG QUAMS MEDIA" onchange="updateNewsPreview('add')"></div>
+            <div class="form-group"><label>Author</label>
+              <select id="addAuthorSelect" onchange="onAuthorSelectChange('add')"><option value="__custom__">Type a name…</option></select>
+              <input type="text" id="addAuthor" value="BIG QUAMS MEDIA" placeholder="Author name" onchange="updateNewsPreview('add')" style="margin-top:6px">
+            </div>
           </div>
+          <div class="form-group">
+            <label>Tags <span style="text-transform:none;font-weight:400">(optional — a few relevant keywords, not every word)</span></label>
+            <input type="text" id="addTags" placeholder="e.g. JAMB, UTME 2026, Admission, Universities" onchange="updateNewsPreview('add')">
+            <div class="form-hint">Comma-separated. Keep to 3–6 focused tags — used to surface related articles, not for stuffing keywords.</div>
+          </div>
+          <details class="rules-card">
+            <summary>🔎 SEO &amp; Link Settings <span style="font-weight:400;text-transform:none">(optional — sensible defaults are generated automatically)</span></summary>
+            <div class="rules-card-body">
+              <div class="form-group"><label>SEO Title</label><input type="text" id="addSeoTitle" placeholder="Defaults to the headline"></div>
+              <div class="form-group"><label>Meta Description</label><textarea id="addSeoDesc" placeholder="Defaults to a short excerpt of the article" style="min-height:70px"></textarea></div>
+              <div class="form-group"><label>URL Slug</label><input type="text" id="addSlug" placeholder="Defaults to a clean version of the headline"><div class="form-hint">Public URL: <span id="addSlugPreview">/news/…</span></div></div>
+            </div>
+          </details>
           <div class="preview-toggle">
             <button type="button" class="btn btn-outline btn-sm" onclick="togglePreview('add')" id="addPreviewToggleBtn">👁 Show Live Preview</button>
+            <div class="preview-device-toggle" id="addPreviewDeviceToggle">
+              <button type="button" class="preview-device-btn active" onclick="setPreviewDevice('add','desktop')">🖥 Desktop</button>
+              <button type="button" class="preview-device-btn" onclick="setPreviewDevice('add','mobile')">📱 Mobile</button>
+            </div>
           </div>
           <div class="preview-pane" id="addPreviewPane">
             <div class="preview-pane-hdr">📱 Approximate published appearance</div>
@@ -2466,29 +2539,70 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <div class="form-group"><label>Published Date</label><input type="text" id="eNewsDate" onchange="updateNewsPreview('e')"></div>
         <div class="form-group"><label>Updated Date <span style="text-transform:none;font-weight:400">(optional)</span></label><input type="text" id="eNewsUpdatedDate" placeholder="Leave blank if not updated" onchange="updateNewsPreview('e')"></div>
       </div>
-      <div class="form-group"><label>Author</label><input type="text" id="eNewsAuthor" onchange="updateNewsPreview('e')"></div>
+      <div class="form-group"><label>Author</label>
+        <select id="eNewsAuthorSelect" onchange="onAuthorSelectChange('e')"><option value="__custom__">Type a name…</option></select>
+        <input type="text" id="eNewsAuthor" placeholder="Author name" onchange="updateNewsPreview('e')" style="margin-top:6px">
+      </div>
+      <div class="form-group">
+        <label>Tags <span style="text-transform:none;font-weight:400">(optional — a few relevant keywords)</span></label>
+        <input type="text" id="eNewsTags" placeholder="e.g. JAMB, UTME 2026, Admission, Universities" onchange="updateNewsPreview('e')">
+        <div class="form-hint">Comma-separated. Keep to 3–6 focused tags.</div>
+      </div>
+      <details class="rules-card">
+        <summary>🔎 SEO &amp; Link Settings</summary>
+        <div class="rules-card-body">
+          <div class="form-group"><label>SEO Title</label><input type="text" id="eSeoTitle" placeholder="Defaults to the headline"></div>
+          <div class="form-group"><label>Meta Description</label><textarea id="eSeoDesc" placeholder="Defaults to a short excerpt of the article" style="min-height:70px"></textarea></div>
+          <div class="form-group"><label>URL Slug</label><input type="text" id="eSlug"><div class="form-hint">Public URL: <span id="eSlugPreview">/news/…</span></div></div>
+        </div>
+      </details>
       <div class="form-group">
         <label>Full Content *</label>
         <div class="editor-wrap" id="eEditorWrap">
           <div class="editor-toolbar">
+            <button type="button" class="editor-tbtn" onclick="document.execCommand('undo')" title="Undo">↶ Undo</button>
+            <button type="button" class="editor-tbtn" onclick="document.execCommand('redo')" title="Redo">↷ Redo</button>
+            <span class="editor-tbtn-sep"></span>
             <button type="button" class="editor-tbtn" onclick="wrapSelection('eNewsFullContent','*')"><b>B</b> Bold</button>
             <button type="button" class="editor-tbtn" onclick="wrapSelection('eNewsFullContent','_')"><i>I</i> Italic</button>
-            <button type="button" class="editor-tbtn" onclick="wrapSelection('eNewsFullContent','~')"><s>S</s> Strikethrough</button>
-            <button type="button" class="editor-tbtn" onclick="wrapSelection('eNewsFullContent','`')">&lt;/&gt; Monospace</button>
-            <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','- ')">• Bullet list</button>
-            <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','1. ')">1. Numbered list</button>
+            <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','- ')">• List</button>
+            <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','1. ')">1. List</button>
+            <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','## ')">H Heading</button>
             <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','&gt; ')">❝ Quote</button>
-            <button type="button" class="editor-tbtn" onclick="insertLink('eNewsFullContent')">🔗 Insert link</button>
+            <button type="button" class="editor-tbtn" onclick="insertLink('eNewsFullContent')">🔗 Link</button>
+            <button type="button" class="editor-tbtn" onclick="removeFormatting('eNewsFullContent')" title="Remove formatting">Tx Clear</button>
+            <div class="editor-more">
+              <button type="button" class="editor-tbtn" onclick="toggleMoreMenu(this)">⋯ More ▾</button>
+              <div class="editor-more-menu">
+                <button type="button" onclick="wrapSelection('eNewsFullContent','~');closeMoreMenus()"><s>S</s> Strikethrough</button>
+                <button type="button" onclick="wrapSelection('eNewsFullContent','\`');closeMoreMenus()">&lt;/&gt; Monospace</button>
+                <button type="button" onclick="insertTable('eNewsFullContent');closeMoreMenus()">▦ Insert table</button>
+                <button type="button" onclick="toggleFindReplace('eFindReplace');closeMoreMenus()">🔍 Find &amp; replace</button>
+              </div>
+            </div>
             <button type="button" class="editor-tbtn" onclick="toggleFullscreenEditor('eEditorWrap','eNewsFullContent')" style="margin-left:auto">⛶ Fullscreen</button>
           </div>
           <div class="fs-close-bar"><button type="button" class="btn btn-ghost btn-sm" onclick="toggleFullscreenEditor('eEditorWrap','eNewsFullContent')">✕ Exit fullscreen</button></div>
+          <div class="find-replace-bar" id="eFindReplace">
+            <input type="text" placeholder="Find…" id="eFindText">
+            <input type="text" placeholder="Replace with…" id="eReplaceText">
+            <button type="button" class="btn btn-outline btn-sm" onclick="findReplace('eNewsFullContent','eFindText','eReplaceText',false)">Replace next</button>
+            <button type="button" class="btn btn-outline btn-sm" onclick="findReplace('eNewsFullContent','eFindText','eReplaceText',true)">Replace all</button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFindReplace('eFindReplace')">✕</button>
           </div>
-          <textarea class="article-textarea" id="eNewsFullContent" oninput="updateNewsPreview('e')"></textarea>
+          <textarea class="article-textarea" id="eNewsFullContent" oninput="updateNewsPreview('e');updateWordCount('e')"></textarea>
+          <div class="editor-footer">
+            <span class="word-count" id="eWordCount">0 words · 0 characters</span>
+          </div>
         </div>
-        <div class="editor-hint">Use <code>*text*</code> for bold, <code>_text_</code> for italic, <code>~text~</code> for strikethrough, <code>`text`</code> for monospace, <code>&gt; </code> for a pull-quote, <code>- </code> for bullet lists, <code>1. </code> for numbered lists.</div>
+        <div class="editor-hint">Use <code>*text*</code> for bold, <code>_text_</code> for italic, <code>~text~</code> for strikethrough, <code>`text`</code> for monospace, <code>## </code> for a heading, <code>&gt; </code> for a pull-quote, <code>- </code> for bullet lists, <code>1. </code> for numbered lists.</div>
       </div>
       <div class="preview-toggle">
         <button type="button" class="btn btn-outline btn-sm" onclick="togglePreview('e')" id="ePreviewToggleBtn">👁 Show Live Preview</button>
+        <div class="preview-device-toggle" id="ePreviewDeviceToggle">
+          <button type="button" class="preview-device-btn active" onclick="setPreviewDevice('e','desktop')">🖥 Desktop</button>
+          <button type="button" class="preview-device-btn" onclick="setPreviewDevice('e','mobile')">📱 Mobile</button>
+        </div>
       </div>
       <div class="preview-pane" id="ePreviewPane">
         <div class="preview-pane-hdr">📱 Approximate published appearance</div>
@@ -3608,6 +3722,9 @@ async function init(){
     document.getElementById('nr-pinned').textContent = newsData.filter(n=>n.pinned).length;
     const cats = new Set(newsData.map(n=>n.category).filter(Boolean));
     document.getElementById('nr-cats').textContent = cats.size;
+    await loadAuthorProfiles();
+    syncAuthorSelectToValue('add');
+    checkForDraftRecovery();
   }catch(e){
     showStatus('error','Failed to load data: '+e.message);
   }
@@ -3914,21 +4031,43 @@ function articleUrl(item){
 window.articleUrl=articleUrl;
 
 // ── WhatsApp-style body → professional web typography (mirrors newsroom.html) ──
+function preprocessPastedHtml(raw){
+  // Convert raw pasted <a href="URL">text</a> tags (common when copying from
+  // web pages) into clean markdown links so they render correctly, instead
+  // of leaking raw HTML into the article body.
+  let t=raw.replace(/<a\s+[^>]*?href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi,(m,url,txt)=>{
+    const clean=txt.replace(/<[^>]+>/g,'').trim();
+    return `[${clean||url}](${url})`;
+  });
+  // Strip any other stray HTML tags that slipped in via paste (keep the text).
+  t=t.replace(/<\/?[a-z][^>]*>/gi,'');
+  return t;
+}
+
+// ── WhatsApp-style body → professional web typography ──
+// Supports: *bold*, _italic_, ~strike~, `mono`, [text](url) links, bare
+// URLs, "## " headings, "> " quotes, "- "/"• " bullets, "1. " numbered
+// lists, simple "| a | b |" tables, and blank-line-separated paragraphs.
 function formatArticleBody(raw){
   if(!raw) return '';
+  raw=preprocessPastedHtml(raw);
   const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const isValidUrl=u=>{try{const p=new URL(u);return p.protocol==='http:'||p.protocol==='https:';}catch(e){return false;}};
   const inline=line=>{
     let t=esc(line);
-    t=t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,(m,txt,url)=>`<a href="${url}" target="_blank" rel="noopener">${txt}</a>`);
-    t=t.replace(/(https?:\/\/[^\s<>"']+)/g,u=>u.match(/^<a /)?u:`<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
+    t=t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,(m,txt,url)=>isValidUrl(url)?`<a href="${url}" target="_blank" rel="noopener">${txt}</a>`:m);
+    t=t.replace(/(https?:\/\/[^\s<>"']+)/g,u=>u.match(/^<a /)||!isValidUrl(u)?u:`<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
     t=t.replace(/`([^`\n]+)`/g,'<code>$1</code>');
     t=t.replace(/\*([^\*\n]+)\*/g,'<strong>$1</strong>');
     t=t.replace(/_([^_\n]+)_/g,'<em>$1</em>');
     t=t.replace(/~([^~\n]+)~/g,'<s>$1</s>');
     return t;
   };
+  const isTableRow=l=>/^\|.*\|$/.test(l.trim());
+  const isTableSep=l=>/^\|?[\s:|-]+\|?$/.test(l.trim())&&l.includes('-');
+  const parseRow=l=>l.trim().replace(/^\||\|$/g,'').split('|').map(c=>c.trim());
   const lines=raw.replace(/\r\n/g,'\n').split('\n');
-  let html='',buf=[],mode=null;
+  let html='',buf=[],mode=null; // null|'ul'|'ol'|'p'|'bq'
   const flush=()=>{
     if(!buf.length){mode=null;return;}
     if(mode==='ul') html+='<ul>'+buf.map(l=>`<li>${inline(l)}</li>`).join('')+'</ul>';
@@ -3937,17 +4076,31 @@ function formatArticleBody(raw){
     else html+=`<p>${buf.map(inline).join('<br>')}</p>`;
     buf=[];mode=null;
   };
-  lines.forEach(line=>{
-    const t=line.trim();
-    if(!t){flush();return;}
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i],t=line.trim();
+    if(!t){flush();continue;}
+    // Table block: a header row immediately followed by a separator row
+    if(isTableRow(t)&&lines[i+1]&&isTableSep(lines[i+1])){
+      flush();
+      const header=parseRow(t);
+      let j=i+2,rows=[];
+      while(j<lines.length&&isTableRow(lines[j].trim())){rows.push(parseRow(lines[j]));j++;}
+      html+='<div class="art-table-wrap"><table class="art-table"><thead><tr>'+
+        header.map(h=>`<th>${inline(h)}</th>`).join('')+'</tr></thead><tbody>'+
+        rows.map(r=>'<tr>'+r.map(c=>`<td>${inline(c||'')}</td>`).join('')+'</tr>').join('')+
+        '</tbody></table></div>';
+      i=j-1; continue;
+    }
+    const heading=/^#{2,3}\s+(.*)/.exec(t);
     const bullet=/^[-•]\s+(.*)/.exec(t);
     const numbered=/^\d+[.)]\s+(.*)/.exec(t);
     const quote=/^>\s?(.*)/.exec(t);
-    if(bullet){ if(mode&&mode!=='ul') flush(); mode='ul'; buf.push(bullet[1]); }
+    if(heading){ flush(); html+=`<h3 class="art-h">${inline(heading[1])}</h3>`; }
+    else if(bullet){ if(mode&&mode!=='ul') flush(); mode='ul'; buf.push(bullet[1]); }
     else if(numbered){ if(mode&&mode!=='ol') flush(); mode='ol'; buf.push(numbered[1]); }
     else if(quote){ if(mode&&mode!=='bq') flush(); mode='bq'; buf.push(quote[1]); }
     else { if(mode&&mode!=='p') flush(); mode='p'; buf.push(t); }
-  });
+  }
   flush();
   return html;
 }
@@ -3978,6 +4131,9 @@ window.insertListPrefix=insertListPrefix;
 function insertLink(taId){
   const ta=document.getElementById(taId); if(!ta) return;
   const url=prompt('Paste the link URL:'); if(!url) return;
+  let valid=false;
+  try{const p=new URL(url); valid=p.protocol==='http:'||p.protocol==='https:';}catch(e){valid=false;}
+  if(!valid){ alert('That doesn\'t look like a valid link. Please include https:// and try again.'); return; }
   const text=prompt('Link text (what readers will see):','Read more')||url;
   const s=ta.selectionStart,e=ta.selectionEnd;
   const insert=`[${text}](${url})`;
@@ -3987,18 +4143,174 @@ function insertLink(taId){
 }
 window.insertLink=insertLink;
 
+function removeFormatting(taId){
+  const ta=document.getElementById(taId); if(!ta) return;
+  const s=ta.selectionStart,e=ta.selectionEnd;
+  const hasSel=s!==e;
+  const clean=str=>str
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'$1')
+    .replace(/[*_~`]/g,'')
+    .replace(/^#{2,3}\s+/gm,'')
+    .replace(/^>\s?/gm,'')
+    .replace(/^[-•]\s+/gm,'')
+    .replace(/^\d+[.)]\s+/gm,'');
+  if(hasSel){
+    ta.value=ta.value.slice(0,s)+clean(ta.value.slice(s,e))+ta.value.slice(e);
+  } else {
+    ta.value=clean(ta.value);
+  }
+  ta.dispatchEvent(new Event('input'));
+}
+window.removeFormatting=removeFormatting;
+
+function toggleMoreMenu(btn){
+  const menu=btn.nextElementSibling;
+  const wasOpen=menu.classList.contains('open');
+  closeMoreMenus();
+  if(!wasOpen) menu.classList.add('open');
+}
+window.toggleMoreMenu=toggleMoreMenu;
+function closeMoreMenus(){document.querySelectorAll('.editor-more-menu.open').forEach(m=>m.classList.remove('open'));}
+window.closeMoreMenus=closeMoreMenus;
+document.addEventListener('click',e=>{if(!e.target.closest('.editor-more')) closeMoreMenus();});
+
+function insertTable(taId){
+  const ta=document.getElementById(taId); if(!ta) return;
+  const rows=parseInt(prompt('How many data rows (not counting the header)?','2'),10)||2;
+  const cols=parseInt(prompt('How many columns?','2'),10)||2;
+  const header='| '+Array.from({length:cols},(_,i)=>'Column '+(i+1)).join(' | ')+' |';
+  const sep='|'+Array.from({length:cols},()=>'---').join('|')+'|';
+  const body=Array.from({length:rows},()=>'| '+Array.from({length:cols},()=>' ').join(' | ')+' |').join('\n');
+  const s=ta.selectionStart;
+  const before=ta.value.slice(0,s),after=ta.value.slice(s);
+  const needsNL=before.length&&!before.endsWith('\n\n')&&!before.endsWith('\n');
+  const insert=(needsNL?'\n\n':'')+header+'\n'+sep+'\n'+body+'\n\n';
+  ta.value=before+insert+after;
+  ta.focus(); ta.selectionStart=ta.selectionEnd=before.length+insert.length;
+  ta.dispatchEvent(new Event('input'));
+}
+window.insertTable=insertTable;
+
+function toggleFindReplace(barId){
+  const bar=document.getElementById(barId); if(!bar) return;
+  bar.classList.toggle('open');
+  if(bar.classList.contains('open')) bar.querySelector('input')?.focus();
+}
+window.toggleFindReplace=toggleFindReplace;
+
+function findReplace(taId,findId,replId,all){
+  const ta=document.getElementById(taId);
+  const find=document.getElementById(findId)?.value;
+  const repl=document.getElementById(replId)?.value||'';
+  if(!ta||!find) return;
+  if(all){
+    const count=ta.value.split(find).length-1;
+    ta.value=ta.value.split(find).join(repl);
+    ta.dispatchEvent(new Event('input'));
+    alert(count?`Replaced ${count} occurrence${count===1?'':'s'}.`:'No matches found.');
+  } else {
+    const idx=ta.value.indexOf(find, ta.selectionEnd||0);
+    const foundAt=idx===-1?ta.value.indexOf(find):idx;
+    if(foundAt===-1){ alert('No matches found.'); return; }
+    ta.value=ta.value.slice(0,foundAt)+repl+ta.value.slice(foundAt+find.length);
+    ta.focus(); ta.selectionStart=foundAt; ta.selectionEnd=foundAt+repl.length;
+    ta.dispatchEvent(new Event('input'));
+  }
+}
+window.findReplace=findReplace;
+
+function updateWordCount(which){
+  const taId=which==='add'?'addFullContent':'eNewsFullContent';
+  const outId=which==='add'?'addWordCount':'eWordCount';
+  const ta=document.getElementById(taId),out=document.getElementById(outId);
+  if(!ta||!out) return;
+  const text=ta.value.trim();
+  const words=text?text.split(/\s+/).length:0;
+  const chars=ta.value.length;
+  out.textContent=`${words.toLocaleString()} words · ${chars.toLocaleString()} characters`;
+}
+window.updateWordCount=updateWordCount;
+
+// ── Autosave drafts to localStorage (Add form only — Edit works on an
+// existing published doc, so autosave there would risk overwriting it with
+// a stale local copy) ──
+let _autosaveTimer=null;
+function queueAutosave(which){
+  if(which!=='add') return;
+  const statusEl=document.getElementById('addAutosaveStatus');
+  if(statusEl){ statusEl.textContent='Saving…'; statusEl.className='autosave-status saving'; }
+  clearTimeout(_autosaveTimer);
+  _autosaveTimer=setTimeout(()=>{
+    try{
+      const draft={
+        title:document.getElementById('addTitle')?.value||'',
+        category:document.getElementById('addCategory')?.value||'',
+        fullContent:document.getElementById('addFullContent')?.value||'',
+        author:document.getElementById('addAuthor')?.value||'',
+        tags:document.getElementById('addTags')?.value||'',
+        savedAt:Date.now()
+      };
+      if(draft.title||draft.fullContent) localStorage.setItem('bqm-news-draft',JSON.stringify(draft));
+      if(statusEl){ statusEl.textContent='Saved just now'; statusEl.className='autosave-status saved'; }
+    }catch(e){ if(statusEl){statusEl.textContent='';} }
+  },1200);
+}
+window.queueAutosave=queueAutosave;
+
+function formatAgo(ts){
+  const mins=Math.floor((Date.now()-ts)/60000);
+  if(mins<1) return 'just now';
+  if(mins===1) return '1 minute ago';
+  if(mins<60) return mins+' minutes ago';
+  const hrs=Math.floor(mins/60);
+  return hrs===1?'1 hour ago':hrs+' hours ago';
+}
+function checkForDraftRecovery(){
+  try{
+    const raw=localStorage.getItem('bqm-news-draft'); if(!raw) return;
+    const draft=JSON.parse(raw);
+    if(!draft||(!draft.title&&!draft.fullContent)) return;
+    const ok=confirm(`Found an unsaved article draft from ${formatAgo(draft.savedAt)} ("${(draft.title||'Untitled').slice(0,60)}"). Recover it?`);
+    if(ok){
+      document.getElementById('addTitle').value=draft.title||'';
+      document.getElementById('addCategory').value=draft.category||'';
+      document.getElementById('addFullContent').value=draft.fullContent||'';
+      document.getElementById('addAuthor').value=draft.author||'BIG QUAMS MEDIA';
+      document.getElementById('addTags').value=draft.tags||'';
+      updateWordCount('add');
+      const statusEl=document.getElementById('addAutosaveStatus');
+      if(statusEl){ statusEl.textContent='Draft recovered — last saved '+formatAgo(draft.savedAt); statusEl.className='autosave-status saved'; }
+    } else {
+      localStorage.removeItem('bqm-news-draft');
+    }
+  }catch(e){}
+}
+
 function toggleFullscreenEditor(wrapId,taId){
   const wrap=document.getElementById(wrapId); if(!wrap) return;
   const on=wrap.classList.toggle('fullscreen-editor');
   document.body.style.overflow=on?'hidden':'';
   if(on){
+    // Reparent to <body> so position:fixed isn't clipped/contained by a
+    // transformed or scrolling ancestor (e.g. the Edit modal box) — this is
+    // what was making typed text invisible inside the modal's fullscreen mode.
+    wrap._origParent=wrap.parentNode;
+    wrap._origNext=wrap.nextSibling;
+    document.body.appendChild(wrap);
     const esc=e=>{if(e.key==='Escape'){toggleFullscreenEditor(wrapId,taId);}};
     wrap._escHandler=esc;
     document.addEventListener('keydown',esc);
     setTimeout(()=>document.getElementById(taId)?.focus(),50);
-  } else if(wrap._escHandler){
-    document.removeEventListener('keydown',wrap._escHandler);
-    wrap._escHandler=null;
+  } else {
+    if(wrap._origParent){
+      if(wrap._origNext) wrap._origParent.insertBefore(wrap,wrap._origNext);
+      else wrap._origParent.appendChild(wrap);
+      wrap._origParent=null; wrap._origNext=null;
+    }
+    if(wrap._escHandler){
+      document.removeEventListener('keydown',wrap._escHandler);
+      wrap._escHandler=null;
+    }
   }
 }
 window.toggleFullscreenEditor=toggleFullscreenEditor;
@@ -4007,16 +4319,40 @@ window.toggleFullscreenEditor=toggleFullscreenEditor;
 function togglePreview(which){
   const pane=document.getElementById(which==='add'?'addPreviewPane':'ePreviewPane');
   const btn=document.getElementById(which==='add'?'addPreviewToggleBtn':'ePreviewToggleBtn');
+  const deviceToggle=document.getElementById(which==='add'?'addPreviewDeviceToggle':'ePreviewDeviceToggle');
   const open=pane.classList.toggle('open');
   btn.textContent=open?'🙈 Hide Live Preview':'👁 Show Live Preview';
+  if(deviceToggle) deviceToggle.classList.toggle('show',open);
   if(open) updateNewsPreview(which);
 }
 window.togglePreview=togglePreview;
 
+function setPreviewDevice(which,device){
+  const pane=document.getElementById(which==='add'?'addPreviewPane':'ePreviewPane');
+  const toggle=document.getElementById(which==='add'?'addPreviewDeviceToggle':'ePreviewDeviceToggle');
+  if(!pane||!toggle) return;
+  pane.classList.toggle('mobile-preview',device==='mobile');
+  toggle.querySelectorAll('.preview-device-btn').forEach(b=>b.classList.remove('active'));
+  toggle.querySelector(device==='mobile'?'.preview-device-btn:last-child':'.preview-device-btn:first-child')?.classList.add('active');
+}
+window.setPreviewDevice=setPreviewDevice;
+
+function slugifyLive(which){
+  const titleId=which==='add'?'addTitle':'eNewsTitle';
+  const slugId=which==='add'?'addSlug':'eSlug';
+  const previewId=which==='add'?'addSlugPreview':'eSlugPreview';
+  const slugField=document.getElementById(slugId);
+  const preview=document.getElementById(previewId);
+  const slug=(slugField?.value||'').trim()||makeSlug(document.getElementById(titleId)?.value||'');
+  if(preview) preview.textContent='/news/'+(slug||'…');
+}
+window.slugifyLive=slugifyLive;
+
 function updateNewsPreview(which){
   const ids=which==='add'
-    ?{title:'addTitle',cat:'addCategory',date:'addDate',upd:'addUpdatedDate',author:'addAuthor',img:'addImageB64',body:'addFullContent',pane:'addPreviewPane',out:'addPreviewBody'}
-    :{title:'eNewsTitle',cat:'eNewsCategory',date:'eNewsDate',upd:'eNewsUpdatedDate',author:'eNewsAuthor',img:null,body:'eNewsFullContent',pane:'ePreviewPane',out:'ePreviewBody'};
+    ?{title:'addTitle',cat:'addCategory',date:'addDate',upd:'addUpdatedDate',author:'addAuthor',authorSel:'addAuthorSelect',img:'addImageB64',body:'addFullContent',tags:'addTags',pane:'addPreviewPane',out:'addPreviewBody'}
+    :{title:'eNewsTitle',cat:'eNewsCategory',date:'eNewsDate',upd:'eNewsUpdatedDate',author:'eNewsAuthor',authorSel:'eNewsAuthorSelect',img:null,body:'eNewsFullContent',tags:'eNewsTags',pane:'ePreviewPane',out:'ePreviewBody'};
+  slugifyLive(which);
   const pane=document.getElementById(ids.pane); if(!pane||!pane.classList.contains('open')) return;
   const title=(document.getElementById(ids.title)?.value||'').trim();
   const cat=document.getElementById(ids.cat)?.value||'';
@@ -4025,16 +4361,153 @@ function updateNewsPreview(which){
   const author=document.getElementById(ids.author)?.value||'';
   const img=ids.img?document.getElementById(ids.img)?.value:'';
   const body=document.getElementById(ids.body)?.value||'';
+  const tags=(document.getElementById(ids.tags)?.value||'').split(',').map(t=>t.trim()).filter(Boolean);
+  const prof=(window._authorProfiles||[]).find(p=>p.name===author);
   const out=document.getElementById(ids.out); if(!out) return;
   if(!title&&!body){out.innerHTML='<div class="preview-empty">Start typing to see a live preview of the published article…</div>';return;}
   out.innerHTML=`
     ${img?`<img class="preview-img" src="${img}" alt="">`:''}
     <span class="preview-cat">${cat||'News'}</span>
     <div class="preview-title">${title||'Untitled article'}</div>
-    <div class="preview-meta">Published ${date||'—'}${upd&&upd!==date?' · Updated '+upd:''}${author?' · ✍️ '+author:''}</div>
-    <div class="preview-content">${formatArticleBody(body)||'<div class="preview-empty">Article body preview will appear here…</div>'}</div>`;
+    <div class="preview-meta">Published ${date||'—'}${upd&&upd!==date?' · Updated '+upd:''}
+      ${author?` · By ${author}`:''}${prof?.photo?` <img src="${prof.photo}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-left:4px">`:''}
+    </div>
+    <div class="preview-content">${formatArticleBody(body)||'<div class="preview-empty">Article body preview will appear here…</div>'}</div>
+    ${tags.length?`<div style="margin-top:14px;display:flex;gap:6px;flex-wrap:wrap">${tags.map(t=>`<span style="font-size:.68rem;font-weight:700;background:var(--light);border:1px solid var(--border);padding:3px 10px;border-radius:20px;color:var(--muted)">#${t}</span>`).join('')}</div>`:''}`;
 }
 window.updateNewsPreview=updateNewsPreview;
+
+// ── Author profiles (admin_profiles collection) ──
+window._authorProfiles=[];
+async function loadAuthorProfiles(){
+  try{
+    if(!window.db||!window.getDocs||!window.collection) return;
+    const snap=await window.getDocs(window.collection(window.db,'admin_profiles'));
+    window._authorProfiles=snap.docs.map(d=>({uid:d.id,...d.data()}))
+      .map(p=>({...p,name:p.nickname||p.name})) // byline uses the nickname, matching login behaviour
+      .filter(p=>p.name);
+    ['addAuthorSelect','eNewsAuthorSelect'].forEach(id=>{
+      const sel=document.getElementById(id); if(!sel) return;
+      const custom=sel.querySelector('option[value="__custom__"]');
+      sel.innerHTML='';
+      if(custom) sel.appendChild(custom); else sel.innerHTML='<option value="__custom__">Type a name…</option>';
+      window._authorProfiles.forEach(p=>{
+        const opt=document.createElement('option'); opt.value=p.name; opt.textContent=p.name;
+        sel.appendChild(opt);
+      });
+    });
+  }catch(e){console.warn('Author profiles load failed:',e.message);}
+}
+window.loadAuthorProfiles=loadAuthorProfiles;
+
+function onAuthorSelectChange(which){
+  const selId=which==='add'?'addAuthorSelect':'eNewsAuthorSelect';
+  const inputId=which==='add'?'addAuthor':'eNewsAuthor';
+  const sel=document.getElementById(selId),input=document.getElementById(inputId);
+  if(!sel||!input) return;
+  if(sel.value!=='__custom__'){ input.value=sel.value; input.disabled=true; }
+  else { input.disabled=false; input.focus(); }
+  updateNewsPreview(which);
+}
+window.onAuthorSelectChange=onAuthorSelectChange;
+
+// Pre-select the dropdown to match a saved author name (used when opening
+// the Edit modal, or after login sets the Add form's default author).
+function syncAuthorSelectToValue(which){
+  const selId=which==='add'?'addAuthorSelect':'eNewsAuthorSelect';
+  const inputId=which==='add'?'addAuthor':'eNewsAuthor';
+  const sel=document.getElementById(selId),input=document.getElementById(inputId);
+  if(!sel||!input) return;
+  const match=window._authorProfiles.find(p=>p.name===input.value);
+  if(match){ sel.value=match.name; input.disabled=true; }
+  else { sel.value='__custom__'; input.disabled=false; }
+}
+window.syncAuthorSelectToValue=syncAuthorSelectToValue;
+
+// ── "My Profile" — photo + bio, layered onto the existing admin_profiles
+// doc (which already holds name/nickname/email/role/createdAt) ──
+function openMyProfileModal(){
+  if(!firebaseUser){ alert('Please wait for login to finish.'); return; }
+  let modal=document.getElementById('myProfileModal');
+  if(!modal){
+    modal=document.createElement('div');
+    modal.className='modal-overlay';
+    modal.id='myProfileModal';
+    modal.onclick=e=>{if(e.target===modal) closeModal('myProfileModal');};
+    modal.innerHTML=`
+      <div class="modal-box">
+        <div class="modal-header"><h3>👤 My Author Profile</h3><button class="modal-close" onclick="closeModal('myProfileModal')">✕</button></div>
+        <div class="modal-body">
+          <div class="form-group" style="text-align:center">
+            <img id="myProfilePhotoPreview" src="" alt="" style="width:88px;height:88px;border-radius:50%;object-fit:cover;display:none;margin:0 auto 10px;border:2px solid var(--border)">
+            <div class="img-upload-box" onclick="document.getElementById('myProfilePhotoFile').click()">
+              <input type="file" id="myProfilePhotoFile" accept="image/*" onchange="onMyProfilePhotoChange(this)">
+              <div class="upload-label"><span>🖼️</span>Tap to upload a display picture</div>
+            </div>
+          </div>
+          <div class="form-group"><label>Display Name (byline)</label><input type="text" id="myProfileNickname"></div>
+          <div class="form-group"><label>Bio <span style="text-transform:none;font-weight:400">(shown under your byline on articles)</span></label><textarea id="myProfileBio" placeholder="A short line about you — role, beat, or focus area." style="min-height:90px"></textarea></div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="saveMyProfile()" id="saveMyProfileBtn">Save Profile</button>
+            <button class="btn btn-ghost" onclick="closeModal('myProfileModal')">Cancel</button>
+          </div>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+  (async()=>{
+    try{
+      const snap=await window.getDoc(window.doc(window.db,'admin_profiles',firebaseUser.uid));
+      const data=snap.exists()?snap.data():{};
+      document.getElementById('myProfileNickname').value=data.nickname||firebaseUser.displayName||'';
+      document.getElementById('myProfileBio').value=data.bio||'';
+      const photoPrev=document.getElementById('myProfilePhotoPreview');
+      if(data.photo){ photoPrev.src=data.photo; photoPrev.style.display='block'; }
+      else { photoPrev.style.display='none'; }
+      window._myProfilePhotoB64=data.photo||'';
+    }catch(e){console.warn('Profile load failed:',e.message);}
+  })();
+  openModal('myProfileModal');
+}
+window.openMyProfileModal=openMyProfileModal;
+
+function onMyProfilePhotoChange(input){
+  const file=input.files&&input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    window._myProfilePhotoB64=e.target.result;
+    const prev=document.getElementById('myProfilePhotoPreview');
+    prev.src=e.target.result; prev.style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+window.onMyProfilePhotoChange=onMyProfilePhotoChange;
+
+async function saveMyProfile(){
+  if(!firebaseUser) return;
+  const nickname=document.getElementById('myProfileNickname').value.trim();
+  const bio=document.getElementById('myProfileBio').value.trim();
+  if(!nickname){ alert('Please enter a display name.'); return; }
+  const btn=document.getElementById('saveMyProfileBtn'); btn.disabled=true; btn.textContent='Saving…';
+  try{
+    await window.setDoc(window.doc(window.db,'admin_profiles',firebaseUser.uid),{
+      nickname, bio, photo:window._myProfilePhotoB64||''
+    },{merge:true});
+    closeModal('myProfileModal');
+    await loadAuthorProfiles();
+    // Keep the Add form's author field/badge in sync if it currently shows this admin
+    const badge=document.getElementById('topBadge');
+    const isCEO=isCeoEmail(firebaseUser.email);
+    if(badge&&!isCEO) badge.textContent=nickname+' · Admin';
+    const authorField=document.getElementById('addAuthor');
+    if(authorField&&!isCEO) authorField.value=nickname;
+  }catch(e){
+    alert('Could not save profile: '+e.message);
+  }
+  btn.disabled=false; btn.textContent='Save Profile';
+}
+window.saveMyProfile=saveMyProfile;
+
 
 async function addNews(){
   const title=document.getElementById('addTitle').value.trim();
@@ -4044,6 +4517,10 @@ async function addNews(){
   const image=document.getElementById('addImageB64').value;
   const fullContent=document.getElementById('addFullContent').value.trim();
   const pinned=document.getElementById('addPinned').value==='true';
+  const tags=(document.getElementById('addTags').value||'').split(',').map(t=>t.trim()).filter(Boolean).slice(0,8);
+  const seoTitle=document.getElementById('addSeoTitle').value.trim();
+  const seoDesc=document.getElementById('addSeoDesc').value.trim();
+  const customSlug=document.getElementById('addSlug').value.trim();
   let author='Big Quams Media®';
   try{
     const authorInput=document.getElementById('addAuthor');
@@ -4052,17 +4529,21 @@ async function addNews(){
   }catch(e){}
   if(!title||!category||!fullContent){showStatus('error','Fill in Title, Category and Content.');return;}
   if(pinned&&newsData.filter(n=>n.pinned).length>=3){showStatus('error','Max 3 pinned articles. Unpin one first.');return;}
-  const slug=makeSlug(title);
+  const slug=makeSlug(customSlug||title);
   const btn=document.getElementById('addNewsBtn'); btn.disabled=true; btn.textContent='Publishing…';
   try{
     const item={title,category,date,author,slug,fullContent,pinned:pinned||false,likes:0,views:0,createdAt:window.serverTimestamp()};
     if(image) item.image=image;
     if(updatedDate) item.updatedDate=updatedDate;
+    if(tags.length) item.tags=tags;
+    if(seoTitle) item.seoTitle=seoTitle;
+    if(seoDesc) item.seoDesc=seoDesc;
     const ref=await window.addDoc(window.collection(window.db,'fs_news'),item);
     // Update doc with its own Firestore ID so articleUrl stays stable
     await window.updateDoc(window.doc(window.db,'fs_news',ref.id),{_docId:ref.id});
     logAdminActivity('add','news','Add: '+title);
     showStatus('success','🎉 Article published! Link: '+SITE_BASE+'/newsroom.html#'+slug+'--'+ref.id);
+    localStorage.removeItem('bqm-news-draft');
     clearNewsForm(); await loadNewsFromFirebase(); switchTab('news','list');
   }catch(e){showStatus('error','Firebase error: '+e.message);}
   btn.disabled=false; btn.textContent='🚀 Publish Article';
@@ -4070,15 +4551,22 @@ async function addNews(){
 window.addNews=addNews;
 
 function clearNewsForm(){
-  ['addTitle','addFullContent','addUpdatedDate'].forEach(id=>document.getElementById(id).value='');
+  ['addTitle','addFullContent','addUpdatedDate','addTags','addSeoTitle','addSeoDesc','addSlug'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('addCategory').value=''; document.getElementById('addPinned').value='false';
   document.getElementById('addAuthor').value='BIG QUAMS MEDIA';
+  document.getElementById('addAuthorSelect').value='__custom__'; document.getElementById('addAuthor').disabled=false;
   document.getElementById('addDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
   clearImg('addImageFile','addImgPreview','addImgClear','addImageB64');
   const pane=document.getElementById('addPreviewPane');
   if(pane) pane.classList.remove('open');
   const btn=document.getElementById('addPreviewToggleBtn');
   if(btn) btn.textContent='👁 Show Live Preview';
+  const dt=document.getElementById('addPreviewDeviceToggle');
+  if(dt) dt.classList.remove('show');
+  updateWordCount('add');
+  const status=document.getElementById('addAutosaveStatus');
+  if(status){status.textContent='';status.className='autosave-status';}
+  syncAuthorSelectToValue('add');
 }
 window.clearNewsForm=clearNewsForm;
 
@@ -4122,10 +4610,19 @@ function openEditNews(idx){
   document.getElementById('eNewsUpdatedDate').value=n.updatedDate||'';
   document.getElementById('eNewsAuthor').value=n.author||'BIG QUAMS MEDIA';
   document.getElementById('eNewsFullContent').value=n.fullContent||'';
+  document.getElementById('eNewsTags').value=(n.tags||[]).join(', ');
+  document.getElementById('eSeoTitle').value=n.seoTitle||'';
+  document.getElementById('eSeoDesc').value=n.seoDesc||'';
+  document.getElementById('eSlug').value=n.slug||'';
+  syncAuthorSelectToValue('e');
+  slugifyLive('e');
+  updateWordCount('e');
   const pane=document.getElementById('ePreviewPane');
   if(pane) pane.classList.remove('open');
   const btn=document.getElementById('ePreviewToggleBtn');
   if(btn) btn.textContent='👁 Show Live Preview';
+  const dt=document.getElementById('ePreviewDeviceToggle');
+  if(dt) dt.classList.remove('show');
   openModal('editNewsModal');
 }
 window.openEditNews=openEditNews;
@@ -4137,8 +4634,18 @@ async function saveEditNews(){
   const f=document.getElementById('eNewsFullContent').value.trim();
   if(!t||!f){showStatus('error','Fill in Title and Content.');return;}
   try{
-    const slug=makeSlug(t);
-    const updates={title:t,slug,category:document.getElementById('eNewsCategory').value,date:document.getElementById('eNewsDate').value,updatedDate:document.getElementById('eNewsUpdatedDate').value.trim(),author:document.getElementById('eNewsAuthor').value.trim(),fullContent:f};
+    const customSlug=document.getElementById('eSlug').value.trim();
+    const slug=makeSlug(customSlug||t);
+    const tags=(document.getElementById('eNewsTags').value||'').split(',').map(x=>x.trim()).filter(Boolean).slice(0,8);
+    const updates={
+      title:t,slug,category:document.getElementById('eNewsCategory').value,
+      date:document.getElementById('eNewsDate').value,
+      updatedDate:document.getElementById('eNewsUpdatedDate').value.trim(),
+      author:document.getElementById('eNewsAuthor').value.trim(),
+      fullContent:f, tags,
+      seoTitle:document.getElementById('eSeoTitle').value.trim(),
+      seoDesc:document.getElementById('eSeoDesc').value.trim(),
+    };
     if(item._id) await window.updateDoc(window.doc(window.db,'fs_news',item._id),updates);
     logAdminActivity('edit','news','Edit: '+t);
     await loadNewsFromFirebase();
