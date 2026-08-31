@@ -811,8 +811,8 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <button class="section-tab" onclick="switchSection('ticker')">
         <span class="nav-icon"><i class="fas fa-bullhorn"></i></span><span class="nav-label">News Ticker</span>
       </button>
-      <button class="section-tab" onclick="switchSection('pushnotif')">
-        <span class="nav-icon"><i class="fas fa-mobile-screen"></i></span><span class="nav-label">Push Broadcast</span>
+      <button class="section-tab" onclick="switchSection('siteconfig')">
+        <span class="nav-icon"><i class="fas fa-gear"></i></span><span class="nav-label">Site Settings</span>
       </button>
       <button class="section-tab" onclick="switchSection('users')">
         <span class="nav-icon"><i class="fas fa-users"></i></span><span class="nav-label">Users</span>
@@ -1032,31 +1032,6 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     <div class="admin-section" id="section-newsroom">
       <div class="section-header">
         <h2 class="section-title-h2"><i class="fas fa-newspaper"></i> Newsroom Settings</h2>
-      </div>
-      <div class="section-card">
-        <div class="card-title"><i class="fas fa-newspaper"></i> Newsroom Page Configuration</div>
-        <div class="nelfund-highlight">
-          <h4>ℹ️ How the Newsroom works</h4>
-          <p>The Newsroom page automatically pulls from <strong>news.json</strong> managed in the News section. All articles published there appear in the Newsroom. Use the settings below to control display options.</p>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Newsroom Page Title</label><input type="text" id="newsroomTitle" value="BQM Newsroom" placeholder="Page headline"></div>
-          <div class="form-group"><label>Subtitle / Tagline</label><input type="text" id="newsroomSubtitle" placeholder="Stay informed — latest student news"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Articles Per Page</label>
-            <select id="newsroomPerPage"><option value="10">10</option><option value="15" selected>15</option><option value="20">20</option><option value="25">25</option></select>
-          </div>
-          <div class="form-group"><label>Default Sort</label>
-            <select id="newsroomSort"><option value="newest">Newest First</option><option value="pinned">Pinned First</option><option value="oldest">Oldest First</option></select>
-          </div>
-        </div>
-        <div class="form-group"><label>Featured Banner Text <span style="font-weight:400;color:var(--muted)">(shown at top of newsroom)</span></label>
-          <textarea id="newsroomBanner" style="min-height:65px;" placeholder="e.g. 📢 JAMB 2026 results released — check yours now!"></textarea>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="saveNewsroomSettings()"><i class="fas fa-floppy-disk"></i> Save Settings</button>
-        </div>
       </div>
       <div class="section-card">
         <div class="card-title"><i class="fas fa-image"></i> Category Default Images</div>
@@ -1535,42 +1510,89 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       </div>
     </div>
 
-    <!-- ══ PUSH BROADCAST ══ -->
-    <div class="admin-section" id="section-pushnotif">
+    <!-- ══ SITE SETTINGS (global branding / hero / topbar / contact / social) ══ -->
+    <div class="admin-section" id="section-siteconfig">
       <div class="section-header">
-        <h2 class="section-title-h2"><i class="fas fa-bullhorn"></i> Push Broadcast</h2>
-        <span style="font-size:.72rem;color:var(--muted)"><span id="tokenCount">—</span> devices <button class="btn btn-ghost btn-sm" onclick="loadTokenCount()" style="margin-left:6px"><i class="fas fa-arrows-rotate"></i> Refresh count</button></span>
+        <h2 class="section-title-h2"><i class="fas fa-gear"></i> Site Settings</h2>
       </div>
+
       <div class="section-card">
-        <div class="card-title"><i class="fas fa-bullhorn"></i> Compose Broadcast</div>
-        <div class="form-group">
-          <label>Title * <span style="font-weight:400;color:var(--muted)" id="pushTitleCount">0/65</span></label>
-          <input type="text" id="pushTitle" maxlength="65" oninput="updatePushPreview()" placeholder="e.g. New Scholarship Alert!">
-        </div>
-        <div class="form-group">
-          <label>Message * <span style="font-weight:400;color:var(--muted)" id="pushBodyCount">0/200</span></label>
-          <textarea id="pushBody" maxlength="200" oninput="updatePushPreview()" style="min-height:80px" placeholder="Notification message body…"></textarea>
+        <div class="card-title"><i class="fas fa-gear"></i> Global Site Config</div>
+        <div class="form-row">
+          <div class="form-group"><label>Site Name</label><input type="text" id="cfg-siteName" placeholder="BIG QUAMS MEDIA"></div>
+          <div class="form-group"><label>Tagline</label><input type="text" id="cfg-tagline" placeholder="Nigeria's #1 Student Platform"></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>Link (where tapping opens)</label><input type="url" id="pushLink" placeholder="https://bigquamsmedia.com.ng/"></div>
-          <div class="form-group"><label>Icon URL</label><input type="url" id="pushIcon" oninput="updatePushPreview()" placeholder="https://bigquamsmedia.com.ng/logo.png"></div>
+          <div class="form-group"><label>WhatsApp Number</label><input type="text" id="cfg-whatsapp" placeholder="2348XXXXXXXXX"></div>
+          <div class="form-group"><label>Contact Email</label><input type="email" id="cfg-email" placeholder="info@bigquamsmedia.com.ng"></div>
         </div>
-        <div style="background:var(--light);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;gap:10px;align-items:center;margin-bottom:14px">
-          <img id="pushPreviewIcon" src="https://i.imgur.com/lYJXUyY.jpeg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;flex-shrink:0">
-          <div style="min-width:0">
-            <div id="pushPreviewTitle" style="font-weight:800;font-size:.84rem;color:var(--text)">Notification Title</div>
-            <div id="pushPreviewBody" style="font-size:.76rem;color:var(--muted)">Your message will appear here…</div>
-          </div>
-        </div>
-        <div class="status-bar" id="pushStatus" style="display:none"></div>
+        <div class="form-group"><label>Formspree ID</label><input type="text" id="cfg-formspree" placeholder="Formspree form ID"></div>
         <div class="btn-row">
-          <button class="btn btn-success" id="sendPushBtn" onclick="sendPushNotification()"><i class="fas fa-bullhorn"></i> Send to All Students</button>
-          <button class="btn btn-ghost" onclick="clearPushForm()">Clear</button>
+          <button class="btn btn-primary" onclick="saveSiteConfig()"><i class="fas fa-floppy-disk"></i> Save Config</button>
         </div>
       </div>
+
       <div class="section-card">
-        <div class="card-title"><i class="fas fa-inbox"></i> Broadcast History</div>
-        <div id="pushHistory"></div>
+        <div class="card-title"><i class="fas fa-user-shield"></i> Hero &amp; Stats</div>
+        <div class="form-row">
+          <div class="form-group"><label>Hero Badge</label><input type="text" id="hero-badge" placeholder="🔥 Nigeria's #1 Student Platform"></div>
+          <div class="form-group"><label>Hero Headline</label><input type="text" id="hero-headline" placeholder="Main headline text"></div>
+        </div>
+        <div class="form-group"><label>Hero Description</label><textarea id="hero-desc" style="min-height:65px" placeholder="Subheading text…"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>Stat 1 Value</label><input type="text" id="stat1-val" placeholder="50,000+"></div>
+          <div class="form-group"><label>Stat 1 Label</label><input type="text" id="stat1-lbl" placeholder="Students Helped"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Stat 2 Value</label><input type="text" id="stat2-val" placeholder="1,200+"></div>
+          <div class="form-group"><label>Stat 2 Label</label><input type="text" id="stat2-lbl" placeholder="Books Available"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveHeroStats()"><i class="fas fa-floppy-disk"></i> Save Hero &amp; Stats</button>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="card-title"><i class="fas fa-bell"></i> Top Bar Notification</div>
+        <div class="form-row">
+          <div class="form-group"><label>Notification Message</label><input type="text" id="topbar-msg" placeholder="📢 JAMB registration closes soon — register now!"></div>
+          <div class="form-group"><label>Enabled?</label>
+            <select id="topbar-enabled"><option value="true">Yes — Show</option><option value="false">No — Hide</option></select>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveTopBar()"><i class="fas fa-floppy-disk"></i> Save Top Bar</button>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="card-title"><i class="fas fa-phone"></i> Contact Channels</div>
+        <div class="form-row">
+          <div class="form-group"><label>WhatsApp Group Link</label><input type="url" id="ch-wagroup" placeholder="https://chat.whatsapp.com/..."></div>
+          <div class="form-group"><label>WhatsApp Channel</label><input type="url" id="ch-wachannel" placeholder="https://whatsapp.com/channel/..."></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Telegram Group</label><input type="url" id="ch-telegram" placeholder="https://t.me/..."></div>
+          <div class="form-group"><label>Email Address</label><input type="email" id="ch-email" placeholder="contact@bigquamsmedia.com.ng"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveContactChannels()"><i class="fas fa-floppy-disk"></i> Save Channels</button>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="card-title"><i class="fas fa-link"></i> Social Links</div>
+        <div class="form-row">
+          <div class="form-group"><label>Instagram</label><input type="url" id="soc-instagram" placeholder="https://instagram.com/bigquamsmedia"></div>
+          <div class="form-group"><label>TikTok</label><input type="url" id="soc-tiktok" placeholder="https://tiktok.com/@bigquamsmedia"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>X / Twitter</label><input type="url" id="soc-twitter" placeholder="https://x.com/bigquamsmedia"></div>
+          <div class="form-group"><label>LinkedIn</label><input type="url" id="soc-linkedin" placeholder="https://linkedin.com/company/bigquamsmedia"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveSocialLinks()"><i class="fas fa-floppy-disk"></i> Save Social Links</button>
+        </div>
       </div>
     </div>
 
@@ -3555,125 +3577,6 @@ async function logAdminActivity(actionType,section,detail){
 window.logAdminActivity=logAdminActivity;
 
 // ══════════════════════════════════════════════
-// ── PUSH NOTIFICATION BROADCAST ──
-// ══════════════════════════════════════════════
-const PUSH_HISTORY_KEY='bqm_push_history';
-
-// Live preview
-['pushTitle','pushBody','pushIcon'].forEach(id=>{
-  const el=document.getElementById(id);
-  if(el) el.addEventListener('input',updatePushPreview);
-});
-function updatePushPreview(){
-  const t=document.getElementById('pushTitle');
-  const b=document.getElementById('pushBody');
-  const i=document.getElementById('pushIcon');
-  const tc=document.getElementById('pushTitleCount');
-  if(t){if(tc)tc.textContent=(t.value.length)+'/65';document.getElementById('pushPreviewTitle').textContent=t.value||'Notification Title';}
-  if(b) document.getElementById('pushPreviewBody').textContent=b.value||'Your message will appear here…';
-  if(i&&i.value){document.getElementById('pushPreviewIcon').src=i.value;}
-}
-
-async function loadTokenCount(){
-  try{
-    if(!window.db) return;
-    const snap=await window.getDocs(window.collection(window.db,'fcm_tokens'));
-    document.getElementById('tokenCount').textContent=snap.size;
-  }catch(e){document.getElementById('tokenCount').textContent='?';}
-}
-window.loadTokenCount=loadTokenCount;
-
-async function sendPushNotification(){
-  const title=document.getElementById('pushTitle').value.trim();
-  const body=document.getElementById('pushBody').value.trim();
-  const link=document.getElementById('pushLink').value.trim()||'https://bigquamsmedia.com.ng/';
-  const icon=document.getElementById('pushIcon').value.trim()||'https://bigquamsmedia.com.ng/logo.png';
-  if(!title||!body){showPushStatus('error','<i class="fas fa-circle-xmark"></i> Title and message body are required.');return;}
-  if(!confirm(`Send this notification to ALL subscribed students?\n\nTitle: ${title}\nMessage: ${body}\n\nThis cannot be undone.`)) return;
-  const btn=document.getElementById('sendPushBtn');
-  btn.disabled=true;btn.textContent='Sending…';
-  showPushStatus('info','⏳ Fetching device tokens…');
-  try{
-    // Collect all FCM tokens from Firestore
-    const snap=await window.getDocs(window.collection(window.db,'fcm_tokens'));
-    const tokens=[];
-    snap.forEach(d=>{if(d.data().token&&d.data().active!==false) tokens.push(d.data().token);});
-    if(!tokens.length){showPushStatus('error','<i class="fas fa-circle-xmark"></i> No subscribed devices found. Students need to enable notifications first.');btn.disabled=false;btn.innerHTML='<i class="fas fa-bullhorn"></i> Send to All Students';return;}
-    showPushStatus('info',`⏳ Sending to ${tokens.length} devices via service worker broadcast…`);
-    // Save broadcast record to Firestore
-    const broadcastRef=window.doc(window.db,'push_broadcasts',Date.now().toString());
-    await window.setDoc(broadcastRef,{
-      title,body,link,icon,
-      tokenCount:tokens.length,
-      sentBy:JSON.parse(localStorage.getItem('bqm_user')||'{}').email||'admin',
-      sentByNick:JSON.parse(localStorage.getItem('bqm_user')||'{}').nickname||'Admin',
-      sentAt:new Date().toISOString(),
-      status:'sent',
-    });
-    // Broadcast to all open service worker clients immediately
-    if('serviceWorker' in navigator && navigator.serviceWorker.controller){
-      navigator.serviceWorker.controller.postMessage({
-        type:'BROADCAST_NOTIFICATION',
-        title,body,icon,
-        url:link,
-        tag:'bqm-broadcast-'+Date.now(),
-      });
-    }
-    // Save to local history
-    const hist=JSON.parse(localStorage.getItem(PUSH_HISTORY_KEY)||'[]');
-    hist.unshift({title,body,link,tokens:tokens.length,sentAt:new Date().toISOString()});
-    localStorage.setItem(PUSH_HISTORY_KEY,JSON.stringify(hist.slice(0,20)));
-    renderPushHistory();
-    showPushStatus('success',`<i class="fas fa-circle-check"></i> Broadcast queued for ${tokens.length} devices! Students will receive it shortly.`);
-    logAdminActivity('broadcast','Push Notifications',`Sent "${title}" to ${tokens.length} devices`);
-    document.getElementById('pushTitle').value='';
-    document.getElementById('pushBody').value='';
-    document.getElementById('pushLink').value='';
-    document.getElementById('pushTitleCount').textContent='0/65';
-    document.getElementById('pushBodyCount').textContent='0/200';
-    updatePushPreview();
-  }catch(e){
-    showPushStatus('error','<i class="fas fa-circle-xmark"></i> Error: '+e.message);
-  }
-  btn.disabled=false;btn.innerHTML='<i class="fas fa-bullhorn"></i> Send to All Students';
-}
-window.sendPushNotification=sendPushNotification;
-
-function showPushStatus(type,msg){
-  const el=document.getElementById('pushStatus');
-  el.style.display='block';
-  el.style.background=type==='success'?'#dcfce7':type==='error'?'#fee2e2':'#ede9fe';
-  el.style.color=type==='success'?'#15803d':type==='error'?'#b91c1c':'#7c3aed';
-  el.textContent=msg;
-}
-
-function renderPushHistory(){
-  const el=document.getElementById('pushHistory');if(!el)return;
-  const hist=JSON.parse(localStorage.getItem(PUSH_HISTORY_KEY)||'[]');
-  if(!hist.length){el.innerHTML='<div class="empty"><div class="ei"><i class="fas fa-inbox"></i></div><p>No broadcasts sent yet.</p></div>';return;}
-  el.innerHTML=hist.map(h=>`
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
-      <div style="width:32px;height:32px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-bullhorn"></i></div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:.8rem;font-weight:700;color:var(--text)">${h.title}</div>
-        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">${h.body.slice(0,80)}…</div>
-        <div style="font-size:.66rem;color:var(--muted);margin-top:4px"><i class="fas fa-mobile-screen"></i> ${h.tokens} devices · ${new Date(h.sentAt).toLocaleString('en-NG')}</div>
-      </div>
-    </div>`).join('');
-}
-
-function clearPushForm(){
-  ['pushTitle','pushBody','pushLink'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  document.getElementById('pushTitleCount').textContent='0/65';
-  document.getElementById('pushBodyCount').textContent='0/200';
-  document.getElementById('pushStatus').style.display='none';
-  updatePushPreview();
-}
-window.clearPushForm=clearPushForm;
-
-// Section hooks moved into switchSection function directly
-
-// ══════════════════════════════════════════════
 // ── POST-UTME CBT QUESTIONS ──
 // ══════════════════════════════════════════════
 let pucbtQuestions=[];
@@ -4039,7 +3942,7 @@ window.openModal=openModal; window.closeModal=closeModal; window.handleOverlay=h
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
 
 // ── SECTION & TAB SWITCHING ──
-const ALL_SECTIONS=['dashboard','news','newsroom','imglib','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','admission','campuslife','campusgist','polls','dailyhub','anonymous','activitylog','users','reviews','qa','calendar','ticker','pushnotif'];
+const ALL_SECTIONS=['dashboard','news','newsroom','imglib','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','admission','campuslife','campusgist','polls','dailyhub','anonymous','activitylog','users','reviews','qa','calendar','ticker','siteconfig'];
 
 function toggleSidebar(){
   const isOpen=document.getElementById('adminSidebar').classList.contains('open');
@@ -4077,10 +3980,10 @@ function switchSection(name){
   if(name==='postutmecbt') setTimeout(loadPUCBTQuestions,100);
   if(name==='anonymous') setTimeout(loadAnonMessages,100);
   if(name==='users') setTimeout(loadUsers,100);
-  if(name==='pushnotif') setTimeout(()=>{loadTokenCount();renderPushHistory();},100);
   if(name==='admission') setTimeout(loadAdmissionPriceForm,100);
   if(name==='imglib') setTimeout(loadImageLibrary,100);
   if(name==='newsroom') setTimeout(loadCategoryDefaultsIntoSettingsGrid,100);
+  if(name==='siteconfig'&&!_siteSettingsLoaded){ _siteSettingsLoaded=true; setTimeout(loadSiteSettings,100); }
 }
 window.switchSection=switchSection;
 
@@ -5225,6 +5128,136 @@ function clearCategoryDefault(cat){
 }
 window.clearCategoryDefault=clearCategoryDefault;
 
+// ══════════════════════════════════════════════
+// ── SITE SETTINGS (global branding / hero / topbar / contact / social) ──
+// Same site_config/* Firestore documents used by the live site — shared with CEO's read-only view.
+// ══════════════════════════════════════════════
+async function loadSiteSettings(){
+  try{
+    const [g,h,t,c,s]=await Promise.all([
+      window.getDoc(window.doc(window.db,'site_config','global')),
+      window.getDoc(window.doc(window.db,'site_config','hero')),
+      window.getDoc(window.doc(window.db,'site_config','topbar')),
+      window.getDoc(window.doc(window.db,'site_config','channels')),
+      window.getDoc(window.doc(window.db,'site_config','socials')),
+    ]);
+    if(g.exists()){
+      const d=g.data();
+      document.getElementById('cfg-siteName').value=d.siteName||'';
+      document.getElementById('cfg-tagline').value=d.tagline||'';
+      document.getElementById('cfg-whatsapp').value=d.whatsapp||'';
+      document.getElementById('cfg-email').value=d.email||'';
+      document.getElementById('cfg-formspree').value=d.formspree||'';
+    }
+    if(h.exists()){
+      const d=h.data();
+      document.getElementById('hero-badge').value=d.badge||'';
+      document.getElementById('hero-headline').value=d.headline||'';
+      document.getElementById('hero-desc').value=d.description||'';
+      document.getElementById('stat1-val').value=d.stat1?.value||'';
+      document.getElementById('stat1-lbl').value=d.stat1?.label||'';
+      document.getElementById('stat2-val').value=d.stat2?.value||'';
+      document.getElementById('stat2-lbl').value=d.stat2?.label||'';
+    }
+    if(t.exists()){
+      const d=t.data();
+      document.getElementById('topbar-msg').value=d.message||'';
+      document.getElementById('topbar-enabled').value=d.enabled===false?'false':'true';
+    }
+    if(c.exists()){
+      const d=c.data();
+      document.getElementById('ch-wagroup').value=d.waGroup||'';
+      document.getElementById('ch-wachannel').value=d.waChannel||'';
+      document.getElementById('ch-telegram').value=d.telegram||'';
+      document.getElementById('ch-email').value=d.email||'';
+    }
+    if(s.exists()){
+      const d=s.data();
+      document.getElementById('soc-instagram').value=d.instagram||'';
+      document.getElementById('soc-tiktok').value=d.tiktok||'';
+      document.getElementById('soc-twitter').value=d.twitter||'';
+      document.getElementById('soc-linkedin').value=d.linkedin||'';
+    }
+  }catch(e){console.warn('loadSiteSettings error:',e);}
+}
+window.loadSiteSettings=loadSiteSettings;
+let _siteSettingsLoaded=false;
+
+async function saveSiteConfig(){
+  const data={
+    siteName:document.getElementById('cfg-siteName').value.trim(),
+    tagline:document.getElementById('cfg-tagline').value.trim(),
+    whatsapp:document.getElementById('cfg-whatsapp').value.trim(),
+    email:document.getElementById('cfg-email').value.trim(),
+    formspree:document.getElementById('cfg-formspree').value.trim(),
+    updatedAt:window.serverTimestamp()
+  };
+  try{
+    await window.setDoc(window.doc(window.db,'site_config','global'),data,{merge:true});
+    showStatus('success','Site config saved!');
+  }catch(e){showStatus('error','Error: '+e.message);}
+}
+window.saveSiteConfig=saveSiteConfig;
+
+async function saveHeroStats(){
+  const data={
+    badge:document.getElementById('hero-badge').value.trim(),
+    headline:document.getElementById('hero-headline').value.trim(),
+    description:document.getElementById('hero-desc').value.trim(),
+    stat1:{value:document.getElementById('stat1-val').value.trim(),label:document.getElementById('stat1-lbl').value.trim()},
+    stat2:{value:document.getElementById('stat2-val').value.trim(),label:document.getElementById('stat2-lbl').value.trim()},
+    updatedAt:window.serverTimestamp()
+  };
+  try{
+    await window.setDoc(window.doc(window.db,'site_config','hero'),data,{merge:true});
+    showStatus('success','Hero & Stats saved!');
+  }catch(e){showStatus('error','Error: '+e.message);}
+}
+window.saveHeroStats=saveHeroStats;
+
+async function saveTopBar(){
+  const data={
+    message:document.getElementById('topbar-msg').value.trim(),
+    enabled:document.getElementById('topbar-enabled').value==='true',
+    updatedAt:window.serverTimestamp()
+  };
+  try{
+    await window.setDoc(window.doc(window.db,'site_config','topbar'),data,{merge:true});
+    showStatus('success','Top Bar saved!');
+  }catch(e){showStatus('error','Error: '+e.message);}
+}
+window.saveTopBar=saveTopBar;
+
+async function saveContactChannels(){
+  const data={
+    waGroup:document.getElementById('ch-wagroup').value.trim(),
+    waChannel:document.getElementById('ch-wachannel').value.trim(),
+    telegram:document.getElementById('ch-telegram').value.trim(),
+    email:document.getElementById('ch-email').value.trim(),
+    updatedAt:window.serverTimestamp()
+  };
+  try{
+    await window.setDoc(window.doc(window.db,'site_config','channels'),data,{merge:true});
+    showStatus('success','Contact channels saved!');
+  }catch(e){showStatus('error','Error: '+e.message);}
+}
+window.saveContactChannels=saveContactChannels;
+
+async function saveSocialLinks(){
+  const data={
+    instagram:document.getElementById('soc-instagram').value.trim(),
+    tiktok:document.getElementById('soc-tiktok').value.trim(),
+    twitter:document.getElementById('soc-twitter').value.trim(),
+    linkedin:document.getElementById('soc-linkedin').value.trim(),
+    updatedAt:window.serverTimestamp()
+  };
+  try{
+    await window.setDoc(window.doc(window.db,'site_config','socials'),data,{merge:true});
+    showStatus('success','Social links saved!');
+  }catch(e){showStatus('error','Error: '+e.message);}
+}
+window.saveSocialLinks=saveSocialLinks;
+
 async function saveCategoryDefaultImages(){
   try{
     const globalImg=document.getElementById('globalDefaultImageB64')?.value;
@@ -5413,8 +5446,6 @@ async function saveEditNews(){
 }
 window.saveEditNews=saveEditNews;
 
-function saveNewsroomSettings(){ showStatus('success','<i class="fas fa-circle-check"></i> Newsroom settings saved!'); }
-window.saveNewsroomSettings=saveNewsroomSettings;
 
 // ════════════════════════════════════
 // ══ BOOKS / eLibrary ══

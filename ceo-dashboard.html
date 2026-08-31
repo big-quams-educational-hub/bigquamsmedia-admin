@@ -277,6 +277,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
   color:var(--text);background:#f8faff;transition:.2s;
 }
 .log-search:focus{outline:none;border-color:var(--blue-light)}
+.log-search:disabled,select:disabled,textarea:disabled{background:var(--surface2);color:var(--muted);cursor:not-allowed;opacity:.85}
 .log-select{
   padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;
   font-size:.82rem;font-family:'Roboto',sans-serif;color:var(--text);background:#f8faff;
@@ -566,10 +567,8 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
         <button class="tab-btn" onclick="switchTab('calendar',this)" style="border-color:#06b6d4;color:#0e7490"><i class="fas fa-calendar-days"></i> Calendar</button>
         <button class="tab-btn" onclick="switchTab('newsroom',this)" style="border-color:#64748b;color:#334155"><i class="fas fa-newspaper"></i> Newsroom</button>
         <button class="tab-btn" onclick="switchTab('siteconfig',this)" style="border-color:#dc2626;color:#991b1b"><i class="fas fa-gear"></i> Site Settings</button>
-        <button class="tab-btn" onclick="switchTab('commlinks',this)" style="border-color:#10b981;color:#065f46"><i class="fas fa-link"></i> Community Links</button>
         <button class="tab-btn" onclick="switchTab('gist',this)" style="border-color:#ec4899;color:#9d174d"><i class="fas fa-face-laugh-squint"></i> Campus Gist</button>
         <button class="tab-btn" onclick="switchTab('polls',this)" style="border-color:#7c3aed;color:#5b21b6"><i class="fas fa-square-poll-vertical"></i> Polls</button>
-        <button class="tab-btn" onclick="switchTab('dailyhub',this)" style="border-color:#f59e0b;color:#92400e"><i class="fas fa-calendar-days"></i> Daily Hub</button>
         <button class="tab-btn" onclick="switchTab('pushnotif',this)" style="border-color:#dc2626;color:#991b1b"><i class="fas fa-bell"></i> Push Notifications</button>
       </div>
     </div>
@@ -1184,52 +1183,50 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 
     <!-- ══ SITE SETTINGS TAB ══ -->
     <div class="tab-panel" id="tab-siteconfig">
+      <div class="group-hint"><i class="fas fa-circle-info"></i> Editing happens in Admin → Site Settings. Everything below is a live read-only view.</div>
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title"><i class="fas fa-gear"></i> Global Site Config</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-gear"></i> Global Site Config <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span></div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Site Name</label><input class="log-search" type="text" id="cfg-siteName" placeholder="BIG QUAMS MEDIA" style="width:100%"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Tagline</label><input class="log-search" type="text" id="cfg-tagline" placeholder="Nigeria's #1 Student Platform" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Site Name</label><input class="log-search" type="text" id="cfg-siteName" placeholder="BIG QUAMS MEDIA" style="width:100%" disabled></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Tagline</label><input class="log-search" type="text" id="cfg-tagline" placeholder="Nigeria's #1 Student Platform" style="width:100%" disabled></div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">WhatsApp Number</label><input class="log-search" type="text" id="cfg-whatsapp" placeholder="2348XXXXXXXXX" style="width:100%"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Contact Email</label><input class="log-search" type="email" id="cfg-email" placeholder="info@bigquamsmedia.com.ng" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">WhatsApp Number</label><input class="log-search" type="text" id="cfg-whatsapp" placeholder="2348XXXXXXXXX" style="width:100%" disabled></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Contact Email</label><input class="log-search" type="email" id="cfg-email" placeholder="info@bigquamsmedia.com.ng" style="width:100%" disabled></div>
           </div>
-          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Formspree ID</label><input class="log-search" type="text" id="cfg-formspree" placeholder="Formspree form ID" style="width:100%"></div>
-          <button class="btn-primary-sm" onclick="saveSiteConfig()"><i class="fas fa-floppy-disk"></i> Save Config</button>
+          <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Formspree ID</label><input class="log-search" type="text" id="cfg-formspree" placeholder="Formspree form ID" style="width:100%" disabled></div>
         </div>
       </div>
 
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title"><i class="fas fa-user-shield"></i> Hero &amp; Stats</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-user-shield"></i> Hero &amp; Stats <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span></div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Hero Badge</label><input class="log-search" type="text" id="hero-badge" placeholder="🔥 Nigeria's #1 Student Platform" style="width:100%"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Hero Headline</label><input class="log-search" type="text" id="hero-headline" placeholder="Main headline text" style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Hero Badge</label><input class="log-search" type="text" id="hero-badge" placeholder="🔥 Nigeria's #1 Student Platform" style="width:100%" disabled></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Hero Headline</label><input class="log-search" type="text" id="hero-headline" placeholder="Main headline text" style="width:100%" disabled></div>
           </div>
-          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Hero Description</label><textarea id="hero-desc" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:65px" placeholder="Subheading text…"></textarea></div>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 1 Value</label><input class="log-search" type="text" id="stat1-val" placeholder="50,000+" style="width:100%"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 1 Label</label><input class="log-search" type="text" id="stat1-lbl" placeholder="Students Helped" style="width:100%"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 2 Value</label><input class="log-search" type="text" id="stat2-val" placeholder="1,200+" style="width:100%"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 2 Label</label><input class="log-search" type="text" id="stat2-lbl" placeholder="Books Available" style="width:100%"></div>
+          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Hero Description</label><textarea id="hero-desc" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:65px" placeholder="Subheading text…" disabled></textarea></div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 1 Value</label><input class="log-search" type="text" id="stat1-val" placeholder="50,000+" style="width:100%" disabled></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 1 Label</label><input class="log-search" type="text" id="stat1-lbl" placeholder="Students Helped" style="width:100%" disabled></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 2 Value</label><input class="log-search" type="text" id="stat2-val" placeholder="1,200+" style="width:100%" disabled></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 2 Label</label><input class="log-search" type="text" id="stat2-lbl" placeholder="Books Available" style="width:100%" disabled></div>
           </div>
-          <button class="btn-primary-sm" onclick="saveHeroStats()"><i class="fas fa-floppy-disk"></i> Save Hero &amp; Stats</button>
         </div>
       </div>
 
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title"><i class="fas fa-bell"></i> Top Bar Notification</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-bell"></i> Top Bar Notification <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span></div></div>
         <div style="padding:16px">
-          <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end;margin-bottom:12px">
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Notification Message</label><input class="log-search" type="text" id="topbar-msg" placeholder="📢 JAMB registration closes soon — register now!" style="width:100%"></div>
+          <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Notification Message</label><input class="log-search" type="text" id="topbar-msg" placeholder="📢 JAMB registration closes soon — register now!" style="width:100%" disabled></div>
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Enabled?</label>
-              <select id="topbar-enabled" style="padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.84rem;font-family:inherit;background:var(--surface2);color:var(--text)">
+              <select id="topbar-enabled" style="padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.84rem;font-family:inherit;background:var(--surface2);color:var(--text)" disabled>
                 <option value="true">Yes — Show</option><option value="false">No — Hide</option>
               </select>
             </div>
           </div>
-          <button class="btn-primary-sm" onclick="saveTopBar()"><i class="fas fa-floppy-disk"></i> Save Top Bar</button>
         </div>
       </div>
 
@@ -1246,81 +1243,27 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       </div>
 
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title"><i class="fas fa-champagne-glasses"></i> Success Ticker</div></div>
-        <div style="padding:16px">
-          <div style="margin-bottom:12px">
-            <div style="display:flex;gap:8px">
-              <input class="log-search" type="text" id="successticker-new" placeholder="e.g. 🏆 Amaka scored 340 in JAMB — Medicine, UNILAG!" style="flex:1">
-              <button class="btn-primary-sm" onclick="addSuccessTickerItem()"><i class="fas fa-plus"></i> Add</button>
-            </div>
-          </div>
-          <div id="successTickerList" style="max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px">
-            <div style="text-align:center;padding:20px;color:var(--muted);font-size:.82rem">Click Refresh to load success ticker items</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title"><i class="fas fa-phone"></i> Contact Channels</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-phone"></i> Contact Channels <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span></div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">WhatsApp Group Link</label><input class="log-search" type="url" id="ch-wagroup" placeholder="https://chat.whatsapp.com/..." style="width:100%"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">WhatsApp Channel</label><input class="log-search" type="url" id="ch-wachannel" placeholder="https://whatsapp.com/channel/..." style="width:100%"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">WhatsApp Group Link</label><input class="log-search" type="url" id="ch-wagroup" placeholder="https://chat.whatsapp.com/..." style="width:100%" disabled></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">WhatsApp Channel</label><input class="log-search" type="url" id="ch-wachannel" placeholder="https://whatsapp.com/channel/..." style="width:100%" disabled></div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Telegram Group</label><input class="log-search" type="url" id="ch-telegram" placeholder="https://t.me/..." style="width:100%"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Email Address</label><input class="log-search" type="email" id="ch-email" placeholder="contact@bigquamsmedia.com.ng" style="width:100%"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Telegram Group</label><input class="log-search" type="url" id="ch-telegram" placeholder="https://t.me/..." style="width:100%" disabled></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Email Address</label><input class="log-search" type="email" id="ch-email" placeholder="contact@bigquamsmedia.com.ng" style="width:100%" disabled></div>
           </div>
-          <button class="btn-primary-sm" onclick="saveContactChannels()"><i class="fas fa-floppy-disk"></i> Save Channels</button>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-link"></i> Social Links</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-link"></i> Social Links <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span></div></div>
         <div style="padding:16px">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Instagram</label><input class="log-search" type="url" id="soc-instagram" placeholder="https://instagram.com/bigquamsmedia" style="width:100%"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">TikTok</label><input class="log-search" type="url" id="soc-tiktok" placeholder="https://tiktok.com/@bigquamsmedia" style="width:100%"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">X / Twitter</label><input class="log-search" type="url" id="soc-twitter" placeholder="https://x.com/bigquamsmedia" style="width:100%"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">LinkedIn</label><input class="log-search" type="url" id="soc-linkedin" placeholder="https://linkedin.com/company/bigquamsmedia" style="width:100%"></div>
-          </div>
-          <button class="btn-primary-sm" onclick="saveSocialLinks()"><i class="fas fa-floppy-disk"></i> Save Social Links</button>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- ══ COMMUNITY LINKS TAB ══ -->
-    <div class="tab-panel" id="tab-commlinks">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><i class="fas fa-link"></i> Community Page Links</div>
-          <button class="btn-primary-sm" onclick="addCommLink()"><i class="fas fa-plus"></i> Add Link</button>
-        </div>
-        <div style="padding:16px;font-size:.78rem;color:var(--muted);margin-bottom:4px">These links appear on the Community page. Drag to reorder (save after).</div>
-        <div id="commLinksList" style="padding:0 16px 16px">
-          <div style="text-align:center;padding:24px;color:var(--muted);font-size:.82rem">Loading…</div>
-        </div>
-      </div>
-
-      <!-- Add / Edit Form -->
-      <div class="card" id="commLinkForm" style="display:none">
-        <div class="card-header"><div class="card-title" id="commLinkFormTitle"><i class="fas fa-plus"></i> Add New Link</div></div>
-        <div style="padding:16px">
-          <input type="hidden" id="clEditId">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Name *</label><input class="log-search" type="text" id="clName" placeholder="e.g. Brainy Buddies WhatsApp Group" style="width:100%"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">URL *</label><input class="log-search" type="url" id="clUrl" placeholder="https://..." style="width:100%"></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Icon (emoji)</label><input class="log-search" type="text" id="clIcon" placeholder="💬" maxlength="4" style="width:100%"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Background Color</label><input class="log-search" type="text" id="clBg" placeholder="#dcfce7" style="width:100%"></div>
-          </div>
-          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Description</label><input class="log-search" type="text" id="clDesc" placeholder="Short description of the link…" style="width:100%"></div>
-          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Order (lower = first)</label><input class="log-search" type="number" id="clOrder" value="10" min="1" max="99" style="width:80px"></div>
-          <div style="display:flex;gap:10px">
-            <button class="btn-primary-sm" onclick="saveCommLink()"><i class="fas fa-floppy-disk"></i> Save Link</button>
-            <button class="btn-sm" onclick="document.getElementById('commLinkForm').style.display='none'">Cancel</button>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Instagram</label><input class="log-search" type="url" id="soc-instagram" placeholder="https://instagram.com/bigquamsmedia" style="width:100%" disabled></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">TikTok</label><input class="log-search" type="url" id="soc-tiktok" placeholder="https://tiktok.com/@bigquamsmedia" style="width:100%" disabled></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">X / Twitter</label><input class="log-search" type="url" id="soc-twitter" placeholder="https://x.com/bigquamsmedia" style="width:100%" disabled></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">LinkedIn</label><input class="log-search" type="url" id="soc-linkedin" placeholder="https://linkedin.com/company/bigquamsmedia" style="width:100%" disabled></div>
           </div>
         </div>
       </div>
@@ -1416,37 +1359,6 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 
 
     <!-- ══ DAILY HUB TAB ══ -->
-    <div class="tab-panel" id="tab-dailyhub">
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-calendar-days"></i> Daily Hub Management</div></div>
-        <div style="padding:16px">
-          <div style="background:rgba(245,158,11,.08);border:1.5px solid rgba(245,158,11,.2);border-radius:10px;padding:14px;margin-bottom:16px;font-size:.82rem;line-height:1.6;color:var(--text)">
-            The Daily Hub page currently uses static content (daily challenges, motivational quotes, prayer corner). To manage dynamic content, use the sections below.
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-            <div style="background:var(--surface2);border-radius:10px;padding:16px;text-align:center">
-              <div style="font-size:1.8rem;margin-bottom:6px"><i class="fas fa-calendar-days"></i></div>
-              <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:.82rem;color:var(--text);margin-bottom:4px">Daily Challenge</div>
-              <div style="font-size:.72rem;color:var(--muted)">Managed via DYK section</div>
-              <button onclick="switchTab('dyk',document.querySelector('[onclick*=dyk]'))" style="margin-top:10px;background:var(--blue);color:#fff;border:none;padding:7px 14px;border-radius:7px;font-size:.74rem;font-weight:700;cursor:pointer;width:100%">Go to DYK →</button>
-            </div>
-            <div style="background:var(--surface2);border-radius:10px;padding:16px;text-align:center">
-              <div style="font-size:1.8rem;margin-bottom:6px"><i class="fas fa-bullhorn"></i></div>
-              <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:.82rem;color:var(--text);margin-bottom:4px">Daily Announcement</div>
-              <div style="font-size:.72rem;color:var(--muted)">Push via News Ticker</div>
-              <button onclick="switchTab('siteconfig',document.querySelector('[onclick*=siteconfig]'))" style="margin-top:10px;background:var(--blue);color:#fff;border:none;padding:7px 14px;border-radius:7px;font-size:.74rem;font-weight:700;cursor:pointer;width:100%">Go to Ticker →</button>
-            </div>
-          </div>
-          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Daily Motivational Quote</label>
-            <textarea id="dailyQuote" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:75px" placeholder="e.g. Success is not final, failure is not fatal..."></textarea>
-          </div>
-          <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Quote Author</label>
-            <input class="log-search" type="text" id="dailyQuoteAuthor" placeholder="e.g. Winston Churchill" style="width:100%">
-          </div>
-          <button class="btn-primary-sm" onclick="saveDailyQuote()"><i class="fas fa-floppy-disk"></i> Save Daily Quote</button>
-        </div>
-      </div>
-    </div>
 
     <!-- ══ PUSH NOTIFICATIONS TAB ══ -->
     <div class="tab-panel" id="tab-pushnotif">
@@ -1676,30 +1588,6 @@ async function ceoDeletePoll(id){
   catch(e){showCEOStatus('error',e.message);}
 }
 window.ceoDeletePoll=ceoDeletePoll;
-
-// ── DAILY HUB ──
-async function loadDailyQuote(){
-  try{
-    const doc=await window._db.collection('site_config').doc('daily').get();
-    if(doc.exists){
-      const d=doc.data();
-      if(d.quote) document.getElementById('dailyQuote').value=d.quote;
-      if(d.author) document.getElementById('dailyQuoteAuthor').value=d.author;
-    }
-  }catch(e){}
-}
-window.loadDailyQuote=loadDailyQuote;
-
-async function saveDailyQuote(){
-  const quote=document.getElementById('dailyQuote').value.trim();
-  const author=document.getElementById('dailyQuoteAuthor').value.trim();
-  if(!quote){showCEOStatus('error','Quote cannot be empty.');return;}
-  try{
-    await window._db.collection('site_config').doc('daily').set({quote,author,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-    showCEOStatus('success','<i class="fas fa-circle-check"></i> Daily quote saved!');
-  }catch(e){showCEOStatus('error','Error: '+e.message);}
-}
-window.saveDailyQuote=saveDailyQuote;
 
 </script>
 
@@ -2909,7 +2797,6 @@ async function loadNewsroomData(){
     if(cat){const cats=new Set(items.map(n=>n.category).filter(Boolean));cat.textContent=cats.size;}
     // Load ticker items too
     loadTickerItems();
-    loadSuccessTickerItems();
   }catch(e){console.warn(e);}
 }
 window.loadNewsroomData=loadNewsroomData;
@@ -2931,6 +2818,56 @@ async function saveNewsroomSettings(){
 window.saveNewsroomSettings=saveNewsroomSettings;
 
 // ── SITE CONFIG ──
+async function loadSiteSettingsReadOnly(){
+  try{
+    const [g,h,t,c,s]=await Promise.all([
+      window._getDoc(window._doc(window._db,'site_config','global')),
+      window._getDoc(window._doc(window._db,'site_config','hero')),
+      window._getDoc(window._doc(window._db,'site_config','topbar')),
+      window._getDoc(window._doc(window._db,'site_config','channels')),
+      window._getDoc(window._doc(window._db,'site_config','socials')),
+    ]);
+    if(g.exists()){
+      const d=g.data();
+      document.getElementById('cfg-siteName').value=d.siteName||'';
+      document.getElementById('cfg-tagline').value=d.tagline||'';
+      document.getElementById('cfg-whatsapp').value=d.whatsapp||'';
+      document.getElementById('cfg-email').value=d.email||'';
+      document.getElementById('cfg-formspree').value=d.formspree||'';
+    }
+    if(h.exists()){
+      const d=h.data();
+      document.getElementById('hero-badge').value=d.badge||'';
+      document.getElementById('hero-headline').value=d.headline||'';
+      document.getElementById('hero-desc').value=d.description||'';
+      document.getElementById('stat1-val').value=d.stat1?.value||'';
+      document.getElementById('stat1-lbl').value=d.stat1?.label||'';
+      document.getElementById('stat2-val').value=d.stat2?.value||'';
+      document.getElementById('stat2-lbl').value=d.stat2?.label||'';
+    }
+    if(t.exists()){
+      const d=t.data();
+      document.getElementById('topbar-msg').value=d.message||'';
+      document.getElementById('topbar-enabled').value=d.enabled===false?'false':'true';
+    }
+    if(c.exists()){
+      const d=c.data();
+      document.getElementById('ch-wagroup').value=d.waGroup||'';
+      document.getElementById('ch-wachannel').value=d.waChannel||'';
+      document.getElementById('ch-telegram').value=d.telegram||'';
+      document.getElementById('ch-email').value=d.email||'';
+    }
+    if(s.exists()){
+      const d=s.data();
+      document.getElementById('soc-instagram').value=d.instagram||'';
+      document.getElementById('soc-tiktok').value=d.tiktok||'';
+      document.getElementById('soc-twitter').value=d.twitter||'';
+      document.getElementById('soc-linkedin').value=d.linkedin||'';
+    }
+  }catch(e){console.warn('loadSiteSettingsReadOnly error:',e);}
+}
+window.loadSiteSettingsReadOnly=loadSiteSettingsReadOnly;
+
 async function saveSiteConfig(){
   const data={
     siteName:document.getElementById('cfg-siteName').value.trim(),
@@ -3007,7 +2944,7 @@ async function saveSocialLinks(){
 window.saveSocialLinks=saveSocialLinks;
 
 // ── TICKER ──
-let tickerItems=[], successTickerItems=[];
+let tickerItems=[];
 
 async function loadTickerItems(){
   try{
@@ -3035,33 +2972,6 @@ async function deleteTickerItem(id){
   try{await window._deleteDoc(window._doc(window._db,'fs_ticker',id));loadTickerItems();}catch(e){showCEOStatus('error',e.message);}
 }
 window.deleteTickerItem=deleteTickerItem;
-
-async function loadSuccessTickerItems(){
-  try{
-    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_success_ticker'),window._orderBy('createdAt','asc')));
-    successTickerItems=snap.docs.map(d=>({...d.data(),_id:d.id}));
-    renderTickerList('successTickerList',successTickerItems,'successticker-new',addSuccessTickerItem,deleteSuccessTickerItem);
-  }catch(e){console.warn(e);}
-}
-window.loadSuccessTickerItems=loadSuccessTickerItems;
-
-async function addSuccessTickerItem(){
-  const val=document.getElementById('successticker-new').value.trim();
-  if(!val) return;
-  try{
-    await window._addDoc(window._collection(window._db,'fs_success_ticker'),{text:val,createdAt:window._serverTimestamp()});
-    document.getElementById('successticker-new').value='';
-    loadSuccessTickerItems();
-    showCEOStatus('success','<i class="fas fa-circle-check"></i> Success ticker item added!');
-  }catch(e){showCEOStatus('error','Error: '+e.message);}
-}
-window.addSuccessTickerItem=addSuccessTickerItem;
-
-async function deleteSuccessTickerItem(id){
-  if(!confirm('Delete this item?')) return;
-  try{await window._deleteDoc(window._doc(window._db,'fs_success_ticker',id));loadSuccessTickerItems();}catch(e){showCEOStatus('error',e.message);}
-}
-window.deleteSuccessTickerItem=deleteSuccessTickerItem;
 
 function renderTickerList(elId,items,inputId,addFn,delFn,readonly){
   const el=document.getElementById(elId); if(!el) return;
@@ -3091,101 +3001,6 @@ function showCEOStatus(type,msg){
 }
 window.showCEOStatus=showCEOStatus;
 
-// ── COMMUNITY LINKS MANAGEMENT ──
-let commLinksData=[];
-
-async function loadCommLinks(){
-  const el=document.getElementById('commLinksList');
-  if(!el) return;
-  try{
-    const snap=await window._getDocs(window._query(window._collection(window._db,'fs_community_links'),window._orderBy('order','asc')));
-    commLinksData=snap.docs.map(d=>({_id:d.id,...d.data()}));
-    renderCommLinks();
-  }catch(e){el.innerHTML='<div style="color:#ef4444;font-size:.8rem">Error loading links: '+e.message+'</div>';}
-}
-window.loadCommLinks=loadCommLinks;
-
-function renderCommLinks(){
-  const el=document.getElementById('commLinksList');
-  if(!commLinksData.length){
-    el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:.82rem">No links yet. Add your first one above.</div>';
-    return;
-  }
-  el.innerHTML=commLinksData.map(l=>`
-    <div style="display:flex;align-items:center;gap:12px;padding:12px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;background:var(--surface2)">
-      <div style="width:40px;height:40px;border-radius:10px;background:${l.bg||'#f0f4ff'};display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">${l.icon||'<i class="fas fa-link"></i>'}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:700;font-size:.84rem;color:var(--text)">${l.name||''}</div>
-        <div style="font-size:.7rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.url||''}</div>
-      </div>
-      <div style="display:flex;gap:6px;flex-shrink:0">
-        <button onclick="editCommLink('${l._id}')" style="background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:5px 10px;border-radius:7px;font-size:.74rem;cursor:pointer"><i class="fas fa-pen"></i> Edit</button>
-        <button onclick="deleteCommLink('${l._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:5px 10px;border-radius:7px;font-size:.74rem;cursor:pointer"><i class="fas fa-trash"></i> Del</button>
-      </div>
-    </div>`).join('');
-}
-
-function addCommLink(){
-  ['clEditId','clName','clUrl','clIcon','clBg','clDesc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('clOrder').value='10';
-  document.getElementById('commLinkFormTitle').innerHTML='<i class="fas fa-plus"></i> Add New Link';
-  document.getElementById('commLinkForm').style.display='block';
-  document.getElementById('commLinkForm').scrollIntoView({behavior:'smooth'});
-}
-window.addCommLink=addCommLink;
-
-function editCommLink(id){
-  const l=commLinksData.find(x=>x._id===id);
-  if(!l) return;
-  document.getElementById('clEditId').value=id;
-  document.getElementById('clName').value=l.name||'';
-  document.getElementById('clUrl').value=l.url||'';
-  document.getElementById('clIcon').value=l.icon||'';
-  document.getElementById('clBg').value=l.bg||'';
-  document.getElementById('clDesc').value=l.desc||'';
-  document.getElementById('clOrder').value=l.order||10;
-  document.getElementById('commLinkFormTitle').innerHTML='<i class="fas fa-pen"></i> Edit Link';
-  document.getElementById('commLinkForm').style.display='block';
-  document.getElementById('commLinkForm').scrollIntoView({behavior:'smooth'});
-}
-window.editCommLink=editCommLink;
-
-async function saveCommLink(){
-  const id=document.getElementById('clEditId').value;
-  const name=document.getElementById('clName').value.trim();
-  const url=document.getElementById('clUrl').value.trim();
-  if(!name||!url){showCEOStatus('error','Name and URL are required.');return;}
-  const data={
-    name,url,
-    icon:document.getElementById('clIcon').value.trim()||'<i class="fas fa-link"></i>',
-    bg:document.getElementById('clBg').value.trim()||'#f0f4ff',
-    desc:document.getElementById('clDesc').value.trim(),
-    order:parseInt(document.getElementById('clOrder').value)||10,
-    updatedAt:window._serverTimestamp()
-  };
-  try{
-    if(id){
-      await window._updateDoc(window._doc(window._db,'fs_community_links',id),data);
-    } else {
-      await window._addDoc(window._collection(window._db,'fs_community_links'),data);
-    }
-    showCEOStatus('success','<i class="fas fa-circle-check"></i> Link saved!');
-    document.getElementById('commLinkForm').style.display='none';
-    loadCommLinks();
-  }catch(e){showCEOStatus('error','Error: '+e.message);}
-}
-window.saveCommLink=saveCommLink;
-
-async function deleteCommLink(id){
-  if(!confirm('Delete this link?')) return;
-  try{
-    await window._deleteDoc(window._doc(window._db,'fs_community_links',id));
-    showCEOStatus('success','<i class="fas fa-circle-check"></i> Deleted.');
-    loadCommLinks();
-  }catch(e){showCEOStatus('error','Error: '+e.message);}
-}
-window.deleteCommLink=deleteCommLink;
-
 // ── Extend switchTab to load data on first visit ──
 const _origSwitchTab=window.switchTab;
 const _tabLoaded={};
@@ -3197,11 +3012,9 @@ window.switchTab=function(name,btn){
   else if(name==='qa') loadQA();
   else if(name==='calendar') loadCalendar();
   else if(name==='newsroom') loadNewsroomData();
-  else if(name==='siteconfig') loadTickerItems(),loadSuccessTickerItems();
-  else if(name==='commlinks') loadCommLinks();
+  else if(name==='siteconfig'){ loadTickerItems(); loadSiteSettingsReadOnly(); }
   else if(name==='gist') ceoLoadGist();
   else if(name==='polls') ceoLoadPolls();
-  else if(name==='dailyhub') loadDailyQuote();
   else if(name==='pushnotif'){checkPushServerStatus();loadBroadcastHistory();}
 };
 
