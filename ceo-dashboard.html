@@ -7,6 +7,7 @@
 <link rel="icon" type="image/jpeg" href="https://bigquamsmedia.com.ng/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root{
   --bg:#f5f7ff;--surface:#ffffff;--surface2:#f0f4ff;--border:#e2e8f4;
@@ -21,63 +22,123 @@ body{font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);min-
 a{color:inherit;text-decoration:none}
 button{cursor:pointer;font-family:inherit}
 
+/* ── TOAST NOTIFICATIONS ── */
+#toastStack{position:fixed;top:74px;right:16px;z-index:2000;display:flex;flex-direction:column;gap:10px;max-width:360px;width:calc(100% - 32px)}
+.toast{padding:12px 16px;border-radius:10px;font-size:.83rem;font-weight:600;line-height:1.4;
+  display:flex;align-items:flex-start;gap:9px;box-shadow:0 12px 32px rgba(26,63,168,.16);
+  animation:toastIn .25s cubic-bezier(.34,1.56,.64,1);border:1px solid transparent}
+.toast.success{background:#dcfce7;color:#15803d;border-color:#bbf7d0}
+.toast.error{background:#fee2e2;color:#b91c1c;border-color:#fecaca}
+.toast.hide{animation:toastOut .2s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+@keyframes toastOut{to{opacity:0;transform:translateX(24px)}}
+@media(max-width:600px){#toastStack{top:auto;bottom:16px;right:16px;left:16px;max-width:none}}
+
 /* ── LOGIN GATE ── */
 #loginGate{
-  position:fixed;inset:0;
-  background:linear-gradient(135deg,rgba(12,31,110,0.93),rgba(26,63,168,0.90),rgba(37,99,235,0.88)),
-             url('https://bigquamsmedia.com.ng/bigquamsmedia-admin/admin.png') center/cover no-repeat;
-  display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;
+  position:fixed;inset:0;display:flex;z-index:1000;background:#fff;overflow:auto;
 }
-#loginGate::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 20% 80%,rgba(249,115,22,0.12) 0%,transparent 55%),
-             radial-gradient(ellipse at 80% 20%,rgba(37,99,235,0.18) 0%,transparent 55%);
-  pointer-events:none;
-  z-index:0;
+.login-brand{
+  display:none;position:relative;width:45%;min-width:420px;flex-shrink:0;
+  background:linear-gradient(155deg,#081746 0%,#0c1f6e 45%,#1a3fa8 100%);
+  color:#fff;padding:56px 48px;flex-direction:column;overflow:hidden;
+}
+@media(min-width:960px){.login-brand{display:flex}}
+.login-brand::before{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:
+    radial-gradient(circle at 15% 12%,rgba(255,255,255,.08) 0%,transparent 40%),
+    radial-gradient(circle at 85% 88%,rgba(249,115,22,.10) 0%,transparent 45%),
+    repeating-linear-gradient(115deg,rgba(255,255,255,.025) 0px,rgba(255,255,255,.025) 1px,transparent 1px,transparent 64px);
+}
+.login-brand-top{position:relative;z-index:1;display:flex;align-items:center;gap:10px}
+.login-brand-top img{width:34px;height:34px;border-radius:8px;object-fit:cover}
+.login-brand-top span{font-family:'Montserrat',sans-serif;font-weight:800;font-size:.86rem;letter-spacing:.6px}
+.login-brand-mid{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:center;max-width:400px}
+.login-brand-mid h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:2.1rem;line-height:1.25;margin-bottom:18px;letter-spacing:-.5px}
+.login-brand-mid p{font-size:.92rem;line-height:1.6;color:rgba(255,255,255,.72);max-width:340px}
+.login-brand-bottom{position:relative;z-index:1;display:flex;align-items:center;gap:8px;font-size:.78rem;color:rgba(255,255,255,.65);font-weight:600}
+.login-brand-bottom .dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.22)}
+
+.login-panel{
+  flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px;min-height:100vh;background:var(--bg);
 }
 .login-card{
-  background:#ffffff;border:1.5px solid #e2e8f4;border-radius:20px;
-  padding:36px 28px;width:100%;max-width:380px;text-align:center;
-  box-shadow:0 32px 80px rgba(26,63,168,.15);
-  animation:pop .4s cubic-bezier(.34,1.56,.64,1);
-  position:relative;z-index:1;
+  background:#ffffff;border:1.5px solid #e2e8f4;border-radius:18px;
+  padding:34px 26px;width:100%;max-width:400px;
+  box-shadow:0 24px 64px rgba(26,63,168,.10);
+  animation:loginIn .35s cubic-bezier(.34,1.2,.64,1);
 }
-@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
-.login-logo{width:70px;height:70px;border-radius:50%;border:3px solid var(--orange);margin:0 auto 14px;overflow:hidden}
+@media(min-width:480px){.login-card{padding:40px 36px}}
+@media(min-width:960px){.login-card{box-shadow:none;border:none;padding:0;max-width:340px}}
+@keyframes loginIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.login-card{animation:none}}
+
+.login-logo{width:56px;height:56px;border-radius:14px;margin:0 auto 18px;overflow:hidden;border:1.5px solid var(--border)}
+@media(min-width:960px){.login-logo{margin:0 0 18px}}
 .login-logo img{width:100%;height:100%;object-fit:cover}
-.login-title{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:800;color:var(--text);margin-bottom:4px}
-.login-sub{font-size:.76rem;color:var(--muted);margin-bottom:22px;line-height:1.5}
-.google-btn{
+.login-title{font-family:'Montserrat',sans-serif;font-size:1.3rem;font-weight:800;color:var(--text);margin-bottom:4px;text-align:center}
+@media(min-width:960px){.login-title{text-align:left}}
+.login-sub{font-size:.84rem;color:var(--muted);margin-bottom:26px;line-height:1.5;text-align:center}
+@media(min-width:960px){.login-sub{text-align:left}}
+
+.google-btn,.apple-btn{
   width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
-  background:#fff;border:none;border-radius:10px;padding:13px;
-  font-family:'Montserrat',sans-serif;font-weight:800;font-size:.88rem;color:#1e2749;
-  cursor:pointer;transition:.2s;margin-bottom:10px;
+  border-radius:10px;padding:12px;min-height:46px;
+  font-family:'Montserrat',sans-serif;font-weight:700;font-size:.87rem;
+  cursor:pointer;transition:.18s;margin-bottom:10px;
 }
-.google-btn:hover{opacity:.92;transform:translateY(-1px);box-shadow:0 4px 16px rgba(255,255,255,.15)}
-.apple-btn{
-  width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
-  background:#000;border:none;border-radius:10px;padding:13px;
-  font-family:'Montserrat',sans-serif;font-weight:800;font-size:.88rem;color:#fff;
-  cursor:pointer;transition:.2s;margin-bottom:12px;
+.google-btn{background:#fff;border:1.5px solid var(--border);color:#1e2749}
+.google-btn:hover{border-color:#4285F4;box-shadow:0 2px 12px rgba(66,133,244,.18);transform:translateY(-1px)}
+.apple-btn{background:#000;border:1.5px solid #000;color:#fff}
+.apple-btn:hover{background:#1a1a1a;transform:translateY(-1px)}
+.google-btn:focus-visible,.apple-btn:focus-visible,.login-btn:focus-visible,.pw-toggle:focus-visible{
+  outline:2px solid var(--blue-light);outline-offset:2px;
 }
-.apple-btn:hover{background:#1a1a1a;transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.google-btn:disabled,.apple-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+.login-divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:.72rem}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.login-field{margin-bottom:14px}
+.login-field label{display:block;font-size:.7rem;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
 .email-input{
   width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:9px;
-  font-size:.9rem;font-family:'Roboto',sans-serif;color:var(--text);
-  background:#f8faff;margin-bottom:10px;transition:.2s;
+  font-size:.92rem;font-family:'Roboto',sans-serif;color:var(--text);
+  background:#f8faff;transition:.18s;min-height:46px;
 }
-.email-input:focus{outline:none;border-color:var(--blue-light);box-shadow:0 0 0 3px rgba(59,98,212,.08)}
+.email-input:focus{outline:none;border-color:var(--blue-light);box-shadow:0 0 0 3px rgba(59,98,212,.10);background:#fff}
+.pw-field-wrap{position:relative}
+.pw-field-wrap .email-input{padding-right:42px}
+.pw-toggle{
+  position:absolute;right:4px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--muted);cursor:pointer;
+  width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;
+}
+.pw-toggle:hover{color:var(--blue);background:var(--surface2)}
+
 .login-btn{
   width:100%;padding:13px;background:linear-gradient(135deg,#0c1f6e,#1a3fa8);
   color:#fff;border:none;border-radius:9px;font-family:'Montserrat',sans-serif;
-  font-weight:800;font-size:.9rem;cursor:pointer;transition:.2s;
+  font-weight:800;font-size:.92rem;cursor:pointer;transition:.18s;min-height:48px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
 }
-.login-btn:hover{opacity:.9}
-.login-btn:disabled{opacity:.5;cursor:not-allowed}
-.login-divider{display:flex;align-items:center;gap:8px;margin:8px 0;color:var(--muted);font-size:.7rem}
-.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.login-err{color:#fca5a5;font-size:.76rem;background:rgba(239,68,68,.1);border-radius:7px;padding:8px 12px;margin-top:8px;display:none}
-.access-denied{color:#fca5a5;font-size:.82rem;text-align:center;margin-top:10px;display:none}
+.login-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 26px rgba(26,63,168,.3)}
+.login-btn:disabled{opacity:.7;cursor:not-allowed;transform:none}
+
+.login-err{
+  color:#b91c1c;font-size:.8rem;background:#fee2e2;border:1px solid #fecaca;
+  border-radius:9px;padding:10px 12px;margin-top:12px;display:none;
+  align-items:flex-start;gap:8px;font-weight:600;line-height:1.4;
+}
+.login-err.show{display:flex}
+.access-denied{
+  color:#b91c1c;font-size:.82rem;background:#fee2e2;border:1px solid #fecaca;
+  border-radius:9px;padding:10px 12px;margin-top:12px;display:none;
+  align-items:flex-start;gap:8px;font-weight:600;line-height:1.4;
+}
+.login-secure-note{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:22px;font-size:.7rem;color:var(--muted)}
+@media(min-width:960px){.login-secure-note{justify-content:flex-start}}
 
 /* ── APP SHELL ── */
 #app{display:none}
@@ -116,6 +177,45 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 .page-title{font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:4px}
 .page-sub{font-size:.82rem;color:var(--muted)}
 .page-sub span{color:var(--green);font-weight:700}
+
+/* ── GROUP NAV (primary executive navigation) ── */
+.group-nav{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;border-bottom:1.5px solid var(--border);padding-bottom:14px}
+.group-btn{
+  padding:10px 16px;border-radius:9px;border:1.5px solid var(--border);
+  background:var(--surface);color:var(--muted);font-family:'Montserrat',sans-serif;
+  font-size:.8rem;font-weight:800;cursor:pointer;transition:.18s;
+  display:flex;align-items:center;gap:7px;white-space:nowrap;
+}
+.group-btn:hover{border-color:var(--blue-light);color:var(--text)}
+.group-btn.active{background:linear-gradient(135deg,#0c1f6e,#1a3fa8);border-color:var(--blue);color:#fff;box-shadow:0 4px 14px rgba(26,63,168,.25)}
+.group-panel{display:none}
+.group-panel.active{display:block}
+.group-hint{font-size:.74rem;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+
+/* ── KPI CARDS (Overview) ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:22px}
+@media(min-width:700px){.kpi-grid{grid-template-columns:repeat(4,1fr)}}
+.kpi-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px 18px;position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kpi-card.k-blue::before{background:linear-gradient(90deg,var(--blue),var(--blue-light))}
+.kpi-card.k-green::before{background:linear-gradient(90deg,var(--green),#34d399)}
+.kpi-card.k-orange::before{background:linear-gradient(90deg,var(--orange),#fb923c)}
+.kpi-card.k-red::before{background:linear-gradient(90deg,var(--red),#f87171)}
+.kpi-num{font-family:'Montserrat',sans-serif;font-size:1.9rem;font-weight:800;color:var(--text);margin-bottom:4px}
+.kpi-lbl{font-size:.72rem;color:var(--muted);font-weight:600}
+.kpi-icon{position:absolute;right:14px;top:18px;font-size:1.5rem;opacity:.25}
+
+.exec-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:16px}
+@media(min-width:900px){.exec-grid{grid-template-columns:1fr 1fr}}
+.exec-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--surface2);font-size:.82rem}
+.exec-row:last-child{border-bottom:none}
+.exec-row .n{font-weight:700;color:var(--text)}
+.exec-row .v{font-weight:800;color:var(--blue);font-family:'Montserrat',sans-serif}
+.alert-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--surface2);font-size:.8rem}
+.alert-row:last-child{border-bottom:none}
+.alert-row.warn i{color:var(--orange)}
+.alert-row.ok i{color:var(--green)}
+.alert-row .t{color:var(--muted);font-size:.7rem;margin-left:auto;white-space:nowrap}
 
 /* ── TABS ── */
 .tab-bar{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;overflow-x:auto;padding-bottom:4px}
@@ -338,27 +438,51 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 <meta property="og:image" content="https://bigquamsmedia.com.ng/bigquamsmedia-admin/admin.png">
 </head>
 <body>
+<div id="toastStack" aria-live="polite"></div>
 
 <!-- ══ LOGIN GATE ══ -->
 <div id="loginGate">
-  <div class="login-card">
-    <div class="login-logo"><img src="https://bigquamsmedia.com.ng/logo.png" alt="BQM"></div>
-    <div class="login-title">CEO Dashboard</div>
-    <div class="login-sub">This panel is exclusively for authorised CEO accounts.<br>Sign in with your registered CEO email.</div>
-    <button class="google-btn" onclick="loginGoogle()">
-      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.1 0 5.8 1.1 8 2.9l6-6C34.5 3.1 29.6 1 24 1 14.8 1 7 6.7 3.7 14.6l7 5.4C12.5 13.8 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.4c-.5 2.8-2.1 5.2-4.5 6.8l7 5.4C43.1 36.8 46.1 31.1 46.1 24.5z"/><path fill="#FBBC05" d="M10.7 28.6c-.5-1.4-.8-2.9-.8-4.6l-7-5.4C2.2 17.1 1 20.4 1 24s1.2 6.9 3.7 9.9l7-5.3z"/><path fill="#34A853" d="M24 47c5.6 0 10.4-1.9 13.8-5.1l-7-5.4c-1.9 1.3-4.2 2-6.8 2-6.2 0-11.5-4.3-13.3-10l-7 5.4C7 41.3 14.8 47 24 47z"/></svg>
-      Sign in with Google
-    </button>
-    <button class="apple-btn" onclick="loginApple()">
-      <svg width="18" height="18" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-37.6-155.5-127.4C46.7 790.7 0 663 0 541.8c0-207.8 165.5-317.3 328.4-317.3 85.5 0 156.6 47.6 212.4 47.6 52.3 0 135.9-50.5 211.1-50.5l43.1 1.6zm-131.5-190c38.8-45.5 69.6-109.3 69.6-173.1 0-8.9-.9-17.7-2.5-26.4-65.3 2.5-144.3 43.7-191.2 95.7-38.8 41.9-75.2 105.7-75.2 170.5 0 9.6 1.6 19.2 2.5 22.3 4.5.6 11.6 1.9 18.7 1.9 59.2 0 132.5-39.8 177.3-90.9z"/></svg>
-      Sign in with Apple
-    </button>
-    <div class="login-divider">or email</div>
-    <input class="email-input" type="email" id="loginEmail" placeholder="CEO email address" autocomplete="email">
-    <input class="email-input" type="password" id="loginPw" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')loginEmail_pw()">
-    <button class="login-btn" id="loginBtn" onclick="loginEmail_pw()">Sign In →</button>
-    <div class="login-err" id="loginErr"></div>
-    <div class="access-denied" id="accessDenied">🚫 Access denied. This dashboard is restricted to the CEO account only.</div>
+  <div class="login-brand">
+    <div class="login-brand-top">
+      <img src="https://bigquamsmedia.com.ng/logo.png" alt="BQM Logo">
+      <span>BIG QUAMS MEDIA®</span>
+    </div>
+    <div class="login-brand-mid">
+      <h1>Your platform.<br>Your operations.<br>One control centre.</h1>
+      <p>Manage your content, operations and platform performance from one secure workspace.</p>
+    </div>
+    <div class="login-brand-bottom"><span class="dot"></span> Secure workspace</div>
+  </div>
+  <div class="login-panel">
+    <div class="login-card">
+      <div class="login-logo"><img src="https://bigquamsmedia.com.ng/logo.png" alt="BQM"></div>
+      <div class="login-title">Welcome back</div>
+      <div class="login-sub">Sign in to your CEO workspace</div>
+      <button class="google-btn" onclick="loginGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.1 0 5.8 1.1 8 2.9l6-6C34.5 3.1 29.6 1 24 1 14.8 1 7 6.7 3.7 14.6l7 5.4C12.5 13.8 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.4c-.5 2.8-2.1 5.2-4.5 6.8l7 5.4C43.1 36.8 46.1 31.1 46.1 24.5z"/><path fill="#FBBC05" d="M10.7 28.6c-.5-1.4-.8-2.9-.8-4.6l-7-5.4C2.2 17.1 1 20.4 1 24s1.2 6.9 3.7 9.9l7-5.3z"/><path fill="#34A853" d="M24 47c5.6 0 10.4-1.9 13.8-5.1l-7-5.4c-1.9 1.3-4.2 2-6.8 2-6.2 0-11.5-4.3-13.3-10l-7 5.4C7 41.3 14.8 47 24 47z"/></svg>
+        Continue with Google
+      </button>
+      <button class="apple-btn" onclick="loginApple()">
+        <svg width="18" height="18" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-37.6-155.5-127.4C46.7 790.7 0 663 0 541.8c0-207.8 165.5-317.3 328.4-317.3 85.5 0 156.6 47.6 212.4 47.6 52.3 0 135.9-50.5 211.1-50.5l43.1 1.6zm-131.5-190c38.8-45.5 69.6-109.3 69.6-173.1 0-8.9-.9-17.7-2.5-26.4-65.3 2.5-144.3 43.7-191.2 95.7-38.8 41.9-75.2 105.7-75.2 170.5 0 9.6 1.6 19.2 2.5 22.3 4.5.6 11.6 1.9 18.7 1.9 59.2 0 132.5-39.8 177.3-90.9z"/></svg>
+        Continue with Apple
+      </button>
+      <div class="login-divider">or continue with email</div>
+      <div class="login-field">
+        <label for="loginEmail">Email address</label>
+        <input class="email-input" type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="login-field">
+        <label for="loginPw">Password</label>
+        <div class="pw-field-wrap">
+          <input class="email-input" type="password" id="loginPw" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')loginEmail_pw()">
+          <button type="button" class="pw-toggle" onclick="togglePwVisibility('loginPw',this)" aria-label="Show password"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <button class="login-btn" id="loginBtn" onclick="loginEmail_pw()">Sign In <i class="fas fa-arrow-right"></i></button>
+      <div class="login-err" id="loginErr" role="alert" aria-live="polite"></div>
+      <div class="access-denied" id="accessDenied"><i class="fas fa-ban"></i> Access denied. This dashboard is restricted to the CEO account only.</div>
+      <div class="login-secure-note"><i class="fas fa-lock"></i> Secure access to your BQM workspace</div>
+    </div>
   </div>
 </div>
 
@@ -381,68 +505,128 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 
   <main>
     <div class="page-header">
-      <div class="page-title">👑 CEO Control Centre</div>
+      <div class="page-title"><i class="fas fa-crown"></i> CEO Control Centre</div>
       <div class="page-sub">Welcome back. Last refreshed: <span id="lastRefreshed">—</span></div>
     </div>
 
-    <!-- STAT CARDS -->
-    <div class="stats-grid">
-      <div class="stat-card blue"><div class="stat-icon">⚡</div><div class="stat-num" id="sc-total">—</div><div class="stat-lbl">Total Actions</div></div>
-      <div class="stat-card green"><div class="stat-icon">📅</div><div class="stat-num" id="sc-today">—</div><div class="stat-lbl">Today</div></div>
-      <div class="stat-card orange"><div class="stat-icon">👥</div><div class="stat-num" id="sc-admins">—</div><div class="stat-lbl">Admins Active</div></div>
-      <div class="stat-card red"><div class="stat-icon">🗑️</div><div class="stat-num" id="sc-deletes">—</div><div class="stat-lbl">Deletions</div></div>
-      <div class="stat-card purple"><div class="stat-icon">🔐</div><div class="stat-num" id="sc-logins">—</div><div class="stat-lbl">Logins</div></div>
-      <div class="stat-card cyan"><div class="stat-icon">✏️</div><div class="stat-num" id="sc-edits">—</div><div class="stat-lbl">Edits/Saves</div></div>
+    <!-- GROUP NAV -->
+    <div class="group-nav" role="tablist" aria-label="Executive sections">
+      <button class="group-btn active" data-group="overview" onclick="switchGroup('overview')" aria-label="Overview"><i class="fas fa-house"></i> Overview</button>
+      <button class="group-btn" data-group="operations" onclick="switchGroup('operations')" aria-label="Operations"><i class="fas fa-layer-group"></i> Operations</button>
+      <button class="group-btn" data-group="admins" onclick="switchGroup('admins')" aria-label="Admins"><i class="fas fa-users"></i> Admins</button>
+      <button class="group-btn" data-group="analytics" onclick="switchGroup('analytics')" aria-label="Analytics"><i class="fas fa-chart-column"></i> Analytics</button>
+      <button class="group-btn" data-group="auditlog" onclick="switchGroup('auditlog')" aria-label="Audit Log"><i class="fas fa-clipboard-list"></i> Audit Log</button>
+      <button class="group-btn" data-group="access" onclick="switchGroup('access')" aria-label="Access and Security"><i class="fas fa-lock"></i> Access &amp; Security</button>
     </div>
 
-    <!-- TABS -->
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('log',this)">📋 Activity Log</button>
-      <button class="tab-btn" onclick="switchTab('admins',this)">👥 Admin Profiles</button>
-      <button class="tab-btn" onclick="switchTab('timeline',this)">🕐 Timeline</button>
-      <button class="tab-btn" onclick="switchTab('analytics',this)">📊 Analytics</button>
-      <button class="tab-btn" onclick="switchTab('referrals',this)">🔗 Referrals</button>
-      <button class="tab-btn" onclick="switchTab('cbtanalytics',this)">🎯 CBT Analytics</button>
-      <button class="tab-btn" onclick="switchTab('whitelist',this)" style="border-color:#dc2626;color:#dc2626">🔐 Admin Access</button>
-      <button class="tab-btn" onclick="switchTab('library',this)" style="border-color:#f59e0b;color:#92400e">📚 eLibrary</button>
-      <button class="tab-btn" onclick="switchTab('scholarships',this)" style="border-color:#10b981;color:#065f46">💰 Scholarships</button>
-      <button class="tab-btn" onclick="switchTab('nelfund',this)" style="border-color:#8b5cf6;color:#5b21b6">💳 NELFUND</button>
-      <button class="tab-btn" onclick="switchTab('dyk',this)" style="border-color:#f59e0b;color:#92400e">💡 DYK</button>
-      <button class="tab-btn" onclick="switchTab('spotlight',this)" style="border-color:#ec4899;color:#9d174d">🌟 Spotlight</button>
-      <button class="tab-btn" onclick="switchTab('postutme',this)" style="border-color:#3b82f6;color:#1d4ed8">🧮 Post-UTME</button>
-      <button class="tab-btn" onclick="switchTab('combo',this)" style="border-color:#10b981;color:#065f46">📋 Subject Combo</button>
-      <button class="tab-btn" onclick="switchTab('reviews',this)" style="border-color:#f59e0b;color:#92400e">⭐ Reviews</button>
-      <button class="tab-btn" onclick="switchTab('qa',this)" style="border-color:#8b5cf6;color:#6d28d9">❓ Q&amp;A</button>
-      <button class="tab-btn" onclick="switchTab('calendar',this)" style="border-color:#06b6d4;color:#0e7490">📅 Calendar</button>
-      <button class="tab-btn" onclick="switchTab('newsroom',this)" style="border-color:#64748b;color:#334155">🗞️ Newsroom</button>
-      <button class="tab-btn" onclick="switchTab('siteconfig',this)" style="border-color:#dc2626;color:#991b1b">⚙️ Site Settings</button>
-      <button class="tab-btn" onclick="switchTab('commlinks',this)" style="border-color:#10b981;color:#065f46">🔗 Community Links</button>
-      <button class="tab-btn" onclick="switchTab('gist',this)" style="border-color:#ec4899;color:#9d174d">😂 Campus Gist</button>
-      <button class="tab-btn" onclick="switchTab('polls',this)" style="border-color:#7c3aed;color:#5b21b6">🗳️ Polls</button>
-      <button class="tab-btn" onclick="switchTab('dailyhub',this)" style="border-color:#f59e0b;color:#92400e">📅 Daily Hub</button>
-      <button class="tab-btn" onclick="switchTab('pushnotif',this)" style="border-color:#dc2626;color:#991b1b">🔔 Push Notifications</button>
+    <!-- ══ GROUP: OVERVIEW ══ -->
+    <div class="group-panel active" id="group-overview">
+      <div class="kpi-grid">
+        <div class="kpi-card k-blue"><div class="kpi-icon"><i class="fas fa-users"></i></div><div class="kpi-num" id="kpi-admins">—</div><div class="kpi-lbl">Active Admins</div></div>
+        <div class="kpi-card k-green"><div class="kpi-icon"><i class="fas fa-newspaper"></i></div><div class="kpi-num" id="kpi-published">—</div><div class="kpi-lbl">Published Content</div></div>
+        <div class="kpi-card k-orange"><div class="kpi-icon"><i class="fas fa-clock"></i></div><div class="kpi-num" id="kpi-today">—</div><div class="kpi-lbl">Actions Today</div></div>
+        <div class="kpi-card k-red"><div class="kpi-icon"><i class="fas fa-triangle-exclamation"></i></div><div class="kpi-num" id="kpi-issues">—</div><div class="kpi-lbl">Issues / Alerts</div></div>
+      </div>
+      <div class="exec-grid">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fas fa-users"></i> Admin Activity</div></div>
+          <div class="card-body" id="ovAdminActivity"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="skeleton sk-line sk-w70"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fas fa-book"></i> Content Overview</div></div>
+          <div class="card-body" id="ovContentOverview"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="skeleton sk-line sk-w70"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fas fa-triangle-exclamation"></i> Important Events / Alerts</div></div>
+        <div class="card-body" id="ovAlerts"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div>
+      </div>
+      <div class="group-hint"><i class="fas fa-circle-info"></i> Refreshes automatically when you open Audit Log.</div>
+    </div>
+
+    <!-- ══ GROUP: OPERATIONS (oversight of content already managed day-to-day in Admin) ══ -->
+    <div class="group-panel" id="group-operations">
+      <div class="group-hint"><i class="fas fa-circle-info"></i> Day-to-day editing of this content happens in the Admin panel. These tools remain here for direct CEO publishing when needed.</div>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('library',this)" style="border-color:#f59e0b;color:#92400e"><i class="fas fa-book"></i> eLibrary</button>
+        <button class="tab-btn" onclick="switchTab('scholarships',this)" style="border-color:#10b981;color:#065f46"><i class="fas fa-sack-dollar"></i> Scholarships</button>
+        <button class="tab-btn" onclick="switchTab('nelfund',this)" style="border-color:#8b5cf6;color:#5b21b6"><i class="fas fa-credit-card"></i> NELFUND</button>
+        <button class="tab-btn" onclick="switchTab('dyk',this)" style="border-color:#f59e0b;color:#92400e"><i class="fas fa-lightbulb"></i> DYK</button>
+        <button class="tab-btn" onclick="switchTab('spotlight',this)" style="border-color:#ec4899;color:#9d174d"><i class="fas fa-star"></i> Spotlight</button>
+        <button class="tab-btn" onclick="switchTab('postutme',this)" style="border-color:#3b82f6;color:#1d4ed8"><i class="fas fa-calculator"></i> Post-UTME</button>
+        <button class="tab-btn" onclick="switchTab('combo',this)" style="border-color:#10b981;color:#065f46"><i class="fas fa-clipboard-list"></i> Subject Combo</button>
+        <button class="tab-btn" onclick="switchTab('reviews',this)" style="border-color:#f59e0b;color:#92400e"><i class="fas fa-star"></i> Reviews</button>
+        <button class="tab-btn" onclick="switchTab('qa',this)" style="border-color:#8b5cf6;color:#6d28d9"><i class="fas fa-circle-question"></i> Q&amp;A</button>
+        <button class="tab-btn" onclick="switchTab('calendar',this)" style="border-color:#06b6d4;color:#0e7490"><i class="fas fa-calendar-days"></i> Calendar</button>
+        <button class="tab-btn" onclick="switchTab('newsroom',this)" style="border-color:#64748b;color:#334155"><i class="fas fa-newspaper"></i> Newsroom</button>
+        <button class="tab-btn" onclick="switchTab('siteconfig',this)" style="border-color:#dc2626;color:#991b1b"><i class="fas fa-gear"></i> Site Settings</button>
+        <button class="tab-btn" onclick="switchTab('commlinks',this)" style="border-color:#10b981;color:#065f46"><i class="fas fa-link"></i> Community Links</button>
+        <button class="tab-btn" onclick="switchTab('gist',this)" style="border-color:#ec4899;color:#9d174d"><i class="fas fa-face-laugh-squint"></i> Campus Gist</button>
+        <button class="tab-btn" onclick="switchTab('polls',this)" style="border-color:#7c3aed;color:#5b21b6"><i class="fas fa-square-poll-vertical"></i> Polls</button>
+        <button class="tab-btn" onclick="switchTab('dailyhub',this)" style="border-color:#f59e0b;color:#92400e"><i class="fas fa-calendar-days"></i> Daily Hub</button>
+        <button class="tab-btn" onclick="switchTab('pushnotif',this)" style="border-color:#dc2626;color:#991b1b"><i class="fas fa-bell"></i> Push Notifications</button>
+      </div>
+    </div>
+
+    <!-- ══ GROUP: ADMINS ══ -->
+    <div class="group-panel" id="group-admins">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('admins',this)"><i class="fas fa-users"></i> Admin Profiles</button>
+      </div>
+    </div>
+
+    <!-- ══ GROUP: ANALYTICS ══ -->
+    <div class="group-panel" id="group-analytics">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('analytics',this)"><i class="fas fa-chart-column"></i> Content Performance</button>
+        <button class="tab-btn" onclick="switchTab('cbtanalytics',this)"><i class="fas fa-bullseye"></i> CBT Analytics</button>
+        <button class="tab-btn" onclick="switchTab('referrals',this)"><i class="fas fa-link"></i> Referrals</button>
+      </div>
+    </div>
+
+    <!-- ══ GROUP: AUDIT LOG ══ -->
+    <div class="group-panel" id="group-auditlog">
+      <div class="stats-grid">
+        <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-bolt"></i></div><div class="stat-num" id="sc-total">—</div><div class="stat-lbl">Total Actions</div></div>
+        <div class="stat-card green"><div class="stat-icon"><i class="fas fa-calendar-days"></i></div><div class="stat-num" id="sc-today">—</div><div class="stat-lbl">Today</div></div>
+        <div class="stat-card orange"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-num" id="sc-admins">—</div><div class="stat-lbl">Admins Active</div></div>
+        <div class="stat-card red"><div class="stat-icon"><i class="fas fa-trash"></i></div><div class="stat-num" id="sc-deletes">—</div><div class="stat-lbl">Deletions</div></div>
+        <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-lock"></i></div><div class="stat-num" id="sc-logins">—</div><div class="stat-lbl">Logins</div></div>
+        <div class="stat-card cyan"><div class="stat-icon"><i class="fas fa-pen"></i></div><div class="stat-num" id="sc-edits">—</div><div class="stat-lbl">Edits/Saves</div></div>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('log',this)"><i class="fas fa-clipboard-list"></i> Activity Log</button>
+        <button class="tab-btn" onclick="switchTab('timeline',this)"><i class="fas fa-clock"></i> Timeline</button>
+      </div>
+    </div>
+
+    <!-- ══ GROUP: ACCESS & SECURITY ══ -->
+    <div class="group-panel" id="group-access">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('whitelist',this)" style="border-color:#dc2626;color:#dc2626"><i class="fas fa-lock"></i> Admin Access</button>
+      </div>
     </div>
 
     <!-- ── TAB: FULL LOG ── -->
-    <div class="tab-panel active" id="tab-log">
+    <div class="tab-panel" id="tab-log">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadAll()"><span id="refreshIcon">🔄</span> Refresh</button>
-        <button class="btn-sm" onclick="exportCSV()">📥 Export CSV</button>
-        <button class="btn-sm" onclick="exportJSON()">📄 Export JSON</button>
+        <button class="btn-primary-sm" onclick="loadAll()"><span id="refreshIcon"><i class="fas fa-rotate"></i></span> Refresh</button>
+        <button class="btn-sm" onclick="exportCSV()"><i class="fas fa-download"></i> Export CSV</button>
+        <button class="btn-sm" onclick="exportJSON()"><i class="fas fa-file"></i> Export JSON</button>
         <div class="refresh-info" id="refreshInfo">Click refresh to load data</div>
       </div>
       <div class="card">
         <div class="log-controls">
-          <input class="log-search" type="text" id="logSearch" placeholder="🔍 Search admin, action, section, detail…" oninput="applyFilters()">
+          <input class="log-search" type="text" id="logSearch" placeholder="Search admin, action, section, detail…" oninput="applyFilters()">
           <select class="log-select" id="filterAction" onchange="applyFilters()">
             <option value="">All Actions</option>
-            <option value="login">🔓 Login</option>
-            <option value="logout">🔒 Logout</option>
-            <option value="add">➕ Add</option>
-            <option value="edit">✏️ Edit</option>
-            <option value="delete">🗑️ Delete</option>
-            <option value="save">💾 Save</option>
-            <option value="upload">📤 Upload</option>
+            <option value="login"><i class="fas fa-lock-open"></i> Login</option>
+            <option value="logout"><i class="fas fa-lock"></i> Logout</option>
+            <option value="add"><i class="fas fa-plus"></i> Add</option>
+            <option value="edit"><i class="fas fa-pen"></i> Edit</option>
+            <option value="delete"><i class="fas fa-trash"></i> Delete</option>
+            <option value="save"><i class="fas fa-floppy-disk"></i> Save</option>
+            <option value="upload"><i class="fas fa-upload"></i> Upload</option>
           </select>
           <select class="log-select" id="filterAdmin" onchange="applyFilters()">
             <option value="">All Admins</option>
@@ -480,24 +664,24 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ── TAB: ADMIN PROFILES ── -->
     <div class="tab-panel" id="tab-admins">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadAll()">🔄 Refresh</button>
+        <button class="btn-primary-sm" onclick="loadAll()"><i class="fas fa-rotate"></i> Refresh</button>
         <div class="refresh-info">Showing all admins who have logged in at least once</div>
       </div>
       <div id="adminsGrid" class="admins-grid">
-        <div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">No data yet</div><div class="empty-sub">Click Refresh to load admin profiles</div></div>
+        <div class="empty-state"><div class="empty-icon"><i class="fas fa-users"></i></div><div class="empty-title">No data yet</div><div class="empty-sub">Click Refresh to load admin profiles</div></div>
       </div>
     </div>
 
     <!-- ── TAB: LIVE TIMELINE ── -->
     <div class="tab-panel" id="tab-timeline">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadAll()">🔄 Refresh</button>
+        <button class="btn-primary-sm" onclick="loadAll()"><i class="fas fa-rotate"></i> Refresh</button>
         <div class="refresh-info">Shows the 50 most recent actions in chronological order</div>
       </div>
       <div class="card">
-        <div class="card-header"><div class="card-title">🕐 Recent Activity Timeline</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-clock"></i> Recent Activity Timeline</div></div>
         <div class="timeline" id="timelineList">
-          <div class="empty-state"><div class="empty-icon">🕐</div><div class="empty-title">No activity yet</div><div class="empty-sub">Click Refresh to load timeline</div></div>
+          <div class="empty-state"><div class="empty-icon"><i class="fas fa-clock"></i></div><div class="empty-title">No activity yet</div><div class="empty-sub">Click Refresh to load timeline</div></div>
         </div>
       </div>
     </div>
@@ -505,7 +689,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ── TAB: ANALYTICS ── -->
     <div class="tab-panel" id="tab-analytics">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadAll()">🔄 Refresh</button>
+        <button class="btn-primary-sm" onclick="loadAll()"><i class="fas fa-rotate"></i> Refresh</button>
       </div>
       <div class="charts-grid">
         <div class="mini-chart-wrap">
@@ -530,13 +714,13 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ── TAB: REFERRALS ── -->
     <div class="tab-panel" id="tab-referrals">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadReferrals()"><span id="refRefreshIcon">🔄</span> Load Referral Data</button>
+        <button class="btn-primary-sm" onclick="loadReferrals()"><span id="refRefreshIcon"><i class="fas fa-rotate"></i></span> Load Referral Data</button>
         <div class="refresh-info" id="refRefreshInfo">Click to load referral data</div>
       </div>
       <!-- Top referrers -->
       <div class="card" style="margin-bottom:16px">
         <div class="card-header">
-          <div class="card-title">🏆 Top Referrers</div>
+          <div class="card-title"><i class="fas fa-trophy"></i> Top Referrers</div>
           <span style="font-size:.72rem;color:var(--muted)">Students who've referred the most classmates</span>
         </div>
         <div class="card-body-flush">
@@ -560,7 +744,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <!-- All referral connections -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">🔗 All Referral Connections</div>
+          <div class="card-title"><i class="fas fa-link"></i> All Referral Connections</div>
           <span style="font-size:.72rem;color:var(--muted)">Who referred who</span>
         </div>
         <div class="card-body-flush">
@@ -574,36 +758,36 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ── TAB: CBT ANALYTICS ── -->
     <div class="tab-panel" id="tab-cbtanalytics">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadCBTAnalytics()"><span id="cbtaRefreshIcon">🔄</span> Load CBT Data</button>
+        <button class="btn-primary-sm" onclick="loadCBTAnalytics()"><span id="cbtaRefreshIcon"><i class="fas fa-rotate"></i></span> Load CBT Data</button>
         <div class="refresh-info" id="cbtaRefreshInfo">Click to load student analytics</div>
       </div>
 
       <!-- Top stat cards -->
       <div class="stats-grid" style="margin-bottom:20px">
-        <div class="stat-card blue"><div class="stat-icon">👥</div><div class="stat-num" id="cbta-students">—</div><div class="stat-lbl">Total Students</div></div>
-        <div class="stat-card green"><div class="stat-icon">📝</div><div class="stat-num" id="cbta-sessions">—</div><div class="stat-lbl">Total Sessions</div></div>
-        <div class="stat-card orange"><div class="stat-icon">🎯</div><div class="stat-num" id="cbta-avgscore">—</div><div class="stat-lbl">Avg Best Score</div></div>
-        <div class="stat-card purple"><div class="stat-icon">🔥</div><div class="stat-num" id="cbta-streaks">—</div><div class="stat-lbl">Active Streaks</div></div>
-        <div class="stat-card cyan"><div class="stat-icon">🏆</div><div class="stat-num" id="cbta-achievements">—</div><div class="stat-lbl">Achievements Earned</div></div>
-        <div class="stat-card red"><div class="stat-icon">🔗</div><div class="stat-num" id="cbta-referrals">—</div><div class="stat-lbl">Total Referrals</div></div>
+        <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-num" id="cbta-students">—</div><div class="stat-lbl">Total Students</div></div>
+        <div class="stat-card green"><div class="stat-icon"><i class="fas fa-note-sticky"></i></div><div class="stat-num" id="cbta-sessions">—</div><div class="stat-lbl">Total Sessions</div></div>
+        <div class="stat-card orange"><div class="stat-icon"><i class="fas fa-bullseye"></i></div><div class="stat-num" id="cbta-avgscore">—</div><div class="stat-lbl">Avg Best Score</div></div>
+        <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-fire"></i></div><div class="stat-num" id="cbta-streaks">—</div><div class="stat-lbl">Active Streaks</div></div>
+        <div class="stat-card cyan"><div class="stat-icon"><i class="fas fa-trophy"></i></div><div class="stat-num" id="cbta-achievements">—</div><div class="stat-lbl">Achievements Earned</div></div>
+        <div class="stat-card red"><div class="stat-icon"><i class="fas fa-link"></i></div><div class="stat-num" id="cbta-referrals">—</div><div class="stat-lbl">Total Referrals</div></div>
       </div>
 
       <!-- Charts row -->
       <div class="charts-grid" style="margin-bottom:20px">
         <div class="mini-chart-wrap">
-          <div class="mini-chart-title">🏆 Most Practised Subjects</div>
+          <div class="mini-chart-title"><i class="fas fa-trophy"></i> Most Practised Subjects</div>
           <div class="bar-chart" id="cbta-chart-subjects"></div>
         </div>
         <div class="mini-chart-wrap">
-          <div class="mini-chart-title">📊 Score Distribution</div>
+          <div class="mini-chart-title"><i class="fas fa-chart-column"></i> Score Distribution</div>
           <div class="bar-chart" id="cbta-chart-scores"></div>
         </div>
         <div class="mini-chart-wrap">
-          <div class="mini-chart-title">📅 Joined Last 7 Days</div>
+          <div class="mini-chart-title"><i class="fas fa-calendar-days"></i> Joined Last 7 Days</div>
           <div class="bar-chart" id="cbta-chart-joins"></div>
         </div>
         <div class="mini-chart-wrap">
-          <div class="mini-chart-title">🎖️ Top Achievements Unlocked</div>
+          <div class="mini-chart-title"><i class="fas fa-medal"></i> Top Achievements Unlocked</div>
           <div class="bar-chart" id="cbta-chart-ach"></div>
         </div>
       </div>
@@ -611,8 +795,8 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <!-- Top students leaderboard -->
       <div class="card" style="margin-bottom:16px">
         <div class="card-header">
-          <div class="card-title">🥇 Top Students by Best Score</div>
-          <button class="btn-sm" onclick="exportStudentsCSV()">📥 Export CSV</button>
+          <div class="card-title"><i class="fas fa-medal"></i> Top Students by Best Score</div>
+          <button class="btn-sm" onclick="exportStudentsCSV()"><i class="fas fa-download"></i> Export CSV</button>
         </div>
         <div class="card-body-flush">
           <table class="log-table">
@@ -638,7 +822,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <!-- Recently active students -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">🕐 Recently Active Students</div>
+          <div class="card-title"><i class="fas fa-clock"></i> Recently Active Students</div>
           <span style="font-size:.72rem;color:var(--muted)">Last 10 students who practised</span>
         </div>
         <div style="max-height:420px;overflow-y:auto" id="cbta-recent">
@@ -650,17 +834,17 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ── TAB: ADMIN WHITELIST ── -->
     <div class="tab-panel" id="tab-whitelist">
       <div style="background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);border-radius:12px;padding:16px;margin-bottom:20px;font-size:.82rem;color:#b91c1c;line-height:1.6">
-        🔐 <strong>CEO Only.</strong> Only emails you approve here can sign in to the admin panel. The CEO email is always allowed and cannot be removed.
+        <i class="fas fa-lock"></i> <strong>CEO Only.</strong> Only emails you approve here can sign in to the admin panel. The CEO email is always allowed and cannot be removed.
       </div>
 
       <!-- Add new admin -->
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title">➕ Approve New Admin Email</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-plus"></i> Approve New Admin Email</div></div>
         <div class="card-body">
           <div style="display:flex;gap:10px;flex-wrap:wrap">
             <input type="email" id="wlEmailInput" placeholder="admin@email.com" style="flex:1;min-width:200px;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Roboto',sans-serif;color:var(--text);background:var(--surface2)">
             <input type="text" id="wlNameInput" placeholder="Admin name (optional)" style="flex:1;min-width:160px;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Roboto',sans-serif;color:var(--text);background:var(--surface2)">
-            <button class="btn-primary-sm" onclick="addToWhitelist()" style="padding:10px 18px">✅ Approve</button>
+            <button class="btn-primary-sm" onclick="addToWhitelist()" style="padding:10px 18px"><i class="fas fa-circle-check"></i> Approve</button>
           </div>
           <div id="wlStatus" style="display:none;margin-top:10px;padding:8px 12px;border-radius:7px;font-size:.78rem;font-weight:700"></div>
         </div>
@@ -669,8 +853,8 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       <!-- Approved list -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">👥 Approved Admin Emails</div>
-          <button class="btn-sm" onclick="loadWhitelist()">🔄 Refresh</button>
+          <div class="card-title"><i class="fas fa-users"></i> Approved Admin Emails</div>
+          <button class="btn-sm" onclick="loadWhitelist()"><i class="fas fa-rotate"></i> Refresh</button>
         </div>
         <div class="card-body-flush">
           <div id="wlList" style="min-height:80px">
@@ -683,12 +867,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ eLibrary TAB ══ -->
     <div class="tab-panel" id="tab-library">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadLibrary()">🔄 Refresh</button>
-        <button class="btn-sm" onclick="showAddLibrary()">➕ Add Book</button>
+        <button class="btn-primary-sm" onclick="loadLibrary()"><i class="fas fa-rotate"></i> Refresh</button>
+        <button class="btn-sm" onclick="showAddLibrary()"><i class="fas fa-plus"></i> Add Book</button>
         <div class="refresh-info" id="libInfo">Click Refresh to load books</div>
       </div>
       <div id="libAddForm" style="display:none;margin-bottom:16px" class="card">
-        <div class="card-header"><div class="card-title">➕ Add New Book</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-plus"></i> Add New Book</div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Title *</label><input class="log-search" type="text" id="libTitle" placeholder="Book title"></div>
@@ -702,7 +886,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
           <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">View URL</label><input class="log-search" type="url" id="libView" placeholder="https://..." style="width:100%"></div>
           <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Description *</label><textarea id="libDesc" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:80px" placeholder="Brief description…"></textarea></div>
           <div style="display:flex;gap:10px">
-            <button class="btn-primary-sm" onclick="addLibraryItem()">📚 Add Book</button>
+            <button class="btn-primary-sm" onclick="addLibraryItem()"><i class="fas fa-book"></i> Add Book</button>
             <button class="btn-sm" onclick="document.getElementById('libAddForm').style.display='none'">Cancel</button>
           </div>
         </div>
@@ -713,12 +897,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ SCHOLARSHIPS TAB ══ -->
     <div class="tab-panel" id="tab-scholarships">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadScholarships()">🔄 Refresh</button>
-        <button class="btn-sm" onclick="showAddScholarship()">➕ Add Scholarship</button>
+        <button class="btn-primary-sm" onclick="loadScholarships()"><i class="fas fa-rotate"></i> Refresh</button>
+        <button class="btn-sm" onclick="showAddScholarship()"><i class="fas fa-plus"></i> Add Scholarship</button>
         <div class="refresh-info" id="schInfoCeo">Click Refresh to load scholarships</div>
       </div>
       <div id="schAddForm" style="display:none;margin-bottom:16px" class="card">
-        <div class="card-header"><div class="card-title">➕ Add New Scholarship</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-plus"></i> Add New Scholarship</div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Name *</label><input class="log-search" type="text" id="schName" placeholder="e.g. MTN Foundation Scholarship"></div>
@@ -729,7 +913,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
               <select id="schType" class="log-select"><option value="federal">Federal Government</option><option value="state">State Government</option><option value="corporate">Corporate / NGO</option><option value="international">International</option><option value="university">University-Based</option></select>
             </div>
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Status</label>
-              <select id="schStatus" class="log-select"><option value="open">🟢 Open</option><option value="soon">🟡 Opening Soon</option><option value="ongoing">🔵 Ongoing</option><option value="closed">🔴 Closed</option></select>
+              <select id="schStatus" class="log-select"><option value="open"><i class="fas fa-circle" style="font-size:.5em;color:#10b981"></i> Open</option><option value="soon"><i class="fas fa-circle" style="font-size:.5em;color:#f59e0b"></i> Opening Soon</option><option value="ongoing"><i class="fas fa-circle" style="font-size:.5em;color:#3b82f6"></i> Ongoing</option><option value="closed"><i class="fas fa-circle" style="font-size:.5em;color:#ef4444"></i> Closed</option></select>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
@@ -739,10 +923,10 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
           <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Description *</label><textarea id="schDesc" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:80px" placeholder="Eligibility, coverage…"></textarea></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Application Link</label><input class="log-search" type="url" id="schLink" placeholder="https://"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Icon Emoji</label><input class="log-search" type="text" id="schIcon" placeholder="e.g. 📡" maxlength="8"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Icon Emoji</label><input class="log-search" type="text" id="schIcon" placeholder="e.g. <i class="fas fa-satellite-dish"></i>" maxlength="8"></div>
           </div>
           <div style="display:flex;gap:10px">
-            <button class="btn-primary-sm" onclick="addScholarshipItem()">💰 Add Scholarship</button>
+            <button class="btn-primary-sm" onclick="addScholarshipItem()"><i class="fas fa-sack-dollar"></i> Add Scholarship</button>
             <button class="btn-sm" onclick="document.getElementById('schAddForm').style.display='none'">Cancel</button>
           </div>
         </div>
@@ -753,12 +937,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ NELFUND TAB ══ -->
     <div class="tab-panel" id="tab-nelfund">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadNelfund()">🔄 Refresh</button>
-        <button class="btn-sm" onclick="showAddNelfund()">➕ Add Update</button>
+        <button class="btn-primary-sm" onclick="loadNelfund()"><i class="fas fa-rotate"></i> Refresh</button>
+        <button class="btn-sm" onclick="showAddNelfund()"><i class="fas fa-plus"></i> Add Update</button>
         <div class="refresh-info" id="nelfundInfo">Click Refresh to load NELFUND updates</div>
       </div>
       <div id="nelfundAddForm" style="display:none;margin-bottom:16px" class="card">
-        <div class="card-header"><div class="card-title">➕ Add NELFUND Update</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-plus"></i> Add NELFUND Update</div></div>
         <div style="padding:16px">
           <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Title *</label><input class="log-search" type="text" id="nelfTitle" placeholder="Update title" style="width:100%"></div>
           <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Content *</label><textarea id="nelfContent" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:100px" placeholder="Full update content…"></textarea></div>
@@ -767,7 +951,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Date</label><input class="log-search" type="text" id="nelfDate" placeholder="e.g. June 2026"></div>
           </div>
           <div style="display:flex;gap:10px">
-            <button class="btn-primary-sm" onclick="addNelfundItem()">💳 Add Update</button>
+            <button class="btn-primary-sm" onclick="addNelfundItem()"><i class="fas fa-credit-card"></i> Add Update</button>
             <button class="btn-sm" onclick="document.getElementById('nelfundAddForm').style.display='none'">Cancel</button>
           </div>
         </div>
@@ -778,12 +962,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ DYK TAB ══ -->
     <div class="tab-panel" id="tab-dyk">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadDyk()">🔄 Refresh</button>
-        <button class="btn-sm" onclick="showAddDyk()">➕ Add Fact</button>
+        <button class="btn-primary-sm" onclick="loadDyk()"><i class="fas fa-rotate"></i> Refresh</button>
+        <button class="btn-sm" onclick="showAddDyk()"><i class="fas fa-plus"></i> Add Fact</button>
         <div class="refresh-info" id="dykInfo">Click Refresh to load DYK facts</div>
       </div>
       <div id="dykAddForm" style="display:none;margin-bottom:16px" class="card">
-        <div class="card-header"><div class="card-title">➕ Add Did You Know Fact</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-plus"></i> Add Did You Know Fact</div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:80px 1fr;gap:12px;margin-bottom:12px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Emoji</label><input class="log-search" type="text" id="dykEmoji" placeholder="🧠" maxlength="5"></div>
@@ -793,7 +977,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
           <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Full Explanation *</label><textarea id="dykBody" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:80px" placeholder="Expand on the fact…"></textarea></div>
           <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Source</label><input class="log-search" type="text" id="dykSource" placeholder="e.g. JAMB 2024 Statistics" style="width:100%"></div>
           <div style="display:flex;gap:10px">
-            <button class="btn-primary-sm" onclick="addDykItem()">💡 Add Fact</button>
+            <button class="btn-primary-sm" onclick="addDykItem()"><i class="fas fa-lightbulb"></i> Add Fact</button>
             <button class="btn-sm" onclick="document.getElementById('dykAddForm').style.display='none'">Cancel</button>
           </div>
         </div>
@@ -804,12 +988,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ SPOTLIGHT TAB ══ -->
     <div class="tab-panel" id="tab-spotlight">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadSpotlight()">🔄 Refresh</button>
-        <button class="btn-sm" onclick="showAddSpotlight()">➕ Add Story</button>
+        <button class="btn-primary-sm" onclick="loadSpotlight()"><i class="fas fa-rotate"></i> Refresh</button>
+        <button class="btn-sm" onclick="showAddSpotlight()"><i class="fas fa-plus"></i> Add Story</button>
         <div class="refresh-info" id="spotlightInfo">Click Refresh to load spotlights</div>
       </div>
       <div id="spotlightAddForm" style="display:none;margin-bottom:16px" class="card">
-        <div class="card-header"><div class="card-title">➕ Add Student Spotlight</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-plus"></i> Add Student Spotlight</div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Student Name *</label><input class="log-search" type="text" id="spName" placeholder="e.g. Chidera Okonkwo"></div>
@@ -821,7 +1005,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
           </div>
           <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Story *</label><textarea id="spStory" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:100px" placeholder="Tell their story…"></textarea></div>
           <div style="display:flex;gap:10px">
-            <button class="btn-primary-sm" onclick="addSpotlightItem()">🌟 Add Story</button>
+            <button class="btn-primary-sm" onclick="addSpotlightItem()"><i class="fas fa-star"></i> Add Story</button>
             <button class="btn-sm" onclick="document.getElementById('spotlightAddForm').style.display='none'">Cancel</button>
           </div>
         </div>
@@ -832,12 +1016,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ POST-UTME TAB ══ -->
     <div class="tab-panel" id="tab-postutme">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadPostUtme()">🔄 Refresh</button>
-        <button class="btn-sm" onclick="showAddPostUtme()">➕ Add School</button>
+        <button class="btn-primary-sm" onclick="loadPostUtme()"><i class="fas fa-rotate"></i> Refresh</button>
+        <button class="btn-sm" onclick="showAddPostUtme()"><i class="fas fa-plus"></i> Add School</button>
         <div class="refresh-info" id="postutmeInfo">Click Refresh to load Post-UTME schools</div>
       </div>
       <div id="postutmeAddForm" style="display:none;margin-bottom:16px" class="card">
-        <div class="card-header"><div class="card-title">➕ Add Post-UTME School</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-plus"></i> Add Post-UTME School</div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">School Name *</label><input class="log-search" type="text" id="puSchool" placeholder="e.g. University of Lagos"></div>
@@ -850,7 +1034,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
           </div>
           <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Notes</label><input class="log-search" type="text" id="puNotes" placeholder="e.g. JAMB ÷ 8, Post-UTME ÷ 2" style="width:100%"></div>
           <div style="display:flex;gap:10px">
-            <button class="btn-primary-sm" onclick="addPostUtmeItem()">🧮 Add School</button>
+            <button class="btn-primary-sm" onclick="addPostUtmeItem()"><i class="fas fa-calculator"></i> Add School</button>
             <button class="btn-sm" onclick="document.getElementById('postutmeAddForm').style.display='none'">Cancel</button>
           </div>
         </div>
@@ -861,12 +1045,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ SUBJECT COMBO TAB ══ -->
     <div class="tab-panel" id="tab-combo">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadCombo()">🔄 Refresh</button>
-        <button class="btn-sm" onclick="showAddCombo()">➕ Add Course</button>
+        <button class="btn-primary-sm" onclick="loadCombo()"><i class="fas fa-rotate"></i> Refresh</button>
+        <button class="btn-sm" onclick="showAddCombo()"><i class="fas fa-plus"></i> Add Course</button>
         <div class="refresh-info" id="comboInfo">Click Refresh to load subject combinations</div>
       </div>
       <div id="comboAddForm" style="display:none;margin-bottom:16px" class="card">
-        <div class="card-header"><div class="card-title">➕ Add Subject Combination</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-plus"></i> Add Subject Combination</div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Course Name *</label><input class="log-search" type="text" id="comboCourseName" placeholder="e.g. Medicine and Surgery"></div>
@@ -876,7 +1060,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
           <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">O'Level Requirements</label><input class="log-search" type="text" id="comboOlevel" placeholder="e.g. 5 credits including Math, English" style="width:100%"></div>
           <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Notes</label><input class="log-search" type="text" id="comboNotes" placeholder="Additional requirements" style="width:100%"></div>
           <div style="display:flex;gap:10px">
-            <button class="btn-primary-sm" onclick="addComboItem()">📋 Add Course</button>
+            <button class="btn-primary-sm" onclick="addComboItem()"><i class="fas fa-clipboard-list"></i> Add Course</button>
             <button class="btn-sm" onclick="document.getElementById('comboAddForm').style.display='none'">Cancel</button>
           </div>
         </div>
@@ -888,7 +1072,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ REVIEWS TAB ══ -->
     <div class="tab-panel" id="tab-reviews">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadReviews()">🔄 Refresh</button>
+        <button class="btn-primary-sm" onclick="loadReviews()"><i class="fas fa-rotate"></i> Refresh</button>
         <div class="refresh-info" id="reviewsInfo">Click Refresh to load reviews</div>
       </div>
       <div class="card"><div class="card-body-flush"><div id="reviewsList" style="padding:16px">
@@ -899,7 +1083,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ Q&A TAB ══ -->
     <div class="tab-panel" id="tab-qa">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadQA()">🔄 Refresh</button>
+        <button class="btn-primary-sm" onclick="loadQA()"><i class="fas fa-rotate"></i> Refresh</button>
         <div class="refresh-info" id="qaInfo">Click Refresh to load Q&amp;A</div>
       </div>
       <div class="card"><div class="card-body-flush"><div id="qaList" style="padding:16px">
@@ -910,12 +1094,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ CALENDAR TAB ══ -->
     <div class="tab-panel" id="tab-calendar">
       <div class="refresh-row">
-        <button class="btn-primary-sm" onclick="loadCalendar()">🔄 Refresh</button>
-        <button class="btn-sm" onclick="showAddCalendar()">➕ Add Event</button>
+        <button class="btn-primary-sm" onclick="loadCalendar()"><i class="fas fa-rotate"></i> Refresh</button>
+        <button class="btn-sm" onclick="showAddCalendar()"><i class="fas fa-plus"></i> Add Event</button>
         <div class="refresh-info" id="calendarInfo">Click Refresh to load events</div>
       </div>
       <div id="calendarAddForm" style="display:none;margin-bottom:16px" class="card">
-        <div class="card-header"><div class="card-title">➕ Add Academic Event</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-plus"></i> Add Academic Event</div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Event Title *</label><input class="log-search" type="text" id="calTitle" placeholder="e.g. JAMB Registration Opens"></div>
@@ -932,7 +1116,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
           </div>
           <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Description</label><input class="log-search" type="text" id="calDesc" placeholder="Short description…" style="width:100%"></div>
           <div style="display:flex;gap:10px">
-            <button class="btn-primary-sm" onclick="addCalendarItem()">📅 Add Event</button>
+            <button class="btn-primary-sm" onclick="addCalendarItem()"><i class="fas fa-calendar-days"></i> Add Event</button>
             <button class="btn-sm" onclick="document.getElementById('calendarAddForm').style.display='none'">Cancel</button>
           </div>
         </div>
@@ -945,7 +1129,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ NEWSROOM SETTINGS TAB ══ -->
     <div class="tab-panel" id="tab-newsroom">
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title">🗞️ Newsroom Page Configuration</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-newspaper"></i> Newsroom Page Configuration</div></div>
         <div style="padding:16px">
           <div style="background:rgba(37,99,235,.07);border:1.5px solid rgba(37,99,235,.15);border-radius:10px;padding:13px;margin-bottom:16px;font-size:.82rem;line-height:1.6">
             ℹ️ The Newsroom page pulls from <strong>fs_news</strong> in Firestore. Settings below control display options on the newsroom page.
@@ -967,13 +1151,13 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
             </div>
           </div>
           <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Featured Banner Text</label>
-            <textarea id="nrBanner" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:65px" placeholder="e.g. 📢 JAMB 2026 results released — check yours now!"></textarea>
+            <textarea id="nrBanner" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:65px" placeholder="e.g. <i class="fas fa-bullhorn"></i> JAMB 2026 results released — check yours now!"></textarea>
           </div>
-          <button class="btn-primary-sm" onclick="saveNewsroomSettings()">💾 Save Settings</button>
+          <button class="btn-primary-sm" onclick="saveNewsroomSettings()"><i class="fas fa-floppy-disk"></i> Save Settings</button>
         </div>
       </div>
       <div class="card">
-        <div class="card-header"><div class="card-title">📊 Newsroom Stats</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-chart-column"></i> Newsroom Stats</div></div>
         <div style="padding:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
           <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center"><div style="font-size:1.5rem;font-weight:800" id="nr-total">—</div><div style="font-size:.72rem;color:var(--muted);font-weight:600">Total Articles</div></div>
           <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center"><div style="font-size:1.5rem;font-weight:800" id="nr-pinned">—</div><div style="font-size:.72rem;color:var(--muted);font-weight:600">Pinned</div></div>
@@ -985,7 +1169,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ SITE SETTINGS TAB ══ -->
     <div class="tab-panel" id="tab-siteconfig">
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title">⚙️ Global Site Config</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-gear"></i> Global Site Config</div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Site Name</label><input class="log-search" type="text" id="cfg-siteName" placeholder="BIG QUAMS MEDIA" style="width:100%"></div>
@@ -996,12 +1180,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Contact Email</label><input class="log-search" type="email" id="cfg-email" placeholder="info@bigquamsmedia.com.ng" style="width:100%"></div>
           </div>
           <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Formspree ID</label><input class="log-search" type="text" id="cfg-formspree" placeholder="Formspree form ID" style="width:100%"></div>
-          <button class="btn-primary-sm" onclick="saveSiteConfig()">💾 Save Config</button>
+          <button class="btn-primary-sm" onclick="saveSiteConfig()"><i class="fas fa-floppy-disk"></i> Save Config</button>
         </div>
       </div>
 
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title">🦸 Hero &amp; Stats</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-user-shield"></i> Hero &amp; Stats</div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Hero Badge</label><input class="log-search" type="text" id="hero-badge" placeholder="🔥 Nigeria's #1 Student Platform" style="width:100%"></div>
@@ -1014,12 +1198,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 2 Value</label><input class="log-search" type="text" id="stat2-val" placeholder="1,200+" style="width:100%"></div>
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Stat 2 Label</label><input class="log-search" type="text" id="stat2-lbl" placeholder="Books Available" style="width:100%"></div>
           </div>
-          <button class="btn-primary-sm" onclick="saveHeroStats()">💾 Save Hero &amp; Stats</button>
+          <button class="btn-primary-sm" onclick="saveHeroStats()"><i class="fas fa-floppy-disk"></i> Save Hero &amp; Stats</button>
         </div>
       </div>
 
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title">🔔 Top Bar Notification</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-bell"></i> Top Bar Notification</div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end;margin-bottom:12px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Notification Message</label><input class="log-search" type="text" id="topbar-msg" placeholder="📢 JAMB registration closes soon — register now!" style="width:100%"></div>
@@ -1029,20 +1213,20 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
               </select>
             </div>
           </div>
-          <button class="btn-primary-sm" onclick="saveTopBar()">💾 Save Top Bar</button>
+          <button class="btn-primary-sm" onclick="saveTopBar()"><i class="fas fa-floppy-disk"></i> Save Top Bar</button>
         </div>
       </div>
 
       <div class="card" style="margin-bottom:16px">
         <div class="card-header">
-          <div class="card-title">📢 News Ticker</div>
-          <button class="btn-sm" onclick="loadNewsroomData()">🔄 Refresh</button>
+          <div class="card-title"><i class="fas fa-bullhorn"></i> News Ticker</div>
+          <button class="btn-sm" onclick="loadNewsroomData()"><i class="fas fa-rotate"></i> Refresh</button>
         </div>
         <div style="padding:16px">
           <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Add Ticker Item</label>
             <div style="display:flex;gap:8px">
-              <input class="log-search" type="text" id="ticker-new" placeholder="e.g. 📢 JAMB 2026 result is out — click to check!" style="flex:1">
-              <button class="btn-primary-sm" onclick="addTickerItem()">➕ Add</button>
+              <input class="log-search" type="text" id="ticker-new" placeholder="e.g. <i class="fas fa-bullhorn"></i> JAMB 2026 result is out — click to check!" style="flex:1">
+              <button class="btn-primary-sm" onclick="addTickerItem()"><i class="fas fa-plus"></i> Add</button>
             </div>
           </div>
           <div id="tickerList" style="max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px">
@@ -1052,12 +1236,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       </div>
 
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title">🎉 Success Ticker</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-champagne-glasses"></i> Success Ticker</div></div>
         <div style="padding:16px">
           <div style="margin-bottom:12px">
             <div style="display:flex;gap:8px">
-              <input class="log-search" type="text" id="successticker-new" placeholder="e.g. 🏆 Amaka scored 340 in JAMB — Medicine, UNILAG!" style="flex:1">
-              <button class="btn-primary-sm" onclick="addSuccessTickerItem()">➕ Add</button>
+              <input class="log-search" type="text" id="successticker-new" placeholder="e.g. <i class="fas fa-trophy"></i> Amaka scored 340 in JAMB — Medicine, UNILAG!" style="flex:1">
+              <button class="btn-primary-sm" onclick="addSuccessTickerItem()"><i class="fas fa-plus"></i> Add</button>
             </div>
           </div>
           <div id="successTickerList" style="max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px">
@@ -1067,7 +1251,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
       </div>
 
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title">📞 Contact Channels</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-phone"></i> Contact Channels</div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">WhatsApp Group Link</label><input class="log-search" type="url" id="ch-wagroup" placeholder="https://chat.whatsapp.com/..." style="width:100%"></div>
@@ -1077,12 +1261,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Telegram Group</label><input class="log-search" type="url" id="ch-telegram" placeholder="https://t.me/..." style="width:100%"></div>
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Email Address</label><input class="log-search" type="email" id="ch-email" placeholder="contact@bigquamsmedia.com.ng" style="width:100%"></div>
           </div>
-          <button class="btn-primary-sm" onclick="saveContactChannels()">💾 Save Channels</button>
+          <button class="btn-primary-sm" onclick="saveContactChannels()"><i class="fas fa-floppy-disk"></i> Save Channels</button>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-header"><div class="card-title">🔗 Social Links</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-link"></i> Social Links</div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Instagram</label><input class="log-search" type="url" id="soc-instagram" placeholder="https://instagram.com/bigquamsmedia" style="width:100%"></div>
@@ -1090,7 +1274,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">X / Twitter</label><input class="log-search" type="url" id="soc-twitter" placeholder="https://x.com/bigquamsmedia" style="width:100%"></div>
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">LinkedIn</label><input class="log-search" type="url" id="soc-linkedin" placeholder="https://linkedin.com/company/bigquamsmedia" style="width:100%"></div>
           </div>
-          <button class="btn-primary-sm" onclick="saveSocialLinks()">💾 Save Social Links</button>
+          <button class="btn-primary-sm" onclick="saveSocialLinks()"><i class="fas fa-floppy-disk"></i> Save Social Links</button>
         </div>
       </div>
     </div>
@@ -1100,8 +1284,8 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <div class="tab-panel" id="tab-commlinks">
       <div class="card">
         <div class="card-header">
-          <div class="card-title">🔗 Community Page Links</div>
-          <button class="btn-primary-sm" onclick="addCommLink()">➕ Add Link</button>
+          <div class="card-title"><i class="fas fa-link"></i> Community Page Links</div>
+          <button class="btn-primary-sm" onclick="addCommLink()"><i class="fas fa-plus"></i> Add Link</button>
         </div>
         <div style="padding:16px;font-size:.78rem;color:var(--muted);margin-bottom:4px">These links appear on the Community page. Drag to reorder (save after).</div>
         <div id="commLinksList" style="padding:0 16px 16px">
@@ -1111,7 +1295,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 
       <!-- Add / Edit Form -->
       <div class="card" id="commLinkForm" style="display:none">
-        <div class="card-header"><div class="card-title" id="commLinkFormTitle">➕ Add New Link</div></div>
+        <div class="card-header"><div class="card-title" id="commLinkFormTitle"><i class="fas fa-plus"></i> Add New Link</div></div>
         <div style="padding:16px">
           <input type="hidden" id="clEditId">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
@@ -1125,7 +1309,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
           <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Description</label><input class="log-search" type="text" id="clDesc" placeholder="Short description of the link…" style="width:100%"></div>
           <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Order (lower = first)</label><input class="log-search" type="number" id="clOrder" value="10" min="1" max="99" style="width:80px"></div>
           <div style="display:flex;gap:10px">
-            <button class="btn-primary-sm" onclick="saveCommLink()">💾 Save Link</button>
+            <button class="btn-primary-sm" onclick="saveCommLink()"><i class="fas fa-floppy-disk"></i> Save Link</button>
             <button class="btn-sm" onclick="document.getElementById('commLinkForm').style.display='none'">Cancel</button>
           </div>
         </div>
@@ -1137,23 +1321,23 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <div class="tab-panel" id="tab-gist">
       <div class="card" style="margin-bottom:16px">
         <div class="card-header">
-          <div class="card-title">😂 Campus Gist Posts</div>
+          <div class="card-title"><i class="fas fa-face-laugh-squint"></i> Campus Gist Posts</div>
           <div style="display:flex;gap:8px">
-            <button class="btn-primary-sm" onclick="ceoLoadGist()">🔄 Refresh</button>
-            <button class="btn-sm" onclick="showCeoGistForm()">➕ Add Post</button>
+            <button class="btn-primary-sm" onclick="ceoLoadGist()"><i class="fas fa-rotate"></i> Refresh</button>
+            <button class="btn-sm" onclick="showCeoGistForm()"><i class="fas fa-plus"></i> Add Post</button>
           </div>
         </div>
         <div id="ceoGistList" style="padding:0 16px 16px"><div style="text-align:center;padding:28px;color:var(--muted);font-size:.82rem">Click Refresh to load posts</div></div>
       </div>
       <div class="card" id="ceoGistForm" style="display:none">
-        <div class="card-header"><div class="card-title">➕ New Gist Post</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-plus"></i> New Gist Post</div></div>
         <div style="padding:16px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Category</label>
               <select id="ceoGistCat" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.84rem;font-family:inherit;background:var(--surface2);color:var(--text)">
-                <option value="Funny">😂 Funny</option><option value="Relatable">🤝 Relatable</option>
-                <option value="Hostel">🏠 Hostel</option><option value="Exam">📝 Exam</option>
-                <option value="Lecturer">👨🏽‍🏫 Lecturer</option><option value="Meme">🖼 Meme</option><option value="General">💬 General</option>
+                <option value="Funny"><i class="fas fa-face-laugh-squint"></i> Funny</option><option value="Relatable"><i class="fas fa-handshake"></i> Relatable</option>
+                <option value="Hostel"><i class="fas fa-house"></i> Hostel</option><option value="Exam"><i class="fas fa-note-sticky"></i> Exam</option>
+                <option value="Lecturer"><i class="fas fa-person"></i>‍<i class="fas fa-school"></i> Lecturer</option><option value="Meme"><i class="fas fa-image"></i> Meme</option><option value="General"><i class="fas fa-comment"></i> General</option>
               </select>
             </div>
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Emoji</label>
@@ -1175,7 +1359,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
             </select>
           </div>
           <div style="display:flex;gap:10px">
-            <button class="btn-primary-sm" onclick="saveCeoGist()">😂 Publish</button>
+            <button class="btn-primary-sm" onclick="saveCeoGist()"><i class="fas fa-face-laugh-squint"></i> Publish</button>
             <button class="btn-sm" onclick="document.getElementById('ceoGistForm').style.display='none'">Cancel</button>
           </div>
         </div>
@@ -1186,16 +1370,16 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <div class="tab-panel" id="tab-polls">
       <div class="card" style="margin-bottom:16px">
         <div class="card-header">
-          <div class="card-title">🗳️ Polls</div>
+          <div class="card-title"><i class="fas fa-square-poll-vertical"></i> Polls</div>
           <div style="display:flex;gap:8px">
-            <button class="btn-primary-sm" onclick="ceoLoadPolls()">🔄 Refresh</button>
-            <button class="btn-sm" onclick="showCeoPollForm()">➕ Create Poll</button>
+            <button class="btn-primary-sm" onclick="ceoLoadPolls()"><i class="fas fa-rotate"></i> Refresh</button>
+            <button class="btn-sm" onclick="showCeoPollForm()"><i class="fas fa-plus"></i> Create Poll</button>
           </div>
         </div>
         <div id="ceoPollsList" style="padding:0 16px 16px"><div style="text-align:center;padding:28px;color:var(--muted);font-size:.82rem">Click Refresh to load polls</div></div>
       </div>
       <div class="card" id="ceoPollForm" style="display:none">
-        <div class="card-header"><div class="card-title">➕ Create New Poll</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-plus"></i> Create New Poll</div></div>
         <div style="padding:16px">
           <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Question / Caption *</label>
             <textarea id="ceoPollQ" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:75px" placeholder="e.g. Which university has the best campus life?"></textarea>
@@ -1213,7 +1397,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
             <input class="log-search" type="text" id="ceoPollCat" value="Poll" style="width:100%">
           </div>
           <div style="display:flex;gap:10px">
-            <button class="btn-primary-sm" onclick="saveCeoPoll()">🗳️ Publish Poll</button>
+            <button class="btn-primary-sm" onclick="saveCeoPoll()"><i class="fas fa-square-poll-vertical"></i> Publish Poll</button>
             <button class="btn-sm" onclick="document.getElementById('ceoPollForm').style.display='none'">Cancel</button>
           </div>
         </div>
@@ -1224,20 +1408,20 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ DAILY HUB TAB ══ -->
     <div class="tab-panel" id="tab-dailyhub">
       <div class="card">
-        <div class="card-header"><div class="card-title">📅 Daily Hub Management</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-calendar-days"></i> Daily Hub Management</div></div>
         <div style="padding:16px">
           <div style="background:rgba(245,158,11,.08);border:1.5px solid rgba(245,158,11,.2);border-radius:10px;padding:14px;margin-bottom:16px;font-size:.82rem;line-height:1.6;color:var(--text)">
             The Daily Hub page currently uses static content (daily challenges, motivational quotes, prayer corner). To manage dynamic content, use the sections below.
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
             <div style="background:var(--surface2);border-radius:10px;padding:16px;text-align:center">
-              <div style="font-size:1.8rem;margin-bottom:6px">📅</div>
+              <div style="font-size:1.8rem;margin-bottom:6px"><i class="fas fa-calendar-days"></i></div>
               <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:.82rem;color:var(--text);margin-bottom:4px">Daily Challenge</div>
               <div style="font-size:.72rem;color:var(--muted)">Managed via DYK section</div>
               <button onclick="switchTab('dyk',document.querySelector('[onclick*=dyk]'))" style="margin-top:10px;background:var(--blue);color:#fff;border:none;padding:7px 14px;border-radius:7px;font-size:.74rem;font-weight:700;cursor:pointer;width:100%">Go to DYK →</button>
             </div>
             <div style="background:var(--surface2);border-radius:10px;padding:16px;text-align:center">
-              <div style="font-size:1.8rem;margin-bottom:6px">📢</div>
+              <div style="font-size:1.8rem;margin-bottom:6px"><i class="fas fa-bullhorn"></i></div>
               <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:.82rem;color:var(--text);margin-bottom:4px">Daily Announcement</div>
               <div style="font-size:.72rem;color:var(--muted)">Push via News Ticker</div>
               <button onclick="switchTab('siteconfig',document.querySelector('[onclick*=siteconfig]'))" style="margin-top:10px;background:var(--blue);color:#fff;border:none;padding:7px 14px;border-radius:7px;font-size:.74rem;font-weight:700;cursor:pointer;width:100%">Go to Ticker →</button>
@@ -1249,7 +1433,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
           <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Quote Author</label>
             <input class="log-search" type="text" id="dailyQuoteAuthor" placeholder="e.g. Winston Churchill" style="width:100%">
           </div>
-          <button class="btn-primary-sm" onclick="saveDailyQuote()">💾 Save Daily Quote</button>
+          <button class="btn-primary-sm" onclick="saveDailyQuote()"><i class="fas fa-floppy-disk"></i> Save Daily Quote</button>
         </div>
       </div>
     </div>
@@ -1258,7 +1442,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <div class="tab-panel" id="tab-pushnotif">
 
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title">🔔 Send Push Notification</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-bell"></i> Send Push Notification</div></div>
         <div style="padding:16px">
           <div id="pnServerStatus" style="background:rgba(100,116,139,.08);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:.78rem;color:var(--text-muted);display:flex;align-items:center;gap:8px">
             <span id="pnServerDot" style="width:8px;height:8px;border-radius:50%;background:#94a3b8;flex-shrink:0"></span>
@@ -1267,7 +1451,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 
           <div style="margin-bottom:12px">
             <label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Title *</label>
-            <input class="log-search" type="text" id="pnTitle" placeholder="e.g. 🎓 JAMB 2026 Results Are Out!" style="width:100%" maxlength="65">
+            <input class="log-search" type="text" id="pnTitle" placeholder="e.g. <i class="fas fa-graduation-cap"></i> JAMB 2026 Results Are Out!" style="width:100%" maxlength="65">
           </div>
           <div style="margin-bottom:12px">
             <label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Message *</label>
@@ -1295,15 +1479,15 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
             </div>
           </div>
 
-          <button class="btn-primary-sm" onclick="sendPushNotification()" id="pnSendBtn" style="width:100%;background:linear-gradient(135deg,#dc2626,#991b1b)">🚀 Send to All Subscribers</button>
+          <button class="btn-primary-sm" onclick="sendPushNotification()" id="pnSendBtn" style="width:100%;background:linear-gradient(135deg,#dc2626,#991b1b)"><i class="fas fa-rocket"></i> Send to All Subscribers</button>
           <div id="pnResult" style="display:none;margin-top:12px;padding:12px 14px;border-radius:10px;font-size:.82rem"></div>
         </div>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-title">📜 Broadcast History</div>
-          <button class="btn-sm" onclick="loadBroadcastHistory()">🔄 Refresh</button>
+          <div class="card-title"><i class="fas fa-scroll"></i> Broadcast History</div>
+          <button class="btn-sm" onclick="loadBroadcastHistory()"><i class="fas fa-rotate"></i> Refresh</button>
         </div>
         <div id="broadcastHistoryList" style="padding:0 16px 16px">
           <div style="text-align:center;padding:28px;color:var(--muted);font-size:.82rem">Click Refresh to load history</div>
@@ -1352,14 +1536,14 @@ async function ceoLoadGist(){
       <div style="padding:14px 16px;border-bottom:1px solid var(--border)">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
           <span style="background:#fce7f3;color:#9d174d;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${g.category||'General'}</span>
-          ${g.pinned?'<span style="background:var(--orange);color:#fff;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">📌 Pinned</span>':''}
+          ${g.pinned?'<span style="background:var(--orange);color:#fff;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px"><i class="fas fa-thumbtack"></i> Pinned</span>':''}
           <span style="font-size:.64rem;color:var(--muted);margin-left:auto">${g.createdAt?.toDate?g.createdAt.toDate().toLocaleDateString('en-NG'):''}</span>
-          <button onclick="ceoPinGist('${g._id}',${!g.pinned})" style="background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:3px 10px;border-radius:7px;font-size:.68rem;cursor:pointer">${g.pinned?'📌 Unpin':'📌 Pin'}</button>
-          <button onclick="ceoToggleGist('${g._id}',${!g.published})" style="background:${g.published?'#dcfce7':'#fee2e2'};border:1px solid ${g.published?'#86efac':'#fca5a5'};color:${g.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${g.published?'✅ Live':'⏸ Hidden'}</button>
-          <button onclick="ceoDeleteGist('${g._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer">🗑</button>
+          <button onclick="ceoPinGist('${g._id}',${!g.pinned})" style="background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:3px 10px;border-radius:7px;font-size:.68rem;cursor:pointer">${g.pinned?'<i class="fas fa-thumbtack"></i> Unpin':'<i class="fas fa-thumbtack"></i> Pin'}</button>
+          <button onclick="ceoToggleGist('${g._id}',${!g.published})" style="background:${g.published?'#dcfce7':'#fee2e2'};border:1px solid ${g.published?'#86efac':'#fca5a5'};color:${g.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${g.published?'<i class="fas fa-circle-check"></i> Live':'⏸ Hidden'}</button>
+          <button onclick="ceoDeleteGist('${g._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
         <div style="font-size:.84rem;color:var(--text);line-height:1.6">${(g.text||'').substring(0,180)}${(g.text||'').length>180?'…':''}</div>
-        ${(g.images||[]).length?`<div style="font-size:.7rem;color:var(--muted);margin-top:4px">📷 ${(g.images||[]).length} image(s)</div>`:''}
+        ${(g.images||[]).length?`<div style="font-size:.7rem;color:var(--muted);margin-top:4px"><i class="fas fa-camera"></i> ${(g.images||[]).length} image(s)</div>`:''}
       </div>`).join('');
   }catch(e){el.innerHTML='<div style="color:#ef4444;padding:16px">Error: '+e.message+'</div>';}
 }
@@ -1379,7 +1563,7 @@ async function saveCeoGist(){
   const images=imgsRaw?imgsRaw.split(',').map(s=>s.trim()).filter(Boolean):[];
   const item={
     category:document.getElementById('ceoGistCat').value,
-    emoji:document.getElementById('ceoGistEmoji').value.trim()||'😂',
+    emoji:document.getElementById('ceoGistEmoji').value.trim()||'<i class="fas fa-face-laugh-squint"></i>',
     text,pinned:document.getElementById('ceoGistPinned').value==='true',
     published:true,reactions:{},createdAt:window._serverTimestamp()
   };
@@ -1388,7 +1572,7 @@ async function saveCeoGist(){
   if(videoUrl) item.videoUrl=videoUrl;
   try{
     await window._addDoc(window._collection(window._db,'fs_campus_gist'),item);
-    showCEOStatus('success','😂 Gist published!');
+    showCEOStatus('success','<i class="fas fa-face-laugh-squint"></i> Gist published!');
     document.getElementById('ceoGistForm').style.display='none';
     ['ceoGistText','ceoGistImages','ceoGistVideo','ceoGistEmoji'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     ceoLoadGist();
@@ -1431,8 +1615,8 @@ async function ceoLoadPolls(){
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
           <span style="background:#ede9fe;color:#7c3aed;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${p.category||'Poll'}</span>
           <span style="font-size:.64rem;color:var(--muted);margin-left:auto">${p.createdAt?.toDate?p.createdAt.toDate().toLocaleDateString('en-NG'):''}</span>
-          <button onclick="ceoTogglePoll('${p._id}',${!p.published})" style="background:${p.published?'#dcfce7':'#fee2e2'};border:1px solid ${p.published?'#86efac':'#fca5a5'};color:${p.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${p.published?'✅ Live':'⏸ Hidden'}</button>
-          <button onclick="ceoDeletePoll('${p._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer">🗑</button>
+          <button onclick="ceoTogglePoll('${p._id}',${!p.published})" style="background:${p.published?'#dcfce7':'#fee2e2'};border:1px solid ${p.published?'#86efac':'#fca5a5'};color:${p.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${p.published?'<i class="fas fa-circle-check"></i> Live':'⏸ Hidden'}</button>
+          <button onclick="ceoDeletePoll('${p._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
         <div style="font-family:'Montserrat',sans-serif;font-size:.84rem;font-weight:700;color:var(--text);margin-bottom:8px">${p.caption||p.question||''}</div>
         ${(p.options||[]).map((opt,i)=>{const v=votes[i]||0;const pct=Math.round((v/total)*100);return`<div style="margin-bottom:5px"><div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:2px"><span style="color:var(--text)">${opt}</span><span style="font-weight:700;color:var(--muted)">${v} (${pct}%)</span></div><div style="height:5px;background:var(--border);border-radius:3px"><div style="height:100%;width:${pct}%;background:#7c3aed;border-radius:3px;transition:width .4s"></div></div></div>`;}).join('')}
@@ -1464,7 +1648,7 @@ async function saveCeoPoll(){
   if(img) item.image=img;
   try{
     await window._addDoc(window._collection(window._db,'fs_polls'),item);
-    showCEOStatus('success','🗳️ Poll published!');
+    showCEOStatus('success','<i class="fas fa-square-poll-vertical"></i> Poll published!');
     document.getElementById('ceoPollForm').style.display='none';
     ['ceoPollQ','ceoPollImg','ceoPollOpt1','ceoPollOpt2','ceoPollOpt3','ceoPollOpt4'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     document.getElementById('ceoPollCat').value='Poll';
@@ -1505,7 +1689,7 @@ async function saveDailyQuote(){
   if(!quote){showCEOStatus('error','Quote cannot be empty.');return;}
   try{
     await window._db.collection('site_config').doc('daily').set({quote,author,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-    showCEOStatus('success','✅ Daily quote saved!');
+    showCEOStatus('success','<i class="fas fa-circle-check"></i> Daily quote saved!');
   }catch(e){showCEOStatus('error','Error: '+e.message);}
 }
 window.saveDailyQuote=saveDailyQuote;
@@ -1516,6 +1700,36 @@ window.saveDailyQuote=saveDailyQuote;
 const CEO_EMAILS=['bigquamsmedia024@gmail.com','abdulrasqquwamdeen@gmail.com'];
 const CEO_EMAIL=CEO_EMAILS[0]; // primary for legacy references
 function isCEOEmail(email){ return CEO_EMAILS.includes(email); }
+// NOTE: Role is currently resolved via a hard-coded email whitelist above.
+// Recommended long-term migration: store role on users/{uid}.role ("ceo"|"admin")
+// in Firestore and resolve isCEOEmail()/isAdmin() from that document instead,
+// so access no longer depends on matching a literal email string. Both dashboards
+// funnel every provider (Google/Apple/email) through this same resolver, so the
+// migration point is centralized here.
+
+// ── TOAST NOTIFICATIONS ──
+function showToast(type,msg){
+  const stack=document.getElementById('toastStack');
+  if(!stack){ if(type==='error') console.error(msg); return; }
+  const t=document.createElement('div');
+  t.className='toast '+type;
+  t.innerHTML=(type==='success'?'<i class="fas fa-circle-check"></i>':'<i class="fas fa-triangle-exclamation"></i>')+'<span></span>';
+  t.querySelector('span').textContent=msg;
+  stack.appendChild(t);
+  setTimeout(()=>{ t.classList.add('hide'); setTimeout(()=>t.remove(),200); }, type==='success'?4500:6000);
+}
+window.showToast=showToast;
+
+// ── Password visibility toggle (login form) ──
+function togglePwVisibility(inputId,btn){
+  const input=document.getElementById(inputId);
+  if(!input) return;
+  const showing=input.type==='text';
+  input.type=showing?'password':'text';
+  btn.innerHTML=showing?'<i class="fas fa-eye"></i>':'<i class="fas fa-eye-slash"></i>';
+  btn.setAttribute('aria-label',showing?'Show password':'Hide password');
+}
+window.togglePwVisibility=togglePwVisibility;
 let _allLogs=[];
 let _currentUser=null;
 
@@ -1548,9 +1762,9 @@ function showApp(user){
   document.getElementById('loginGate').style.display='none';
   document.getElementById('app').style.display='block';
   const av=document.getElementById('hdrAvatar');
-  if(user.photoURL){av.src=user.photoURL;av.style.display='block';}
-  // Auto-load activity log immediately on login
-  setTimeout(loadAll, 800);
+  if(user&&user.photoURL){av.src=user.photoURL;av.style.display='block';}
+  // Auto-load activity log + executive overview shortly after login (gives Firebase time to settle)
+  setTimeout(()=>{ loadAll(); loadOverview(); }, 800);
 }
 
 function showAccessDenied(){
@@ -1589,22 +1803,12 @@ async function loginApple(){
 }
 window.loginApple=loginApple;
 
-function showApp(user){
-  document.getElementById('loginGate').style.display='none';
-  document.getElementById('app').style.display='block';
-  if(user&&user.photoURL){
-    document.getElementById('hdrAvatar').src=user.photoURL;
-    document.getElementById('hdrAvatar').style.display='block';
-  }
-  loadAll();
-}
-
 async function loginEmail_pw(){
   const email=document.getElementById('loginEmail').value.trim();
   const pw=document.getElementById('loginPw').value;
   if(!email||!pw){showLoginErr('Enter your email and password.');return;}
   const btn=document.getElementById('loginBtn');
-  btn.disabled=true;btn.textContent='Signing in…';
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Signing in…';
   try{
     const cred=await window._signInEmail(email,pw);
     if(!isCEOEmail(cred.user.email)){
@@ -1617,13 +1821,13 @@ async function loginEmail_pw(){
       e.code==='auth/too-many-requests'?'Too many attempts. Try again later.':e.message
     );
   }
-  btn.disabled=false;btn.textContent='Sign In →';
+  btn.disabled=false;btn.innerHTML='Sign In <i class="fas fa-arrow-right"></i>';
 }
 window.loginEmail_pw=loginEmail_pw;
 
 function showLoginErr(msg){
   const el=document.getElementById('loginErr');
-  el.textContent='❌ '+msg;el.style.display='block';
+  el.innerHTML='<i class="fas fa-xmark"></i> '+msg;el.style.display='block';
   setTimeout(()=>el.style.display='none',5000);
 }
 
@@ -1712,7 +1916,7 @@ function populateAdminFilter(){
 
 // ── LOG TABLE ──
 function renderLogTable(logs){
-  const ACTION_ICONS={login:'🔓',logout:'🔒',add:'➕',edit:'✏️',delete:'🗑️',save:'💾',upload:'📤'};
+  const ACTION_ICONS={login:'<i class="fas fa-lock-open"></i>',logout:'<i class="fas fa-lock"></i>',add:'<i class="fas fa-plus"></i>',edit:'<i class="fas fa-pen"></i>',delete:'<i class="fas fa-trash"></i>',save:'<i class="fas fa-floppy-disk"></i>',upload:'<i class="fas fa-upload"></i>'};
   const tbody=document.getElementById('logTableBody');
   if(!logs.length){
     tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted)">No records match your filters</td></tr>';
@@ -1721,7 +1925,7 @@ function renderLogTable(logs){
   tbody.innerHTML=logs.map((l,i)=>{
     const isCeo=isCEOEmail(l.adminEmail);
     const cls='ab-'+(l.actionType||'save');
-    const icon=ACTION_ICONS[l.actionType]||'⚡';
+    const icon=ACTION_ICONS[l.actionType]||'<i class="fas fa-bolt"></i>';
     const dt=l.timestamp?new Date(l.timestamp):null;
     const timeStr=dt?dt.toLocaleString('en-NG',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):(l.date+' '+l.time);
     return`<tr>
@@ -1729,7 +1933,7 @@ function renderLogTable(logs){
       <td style="font-size:.72rem;color:var(--muted);white-space:nowrap">${timeStr}</td>
       <td>
         <div style="font-size:.78rem;font-weight:700;color:var(--text)">${l.adminName||'Unknown'}</div>
-        <div style="font-size:.64rem;color:var(--muted)">${l.adminEmail||''}${isCeo?'<span class="ceo-pill">👑 CEO</span>':''}</div>
+        <div style="font-size:.64rem;color:var(--muted)">${l.adminEmail||''}${isCeo?'<span class="ceo-pill"><i class="fas fa-crown"></i> CEO</span>':''}</div>
       </td>
       <td><span class="action-badge ${cls}">${icon} ${l.actionType||'—'}</span></td>
       <td style="font-size:.76rem;color:var(--text)">${l.section||'—'}</td>
@@ -1769,7 +1973,7 @@ async function buildAdminProfiles(){
 
   const admins=Object.values(byEmail).sort((a,b)=>b.actions-a.actions);
   if(!admins.length){
-    document.getElementById('adminsGrid').innerHTML='<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">No admins recorded yet</div><div class="empty-sub">Activity will appear here once admins start logging in</div></div>';
+    document.getElementById('adminsGrid').innerHTML='<div class="empty-state"><div class="empty-icon"><i class="fas fa-users"></i></div><div class="empty-title">No admins recorded yet</div><div class="empty-sub">Activity will appear here once admins start logging in</div></div>';
     return;
   }
   const now=new Date();
@@ -1786,7 +1990,7 @@ async function buildAdminProfiles(){
         <div class="admin-avatar-ph" style="background:${avatarBg}">${initial}</div>
         <div class="admin-info">
           <div class="admin-name">
-            ${isCeo?'👑':''} <span style="font-size:1rem">${displayNick}</span>
+            ${isCeo?'<i class="fas fa-crown"></i>':''} <span style="font-size:1rem">${displayNick}</span>
             <span class="tag ${isCeo?'tag-ceo':'tag-admin'}">${isCeo?'CEO':'Admin'}</span>
           </div>
           <div class="admin-email" title="${a.email}">${a.email}</div>
@@ -1802,7 +2006,7 @@ async function buildAdminProfiles(){
         <div class="admin-stat"><div class="admin-stat-num" style="color:#10b981">${a.logins}</div><div class="admin-stat-lbl">Logins</div></div>
         <div class="admin-stat"><div class="admin-stat-num">${a.dates.size}</div><div class="admin-stat-lbl">Active Days</div></div>
       </div>
-      <div class="last-seen">🕐 Last seen: <strong>${lastSeenStr}</strong> ${isOnline?'<span style="color:#10b981;font-weight:700">● Online</span>':''}</div>
+      <div class="last-seen"><i class="fas fa-clock"></i> Last seen: <strong>${lastSeenStr}</strong> ${isOnline?'<span style="color:#10b981;font-weight:700">● Online</span>':''}</div>
     </div>`;
   }).join('');
 }
@@ -1810,15 +2014,15 @@ async function buildAdminProfiles(){
 // ── TIMELINE ──
 function buildTimeline(){
   const recent=_allLogs.slice(0,50);
-  const ACTION_ICONS={login:'🔓',logout:'🔒',add:'➕',edit:'✏️',delete:'🗑️',save:'💾',upload:'📤'};
+  const ACTION_ICONS={login:'<i class="fas fa-lock-open"></i>',logout:'<i class="fas fa-lock"></i>',add:'<i class="fas fa-plus"></i>',edit:'<i class="fas fa-pen"></i>',delete:'<i class="fas fa-trash"></i>',save:'<i class="fas fa-floppy-disk"></i>',upload:'<i class="fas fa-upload"></i>'};
   const ACTION_COLORS={login:'var(--green)',logout:'var(--muted)',add:'var(--blue-light)',edit:'var(--yellow)',delete:'var(--red)',save:'var(--purple)',upload:'var(--cyan)'};
   if(!recent.length){
-    document.getElementById('timelineList').innerHTML='<div class="empty-state"><div class="empty-icon">🕐</div><div class="empty-title">No activity yet</div><div class="empty-sub">Actions will appear here once admins start working</div></div>';
+    document.getElementById('timelineList').innerHTML='<div class="empty-state"><div class="empty-icon"><i class="fas fa-clock"></i></div><div class="empty-title">No activity yet</div><div class="empty-sub">Actions will appear here once admins start working</div></div>';
     return;
   }
   document.getElementById('timelineList').innerHTML=recent.map((l,i)=>{
     const color=ACTION_COLORS[l.actionType]||'var(--muted)';
-    const icon=ACTION_ICONS[l.actionType]||'⚡';
+    const icon=ACTION_ICONS[l.actionType]||'<i class="fas fa-bolt"></i>';
     const isCeo=isCEOEmail(l.adminEmail);
     const ts=l.timestamp?new Date(l.timestamp):null;
     const timeStr=ts?ts.toLocaleString('en-NG',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):((l.date||'')+(l.time?' · '+l.time:''));
@@ -1829,7 +2033,7 @@ function buildTimeline(){
       </div>
       <div class="tl-content">
         <div class="tl-top">
-          <span class="tl-admin">${l.adminName||'Admin'}${isCeo?'<span class="ceo-pill">👑</span>':''}</span>
+          <span class="tl-admin">${l.adminName||'Admin'}${isCeo?'<span class="ceo-pill"><i class="fas fa-crown"></i></span>':''}</span>
           <span class="tl-section">${l.section||'—'}</span>
           <span class="tl-time">${timeStr}</span>
         </div>
@@ -1909,7 +2113,7 @@ async function loadReferrals(){
 
     // Top referrers — sorted by referralCount desc
     const referrers=users.filter(u=>(u.referralCount||0)>0).sort((a,b)=>(b.referralCount||0)-(a.referralCount||0));
-    const medals=['🥇','🥈','🥉'];
+    const medals=['<i class="fas fa-medal"></i>','<i class="fas fa-medal"></i>','<i class="fas fa-medal"></i>'];
     document.getElementById('topReferrersBody').innerHTML=referrers.length
       ? referrers.map((u,i)=>`<tr>
           <td style="font-size:.8rem;font-weight:800;color:var(--muted)">${medals[i]||('#'+(i+1))}</td>
@@ -1933,15 +2137,15 @@ async function loadReferrals(){
           const referrerName=codeToName[u.referredBy]||`Code: ${u.referredBy}`;
           const joined=u.joinDate?new Date(u.joinDate).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'}):'—';
           return`<div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid rgba(42,53,80,.5)">
-            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1a3fa8,#3b62d4);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0">👤</div>
+            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1a3fa8,#3b62d4);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0"><i class="fas fa-user"></i></div>
             <div style="flex:1;min-width:0">
               <div style="font-size:.8rem;font-weight:700;color:var(--text)">${u.nickname||u.displayName||'Student'}</div>
               <div style="font-size:.65rem;color:var(--muted)">${u.email||''}</div>
             </div>
             <div style="text-align:center;padding:0 12px;font-size:.72rem;color:var(--muted)">referred by</div>
             <div style="text-align:right;flex-shrink:0">
-              <div style="font-size:.8rem;font-weight:700;color:#f59e0b">🔗 ${referrerName}</div>
-              <div style="font-size:.62rem;color:var(--muted)">📅 ${joined}</div>
+              <div style="font-size:.8rem;font-weight:700;color:#f59e0b"><i class="fas fa-link"></i> ${referrerName}</div>
+              <div style="font-size:.62rem;color:var(--muted)"><i class="fas fa-calendar-days"></i> ${joined}</div>
             </div>
           </div>`;
         }).join('')
@@ -2058,7 +2262,7 @@ async function loadCBTAnalytics(){
         </div>`).join('') || '<div style="color:var(--muted);font-size:.78rem;padding:8px">No achievements yet</div>';
 
     // Leaderboard
-    const medals=['🥇','🥈','🥉'];
+    const medals=['<i class="fas fa-medal"></i>','<i class="fas fa-medal"></i>','<i class="fas fa-medal"></i>'];
     const top=[..._cbtStudents].sort((a,b)=>(b.bestScore||0)-(a.bestScore||0)).slice(0,20);
     document.getElementById('cbta-leaderboard').innerHTML=top.length
       ? top.map((u,i)=>{
@@ -2069,7 +2273,7 @@ async function loadCBTAnalytics(){
             <td style="font-size:.66rem;color:var(--muted)">${u.email||'—'}</td>
             <td><span style="font-family:'Montserrat',sans-serif;font-size:.95rem;font-weight:800;color:${scoreColor}">${u.bestScore||0}%</span></td>
             <td style="font-size:.78rem">${u.sessions||0}</td>
-            <td style="font-size:.78rem">${u.streak||0}🔥</td>
+            <td style="font-size:.78rem">${u.streak||0}<i class="fas fa-fire"></i></td>
             <td style="font-size:.78rem">${u.referralCount||0}</td>
             <td style="font-size:.66rem;color:var(--muted)">${u.joinDate?new Date(u.joinDate).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'}):'—'}</td>
           </tr>`;
@@ -2088,7 +2292,7 @@ async function loadCBTAnalytics(){
             <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1a3fa8,#3b62d4);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;color:#fff;font-weight:800">${(u.nickname||u.displayName||'S').charAt(0).toUpperCase()}</div>
             <div style="flex:1;min-width:0">
               <div style="font-size:.8rem;font-weight:700;color:var(--text)">${u.nickname||u.displayName||'Student'}</div>
-              <div style="font-size:.64rem;color:var(--muted)">${u.email||''} · ${u.sessions||0} sessions · ${u.streak||0}🔥 streak</div>
+              <div style="font-size:.64rem;color:var(--muted)">${u.email||''} · ${u.sessions||0} sessions · ${u.streak||0}<i class="fas fa-fire"></i> streak</div>
             </div>
             <div style="text-align:right;flex-shrink:0">
               <div style="font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:800;color:${scoreColor}">${u.bestScore||0}%</div>
@@ -2107,7 +2311,7 @@ async function loadCBTAnalytics(){
 window.loadCBTAnalytics=loadCBTAnalytics;
 
 function exportStudentsCSV(){
-  if(!_cbtStudents.length){alert('Load data first.');return;}
+  if(!_cbtStudents.length){showToast('error','Load data first.');return;}
   const rows=[['Nickname','Email','Best Score','Sessions','Streak','Referrals','Achievements','Joined']];
   _cbtStudents.sort((a,b)=>(b.bestScore||0)-(a.bestScore||0)).forEach(u=>{
     rows.push([u.nickname||u.displayName||'',u.email||'',u.bestScore||0,u.sessions||0,u.streak||0,u.referralCount||0,(u.achievements||[]).length,u.joinDate?new Date(u.joinDate).toLocaleDateString('en-NG'):'']);
@@ -2122,7 +2326,7 @@ window.exportStudentsCSV=exportStudentsCSV;
 
 // ── EXPORT ──
 function exportCSV(){
-  if(!_allLogs.length){alert('No data to export.');return;}
+  if(!_allLogs.length){showToast('error','No data to export.');return;}
   const rows=[['#','Timestamp','Admin Name','Admin Email','Action','Section','Detail','Date','Time']];
   _allLogs.forEach((l,i)=>rows.push([i+1,l.timestamp||'',l.adminName||'',l.adminEmail||'',l.actionType||'',l.section||'',l.detail||'',l.date||'',l.time||'']));
   const csv=rows.map(r=>r.map(v=>'"'+(String(v)).replace(/"/g,'""')+'"').join(',')).join('\n');
@@ -2131,7 +2335,7 @@ function exportCSV(){
 window.exportCSV=exportCSV;
 
 function exportJSON(){
-  if(!_allLogs.length){alert('No data to export.');return;}
+  if(!_allLogs.length){showToast('error','No data to export.');return;}
   dl('bqm-activity-'+new Date().toISOString().substring(0,10)+'.json','data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(_allLogs,null,2)));
 }
 window.exportJSON=exportJSON;
@@ -2152,6 +2356,86 @@ function switchTab(name,btn){
   if(name==='whitelist') loadWhitelist();
 }
 window.switchTab=switchTab;
+
+// ── GROUP NAVIGATION (executive nav: Overview/Operations/Admins/Analytics/Audit Log/Access) ──
+function switchGroup(name){
+  document.querySelectorAll('.group-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.group-panel').forEach(p=>p.classList.remove('active'));
+  const gbtn=document.querySelector('.group-btn[data-group="'+name+'"]');
+  if(gbtn) gbtn.classList.add('active');
+  const panel=document.getElementById('group-'+name);
+  if(panel) panel.classList.add('active');
+  if(name==='overview'){
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab-bar .tab-btn').forEach(b=>b.classList.remove('active'));
+    loadOverview();
+    return;
+  }
+  // Activate the first tab inside this group (reuses each button's own switchTab wiring)
+  const firstBtn=panel ? panel.querySelector('.tab-btn') : null;
+  if(firstBtn) firstBtn.click();
+}
+window.switchGroup=switchGroup;
+
+// ── EXECUTIVE OVERVIEW ──
+async function loadOverview(){
+  try{
+    let retries=0;
+    while(!window._db&&retries<10){await new Promise(r=>setTimeout(r,400));retries++;}
+    if(!window._db) return;
+    if(!_allLogs.length){ await loadAll(); }
+    const today=new Date().toLocaleDateString('en-NG');
+    const todayLogs=_allLogs.filter(l=>l.date===today);
+    const admins=new Set(_allLogs.map(l=>l.adminEmail).filter(Boolean));
+    const issues=_allLogs.filter(l=>/fail|error/i.test(l.detail||'')).slice(0,20);
+
+    // Content counts (published items across the main content collections)
+    const collections=[
+      ['fs_news','News'],['fs_books','eLibrary'],['fs_scholarships','Scholarships'],
+      ['fs_nelfund','NELFUND'],['fs_dyk','DYK'],['fs_spotlight','Spotlight']
+    ];
+    const counts={};
+    let published=0;
+    for(const [col,label] of collections){
+      try{
+        const snap=await window._getDocs(window._collection(window._db,col));
+        counts[label]=snap.size;
+        published+=snap.size;
+      }catch(e){ counts[label]='—'; }
+    }
+
+    document.getElementById('kpi-admins').textContent=admins.size;
+    document.getElementById('kpi-published').textContent=published;
+    document.getElementById('kpi-today').textContent=todayLogs.length;
+    document.getElementById('kpi-issues').textContent=issues.length;
+
+    // Admin activity — top admins by action count
+    const byAdmin={};
+    _allLogs.forEach(l=>{ const k=l.adminName||l.adminEmail||'Unknown'; byAdmin[k]=(byAdmin[k]||0)+1; });
+    const topAdmins=Object.entries(byAdmin).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    const aa=document.getElementById('ovAdminActivity');
+    aa.innerHTML=topAdmins.length?topAdmins.map(([n,c])=>`<div class="exec-row"><span class="n">${n}</span><span class="v">${c}</span></div>`).join(''):'<div style="color:var(--muted);font-size:.8rem">No activity recorded yet.</div>';
+
+    // Content overview
+    const co=document.getElementById('ovContentOverview');
+    co.innerHTML=Object.entries(counts).map(([label,c])=>`<div class="exec-row"><span class="n">${label}</span><span class="v">${c}</span></div>`).join('');
+
+    // Alerts — recent deletions + failure-flagged entries
+    const recentDeletes=_allLogs.filter(l=>l.actionType==='delete').slice(0,5);
+    const alertsEl=document.getElementById('ovAlerts');
+    const rows=[];
+    issues.slice(0,5).forEach(l=>rows.push({warn:true,icon:'fa-triangle-exclamation',text:(l.adminName||'Admin')+' — '+(l.detail||'Issue logged'),time:l.timestamp}));
+    recentDeletes.forEach(l=>rows.push({warn:false,icon:'fa-trash',text:(l.adminName||'Admin')+' deleted from '+(l.section||'—'),time:l.timestamp}));
+    rows.sort((a,b)=>new Date(b.time)-new Date(a.time));
+    alertsEl.innerHTML=rows.length?rows.slice(0,8).map(r=>{
+      const dt=r.time?new Date(r.time).toLocaleString('en-NG',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+      return `<div class="alert-row ${r.warn?'warn':'ok'}"><i class="fas ${r.icon}"></i><span>${r.text}</span><span class="t">${dt}</span></div>`;
+    }).join(''):'<div style="color:var(--muted);font-size:.8rem"><i class="fas fa-circle-check"></i> No recent issues or deletions.</div>';
+  }catch(e){
+    console.error('loadOverview error:',e);
+  }
+}
+window.loadOverview=loadOverview;
 
 // ── ADMIN WHITELIST ──
 async function loadWhitelist(){
@@ -2185,7 +2469,7 @@ async function loadWhitelist(){
           <div style="font-size:.68rem;color:var(--muted)">${e.email}</div>
           <div style="font-size:.62rem;color:var(--muted);margin-top:2px">Added: ${e.addedAt?new Date(e.addedAt).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'}):'—'}</div>
         </div>
-        ${e.email!=='bigquamsmedia024@gmail.com'?`<button onclick="removeFromWhitelist('${e.email}')" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#ef4444;font-size:.68rem;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer">Remove</button>`:'<span style="font-size:.62rem;color:#f59e0b;font-weight:700">👑 CEO</span>'}
+        ${e.email!=='bigquamsmedia024@gmail.com'?`<button onclick="removeFromWhitelist('${e.email}')" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#ef4444;font-size:.68rem;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer">Remove</button>`:'<span style="font-size:.62rem;color:#f59e0b;font-weight:700"><i class="fas fa-crown"></i> CEO</span>'}
       </div>`).join('');
   }catch(e){
     el.innerHTML='<div style="padding:16px;color:#ef4444;font-size:.78rem">Error: '+e.message+'</div>';
@@ -2199,7 +2483,7 @@ async function addToWhitelist(){
   const status=document.getElementById('wlStatus');
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
     status.style.display='block';status.style.background='#fee2e2';status.style.color='#b91c1c';
-    status.textContent='❌ Enter a valid email address.';return;
+    status.innerHTML='<i class="fas fa-xmark"></i> Enter a valid email address.';return;
   }
   status.style.display='block';status.style.background='#ede9fe';status.style.color='#7c3aed';
   status.textContent='⏳ Saving…';
@@ -2209,18 +2493,18 @@ async function addToWhitelist(){
     const existing=snap.exists()?(snap.data().entries||[]):[];
     if(existing.find(e=>e.email===email)){
       status.style.background='#fef9c3';status.style.color='#92400e';
-      status.textContent='⚠️ This email is already approved.';return;
+      status.innerHTML='<i class="fas fa-triangle-exclamation"></i> This email is already approved.';return;
     }
     existing.push({email,name:name||email.split('@')[0],addedAt:new Date().toISOString()});
     await window._setDoc(ref,{emails:existing.map(e=>e.email),entries:existing},{merge:false});
     status.style.background='#dcfce7';status.style.color='#15803d';
-    status.textContent=`✅ ${email} approved. They can now sign in to the admin panel.`;
+    status.innerHTML=`<i class="fas fa-circle-check"></i> ${email} approved. They can now sign in to the admin panel.`;
     document.getElementById('wlEmailInput').value='';
     document.getElementById('wlNameInput').value='';
     loadWhitelist();
   }catch(e){
     status.style.background='#fee2e2';status.style.color='#b91c1c';
-    status.textContent='❌ Error: '+e.message;
+    status.innerHTML='<i class="fas fa-xmark"></i> Error: '+e.message;
   }
 }
 window.addToWhitelist=addToWhitelist;
@@ -2234,7 +2518,7 @@ async function removeFromWhitelist(email){
     const remaining=(snap.data().entries||[]).filter(e=>e.email!==email);
     await window._setDoc(ref,{emails:remaining.map(e=>e.email),entries:remaining},{merge:false});
     loadWhitelist();
-  }catch(e){alert('Error: '+e.message);}
+  }catch(e){showToast('error','Error: '+e.message);}
 }
 window.removeFromWhitelist=removeFromWhitelist;
 
@@ -2263,7 +2547,7 @@ function ceoShowStatus(msg, type){
 function renderItemList(containerId, items, fields, collection){
   const el=document.getElementById(containerId);
   if(!el) return;
-  if(!items.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">No items yet</div></div>';return;}
+  if(!items.length){el.innerHTML='<div class="empty-state"><div class="empty-icon"><i class="fas fa-envelope-open"></i></div><div class="empty-title">No items yet</div></div>';return;}
   el.innerHTML=items.map((item,i)=>`
     <div style="border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px">
       <div style="flex:1;min-width:0">
@@ -2271,7 +2555,7 @@ function renderItemList(containerId, items, fields, collection){
         ${fields[1]?'<div style="font-size:.74rem;color:var(--muted)">'+(item[fields[1]]||'')+'</div>':''}
         ${fields[2]?'<div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+(item[fields[2]]||'')+'</div>':''}
       </div>
-      <button onclick="deleteContentItem('${collection}','${item._id}')" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#ef4444;font-size:.68rem;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer;flex-shrink:0">🗑 Delete</button>
+      <button onclick="deleteContentItem('${collection}','${item._id}')" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#ef4444;font-size:.68rem;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer;flex-shrink:0"><i class="fas fa-trash"></i> Delete</button>
     </div>`).join('');
 }
 
@@ -2288,7 +2572,7 @@ async function deleteContentItem(col, id){
     else if(col==='fs_spotlight') loadSpotlight();
     else if(col==='fs_postutme_schools') loadPostUtme();
     else if(col==='fs_subject_combo') loadCombo();
-  }catch(e){alert('Delete failed: '+e.message);}
+  }catch(e){showToast('error','Delete failed: '+e.message);}
 }
 window.deleteContentItem=deleteContentItem;
 
@@ -2313,7 +2597,7 @@ async function addLibraryItem(){
   const cat=document.getElementById('libCat').value.trim();
   const desc=document.getElementById('libDesc').value.trim();
   const download=document.getElementById('libDownload').value.trim();
-  if(!title||!cat||!desc||!download){alert('Fill in Title, Category, Description and Download URL.');return;}
+  if(!title||!cat||!desc||!download){showToast('error','Fill in Title, Category, Description and Download URL.');return;}
   try{
     await window._addDoc(window._collection(window._db,'fs_books'),{
       title,category:cat,description:desc,downloadUrl:download,
@@ -2325,7 +2609,7 @@ async function addLibraryItem(){
     document.getElementById('libAddForm').style.display='none';
     ['libTitle','libCat','libDesc','libDownload','libAuthor','libYear','libView'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     loadLibrary();
-  }catch(e){alert('Firebase error: '+e.message);}
+  }catch(e){showToast('error','Firebase error: '+e.message);}
 }
 window.addLibraryItem=addLibraryItem;
 
@@ -2349,7 +2633,7 @@ async function addScholarshipItem(){
   const name=document.getElementById('schName').value.trim();
   const org=document.getElementById('schOrg').value.trim();
   const desc=document.getElementById('schDesc').value.trim();
-  if(!name||!org||!desc){alert('Fill in Name, Organisation and Description.');return;}
+  if(!name||!org||!desc){showToast('error','Fill in Name, Organisation and Description.');return;}
   try{
     await window._addDoc(window._collection(window._db,'fs_scholarships'),{
       name,organization:org,description:desc,
@@ -2364,7 +2648,7 @@ async function addScholarshipItem(){
     document.getElementById('schAddForm').style.display='none';
     ['schName','schOrg','schDesc','schDeadline','schAmount','schLink','schIcon'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     loadScholarships();
-  }catch(e){alert('Firebase error: '+e.message);}
+  }catch(e){showToast('error','Firebase error: '+e.message);}
 }
 window.addScholarshipItem=addScholarshipItem;
 
@@ -2387,7 +2671,7 @@ window.showAddNelfund=showAddNelfund;
 async function addNelfundItem(){
   const title=document.getElementById('nelfTitle').value.trim();
   const content=document.getElementById('nelfContent').value.trim();
-  if(!title||!content){alert('Fill in Title and Content.');return;}
+  if(!title||!content){showToast('error','Fill in Title and Content.');return;}
   try{
     await window._addDoc(window._collection(window._db,'fs_nelfund'),{
       title,content,
@@ -2398,7 +2682,7 @@ async function addNelfundItem(){
     document.getElementById('nelfundAddForm').style.display='none';
     ['nelfTitle','nelfContent','nelfCat','nelfDate'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     loadNelfund();
-  }catch(e){alert('Firebase error: '+e.message);}
+  }catch(e){showToast('error','Firebase error: '+e.message);}
 }
 window.addNelfundItem=addNelfundItem;
 
@@ -2421,7 +2705,7 @@ window.showAddDyk=showAddDyk;
 async function addDykItem(){
   const fact=document.getElementById('dykFact').value.trim();
   const body=document.getElementById('dykBody').value.trim();
-  if(!fact||!body){alert('Fill in Fact Headline and Explanation.');return;}
+  if(!fact||!body){showToast('error','Fill in Fact Headline and Explanation.');return;}
   try{
     await window._addDoc(window._collection(window._db,'fs_dyk'),{
       fact,body,
@@ -2433,7 +2717,7 @@ async function addDykItem(){
     document.getElementById('dykAddForm').style.display='none';
     ['dykFact','dykBody','dykEmoji','dykCat','dykSource'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     loadDyk();
-  }catch(e){alert('Firebase error: '+e.message);}
+  }catch(e){showToast('error','Firebase error: '+e.message);}
 }
 window.addDykItem=addDykItem;
 
@@ -2457,7 +2741,7 @@ async function addSpotlightItem(){
   const name=document.getElementById('spName').value.trim();
   const title=document.getElementById('spTitle').value.trim();
   const story=document.getElementById('spStory').value.trim();
-  if(!name||!title||!story){alert('Fill in Name, Achievement and Story.');return;}
+  if(!name||!title||!story){showToast('error','Fill in Name, Achievement and Story.');return;}
   try{
     await window._addDoc(window._collection(window._db,'fs_spotlight'),{
       name,achievement:title,story,
@@ -2468,7 +2752,7 @@ async function addSpotlightItem(){
     document.getElementById('spotlightAddForm').style.display='none';
     ['spName','spTitle','spStory','spState','spYear'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     loadSpotlight();
-  }catch(e){alert('Firebase error: '+e.message);}
+  }catch(e){showToast('error','Firebase error: '+e.message);}
 }
 window.addSpotlightItem=addSpotlightItem;
 
@@ -2490,7 +2774,7 @@ window.showAddPostUtme=showAddPostUtme;
 
 async function addPostUtmeItem(){
   const school=document.getElementById('puSchool').value.trim();
-  if(!school){alert('School name is required.');return;}
+  if(!school){showToast('error','School name is required.');return;}
   try{
     await window._addDoc(window._collection(window._db,'fs_postutme_schools'),{
       school,
@@ -2504,7 +2788,7 @@ async function addPostUtmeItem(){
     document.getElementById('postutmeAddForm').style.display='none';
     ['puSchool','puAbbr','puJamb','puPost','puCutoff','puNotes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     loadPostUtme();
-  }catch(e){alert('Firebase error: '+e.message);}
+  }catch(e){showToast('error','Firebase error: '+e.message);}
 }
 window.addPostUtmeItem=addPostUtmeItem;
 
@@ -2527,7 +2811,7 @@ window.showAddCombo=showAddCombo;
 async function addComboItem(){
   const course=document.getElementById('comboCourseName').value.trim();
   const subjects=document.getElementById('comboSubjects').value.trim();
-  if(!course||!subjects){alert('Course name and subjects are required.');return;}
+  if(!course||!subjects){showToast('error','Course name and subjects are required.');return;}
   try{
     await window._addDoc(window._collection(window._db,'fs_subject_combo'),{
       course,
@@ -2540,7 +2824,7 @@ async function addComboItem(){
     document.getElementById('comboAddForm').style.display='none';
     ['comboCourseName','comboDept','comboSubjects','comboOlevel','comboNotes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     loadCombo();
-  }catch(e){alert('Firebase error: '+e.message);}
+  }catch(e){showToast('error','Firebase error: '+e.message);}
 }
 window.addComboItem=addComboItem;
 
@@ -2592,19 +2876,19 @@ window.showAddCalendar=showAddCalendar;
 async function addCalendarItem(){
   const title=document.getElementById('calTitle').value.trim();
   const date=document.getElementById('calDate').value.trim();
-  if(!title||!date){alert('Fill in Title and Date.');return;}
+  if(!title||!date){showToast('error','Fill in Title and Date.');return;}
   try{
     await window._addDoc(window._collection(window._db,'fs_calendar'),{
       title,date,
       category:document.getElementById('calCat').value,
-      icon:document.getElementById('calIcon').value.trim()||'📅',
+      icon:document.getElementById('calIcon').value.trim()||'<i class="fas fa-calendar-days"></i>',
       description:document.getElementById('calDesc').value.trim(),
       createdAt:window._serverTimestamp()
     });
     document.getElementById('calendarAddForm').style.display='none';
     ['calTitle','calDate','calIcon','calDesc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     loadCalendar();
-  }catch(e){alert('Firebase error: '+e.message);}
+  }catch(e){showToast('error','Firebase error: '+e.message);}
 }
 window.addCalendarItem=addCalendarItem;
 
@@ -2637,7 +2921,7 @@ async function saveNewsroomSettings(){
   };
   try{
     await window._setDoc(window._doc(window._db,'site_config','newsroom'),data,{merge:true});
-    showCEOStatus('success','✅ Newsroom settings saved!');
+    showCEOStatus('success','<i class="fas fa-circle-check"></i> Newsroom settings saved!');
   }catch(e){showCEOStatus('error','Error: '+e.message);}
 }
 window.saveNewsroomSettings=saveNewsroomSettings;
@@ -2654,7 +2938,7 @@ async function saveSiteConfig(){
   };
   try{
     await window._setDoc(window._doc(window._db,'site_config','global'),data,{merge:true});
-    showCEOStatus('success','✅ Site config saved!');
+    showCEOStatus('success','<i class="fas fa-circle-check"></i> Site config saved!');
   }catch(e){showCEOStatus('error','Error: '+e.message);}
 }
 window.saveSiteConfig=saveSiteConfig;
@@ -2670,7 +2954,7 @@ async function saveHeroStats(){
   };
   try{
     await window._setDoc(window._doc(window._db,'site_config','hero'),data,{merge:true});
-    showCEOStatus('success','✅ Hero & Stats saved!');
+    showCEOStatus('success','<i class="fas fa-circle-check"></i> Hero & Stats saved!');
   }catch(e){showCEOStatus('error','Error: '+e.message);}
 }
 window.saveHeroStats=saveHeroStats;
@@ -2683,7 +2967,7 @@ async function saveTopBar(){
   };
   try{
     await window._setDoc(window._doc(window._db,'site_config','topbar'),data,{merge:true});
-    showCEOStatus('success','✅ Top Bar saved!');
+    showCEOStatus('success','<i class="fas fa-circle-check"></i> Top Bar saved!');
   }catch(e){showCEOStatus('error','Error: '+e.message);}
 }
 window.saveTopBar=saveTopBar;
@@ -2698,7 +2982,7 @@ async function saveContactChannels(){
   };
   try{
     await window._setDoc(window._doc(window._db,'site_config','channels'),data,{merge:true});
-    showCEOStatus('success','✅ Contact channels saved!');
+    showCEOStatus('success','<i class="fas fa-circle-check"></i> Contact channels saved!');
   }catch(e){showCEOStatus('error','Error: '+e.message);}
 }
 window.saveContactChannels=saveContactChannels;
@@ -2713,7 +2997,7 @@ async function saveSocialLinks(){
   };
   try{
     await window._setDoc(window._doc(window._db,'site_config','socials'),data,{merge:true});
-    showCEOStatus('success','✅ Social links saved!');
+    showCEOStatus('success','<i class="fas fa-circle-check"></i> Social links saved!');
   }catch(e){showCEOStatus('error','Error: '+e.message);}
 }
 window.saveSocialLinks=saveSocialLinks;
@@ -2737,7 +3021,7 @@ async function addTickerItem(){
     await window._addDoc(window._collection(window._db,'fs_ticker'),{text:val,createdAt:window._serverTimestamp()});
     document.getElementById('ticker-new').value='';
     loadTickerItems();
-    showCEOStatus('success','✅ Ticker item added!');
+    showCEOStatus('success','<i class="fas fa-circle-check"></i> Ticker item added!');
   }catch(e){showCEOStatus('error','Error: '+e.message);}
 }
 window.addTickerItem=addTickerItem;
@@ -2764,7 +3048,7 @@ async function addSuccessTickerItem(){
     await window._addDoc(window._collection(window._db,'fs_success_ticker'),{text:val,createdAt:window._serverTimestamp()});
     document.getElementById('successticker-new').value='';
     loadSuccessTickerItems();
-    showCEOStatus('success','✅ Success ticker item added!');
+    showCEOStatus('success','<i class="fas fa-circle-check"></i> Success ticker item added!');
   }catch(e){showCEOStatus('error','Error: '+e.message);}
 }
 window.addSuccessTickerItem=addSuccessTickerItem;
@@ -2781,7 +3065,7 @@ function renderTickerList(elId,items,inputId,addFn,delFn){
   el.innerHTML=items.map(t=>`
     <div style="display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px solid var(--border)">
       <span style="flex:1;font-size:.82rem">${t.text||''}</span>
-      <button onclick="${delFn.name}('${t._id}')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:.8rem;padding:2px 6px;border-radius:5px">🗑</button>
+      <button onclick="${delFn.name}('${t._id}')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:.8rem;padding:2px 6px;border-radius:5px"><i class="fas fa-trash"></i></button>
     </div>`).join('');
 }
 
@@ -2825,14 +3109,14 @@ function renderCommLinks(){
   }
   el.innerHTML=commLinksData.map(l=>`
     <div style="display:flex;align-items:center;gap:12px;padding:12px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;background:var(--surface2)">
-      <div style="width:40px;height:40px;border-radius:10px;background:${l.bg||'#f0f4ff'};display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">${l.icon||'🔗'}</div>
+      <div style="width:40px;height:40px;border-radius:10px;background:${l.bg||'#f0f4ff'};display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">${l.icon||'<i class="fas fa-link"></i>'}</div>
       <div style="flex:1;min-width:0">
         <div style="font-weight:700;font-size:.84rem;color:var(--text)">${l.name||''}</div>
         <div style="font-size:.7rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.url||''}</div>
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0">
-        <button onclick="editCommLink('${l._id}')" style="background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:5px 10px;border-radius:7px;font-size:.74rem;cursor:pointer">✏️ Edit</button>
-        <button onclick="deleteCommLink('${l._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:5px 10px;border-radius:7px;font-size:.74rem;cursor:pointer">🗑 Del</button>
+        <button onclick="editCommLink('${l._id}')" style="background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:5px 10px;border-radius:7px;font-size:.74rem;cursor:pointer"><i class="fas fa-pen"></i> Edit</button>
+        <button onclick="deleteCommLink('${l._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:5px 10px;border-radius:7px;font-size:.74rem;cursor:pointer"><i class="fas fa-trash"></i> Del</button>
       </div>
     </div>`).join('');
 }
@@ -2840,7 +3124,7 @@ function renderCommLinks(){
 function addCommLink(){
   ['clEditId','clName','clUrl','clIcon','clBg','clDesc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('clOrder').value='10';
-  document.getElementById('commLinkFormTitle').textContent='➕ Add New Link';
+  document.getElementById('commLinkFormTitle').innerHTML='<i class="fas fa-plus"></i> Add New Link';
   document.getElementById('commLinkForm').style.display='block';
   document.getElementById('commLinkForm').scrollIntoView({behavior:'smooth'});
 }
@@ -2856,7 +3140,7 @@ function editCommLink(id){
   document.getElementById('clBg').value=l.bg||'';
   document.getElementById('clDesc').value=l.desc||'';
   document.getElementById('clOrder').value=l.order||10;
-  document.getElementById('commLinkFormTitle').textContent='✏️ Edit Link';
+  document.getElementById('commLinkFormTitle').innerHTML='<i class="fas fa-pen"></i> Edit Link';
   document.getElementById('commLinkForm').style.display='block';
   document.getElementById('commLinkForm').scrollIntoView({behavior:'smooth'});
 }
@@ -2869,7 +3153,7 @@ async function saveCommLink(){
   if(!name||!url){showCEOStatus('error','Name and URL are required.');return;}
   const data={
     name,url,
-    icon:document.getElementById('clIcon').value.trim()||'🔗',
+    icon:document.getElementById('clIcon').value.trim()||'<i class="fas fa-link"></i>',
     bg:document.getElementById('clBg').value.trim()||'#f0f4ff',
     desc:document.getElementById('clDesc').value.trim(),
     order:parseInt(document.getElementById('clOrder').value)||10,
@@ -2881,7 +3165,7 @@ async function saveCommLink(){
     } else {
       await window._addDoc(window._collection(window._db,'fs_community_links'),data);
     }
-    showCEOStatus('success','✅ Link saved!');
+    showCEOStatus('success','<i class="fas fa-circle-check"></i> Link saved!');
     document.getElementById('commLinkForm').style.display='none';
     loadCommLinks();
   }catch(e){showCEOStatus('error','Error: '+e.message);}
@@ -2892,7 +3176,7 @@ async function deleteCommLink(id){
   if(!confirm('Delete this link?')) return;
   try{
     await window._deleteDoc(window._doc(window._db,'fs_community_links',id));
-    showCEOStatus('success','✅ Deleted.');
+    showCEOStatus('success','<i class="fas fa-circle-check"></i> Deleted.');
     loadCommLinks();
   }catch(e){showCEOStatus('error','Error: '+e.message);}
 }
@@ -2947,14 +3231,14 @@ async function checkPushServerStatus(){
     clearTimeout(timeout);
     if(res.ok){
       dot.style.background='#16a34a';
-      text.textContent='✅ FCM server is online and ready';
+      text.innerHTML='<i class="fas fa-circle-check"></i> FCM server is online and ready';
     }else{
       dot.style.background='#f59e0b';
-      text.textContent='⚠️ Server responded but with an error';
+      text.innerHTML='<i class="fas fa-triangle-exclamation"></i> Server responded but with an error';
     }
   }catch(e){
     dot.style.background='#dc2626';
-    text.textContent='❌ Server unreachable — it may be waking up (Render free tier sleeps after inactivity). Try sending anyway; the first request wakes it up.';
+    text.innerHTML='<i class="fas fa-xmark"></i> Server unreachable — it may be waking up (Render free tier sleeps after inactivity). Try sending anyway; the first request wakes it up.';
   }
 }
 window.checkPushServerStatus=checkPushServerStatus;
@@ -2983,18 +3267,18 @@ async function sendPushNotification(){
   }
 
   btn.disabled=true;
-  btn.textContent='📡 Fetching subscriber tokens…';
+  btn.innerHTML='<i class="fas fa-satellite-dish"></i> Fetching subscriber tokens…';
   resultEl.style.display='none';
 
   try{
     const tokens=await getAllActiveTokens();
     if(!tokens.length){
       showCEOStatus('error','No subscribed devices found. Nobody has enabled notifications yet.');
-      btn.disabled=false;btn.textContent='🚀 Send to All Subscribers';
+      btn.disabled=false;btn.innerHTML='<i class="fas fa-rocket"></i> Send to All Subscribers';
       return;
     }
 
-    btn.textContent=`📤 Sending to ${tokens.length} device(s)…`;
+    btn.innerHTML=`<i class="fas fa-upload"></i> Sending to ${tokens.length} device(s)…`;
 
     let fullLink=link;
     if(link&&!link.startsWith('http')) fullLink='https://bigquamsmedia.com.ng/'+link.replace(/^\//,'');
@@ -3015,8 +3299,8 @@ async function sendPushNotification(){
       resultEl.style.background='#dcfce7';
       resultEl.style.border='1.5px solid #86efac';
       resultEl.style.color='#15803d';
-      resultEl.innerHTML=`✅ <strong>Sent successfully!</strong><br>Delivered: ${data.sent} · Failed: ${data.failed} · Total: ${data.total}`;
-      showCEOStatus('success',`🚀 Notification sent to ${data.sent} device(s)!`);
+      resultEl.innerHTML=`<i class="fas fa-circle-check"></i> <strong>Sent successfully!</strong><br>Delivered: ${data.sent} · Failed: ${data.failed} · Total: ${data.total}`;
+      showCEOStatus('success',`<i class="fas fa-rocket"></i> Notification sent to ${data.sent} device(s)!`);
 
       // Save to broadcast history
       await window._addDoc(window._collection(window._db,'push_broadcasts'),{
@@ -3043,7 +3327,7 @@ async function sendPushNotification(){
       resultEl.style.background='#fee2e2';
       resultEl.style.border='1.5px solid #fca5a5';
       resultEl.style.color='#b91c1c';
-      resultEl.innerHTML=`❌ <strong>Send failed:</strong> ${data.error||'Unknown error'}`;
+      resultEl.innerHTML=`<i class="fas fa-xmark"></i> <strong>Send failed:</strong> ${data.error||'Unknown error'}`;
       showCEOStatus('error','Send failed: '+(data.error||'Unknown error'));
     }
   }catch(e){
@@ -3051,12 +3335,12 @@ async function sendPushNotification(){
     resultEl.style.background='#fee2e2';
     resultEl.style.border='1.5px solid #fca5a5';
     resultEl.style.color='#b91c1c';
-    resultEl.innerHTML=`❌ <strong>Connection error:</strong> ${e.message}<br><span style="font-size:.74rem">The Render server may be asleep — wait 30-60s and try again.</span>`;
+    resultEl.innerHTML=`<i class="fas fa-xmark"></i> <strong>Connection error:</strong> ${e.message}<br><span style="font-size:.74rem">The Render server may be asleep — wait 30-60s and try again.</span>`;
     showCEOStatus('error','Connection error: '+e.message);
   }
 
   btn.disabled=false;
-  btn.textContent='🚀 Send to All Subscribers';
+  btn.innerHTML='<i class="fas fa-rocket"></i> Send to All Subscribers';
 }
 window.sendPushNotification=sendPushNotification;
 
@@ -3081,15 +3365,15 @@ async function loadBroadcastHistory(){
             <div style="font-weight:800;font-size:.86rem;color:var(--text)">${b.title||''}</div>
             <div style="font-size:.78rem;color:var(--muted);margin-top:2px">${b.body||''}</div>
           </div>
-          <button onclick="deleteBroadcast('${b._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:4px 9px;border-radius:7px;font-size:.7rem;cursor:pointer;flex-shrink:0">🗑</button>
+          <button onclick="deleteBroadcast('${b._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:4px 9px;border-radius:7px;font-size:.7rem;cursor:pointer;flex-shrink:0"><i class="fas fa-trash"></i></button>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:.68rem;color:var(--muted)">
-          <span>📤 Sent: ${b.sent??'—'}</span>
-          <span>❌ Failed: ${b.failed??'—'}</span>
-          <span>📱 Total: ${b.total??'—'}</span>
+          <span><i class="fas fa-upload"></i> Sent: ${b.sent??'—'}</span>
+          <span><i class="fas fa-xmark"></i> Failed: ${b.failed??'—'}</span>
+          <span><i class="fas fa-mobile-screen"></i> Total: ${b.total??'—'}</span>
           <span style="margin-left:auto">${b.sentAt?.toDate?b.sentAt.toDate().toLocaleString('en-NG'):''}</span>
         </div>
-        ${b.link?`<a href="${b.link}" target="_blank" style="font-size:.7rem;color:var(--blue,#1a3fa8);font-weight:700;margin-top:4px;display:inline-block">🔗 ${b.link}</a>`:''}
+        ${b.link?`<a href="${b.link}" target="_blank" style="font-size:.7rem;color:var(--blue,#1a3fa8);font-weight:700;margin-top:4px;display:inline-block"><i class="fas fa-link"></i> ${b.link}</a>`:''}
       </div>`).join('');
   }catch(e){el.innerHTML='<div style="color:#ef4444;padding:16px">Error: '+e.message+'</div>';}
 }
