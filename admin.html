@@ -295,7 +295,19 @@ body.dark .rules-card summary{color:#93c5fd}
 .preview-device-btn{background:var(--light);border:1.5px solid var(--border);border-radius:7px;padding:6px 12px;font-size:.75rem;font-weight:700;color:var(--muted);cursor:pointer}
 body.dark .preview-device-btn{background:#0f172a}
 .preview-device-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-.preview-pane.mobile-preview .preview-body{max-width:360px;border-left:1px solid var(--border);border-right:1px solid var(--border);padding-left:14px;padding-right:14px}
+
+/* ─── DEVICE-FRAME PREVIEW ─── */
+/* Desktop: a lightweight browser-chrome bar (traffic-light dots) above the
+   preview so it reads as "a page in a browser", not just a plain box. */
+.preview-pane-hdr{position:relative;padding-left:56px}
+.preview-pane-hdr::before{content:'';position:absolute;left:14px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:#f87171;box-shadow:16px 0 0 #fbbf24,32px 0 0 #4ade80}
+/* Mobile: a real phone-bezel frame around the content — notch, side
+   buttons, home-indicator — not just a narrower column. */
+.preview-pane.mobile-preview{background:#1e2433;padding:34px 0 26px;display:flex;justify-content:center}
+.preview-pane.mobile-preview .preview-pane-hdr{display:none}
+.preview-pane.mobile-preview .preview-body{max-width:360px;width:360px;margin:0;border:10px solid #0b0e14;border-radius:36px;position:relative;box-shadow:0 12px 32px rgba(0,0,0,.4);max-height:640px;overflow-y:auto;padding-top:34px!important;padding-bottom:20px}
+.preview-pane.mobile-preview .preview-body::before{content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);width:120px;height:22px;background:#0b0e14;border-radius:14px;z-index:2}
+.preview-pane.mobile-preview .preview-body::after{content:'';position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:110px;height:4px;background:var(--border);border-radius:3px}
 .preview-pane{display:none;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:0;overflow:hidden;margin-top:4px}
 .preview-pane.open{display:block}
 .preview-pane-hdr{background:var(--light);padding:8px 14px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border)}
@@ -377,6 +389,33 @@ body.dark .item-preview{background:#0f172a}
 .img-preview.show{display:block}
 .img-clear{font-size:0.72rem;color:var(--red);cursor:pointer;margin-top:4px;display:none;font-weight:600}
 .img-clear.show{display:inline-block}
+
+/* ─── LINK PREVIEW IMAGE / SOCIAL PREVIEW CARD ─── */
+.preview-toggle-row{display:flex;align-items:center;gap:8px;margin:4px 0 10px;font-size:.8rem;font-weight:600;color:var(--text)}
+.preview-toggle-row input[type=checkbox]{width:17px;height:17px;accent-color:var(--blue)}
+.social-preview-card{border:1.5px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card);max-width:420px}
+.social-preview-img{width:100%;height:180px;object-fit:cover;background:var(--light);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.75rem}
+.social-preview-img img{width:100%;height:100%;object-fit:cover}
+.social-preview-body{padding:10px 14px;border-top:1px solid var(--border)}
+.social-preview-domain{font-size:.62rem;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:3px}
+.social-preview-title{font-size:.82rem;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.social-preview-desc{font-size:.72rem;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.social-preview-warn{font-size:.68rem;color:#b45309;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:6px 10px;margin-top:8px}
+body.dark .social-preview-warn{background:#3f2d05;border-color:#78350f;color:#fbbf24}
+
+/* ─── IMAGE LIBRARY ─── */
+.imglib-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.imglib-toolbar input,.imglib-toolbar select{flex:1;min-width:140px}
+.imglib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.imglib-card{border:1.5px solid var(--border);border-radius:10px;overflow:hidden;background:var(--card);cursor:pointer;transition:.15s}
+.imglib-card:hover{border-color:var(--blue);transform:translateY(-2px)}
+.imglib-card img{width:100%;height:90px;object-fit:cover;display:block;background:var(--light)}
+.imglib-card-body{padding:7px 9px}
+.imglib-card-name{font-size:.7rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.imglib-card-cat{font-size:.62rem;color:var(--muted)}
+.imglib-card-actions{display:flex;gap:4px;padding:0 9px 8px}
+.imglib-card-actions button{flex:1;font-size:.62rem;padding:4px 6px}
+.imglib-empty{grid-column:1/-1;text-align:center;padding:30px 10px;color:var(--muted);font-size:.82rem}
 
 /* ─── MODAL ─── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,20,60,0.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:500;align-items:flex-end;justify-content:center;padding:0;overflow-y:auto}
@@ -632,6 +671,10 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <button class="section-tab" onclick="switchSection('newsroom')">
         <span class="nav-icon"><i class="fas fa-newspaper"></i></span><span class="nav-label">Newsroom Settings</span>
       </button>
+      <button class="section-tab" onclick="switchSection('imglib')">
+        <span class="nav-icon"><i class="fas fa-photo-film"></i></span><span class="nav-label">Image Library</span>
+        <span class="nav-count" id="cnt-imglib">—</span>
+      </button>
       <button class="section-tab" onclick="switchSection('dyk')">
         <span class="nav-icon"><i class="fas fa-lightbulb"></i></span><span class="nav-label">Did You Know?</span>
         <span class="nav-count" id="cnt-dyk">—</span>
@@ -813,7 +856,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <div class="form-group"><label>Updated Date <span style="text-transform:none;font-weight:400">(optional)</span></label><input type="text" id="addUpdatedDate" placeholder="Leave blank if not updated" onchange="updateNewsPreview('add')"></div>
           </div>
           <div class="form-group">
-            <label>Cover Image</label>
+            <label>Featured Image <span style="text-transform:none;font-weight:400">(shown on the article page &amp; Newsroom cards)</span></label>
             <div class="img-upload-box" onclick="document.getElementById('addImageFile').click()">
               <input type="file" id="addImageFile" accept="image/*" onchange="previewImg(this,'addImgPreview','addImgClear','addImageB64');updateNewsPreview('add')">
               <div class="upload-label"><span><i class="fas fa-image"></i></span>Tap to upload image</div>
@@ -821,13 +864,28 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <img id="addImgPreview" class="img-preview" alt="preview">
             <span id="addImgClear" class="img-clear" onclick="clearImg('addImageFile','addImgPreview','addImgClear','addImageB64');updateNewsPreview('add')"><i class="fas fa-xmark"></i> Remove image</span>
             <input type="hidden" id="addImageB64">
+            <button type="button" class="btn btn-outline btn-sm" style="margin-top:8px" onclick="openImageLibraryPicker('addImageB64','addImgPreview','addImgClear','add')"><i class="fas fa-photo-film"></i> Choose from Image Library</button>
+          </div>
+          <div class="form-group">
+            <label>Link Preview Image <span style="text-transform:none;font-weight:400">(what shows when the article link is shared on WhatsApp, Facebook, X)</span></label>
+            <label class="preview-toggle-row"><input type="checkbox" id="addUseFeaturedAsPreview" checked onchange="onUseFeaturedPreviewToggle('add');updateNewsPreview('add')"> Use featured image as link preview</label>
+            <div id="addPreviewImgFields" style="display:none">
+              <div class="img-upload-box" onclick="document.getElementById('addPreviewImageFile').click()">
+                <input type="file" id="addPreviewImageFile" accept="image/*" onchange="previewImg(this,'addPreviewImgPreview','addPreviewImgClear','addPreviewImageB64');updateNewsPreview('add')">
+                <div class="upload-label"><span><i class="fas fa-image"></i></span>Choose Preview Image</div>
+              </div>
+              <img id="addPreviewImgPreview" class="img-preview" alt="preview">
+              <span id="addPreviewImgClear" class="img-clear" onclick="clearImg('addPreviewImageFile','addPreviewImgPreview','addPreviewImgClear','addPreviewImageB64');updateNewsPreview('add')"><i class="fas fa-xmark"></i> Remove image</span>
+              <input type="hidden" id="addPreviewImageB64">
+              <button type="button" class="btn btn-outline btn-sm" style="margin-top:8px" onclick="openImageLibraryPicker('addPreviewImageB64','addPreviewImgPreview','addPreviewImgClear','add')"><i class="fas fa-photo-film"></i> Choose from Image Library</button>
+            </div>
           </div>
           <div class="form-group">
             <label>Full Article Content *</label>
             <div class="editor-wrap" id="addEditorWrap">
               <div class="editor-toolbar">
-                <button type="button" class="editor-tbtn" onclick="document.execCommand('undo')" title="Undo"><i class="fas fa-rotate-left"></i> Undo</button>
-                <button type="button" class="editor-tbtn" onclick="document.execCommand('redo')" title="Redo"><i class="fas fa-rotate-right"></i> Redo</button>
+                <button type="button" class="editor-tbtn" onclick="editorUndo('addFullContent')" title="Undo"><i class="fas fa-rotate-left"></i> Undo</button>
+                <button type="button" class="editor-tbtn" onclick="editorRedo('addFullContent')" title="Redo"><i class="fas fa-rotate-right"></i> Redo</button>
                 <span class="editor-tbtn-sep"></span>
                 <button type="button" class="editor-tbtn" onclick="wrapSelection('addFullContent','*')"><b>B</b> Bold</button>
                 <button type="button" class="editor-tbtn" onclick="wrapSelection('addFullContent','_')"><i>I</i> Italic</button>
@@ -843,6 +901,8 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
                     <button type="button" onclick="wrapSelection('addFullContent','~');closeMoreMenus()"><s>S</s> Strikethrough</button>
                     <button type="button" onclick="wrapSelection('addFullContent','\`');closeMoreMenus()">&lt;/&gt; Monospace</button>
                     <button type="button" onclick="insertTable('addFullContent');closeMoreMenus()">▦ Insert table</button>
+                    <button type="button" onclick="addTableRow('addFullContent');closeMoreMenus()">▦ Add row to table</button>
+                    <button type="button" onclick="addTableColumn('addFullContent');closeMoreMenus()">▦ Add column to table</button>
                     <button type="button" onclick="toggleFindReplace('addFindReplace');closeMoreMenus()"><i class="fas fa-magnifying-glass"></i> Find &amp; replace</button>
                   </div>
                 </div>
@@ -856,7 +916,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
                 <button type="button" class="btn btn-outline btn-sm" onclick="findReplace('addFullContent','addFindText','addReplaceText',true)">Replace all</button>
                 <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFindReplace('addFindReplace')"><i class="fas fa-xmark"></i></button>
               </div>
-              <textarea class="article-textarea" id="addFullContent" placeholder="Write the full article here…" oninput="updateNewsPreview('add');updateWordCount('add');queueAutosave('add')"></textarea>
+              <textarea class="article-textarea" id="addFullContent" placeholder="Write the full article here…" oninput="updateNewsPreview('add');updateWordCount('add');queueAutosave('add');recordEditorHistory('addFullContent')" onkeydown="handleEditorUndoRedoKeys(event,'addFullContent')"></textarea>
               <div class="editor-footer">
                 <span class="word-count" id="addWordCount">0 words · 0 characters</span>
                 <span class="autosave-status" id="addAutosaveStatus"></span>
@@ -894,6 +954,13 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="preview-pane" id="addPreviewPane">
             <div class="preview-pane-hdr"><i class="fas fa-mobile-screen"></i> Approximate published appearance</div>
             <div class="preview-body" id="addPreviewBody"></div>
+          </div>
+          <div class="preview-toggle">
+            <button type="button" class="btn btn-outline btn-sm" onclick="toggleSocialPreview('add')" id="addSocialPreviewToggleBtn"><i class="fas fa-share-nodes"></i> Show Social / Link Preview</button>
+          </div>
+          <div class="preview-pane" id="addSocialPreviewPane">
+            <div class="preview-pane-hdr"><i class="fas fa-share-nodes"></i> How the link looks when shared on WhatsApp / Facebook / X</div>
+            <div style="padding:16px" id="addSocialPreviewBody"></div>
           </div>
           <div class="btn-row">
             <button class="btn btn-success" onclick="addNews()" id="addNewsBtn"><i class="fas fa-rocket"></i> Publish Article</button>
@@ -934,6 +1001,36 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         </div>
       </div>
       <div class="section-card">
+        <div class="card-title"><i class="fas fa-image"></i> Category Default Images</div>
+        <p class="form-hint" style="margin-bottom:12px">Used as an article's link-preview image when it has no Featured Image and no manually chosen Preview Image — see the fallback order below.</p>
+        <div id="categoryDefaultsGrid" class="imglib-grid" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))"></div>
+        <div class="btn-row" style="margin-top:14px">
+          <button class="btn btn-primary" onclick="saveCategoryDefaultImages()"><i class="fas fa-floppy-disk"></i> Save Default Images</button>
+        </div>
+        <div class="form-hint" style="margin-top:14px;line-height:1.7">
+          <b>Fallback order</b> for an article's link-preview image:<br>
+          1. Its own manually-selected Link Preview Image<br>
+          2. Its Featured Image, if "Use featured image as link preview" is on<br>
+          3. The category's default image (set above)<br>
+          4. The Global Newsroom Default Image (below)<br>
+          5. The main site's default image, as a last resort
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="card-title"><i class="fas fa-globe"></i> Global Newsroom Default Image</div>
+        <p class="form-hint" style="margin-bottom:12px">Used for any article whose category has no default set above.</p>
+        <div class="img-upload-box" onclick="document.getElementById('globalDefaultImageFile').click()">
+          <input type="file" id="globalDefaultImageFile" accept="image/*" onchange="previewImg(this,'globalDefaultImgPreview','globalDefaultImgClear','globalDefaultImageB64')">
+          <div class="upload-label"><span><i class="fas fa-image"></i></span>Tap to upload image</div>
+        </div>
+        <img id="globalDefaultImgPreview" class="img-preview" alt="preview">
+        <span id="globalDefaultImgClear" class="img-clear" onclick="clearImg('globalDefaultImageFile','globalDefaultImgPreview','globalDefaultImgClear','globalDefaultImageB64')"><i class="fas fa-xmark"></i> Remove image</span>
+        <input type="hidden" id="globalDefaultImageB64">
+        <div class="btn-row" style="margin-top:10px">
+          <button class="btn btn-primary" onclick="saveCategoryDefaultImages()"><i class="fas fa-floppy-disk"></i> Save</button>
+        </div>
+      </div>
+      <div class="section-card">
         <div class="card-title"><i class="fas fa-chart-column"></i> Newsroom Stats</div>
         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
           <style>@media(min-width:500px){#section-newsroom .stat-row-3{grid-template-columns:repeat(3,1fr)}}</style>
@@ -941,6 +1038,51 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="stat-card"><div class="stat-icon" style="background:#fef3c7"><i class="fas fa-thumbtack"></i></div><div><div class="stat-num" id="nr-pinned">—</div><div class="stat-lbl">Pinned</div></div></div>
           <div class="stat-card"><div class="stat-icon" style="background:#dcfce7"><i class="fas fa-folder-open"></i></div><div><div class="stat-num" id="nr-cats">—</div><div class="stat-lbl">Categories</div></div></div>
         </div>
+      </div>
+    </div>
+
+    <!-- ══ IMAGE LIBRARY ══ -->
+    <div class="admin-section" id="section-imglib">
+      <div class="section-header">
+        <h2 class="section-title-h2"><i class="fas fa-photo-film"></i> News Image Library</h2>
+      </div>
+      <div class="section-card">
+        <div class="card-title"><i class="fas fa-upload"></i> Save a New Image to the Library</div>
+        <p class="form-hint" style="margin-bottom:12px">Upload once, reuse across as many articles as you like — for a Featured Image or a Link Preview Image, from the news editor's "Choose from Image Library" button.</p>
+        <div class="form-row">
+          <div class="form-group"><label>Image Name *</label><input type="text" id="ilAddName" placeholder="e.g. JAMB Generic Banner"></div>
+          <div class="form-group"><label>Category</label>
+            <select id="ilAddCategory">
+              <option value="General">General</option>
+              <option>JAMB Update</option><option>Campus News</option><option>Scholarship</option>
+              <option>Admission Guide</option><option>Services</option><option>Academic Coaching</option>
+              <option>Lifestyle</option><option>Announcement</option>
+            </select>
+          </div>
+        </div>
+        <div class="img-upload-box" onclick="document.getElementById('ilAddFile').click()">
+          <input type="file" id="ilAddFile" accept="image/*" onchange="previewImg(this,'ilAddPreview','ilAddClear','ilAddB64')">
+          <div class="upload-label"><span><i class="fas fa-image"></i></span>Tap to upload image</div>
+        </div>
+        <img id="ilAddPreview" class="img-preview" alt="preview">
+        <span id="ilAddClear" class="img-clear" onclick="clearImg('ilAddFile','ilAddPreview','ilAddClear','ilAddB64')"><i class="fas fa-xmark"></i> Remove image</span>
+        <input type="hidden" id="ilAddB64">
+        <div class="btn-row" style="margin-top:10px">
+          <button class="btn btn-success" onclick="saveImageToLibrary()" id="ilSaveBtn"><i class="fas fa-floppy-disk"></i> Save to Library</button>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="card-title"><i class="fas fa-clipboard-list"></i> Saved Images <span id="ilCount" style="font-size:0.72rem;font-weight:400;color:var(--muted)"></span></div>
+        <div class="imglib-toolbar">
+          <input type="text" id="ilSearch" placeholder="Search by name…" oninput="renderImageLibraryGrid()">
+          <select id="ilFilterCategory" onchange="renderImageLibraryGrid()">
+            <option value="">All categories</option>
+            <option>General</option><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option>
+            <option>Admission Guide</option><option>Services</option><option>Academic Coaching</option>
+            <option>Lifestyle</option><option>Announcement</option>
+          </select>
+        </div>
+        <div class="imglib-grid" id="ilGrid"><div class="imglib-empty">Loading…</div></div>
       </div>
     </div>
 
@@ -2544,6 +2686,31 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <div class="form-group"><label>Published Date</label><input type="text" id="eNewsDate" onchange="updateNewsPreview('e')"></div>
         <div class="form-group"><label>Updated Date <span style="text-transform:none;font-weight:400">(optional)</span></label><input type="text" id="eNewsUpdatedDate" placeholder="Leave blank if not updated" onchange="updateNewsPreview('e')"></div>
       </div>
+      <div class="form-group">
+        <label>Featured Image <span style="text-transform:none;font-weight:400">(shown on the article page &amp; Newsroom cards)</span></label>
+        <div class="img-upload-box" onclick="document.getElementById('eImageFile').click()">
+          <input type="file" id="eImageFile" accept="image/*" onchange="previewImg(this,'eImgPreview','eImgClear','eImageB64');updateNewsPreview('e')">
+          <div class="upload-label"><span><i class="fas fa-image"></i></span>Tap to upload image</div>
+        </div>
+        <img id="eImgPreview" class="img-preview" alt="preview">
+        <span id="eImgClear" class="img-clear" onclick="clearImg('eImageFile','eImgPreview','eImgClear','eImageB64');updateNewsPreview('e')"><i class="fas fa-xmark"></i> Remove image</span>
+        <input type="hidden" id="eImageB64">
+        <button type="button" class="btn btn-outline btn-sm" style="margin-top:8px" onclick="openImageLibraryPicker('eImageB64','eImgPreview','eImgClear','e')"><i class="fas fa-photo-film"></i> Choose from Image Library</button>
+      </div>
+      <div class="form-group">
+        <label>Link Preview Image <span style="text-transform:none;font-weight:400">(what shows when the article link is shared)</span></label>
+        <label class="preview-toggle-row"><input type="checkbox" id="eUseFeaturedAsPreview" checked onchange="onUseFeaturedPreviewToggle('e');updateNewsPreview('e')"> Use featured image as link preview</label>
+        <div id="ePreviewImgFields" style="display:none">
+          <div class="img-upload-box" onclick="document.getElementById('ePreviewImageFile').click()">
+            <input type="file" id="ePreviewImageFile" accept="image/*" onchange="previewImg(this,'ePreviewImgPreview','ePreviewImgClear','ePreviewImageB64');updateNewsPreview('e')">
+            <div class="upload-label"><span><i class="fas fa-image"></i></span>Choose Preview Image</div>
+          </div>
+          <img id="ePreviewImgPreview" class="img-preview" alt="preview">
+          <span id="ePreviewImgClear" class="img-clear" onclick="clearImg('ePreviewImageFile','ePreviewImgPreview','ePreviewImgClear','ePreviewImageB64');updateNewsPreview('e')"><i class="fas fa-xmark"></i> Remove image</span>
+          <input type="hidden" id="ePreviewImageB64">
+          <button type="button" class="btn btn-outline btn-sm" style="margin-top:8px" onclick="openImageLibraryPicker('ePreviewImageB64','ePreviewImgPreview','ePreviewImgClear','e')"><i class="fas fa-photo-film"></i> Choose from Image Library</button>
+        </div>
+      </div>
       <div class="form-group"><label>Author</label>
         <select id="eNewsAuthorSelect" onchange="onAuthorSelectChange('e')"><option value="__custom__">Type a name…</option></select>
         <input type="text" id="eNewsAuthor" placeholder="Author name" onchange="updateNewsPreview('e')" style="margin-top:6px">
@@ -2565,8 +2732,8 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <label>Full Content *</label>
         <div class="editor-wrap" id="eEditorWrap">
           <div class="editor-toolbar">
-            <button type="button" class="editor-tbtn" onclick="document.execCommand('undo')" title="Undo"><i class="fas fa-rotate-left"></i> Undo</button>
-            <button type="button" class="editor-tbtn" onclick="document.execCommand('redo')" title="Redo"><i class="fas fa-rotate-right"></i> Redo</button>
+            <button type="button" class="editor-tbtn" onclick="editorUndo('eNewsFullContent')" title="Undo"><i class="fas fa-rotate-left"></i> Undo</button>
+            <button type="button" class="editor-tbtn" onclick="editorRedo('eNewsFullContent')" title="Redo"><i class="fas fa-rotate-right"></i> Redo</button>
             <span class="editor-tbtn-sep"></span>
             <button type="button" class="editor-tbtn" onclick="wrapSelection('eNewsFullContent','*')"><b>B</b> Bold</button>
             <button type="button" class="editor-tbtn" onclick="wrapSelection('eNewsFullContent','_')"><i>I</i> Italic</button>
@@ -2582,6 +2749,8 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
                 <button type="button" onclick="wrapSelection('eNewsFullContent','~');closeMoreMenus()"><s>S</s> Strikethrough</button>
                 <button type="button" onclick="wrapSelection('eNewsFullContent','\`');closeMoreMenus()">&lt;/&gt; Monospace</button>
                 <button type="button" onclick="insertTable('eNewsFullContent');closeMoreMenus()">▦ Insert table</button>
+                <button type="button" onclick="addTableRow('eNewsFullContent');closeMoreMenus()">▦ Add row to table</button>
+                <button type="button" onclick="addTableColumn('eNewsFullContent');closeMoreMenus()">▦ Add column to table</button>
                 <button type="button" onclick="toggleFindReplace('eFindReplace');closeMoreMenus()"><i class="fas fa-magnifying-glass"></i> Find &amp; replace</button>
               </div>
             </div>
@@ -2595,9 +2764,10 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <button type="button" class="btn btn-outline btn-sm" onclick="findReplace('eNewsFullContent','eFindText','eReplaceText',true)">Replace all</button>
             <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFindReplace('eFindReplace')"><i class="fas fa-xmark"></i></button>
           </div>
-          <textarea class="article-textarea" id="eNewsFullContent" oninput="updateNewsPreview('e');updateWordCount('e')"></textarea>
+          <textarea class="article-textarea" id="eNewsFullContent" oninput="updateNewsPreview('e');updateWordCount('e');queueAutosave('e');recordEditorHistory('eNewsFullContent')" onkeydown="handleEditorUndoRedoKeys(event,'eNewsFullContent')"></textarea>
           <div class="editor-footer">
             <span class="word-count" id="eWordCount">0 words · 0 characters</span>
+            <span class="autosave-status" id="eAutosaveStatus"></span>
           </div>
         </div>
         <div class="editor-hint">Use <code>*text*</code> for bold, <code>_text_</code> for italic, <code>~text~</code> for strikethrough, <code>`text`</code> for monospace, <code>## </code> for a heading, <code>&gt; </code> for a pull-quote, <code>- </code> for bullet lists, <code>1. </code> for numbered lists.</div>
@@ -2612,6 +2782,13 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="preview-pane" id="ePreviewPane">
         <div class="preview-pane-hdr"><i class="fas fa-mobile-screen"></i> Approximate published appearance</div>
         <div class="preview-body" id="ePreviewBody"></div>
+      </div>
+      <div class="preview-toggle">
+        <button type="button" class="btn btn-outline btn-sm" onclick="toggleSocialPreview('e')" id="eSocialPreviewToggleBtn"><i class="fas fa-share-nodes"></i> Show Social / Link Preview</button>
+      </div>
+      <div class="preview-pane" id="eSocialPreviewPane">
+        <div class="preview-pane-hdr"><i class="fas fa-share-nodes"></i> How the link looks when shared on WhatsApp / Facebook / X</div>
+        <div style="padding:16px" id="eSocialPreviewBody"></div>
       </div>
       <div class="btn-row">
         <button class="btn btn-primary" onclick="saveEditNews()" id="saveNewsBtn">Save Changes</button>
@@ -2915,7 +3092,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp, deleteField, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider, signOut, sendPasswordResetEmail, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const fbConfig = {
@@ -2947,6 +3124,7 @@ window.doc          = doc;
 window.getDoc       = getDoc;
 window.setDoc       = setDoc;
 window.serverTimestamp = serverTimestamp;
+window.deleteField  = deleteField;
 window.query        = query;
 window.orderBy      = orderBy;
 window.limit        = limit;
@@ -3792,7 +3970,7 @@ window.openModal=openModal; window.closeModal=closeModal; window.handleOverlay=h
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
 
 // ── SECTION & TAB SWITCHING ──
-const ALL_SECTIONS=['dashboard','news','newsroom','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','admission','campuslife','campusgist','polls','dailyhub','anonymous','activitylog','users','reviews','qa','calendar','ticker','pushnotif'];
+const ALL_SECTIONS=['dashboard','news','newsroom','imglib','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','admission','campuslife','campusgist','polls','dailyhub','anonymous','activitylog','users','reviews','qa','calendar','ticker','pushnotif'];
 
 function toggleSidebar(){
   const isOpen=document.getElementById('adminSidebar').classList.contains('open');
@@ -3832,6 +4010,8 @@ function switchSection(name){
   if(name==='users') setTimeout(loadUsers,100);
   if(name==='pushnotif') setTimeout(()=>{loadTokenCount();renderPushHistory();},100);
   if(name==='admission') setTimeout(loadAdmissionPriceForm,100);
+  if(name==='imglib') setTimeout(loadImageLibrary,100);
+  if(name==='newsroom') setTimeout(loadCategoryDefaultsIntoSettingsGrid,100);
 }
 window.switchSection=switchSection;
 
@@ -4112,6 +4292,89 @@ function formatArticleBody(raw){
 }
 
 // ── Editor toolbar helpers (WhatsApp-style shortcuts inserted at cursor) ──
+// ── Real undo/redo history (not the browser's native execCommand, which is
+// unreliable — especially in Safari — once we've been setting .value
+// programmatically via the toolbar buttons) ──
+window._editorHistory={}; // { [taId]: {stack:[{value,start,end}], pointer:int} }
+window._editorHistorySuppress={}; // true while we're restoring, so restoring doesn't re-record itself
+let _historyDebounce={};
+
+function _ensureHistory(taId){
+  if(!window._editorHistory[taId]){
+    const ta=document.getElementById(taId);
+    window._editorHistory[taId]={stack:[{value:ta?ta.value:'',start:0,end:0}],pointer:0};
+  }
+  return window._editorHistory[taId];
+}
+
+function recordEditorHistory(taId){
+  if(window._editorHistorySuppress[taId]) return;
+  clearTimeout(_historyDebounce[taId]);
+  _historyDebounce[taId]=setTimeout(()=>{
+    const ta=document.getElementById(taId); if(!ta) return;
+    const h=_ensureHistory(taId);
+    const current=h.stack[h.pointer];
+    if(current&&current.value===ta.value) return; // nothing changed
+    // Editing after an undo discards the redo branch, like every editor does
+    h.stack=h.stack.slice(0,h.pointer+1);
+    h.stack.push({value:ta.value,start:ta.selectionStart,end:ta.selectionEnd});
+    if(h.stack.length>100) h.stack.shift(); else h.pointer++;
+    if(h.stack.length<=100) h.pointer=h.stack.length-1;
+  },400);
+}
+window.recordEditorHistory=recordEditorHistory;
+
+// Toolbar-driven changes (bold, lists, tables, find/replace…) should also
+// count as one undo step each, recorded immediately rather than debounced.
+function recordEditorHistoryNow(taId){
+  clearTimeout(_historyDebounce[taId]);
+  const ta=document.getElementById(taId); if(!ta) return;
+  const h=_ensureHistory(taId);
+  const current=h.stack[h.pointer];
+  if(current&&current.value===ta.value) return;
+  h.stack=h.stack.slice(0,h.pointer+1);
+  h.stack.push({value:ta.value,start:ta.selectionStart,end:ta.selectionEnd});
+  if(h.stack.length>100) h.stack.shift();
+  h.pointer=h.stack.length-1;
+}
+window.recordEditorHistoryNow=recordEditorHistoryNow;
+
+function _restoreHistory(taId,snap){
+  const ta=document.getElementById(taId); if(!ta||!snap) return;
+  window._editorHistorySuppress[taId]=true;
+  ta.value=snap.value;
+  ta.focus();
+  ta.selectionStart=snap.start; ta.selectionEnd=snap.end;
+  ta.dispatchEvent(new Event('input')); // refresh preview/word-count, but not history
+  window._editorHistorySuppress[taId]=false;
+}
+
+function editorUndo(taId){
+  const h=_ensureHistory(taId);
+  recordEditorHistoryNow(taId); // capture any pending unsaved keystroke first
+  if(h.pointer<=0) return;
+  h.pointer--;
+  _restoreHistory(taId,h.stack[h.pointer]);
+}
+window.editorUndo=editorUndo;
+
+function editorRedo(taId){
+  const h=_ensureHistory(taId);
+  if(h.pointer>=h.stack.length-1) return;
+  h.pointer++;
+  _restoreHistory(taId,h.stack[h.pointer]);
+}
+window.editorRedo=editorRedo;
+
+function handleEditorUndoRedoKeys(e,taId){
+  const mod=e.ctrlKey||e.metaKey;
+  if(!mod) return;
+  const key=e.key.toLowerCase();
+  if(key==='z'&&!e.shiftKey){ e.preventDefault(); editorUndo(taId); }
+  else if((key==='z'&&e.shiftKey)||key==='y'){ e.preventDefault(); editorRedo(taId); }
+}
+window.handleEditorUndoRedoKeys=handleEditorUndoRedoKeys;
+
 function wrapSelection(taId,marker){
   const ta=document.getElementById(taId); if(!ta) return;
   const s=ta.selectionStart,e=ta.selectionEnd;
@@ -4119,6 +4382,7 @@ function wrapSelection(taId,marker){
   ta.value=ta.value.slice(0,s)+marker+sel+marker+ta.value.slice(e);
   ta.focus(); ta.selectionStart=s+marker.length; ta.selectionEnd=s+marker.length+sel.length;
   ta.dispatchEvent(new Event('input'));
+  recordEditorHistoryNow(taId);
 }
 window.wrapSelection=wrapSelection;
 
@@ -4131,6 +4395,7 @@ function insertListPrefix(taId,prefix){
   ta.value=before+insert+after;
   ta.focus(); const pos=before.length+insert.length; ta.selectionStart=ta.selectionEnd=pos;
   ta.dispatchEvent(new Event('input'));
+  recordEditorHistoryNow(taId);
 }
 window.insertListPrefix=insertListPrefix;
 
@@ -4146,6 +4411,7 @@ function insertLink(taId){
   ta.value=ta.value.slice(0,s)+insert+ta.value.slice(e);
   ta.focus(); ta.selectionStart=ta.selectionEnd=s+insert.length;
   ta.dispatchEvent(new Event('input'));
+  recordEditorHistoryNow(taId);
 }
 window.insertLink=insertLink;
 
@@ -4166,6 +4432,7 @@ function removeFormatting(taId){
     ta.value=clean(ta.value);
   }
   ta.dispatchEvent(new Event('input'));
+  recordEditorHistoryNow(taId);
 }
 window.removeFormatting=removeFormatting;
 
@@ -4194,8 +4461,64 @@ function insertTable(taId){
   ta.value=before+insert+after;
   ta.focus(); ta.selectionStart=ta.selectionEnd=before.length+insert.length;
   ta.dispatchEvent(new Event('input'));
+  recordEditorHistoryNow(taId);
 }
 window.insertTable=insertTable;
+
+// Finds the pipe-table block the cursor is currently inside (or just above),
+// returning its line range in the textarea — used by Add Row/Add Column so
+// they act on "the table near the cursor" without a full table UI.
+function findTableAtCursor(ta){
+  const lines=ta.value.split('\n');
+  const upTo=ta.value.slice(0,ta.selectionStart).split('\n');
+  let lineIdx=upTo.length-1;
+  const isTableLine=l=>/^\s*\|.*\|\s*$/.test(l);
+  // If the cursor isn't on a table line, look for the nearest one above
+  while(lineIdx>=0 && !isTableLine(lines[lineIdx])) lineIdx--;
+  if(lineIdx<0) return null;
+  let start=lineIdx,end=lineIdx;
+  while(start>0 && isTableLine(lines[start-1])) start--;
+  while(end<lines.length-1 && isTableLine(lines[end+1])) end++;
+  if(end-start<1) return null; // need at least header+separator
+  return {lines,start,end};
+}
+
+function addTableRow(taId){
+  const ta=document.getElementById(taId); if(!ta) return;
+  const t=findTableAtCursor(ta);
+  if(!t){ alert('Place your cursor inside a table first (or use "Insert table" to create one).'); return; }
+  const {lines,start,end}=t;
+  const cols=(lines[start].match(/\|/g)||[]).length-1;
+  const newRow='| '+Array.from({length:Math.max(cols,1)},()=>' ').join(' | ')+' |';
+  lines.splice(end+1,0,newRow);
+  ta.value=lines.join('\n');
+  ta.dispatchEvent(new Event('input'));
+  recordEditorHistoryNow(taId);
+}
+window.addTableRow=addTableRow;
+
+function addTableColumn(taId){
+  const ta=document.getElementById(taId); if(!ta) return;
+  const t=findTableAtCursor(ta);
+  if(!t){ alert('Place your cursor inside a table first (or use "Insert table" to create one).'); return; }
+  const {lines,start,end}=t;
+  for(let i=start;i<=end;i++){
+    const l=lines[i];
+    if(i===start+1){
+      // separator row: |---|---|  -> add another |---|
+      lines[i]=l.replace(/\s*\|\s*$/,'') + '---|';
+    } else if(i===start){
+      const n=(l.match(/\|/g)||[]).length-1;
+      lines[i]=l.replace(/\s*\|\s*$/,'') + ` Column ${n+1} |`;
+    } else {
+      lines[i]=l.replace(/\s*\|\s*$/,'') + '  |';
+    }
+  }
+  ta.value=lines.join('\n');
+  ta.dispatchEvent(new Event('input'));
+  recordEditorHistoryNow(taId);
+}
+window.addTableColumn=addTableColumn;
 
 function toggleFindReplace(barId){
   const bar=document.getElementById(barId); if(!bar) return;
@@ -4213,6 +4536,7 @@ function findReplace(taId,findId,replId,all){
     const count=ta.value.split(find).length-1;
     ta.value=ta.value.split(find).join(repl);
     ta.dispatchEvent(new Event('input'));
+    recordEditorHistoryNow(taId);
     alert(count?`Replaced ${count} occurrence${count===1?'':'s'}.`:'No matches found.');
   } else {
     const idx=ta.value.indexOf(find, ta.selectionEnd||0);
@@ -4221,6 +4545,7 @@ function findReplace(taId,findId,replId,all){
     ta.value=ta.value.slice(0,foundAt)+repl+ta.value.slice(foundAt+find.length);
     ta.focus(); ta.selectionStart=foundAt; ta.selectionEnd=foundAt+repl.length;
     ta.dispatchEvent(new Event('input'));
+    recordEditorHistoryNow(taId);
   }
 }
 window.findReplace=findReplace;
@@ -4237,31 +4562,49 @@ function updateWordCount(which){
 }
 window.updateWordCount=updateWordCount;
 
-// ── Autosave drafts to localStorage (Add form only — Edit works on an
-// existing published doc, so autosave there would risk overwriting it with
-// a stale local copy) ──
-let _autosaveTimer=null;
+// ── Autosave drafts to localStorage. Add form: one shared draft key. Edit
+// form: keyed per-article-id and only ever offered as a manual recovery
+// prompt — never auto-applied — since silently overwriting a live
+// published doc with a stale local copy would be dangerous. ──
 function queueAutosave(which){
-  if(which!=='add') return;
-  const statusEl=document.getElementById('addAutosaveStatus');
+  const statusEl=document.getElementById(which==='add'?'addAutosaveStatus':'eAutosaveStatus');
   if(statusEl){ statusEl.textContent='Saving…'; statusEl.className='autosave-status saving'; }
-  clearTimeout(_autosaveTimer);
-  _autosaveTimer=setTimeout(()=>{
+  clearTimeout(_autosaveTimer[which]);
+  _autosaveTimer[which]=setTimeout(()=>{
     try{
-      const draft={
-        title:document.getElementById('addTitle')?.value||'',
-        category:document.getElementById('addCategory')?.value||'',
-        fullContent:document.getElementById('addFullContent')?.value||'',
-        author:document.getElementById('addAuthor')?.value||'',
-        tags:document.getElementById('addTags')?.value||'',
-        savedAt:Date.now()
-      };
-      if(draft.title||draft.fullContent) localStorage.setItem('bqm-news-draft',JSON.stringify(draft));
+      if(which==='add'){
+        const draft={
+          title:document.getElementById('addTitle')?.value||'',
+          category:document.getElementById('addCategory')?.value||'',
+          fullContent:document.getElementById('addFullContent')?.value||'',
+          author:document.getElementById('addAuthor')?.value||'',
+          tags:document.getElementById('addTags')?.value||'',
+          savedAt:Date.now()
+        };
+        if(draft.title||draft.fullContent) localStorage.setItem('bqm-news-draft',JSON.stringify(draft));
+      } else {
+        // Edit form: keyed per-article so drafts never bleed between
+        // articles, and NEVER auto-applied — only offered as a manual
+        // "recover?" prompt next time this same article is opened. The
+        // admin still has to click Save Changes to actually publish it.
+        const idx=parseInt(document.getElementById('editNewsIdx')?.value);
+        const item=newsData[idx];
+        if(!item||!item._id) return;
+        const draft={
+          articleId:item._id,
+          title:document.getElementById('eNewsTitle')?.value||'',
+          fullContent:document.getElementById('eNewsFullContent')?.value||'',
+          tags:document.getElementById('eNewsTags')?.value||'',
+          savedAt:Date.now()
+        };
+        if(draft.title||draft.fullContent) localStorage.setItem('bqm-news-editdraft-'+item._id,JSON.stringify(draft));
+      }
       if(statusEl){ statusEl.textContent='Saved just now'; statusEl.className='autosave-status saved'; }
     }catch(e){ if(statusEl){statusEl.textContent='';} }
   },1200);
 }
 window.queueAutosave=queueAutosave;
+let _autosaveTimer={};
 
 function formatAgo(ts){
   const mins=Math.floor((Date.now()-ts)/60000);
@@ -4291,6 +4634,31 @@ function checkForDraftRecovery(){
     }
   }catch(e){}
 }
+
+// Checked every time the Edit modal opens for a given article — a local
+// autosaved draft for THIS article is never applied automatically, only
+// offered. Declining removes it so the prompt doesn't reappear forever.
+function checkForEditDraftRecovery(articleId){
+  try{
+    const key='bqm-news-editdraft-'+articleId;
+    const raw=localStorage.getItem(key); if(!raw) return;
+    const draft=JSON.parse(raw);
+    if(!draft||(!draft.title&&!draft.fullContent)){ localStorage.removeItem(key); return; }
+    const ok=confirm(`Found an unsaved draft of your edits to this article from ${formatAgo(draft.savedAt)}. Load it into the editor? (You'll still need to click Save Changes afterwards.)`);
+    if(ok){
+      if(draft.title) document.getElementById('eNewsTitle').value=draft.title;
+      if(draft.fullContent) document.getElementById('eNewsFullContent').value=draft.fullContent;
+      if(draft.tags) document.getElementById('eNewsTags').value=draft.tags;
+      updateWordCount('e');
+      updateNewsPreview('e');
+      const statusEl=document.getElementById('eAutosaveStatus');
+      if(statusEl){ statusEl.textContent='Draft loaded — last autosaved '+formatAgo(draft.savedAt); statusEl.className='autosave-status saved'; }
+    } else {
+      localStorage.removeItem(key);
+    }
+  }catch(e){}
+}
+window.checkForEditDraftRecovery=checkForEditDraftRecovery;
 
 function toggleFullscreenEditor(wrapId,taId){
   const wrap=document.getElementById(wrapId); if(!wrap) return;
@@ -4354,11 +4722,88 @@ function slugifyLive(which){
 }
 window.slugifyLive=slugifyLive;
 
+function onUseFeaturedPreviewToggle(which){
+  const cbId=which==='add'?'addUseFeaturedAsPreview':'eUseFeaturedAsPreview';
+  const fieldsId=which==='add'?'addPreviewImgFields':'ePreviewImgFields';
+  const cb=document.getElementById(cbId),fields=document.getElementById(fieldsId);
+  if(!cb||!fields) return;
+  fields.style.display=cb.checked?'none':'block';
+}
+window.onUseFeaturedPreviewToggle=onUseFeaturedPreviewToggle;
+
+function toggleSocialPreview(which){
+  const pane=document.getElementById(which==='add'?'addSocialPreviewPane':'eSocialPreviewPane');
+  const btn=document.getElementById(which==='add'?'addSocialPreviewToggleBtn':'eSocialPreviewToggleBtn');
+  const open=pane.classList.toggle('open');
+  btn.innerHTML=open?'<i class="fas fa-eye-slash"></i> Hide Social / Link Preview':'<i class="fas fa-share-nodes"></i> Show Social / Link Preview';
+  if(open) updateSocialPreview(which);
+}
+window.toggleSocialPreview=toggleSocialPreview;
+
+// Mirrors resolvePreviewImage() in newsroom.html and
+// scripts/generate-news-pages.mjs — keep all three in sync.
+function resolvePreviewImageAdmin(featuredImg,previewImg,useFeatured,category){
+  if(previewImg) return previewImg;
+  if(useFeatured!==false && featuredImg) return featuredImg;
+  if(category && window._categoryDefaultImages && window._categoryDefaultImages[category]) return window._categoryDefaultImages[category];
+  return (window._categoryDefaultImages&&window._categoryDefaultImages.__global__) || '';
+}
+window._categoryDefaultImages={};
+
+function updateSocialPreview(which){
+  const isAdd=which==='add';
+  const pane=document.getElementById(isAdd?'addSocialPreviewPane':'eSocialPreviewPane');
+  if(!pane||!pane.classList.contains('open')) return;
+  const title=(document.getElementById(isAdd?'addTitle':'eNewsTitle')?.value||'').trim();
+  const category=document.getElementById(isAdd?'addCategory':'eNewsCategory')?.value||'';
+  const body=document.getElementById(isAdd?'addFullContent':'eNewsFullContent')?.value||'';
+  const seoTitle=document.getElementById(isAdd?'addSeoTitle':'eSeoTitle')?.value.trim();
+  const seoDesc=document.getElementById(isAdd?'addSeoDesc':'eSeoDesc')?.value.trim();
+  const slugField=document.getElementById(isAdd?'addSlug':'eSlug')?.value.trim();
+  const featuredImg=document.getElementById(isAdd?'addImageB64':'eImageB64')?.value||'';
+  const previewImgVal=document.getElementById(isAdd?'addPreviewImageB64':'ePreviewImageB64')?.value||'';
+  const useFeatured=document.getElementById(isAdd?'addUseFeaturedAsPreview':'eUseFeaturedAsPreview')?.checked;
+  const resolvedImg=resolvePreviewImageAdmin(featuredImg,previewImgVal,useFeatured,category);
+  const desc=seoDesc||plainTextExcerpt(body).slice(0,140);
+  const slug=slugField||makeSlug(title);
+  const out=document.getElementById(isAdd?'addSocialPreviewBody':'eSocialPreviewBody');
+  if(!out) return;
+  let warn='';
+  if(!resolvedImg) warn='<div class="social-preview-warn"><i class="fas fa-triangle-exclamation"></i> No image will be available for this link preview — add a Featured Image, a Link Preview Image, or set a category/global default in Newsroom Settings.</div>';
+  out.innerHTML=`
+    <div class="social-preview-card">
+      <div class="social-preview-img">${resolvedImg?`<img src="${resolvedImg}" alt="">`:'No preview image'}</div>
+      <div class="social-preview-body">
+        <div class="social-preview-domain">bigquamsmedia.com.ng</div>
+        <div class="social-preview-title">${seoTitle||title||'Untitled article'}</div>
+        <div class="social-preview-desc">${desc||'A short description of the article will appear here.'}</div>
+      </div>
+    </div>
+    <div class="form-hint" style="margin-top:8px">bigquamsmedia.com.ng/news/${slug||'…'}--&lt;id&gt;/</div>
+    ${warn}`;
+}
+window.updateSocialPreview=updateSocialPreview;
+
+function plainTextExcerpt(raw){
+  return (raw||'')
+    .replace(/<a\s+[^>]*?href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi,'$2')
+    .replace(/<\/?[a-z][^>]*>/gi,'')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g,'$1')
+    .replace(/[*_~`]/g,'')
+    .replace(/^#{2,3}\s+/gm,'')
+    .replace(/^>\s?/gm,'')
+    .replace(/^[-•]\s+/gm,'')
+    .replace(/^\d+[.)]\s+/gm,'')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
 function updateNewsPreview(which){
   const ids=which==='add'
     ?{title:'addTitle',cat:'addCategory',date:'addDate',upd:'addUpdatedDate',author:'addAuthor',authorSel:'addAuthorSelect',img:'addImageB64',body:'addFullContent',tags:'addTags',pane:'addPreviewPane',out:'addPreviewBody'}
-    :{title:'eNewsTitle',cat:'eNewsCategory',date:'eNewsDate',upd:'eNewsUpdatedDate',author:'eNewsAuthor',authorSel:'eNewsAuthorSelect',img:null,body:'eNewsFullContent',tags:'eNewsTags',pane:'ePreviewPane',out:'ePreviewBody'};
+    :{title:'eNewsTitle',cat:'eNewsCategory',date:'eNewsDate',upd:'eNewsUpdatedDate',author:'eNewsAuthor',authorSel:'eNewsAuthorSelect',img:'eImageB64',body:'eNewsFullContent',tags:'eNewsTags',pane:'ePreviewPane',out:'ePreviewBody'};
   slugifyLive(which);
+  updateSocialPreview(which);
   const pane=document.getElementById(ids.pane); if(!pane||!pane.classList.contains('open')) return;
   const title=(document.getElementById(ids.title)?.value||'').trim();
   const cat=document.getElementById(ids.cat)?.value||'';
@@ -4514,6 +4959,214 @@ async function saveMyProfile(){
 }
 window.saveMyProfile=saveMyProfile;
 
+// ── News Image Library ──
+window._imageLibrary=[];
+async function loadImageLibrary(){
+  const grid=document.getElementById('ilGrid');
+  try{
+    if(!window.db||!window.getDocs||!window.collection) return;
+    const snap=await window.getDocs(window.collection(window.db,'fs_image_library'));
+    window._imageLibrary=snap.docs.map(d=>({_id:d.id,...d.data()}));
+    const cnt=document.getElementById('ilCount');
+    if(cnt) cnt.textContent=`(${window._imageLibrary.length})`;
+    const navCnt=document.getElementById('cnt-imglib');
+    if(navCnt) navCnt.textContent=window._imageLibrary.length;
+    renderImageLibraryGrid();
+  }catch(e){
+    console.warn('Image library load failed:',e.message);
+    if(grid) grid.innerHTML='<div class="imglib-empty">Could not load the image library.</div>';
+  }
+}
+window.loadImageLibrary=loadImageLibrary;
+
+function renderImageLibraryGrid(pickMode){
+  // pickMode: if provided, cards call the picker's select callback instead
+  // of the management grid's default (no-op) click.
+  const gridId=pickMode?'ilPickerGrid':'ilGrid';
+  const searchId=pickMode?'ilPickerSearch':'ilSearch';
+  const filterId=pickMode?'ilPickerFilterCategory':'ilFilterCategory';
+  const grid=document.getElementById(gridId);
+  if(!grid) return;
+  const q=(document.getElementById(searchId)?.value||'').trim().toLowerCase();
+  const cat=document.getElementById(filterId)?.value||'';
+  const items=window._imageLibrary.filter(img=>
+    (!q||(img.name||'').toLowerCase().includes(q)) &&
+    (!cat||img.category===cat)
+  );
+  if(!items.length){ grid.innerHTML='<div class="imglib-empty">No images found. Upload one to get started.</div>'; return; }
+  grid.innerHTML=items.map(img=>{
+    const clickAction=pickMode?`selectLibraryImage('${img._id}')`:`previewLibraryImage('${img._id}')`;
+    return `
+    <div class="imglib-card" onclick="${clickAction}">
+      <img src="${img.image}" alt="${admEsc(img.name||'')}" loading="lazy">
+      <div class="imglib-card-body">
+        <div class="imglib-card-name">${admEsc(img.name||'Untitled')}</div>
+        <div class="imglib-card-cat">${admEsc(img.category||'General')}</div>
+      </div>
+      ${pickMode?'':`<div class="imglib-card-actions" onclick="event.stopPropagation()">
+        <button class="btn btn-outline btn-sm" onclick="deleteLibraryImage('${img._id}')"><i class="fas fa-trash"></i></button>
+      </div>`}
+    </div>`;
+  }).join('');
+}
+window.renderImageLibraryGrid=renderImageLibraryGrid;
+
+function previewLibraryImage(id){
+  const img=window._imageLibrary.find(i=>i._id===id); if(!img) return;
+  const w=window.open('','_blank');
+  if(w) w.document.write(`<title>${img.name||'Image'}</title><body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh"><img src="${img.image}" style="max-width:100%;max-height:100vh"></body>`);
+}
+window.previewLibraryImage=previewLibraryImage;
+
+async function saveImageToLibrary(){
+  const name=document.getElementById('ilAddName').value.trim();
+  const category=document.getElementById('ilAddCategory').value||'General';
+  const image=document.getElementById('ilAddB64').value;
+  if(!name||!image){ showStatus('error','Give the image a name and upload a file first.'); return; }
+  const btn=document.getElementById('ilSaveBtn'); btn.disabled=true; btn.innerHTML='Saving…';
+  try{
+    await window.addDoc(window.collection(window.db,'fs_image_library'),{name,category,image,createdAt:window.serverTimestamp()});
+    showStatus('success','<i class="fas fa-circle-check"></i> Image saved to library!');
+    ['ilAddName'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('ilAddCategory').value='General';
+    clearImg('ilAddFile','ilAddPreview','ilAddClear','ilAddB64');
+    await loadImageLibrary();
+  }catch(e){ showStatus('error','Could not save image: '+e.message); }
+  btn.disabled=false; btn.innerHTML='<i class="fas fa-floppy-disk"></i> Save to Library';
+}
+window.saveImageToLibrary=saveImageToLibrary;
+
+async function deleteLibraryImage(id){
+  if(!confirm('Delete this image from the library? Articles already using it keep their own copy — this only removes it from the reusable library.')) return;
+  try{
+    await window.deleteDoc(window.doc(window.db,'fs_image_library',id));
+    await loadImageLibrary();
+  }catch(e){ alert('Could not delete: '+e.message); }
+}
+window.deleteLibraryImage=deleteLibraryImage;
+
+// ── Image Library picker modal (used from the news editor) ──
+window._ilPickerTarget=null;
+function openImageLibraryPicker(hiddenInputId,previewImgId,clearElId,which){
+  window._ilPickerTarget={hiddenInputId,previewImgId,clearElId,which};
+  let modal=document.getElementById('ilPickerModal');
+  if(!modal){
+    modal=document.createElement('div');
+    modal.className='modal-overlay';
+    modal.id='ilPickerModal';
+    modal.onclick=e=>{if(e.target===modal) closeModal('ilPickerModal');};
+    modal.innerHTML=`
+      <div class="modal-box wide-modal">
+        <div class="modal-header"><h3><i class="fas fa-photo-film"></i> Choose from Image Library</h3><button class="modal-close" onclick="closeModal('ilPickerModal')"><i class="fas fa-xmark"></i></button></div>
+        <div class="modal-body">
+          <div class="imglib-toolbar">
+            <input type="text" id="ilPickerSearch" placeholder="Search by name…" oninput="renderImageLibraryGrid(true)">
+            <select id="ilPickerFilterCategory" onchange="renderImageLibraryGrid(true)">
+              <option value="">All categories</option>
+              <option>General</option><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option>
+              <option>Admission Guide</option><option>Services</option><option>Academic Coaching</option>
+              <option>Lifestyle</option><option>Announcement</option>
+            </select>
+          </div>
+          <div class="imglib-grid" id="ilPickerGrid"><div class="imglib-empty">Loading…</div></div>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+  if(!window._imageLibrary.length) loadImageLibrary().then(()=>renderImageLibraryGrid(true));
+  else renderImageLibraryGrid(true);
+  openModal('ilPickerModal');
+}
+window.openImageLibraryPicker=openImageLibraryPicker;
+
+function selectLibraryImage(id){
+  const img=window._imageLibrary.find(i=>i._id===id); if(!img||!window._ilPickerTarget) return;
+  const {hiddenInputId,previewImgId,clearElId,which}=window._ilPickerTarget;
+  const hidden=document.getElementById(hiddenInputId),prev=document.getElementById(previewImgId),clearEl=document.getElementById(clearElId);
+  if(hidden) hidden.value=img.image;
+  if(prev){ prev.src=img.image; prev.style.display='block'; }
+  if(clearEl) clearEl.classList.add('show');
+  closeModal('ilPickerModal');
+  if(which) updateNewsPreview(which);
+}
+window.selectLibraryImage=selectLibraryImage;
+
+// ── Category default images (Newsroom Settings) ──
+const NEWS_CATEGORIES=['JAMB Update','Campus News','Scholarship','Admission Guide','Services','Academic Coaching','Lifestyle','Announcement'];
+async function loadCategoryDefaultsIntoSettingsGrid(){
+  try{
+    if(!window.db||!window.getDoc||!window.doc) return;
+    const snap=await window.getDoc(window.doc(window.db,'fs_config','category_defaults'));
+    window._categoryDefaultImages=snap.exists()?snap.data():{};
+  }catch(e){ console.warn('Category defaults load failed:',e.message); window._categoryDefaultImages={}; }
+  renderCategoryDefaultsGrid();
+}
+window.loadCategoryDefaultsIntoSettingsGrid=loadCategoryDefaultsIntoSettingsGrid;
+
+// Pure re-render from whatever is currently in window._categoryDefaultImages
+// — does NOT touch Firestore. Use this after a local edit (upload/clear) so
+// an unsaved change isn't clobbered by a re-fetch of the last-saved state.
+function renderCategoryDefaultsGrid(){
+  const grid=document.getElementById('categoryDefaultsGrid');
+  if(grid){
+    grid.innerHTML=NEWS_CATEGORIES.map(cat=>{
+      const safeId='catdef-'+cat.replace(/\W+/g,'');
+      const existing=window._categoryDefaultImages[cat]||'';
+      return `
+      <div class="imglib-card" style="cursor:default" onclick="event.stopPropagation()">
+        <div style="height:90px;background:var(--light);display:flex;align-items:center;justify-content:center;overflow:hidden">
+          ${existing?`<img src="${existing}" style="width:100%;height:100%;object-fit:cover">`:'<span style="font-size:.68rem;color:var(--muted)">No default</span>'}
+        </div>
+        <div class="imglib-card-body">
+          <div class="imglib-card-name">${admEsc(cat)}</div>
+        </div>
+        <div class="imglib-card-actions">
+          <input type="file" id="${safeId}-file" accept="image/*" style="display:none" onchange="onCategoryDefaultFileChange('${cat}','${safeId}',this)">
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('${safeId}-file').click()"><i class="fas fa-upload"></i></button>
+          ${existing?`<button class="btn btn-outline btn-sm" onclick="clearCategoryDefault('${cat}')"><i class="fas fa-xmark"></i></button>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+  const globalPrev=document.getElementById('globalDefaultImgPreview');
+  const globalClear=document.getElementById('globalDefaultImgClear');
+  const globalHidden=document.getElementById('globalDefaultImageB64');
+  if(window._categoryDefaultImages.__global__ && globalPrev && globalHidden){
+    globalPrev.src=window._categoryDefaultImages.__global__; globalPrev.style.display='block';
+    globalHidden.value=window._categoryDefaultImages.__global__;
+    if(globalClear) globalClear.classList.add('show');
+  }
+}
+window.renderCategoryDefaultsGrid=renderCategoryDefaultsGrid;
+
+function onCategoryDefaultFileChange(cat,safeId,input){
+  const file=input.files&&input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    window._categoryDefaultImages[cat]=e.target.result;
+    renderCategoryDefaultsGrid();
+  };
+  reader.readAsDataURL(file);
+}
+window.onCategoryDefaultFileChange=onCategoryDefaultFileChange;
+
+function clearCategoryDefault(cat){
+  delete window._categoryDefaultImages[cat];
+  renderCategoryDefaultsGrid();
+}
+window.clearCategoryDefault=clearCategoryDefault;
+
+async function saveCategoryDefaultImages(){
+  try{
+    const globalImg=document.getElementById('globalDefaultImageB64')?.value;
+    const payload={...window._categoryDefaultImages};
+    if(globalImg) payload.__global__=globalImg; else delete payload.__global__;
+    await window.setDoc(window.doc(window.db,'fs_config','category_defaults'),payload);
+    window._categoryDefaultImages=payload;
+    showStatus('success','<i class="fas fa-circle-check"></i> Default images saved!');
+  }catch(e){ showStatus('error','Could not save default images: '+e.message); }
+}
+window.saveCategoryDefaultImages=saveCategoryDefaultImages;
 
 async function addNews(){
   const title=document.getElementById('addTitle').value.trim();
@@ -4521,6 +5174,8 @@ async function addNews(){
   const date=document.getElementById('addDate').value.trim();
   const updatedDate=document.getElementById('addUpdatedDate').value.trim();
   const image=document.getElementById('addImageB64').value;
+  const previewImage=document.getElementById('addPreviewImageB64').value;
+  const useFeaturedAsPreview=document.getElementById('addUseFeaturedAsPreview').checked;
   const fullContent=document.getElementById('addFullContent').value.trim();
   const pinned=document.getElementById('addPinned').value==='true';
   const tags=(document.getElementById('addTags').value||'').split(',').map(t=>t.trim()).filter(Boolean).slice(0,8);
@@ -4538,8 +5193,9 @@ async function addNews(){
   const slug=makeSlug(customSlug||title);
   const btn=document.getElementById('addNewsBtn'); btn.disabled=true; btn.textContent='Publishing…';
   try{
-    const item={title,category,date,author,slug,fullContent,pinned:pinned||false,likes:0,views:0,createdAt:window.serverTimestamp()};
+    const item={title,category,date,author,slug,fullContent,pinned:pinned||false,likes:0,views:0,useFeaturedAsPreview,createdAt:window.serverTimestamp()};
     if(image) item.image=image;
+    if(!useFeaturedAsPreview && previewImage) item.previewImage=previewImage;
     if(updatedDate) item.updatedDate=updatedDate;
     if(tags.length) item.tags=tags;
     if(seoTitle) item.seoTitle=seoTitle;
@@ -4548,7 +5204,7 @@ async function addNews(){
     // Update doc with its own Firestore ID so articleUrl stays stable
     await window.updateDoc(window.doc(window.db,'fs_news',ref.id),{_docId:ref.id});
     logAdminActivity('add','news','Add: '+title);
-    showStatus('success','<i class="fas fa-champagne-glasses"></i> Article published! Link: '+SITE_BASE+'/newsroom.html#'+slug+'--'+ref.id);
+    showStatus('success','<i class="fas fa-champagne-glasses"></i> Article published! Link: '+SITE_BASE+'/news/'+slug+'--'+ref.id+'/ (social preview appears once the news-pages workflow next runs)');
     localStorage.removeItem('bqm-news-draft');
     clearNewsForm(); await loadNewsFromFirebase(); switchTab('news','list');
   }catch(e){showStatus('error','Firebase error: '+e.message);}
@@ -4563,10 +5219,17 @@ function clearNewsForm(){
   document.getElementById('addAuthorSelect').value='__custom__'; document.getElementById('addAuthor').disabled=false;
   document.getElementById('addDate').value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
   clearImg('addImageFile','addImgPreview','addImgClear','addImageB64');
+  clearImg('addPreviewImageFile','addPreviewImgPreview','addPreviewImgClear','addPreviewImageB64');
+  document.getElementById('addUseFeaturedAsPreview').checked=true;
+  onUseFeaturedPreviewToggle('add');
   const pane=document.getElementById('addPreviewPane');
   if(pane) pane.classList.remove('open');
   const btn=document.getElementById('addPreviewToggleBtn');
   if(btn) btn.innerHTML='<i class="fas fa-eye"></i> Show Live Preview';
+  const socialPane=document.getElementById('addSocialPreviewPane');
+  if(socialPane) socialPane.classList.remove('open');
+  const socialBtn=document.getElementById('addSocialPreviewToggleBtn');
+  if(socialBtn) socialBtn.innerHTML='<i class="fas fa-share-nodes"></i> Show Social / Link Preview';
   const dt=document.getElementById('addPreviewDeviceToggle');
   if(dt) dt.classList.remove('show');
   updateWordCount('add');
@@ -4620,6 +5283,14 @@ function openEditNews(idx){
   document.getElementById('eSeoTitle').value=n.seoTitle||'';
   document.getElementById('eSeoDesc').value=n.seoDesc||'';
   document.getElementById('eSlug').value=n.slug||'';
+  // Featured image
+  clearImg('eImageFile','eImgPreview','eImgClear','eImageB64');
+  if(n.image){document.getElementById('eImageB64').value=n.image;const p=document.getElementById('eImgPreview');p.src=n.image;p.style.display='block';document.getElementById('eImgClear').classList.add('show');}
+  // Link preview image + toggle
+  clearImg('ePreviewImageFile','ePreviewImgPreview','ePreviewImgClear','ePreviewImageB64');
+  if(n.previewImage){document.getElementById('ePreviewImageB64').value=n.previewImage;const p=document.getElementById('ePreviewImgPreview');p.src=n.previewImage;p.style.display='block';document.getElementById('ePreviewImgClear').classList.add('show');}
+  document.getElementById('eUseFeaturedAsPreview').checked=n.useFeaturedAsPreview!==false;
+  onUseFeaturedPreviewToggle('e');
   syncAuthorSelectToValue('e');
   slugifyLive('e');
   updateWordCount('e');
@@ -4627,9 +5298,14 @@ function openEditNews(idx){
   if(pane) pane.classList.remove('open');
   const btn=document.getElementById('ePreviewToggleBtn');
   if(btn) btn.innerHTML='<i class="fas fa-eye"></i> Show Live Preview';
+  const socialPane=document.getElementById('eSocialPreviewPane');
+  if(socialPane) socialPane.classList.remove('open');
+  const socialBtn=document.getElementById('eSocialPreviewToggleBtn');
+  if(socialBtn) socialBtn.innerHTML='<i class="fas fa-share-nodes"></i> Show Social / Link Preview';
   const dt=document.getElementById('ePreviewDeviceToggle');
   if(dt) dt.classList.remove('show');
   openModal('editNewsModal');
+  if(n._id) checkForEditDraftRecovery(n._id);
 }
 window.openEditNews=openEditNews;
 
@@ -4643,6 +5319,9 @@ async function saveEditNews(){
     const customSlug=document.getElementById('eSlug').value.trim();
     const slug=makeSlug(customSlug||t);
     const tags=(document.getElementById('eNewsTags').value||'').split(',').map(x=>x.trim()).filter(Boolean).slice(0,8);
+    const image=document.getElementById('eImageB64').value;
+    const useFeaturedAsPreview=document.getElementById('eUseFeaturedAsPreview').checked;
+    const previewImage=document.getElementById('ePreviewImageB64').value;
     const updates={
       title:t,slug,category:document.getElementById('eNewsCategory').value,
       date:document.getElementById('eNewsDate').value,
@@ -4651,9 +5330,13 @@ async function saveEditNews(){
       fullContent:f, tags,
       seoTitle:document.getElementById('eSeoTitle').value.trim(),
       seoDesc:document.getElementById('eSeoDesc').value.trim(),
+      image:image||window.deleteField(),
+      useFeaturedAsPreview,
+      previewImage:(!useFeaturedAsPreview && previewImage)?previewImage:window.deleteField(),
     };
     if(item._id) await window.updateDoc(window.doc(window.db,'fs_news',item._id),updates);
     logAdminActivity('edit','news','Edit: '+t);
+    if(item._id) localStorage.removeItem('bqm-news-editdraft-'+item._id);
     await loadNewsFromFirebase();
     closeModal('editNewsModal');
     showStatus('success','<i class="fas fa-circle-check"></i> Article updated!');
