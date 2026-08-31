@@ -191,6 +191,12 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 .group-panel{display:none}
 .group-panel.active{display:block}
 .group-hint{font-size:.74rem;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+/* Operations tabs are read-only oversight: editing lives in Admin. Hide any create/edit/delete controls. */
+#group-operations button[onclick^="showAdd"],
+#group-operations button[onclick^="showCeoGistForm"],
+#group-operations button[onclick^="showCeoPollForm"]{display:none !important}
+#group-operations .refresh-row{gap:8px}
+.readonly-pill{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:700;color:#92400e;background:#fef3c7;border:1px solid #fde68a;border-radius:6px;padding:3px 9px;margin-left:8px}
 
 /* ── KPI CARDS (Overview) ── */
 .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:22px}
@@ -867,6 +873,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ eLibrary TAB ══ -->
     <div class="tab-panel" id="tab-library">
       <div class="refresh-row">
+        <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span>
         <button class="btn-primary-sm" onclick="loadLibrary()"><i class="fas fa-rotate"></i> Refresh</button>
         <button class="btn-sm" onclick="showAddLibrary()"><i class="fas fa-plus"></i> Add Book</button>
         <div class="refresh-info" id="libInfo">Click Refresh to load books</div>
@@ -897,6 +904,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ SCHOLARSHIPS TAB ══ -->
     <div class="tab-panel" id="tab-scholarships">
       <div class="refresh-row">
+        <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span>
         <button class="btn-primary-sm" onclick="loadScholarships()"><i class="fas fa-rotate"></i> Refresh</button>
         <button class="btn-sm" onclick="showAddScholarship()"><i class="fas fa-plus"></i> Add Scholarship</button>
         <div class="refresh-info" id="schInfoCeo">Click Refresh to load scholarships</div>
@@ -923,7 +931,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
           <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Description *</label><textarea id="schDesc" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:80px" placeholder="Eligibility, coverage…"></textarea></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Application Link</label><input class="log-search" type="url" id="schLink" placeholder="https://"></div>
-            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Icon Emoji</label><input class="log-search" type="text" id="schIcon" placeholder="e.g. <i class="fas fa-satellite-dish"></i>" maxlength="8"></div>
+            <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Icon Emoji</label><input class="log-search" type="text" id="schIcon" placeholder="e.g. 📡" maxlength="8"></div>
           </div>
           <div style="display:flex;gap:10px">
             <button class="btn-primary-sm" onclick="addScholarshipItem()"><i class="fas fa-sack-dollar"></i> Add Scholarship</button>
@@ -937,6 +945,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ NELFUND TAB ══ -->
     <div class="tab-panel" id="tab-nelfund">
       <div class="refresh-row">
+        <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span>
         <button class="btn-primary-sm" onclick="loadNelfund()"><i class="fas fa-rotate"></i> Refresh</button>
         <button class="btn-sm" onclick="showAddNelfund()"><i class="fas fa-plus"></i> Add Update</button>
         <div class="refresh-info" id="nelfundInfo">Click Refresh to load NELFUND updates</div>
@@ -962,6 +971,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ DYK TAB ══ -->
     <div class="tab-panel" id="tab-dyk">
       <div class="refresh-row">
+        <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span>
         <button class="btn-primary-sm" onclick="loadDyk()"><i class="fas fa-rotate"></i> Refresh</button>
         <button class="btn-sm" onclick="showAddDyk()"><i class="fas fa-plus"></i> Add Fact</button>
         <div class="refresh-info" id="dykInfo">Click Refresh to load DYK facts</div>
@@ -988,6 +998,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ SPOTLIGHT TAB ══ -->
     <div class="tab-panel" id="tab-spotlight">
       <div class="refresh-row">
+        <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span>
         <button class="btn-primary-sm" onclick="loadSpotlight()"><i class="fas fa-rotate"></i> Refresh</button>
         <button class="btn-sm" onclick="showAddSpotlight()"><i class="fas fa-plus"></i> Add Story</button>
         <div class="refresh-info" id="spotlightInfo">Click Refresh to load spotlights</div>
@@ -1016,6 +1027,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ POST-UTME TAB ══ -->
     <div class="tab-panel" id="tab-postutme">
       <div class="refresh-row">
+        <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span>
         <button class="btn-primary-sm" onclick="loadPostUtme()"><i class="fas fa-rotate"></i> Refresh</button>
         <button class="btn-sm" onclick="showAddPostUtme()"><i class="fas fa-plus"></i> Add School</button>
         <div class="refresh-info" id="postutmeInfo">Click Refresh to load Post-UTME schools</div>
@@ -1045,6 +1057,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ SUBJECT COMBO TAB ══ -->
     <div class="tab-panel" id="tab-combo">
       <div class="refresh-row">
+        <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span>
         <button class="btn-primary-sm" onclick="loadCombo()"><i class="fas fa-rotate"></i> Refresh</button>
         <button class="btn-sm" onclick="showAddCombo()"><i class="fas fa-plus"></i> Add Course</button>
         <div class="refresh-info" id="comboInfo">Click Refresh to load subject combinations</div>
@@ -1072,6 +1085,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ REVIEWS TAB ══ -->
     <div class="tab-panel" id="tab-reviews">
       <div class="refresh-row">
+        <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span>
         <button class="btn-primary-sm" onclick="loadReviews()"><i class="fas fa-rotate"></i> Refresh</button>
         <div class="refresh-info" id="reviewsInfo">Click Refresh to load reviews</div>
       </div>
@@ -1083,6 +1097,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ Q&A TAB ══ -->
     <div class="tab-panel" id="tab-qa">
       <div class="refresh-row">
+        <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span>
         <button class="btn-primary-sm" onclick="loadQA()"><i class="fas fa-rotate"></i> Refresh</button>
         <div class="refresh-info" id="qaInfo">Click Refresh to load Q&amp;A</div>
       </div>
@@ -1094,6 +1109,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ══ CALENDAR TAB ══ -->
     <div class="tab-panel" id="tab-calendar">
       <div class="refresh-row">
+        <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span>
         <button class="btn-primary-sm" onclick="loadCalendar()"><i class="fas fa-rotate"></i> Refresh</button>
         <button class="btn-sm" onclick="showAddCalendar()"><i class="fas fa-plus"></i> Add Event</button>
         <div class="refresh-info" id="calendarInfo">Click Refresh to load events</div>
@@ -1151,7 +1167,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
             </div>
           </div>
           <div style="margin-bottom:16px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Featured Banner Text</label>
-            <textarea id="nrBanner" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:65px" placeholder="e.g. <i class="fas fa-bullhorn"></i> JAMB 2026 results released — check yours now!"></textarea>
+            <textarea id="nrBanner" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.84rem;min-height:65px" placeholder="e.g. 📢 JAMB 2026 results released — check yours now!"></textarea>
           </div>
           <button class="btn-primary-sm" onclick="saveNewsroomSettings()"><i class="fas fa-floppy-disk"></i> Save Settings</button>
         </div>
@@ -1219,16 +1235,10 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 
       <div class="card" style="margin-bottom:16px">
         <div class="card-header">
-          <div class="card-title"><i class="fas fa-bullhorn"></i> News Ticker</div>
+          <div class="card-title"><i class="fas fa-bullhorn"></i> News Ticker <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span></div>
           <button class="btn-sm" onclick="loadNewsroomData()"><i class="fas fa-rotate"></i> Refresh</button>
         </div>
         <div style="padding:16px">
-          <div style="margin-bottom:12px"><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Add Ticker Item</label>
-            <div style="display:flex;gap:8px">
-              <input class="log-search" type="text" id="ticker-new" placeholder="e.g. <i class="fas fa-bullhorn"></i> JAMB 2026 result is out — click to check!" style="flex:1">
-              <button class="btn-primary-sm" onclick="addTickerItem()"><i class="fas fa-plus"></i> Add</button>
-            </div>
-          </div>
           <div id="tickerList" style="max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px">
             <div style="text-align:center;padding:20px;color:var(--muted);font-size:.82rem">Click Refresh to load ticker items</div>
           </div>
@@ -1240,7 +1250,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
         <div style="padding:16px">
           <div style="margin-bottom:12px">
             <div style="display:flex;gap:8px">
-              <input class="log-search" type="text" id="successticker-new" placeholder="e.g. <i class="fas fa-trophy"></i> Amaka scored 340 in JAMB — Medicine, UNILAG!" style="flex:1">
+              <input class="log-search" type="text" id="successticker-new" placeholder="e.g. 🏆 Amaka scored 340 in JAMB — Medicine, UNILAG!" style="flex:1">
               <button class="btn-primary-sm" onclick="addSuccessTickerItem()"><i class="fas fa-plus"></i> Add</button>
             </div>
           </div>
@@ -1321,7 +1331,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <div class="tab-panel" id="tab-gist">
       <div class="card" style="margin-bottom:16px">
         <div class="card-header">
-          <div class="card-title"><i class="fas fa-face-laugh-squint"></i> Campus Gist Posts</div>
+          <div class="card-title"><i class="fas fa-face-laugh-squint"></i> Campus Gist Posts <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span></div>
           <div style="display:flex;gap:8px">
             <button class="btn-primary-sm" onclick="ceoLoadGist()"><i class="fas fa-rotate"></i> Refresh</button>
             <button class="btn-sm" onclick="showCeoGistForm()"><i class="fas fa-plus"></i> Add Post</button>
@@ -1337,7 +1347,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
               <select id="ceoGistCat" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.84rem;font-family:inherit;background:var(--surface2);color:var(--text)">
                 <option value="Funny"><i class="fas fa-face-laugh-squint"></i> Funny</option><option value="Relatable"><i class="fas fa-handshake"></i> Relatable</option>
                 <option value="Hostel"><i class="fas fa-house"></i> Hostel</option><option value="Exam"><i class="fas fa-note-sticky"></i> Exam</option>
-                <option value="Lecturer"><i class="fas fa-person"></i>‍<i class="fas fa-school"></i> Lecturer</option><option value="Meme"><i class="fas fa-image"></i> Meme</option><option value="General"><i class="fas fa-comment"></i> General</option>
+                <option value="Lecturer"><i class="fas fa-chalkboard-user"></i> Lecturer</option><option value="Meme"><i class="fas fa-image"></i> Meme</option><option value="General"><i class="fas fa-comment"></i> General</option>
               </select>
             </div>
             <div><label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Emoji</label>
@@ -1370,7 +1380,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <div class="tab-panel" id="tab-polls">
       <div class="card" style="margin-bottom:16px">
         <div class="card-header">
-          <div class="card-title"><i class="fas fa-square-poll-vertical"></i> Polls</div>
+          <div class="card-title"><i class="fas fa-square-poll-vertical"></i> Polls <span class="readonly-pill"><i class="fas fa-eye"></i> Read-only</span></div>
           <div style="display:flex;gap:8px">
             <button class="btn-primary-sm" onclick="ceoLoadPolls()"><i class="fas fa-rotate"></i> Refresh</button>
             <button class="btn-sm" onclick="showCeoPollForm()"><i class="fas fa-plus"></i> Create Poll</button>
@@ -1451,7 +1461,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 
           <div style="margin-bottom:12px">
             <label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Title *</label>
-            <input class="log-search" type="text" id="pnTitle" placeholder="e.g. <i class="fas fa-graduation-cap"></i> JAMB 2026 Results Are Out!" style="width:100%" maxlength="65">
+            <input class="log-search" type="text" id="pnTitle" placeholder="e.g. 🎓 JAMB 2026 Results Are Out!" style="width:100%" maxlength="65">
           </div>
           <div style="margin-bottom:12px">
             <label style="font-size:.72rem;font-weight:700;display:block;margin-bottom:4px">Message *</label>
@@ -1537,10 +1547,8 @@ async function ceoLoadGist(){
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
           <span style="background:#fce7f3;color:#9d174d;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${g.category||'General'}</span>
           ${g.pinned?'<span style="background:var(--orange);color:#fff;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px"><i class="fas fa-thumbtack"></i> Pinned</span>':''}
+          <span style="background:${g.published?'#dcfce7':'#fee2e2'};color:${g.published?'#15803d':'#b91c1c'};font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${g.published?'<i class="fas fa-circle-check"></i> Live':'<i class="fas fa-pause"></i> Hidden'}</span>
           <span style="font-size:.64rem;color:var(--muted);margin-left:auto">${g.createdAt?.toDate?g.createdAt.toDate().toLocaleDateString('en-NG'):''}</span>
-          <button onclick="ceoPinGist('${g._id}',${!g.pinned})" style="background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:3px 10px;border-radius:7px;font-size:.68rem;cursor:pointer">${g.pinned?'<i class="fas fa-thumbtack"></i> Unpin':'<i class="fas fa-thumbtack"></i> Pin'}</button>
-          <button onclick="ceoToggleGist('${g._id}',${!g.published})" style="background:${g.published?'#dcfce7':'#fee2e2'};border:1px solid ${g.published?'#86efac':'#fca5a5'};color:${g.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${g.published?'<i class="fas fa-circle-check"></i> Live':'⏸ Hidden'}</button>
-          <button onclick="ceoDeleteGist('${g._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
         <div style="font-size:.84rem;color:var(--text);line-height:1.6">${(g.text||'').substring(0,180)}${(g.text||'').length>180?'…':''}</div>
         ${(g.images||[]).length?`<div style="font-size:.7rem;color:var(--muted);margin-top:4px"><i class="fas fa-camera"></i> ${(g.images||[]).length} image(s)</div>`:''}
@@ -1614,9 +1622,8 @@ async function ceoLoadPolls(){
       return`<div style="padding:14px 16px;border-bottom:1px solid var(--border)">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
           <span style="background:#ede9fe;color:#7c3aed;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${p.category||'Poll'}</span>
+          <span style="background:${p.published?'#dcfce7':'#fee2e2'};color:${p.published?'#15803d':'#b91c1c'};font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${p.published?'<i class="fas fa-circle-check"></i> Live':'<i class="fas fa-pause"></i> Hidden'}</span>
           <span style="font-size:.64rem;color:var(--muted);margin-left:auto">${p.createdAt?.toDate?p.createdAt.toDate().toLocaleDateString('en-NG'):''}</span>
-          <button onclick="ceoTogglePoll('${p._id}',${!p.published})" style="background:${p.published?'#dcfce7':'#fee2e2'};border:1px solid ${p.published?'#86efac':'#fca5a5'};color:${p.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${p.published?'<i class="fas fa-circle-check"></i> Live':'⏸ Hidden'}</button>
-          <button onclick="ceoDeletePoll('${p._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
         <div style="font-family:'Montserrat',sans-serif;font-size:.84rem;font-weight:700;color:var(--text);margin-bottom:8px">${p.caption||p.question||''}</div>
         ${(p.options||[]).map((opt,i)=>{const v=votes[i]||0;const pct=Math.round((v/total)*100);return`<div style="margin-bottom:5px"><div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:2px"><span style="color:var(--text)">${opt}</span><span style="font-weight:700;color:var(--muted)">${v} (${pct}%)</span></div><div style="height:5px;background:var(--border);border-radius:3px"><div style="height:100%;width:${pct}%;background:#7c3aed;border-radius:3px;transition:width .4s"></div></div></div>`;}).join('')}
@@ -2549,13 +2556,10 @@ function renderItemList(containerId, items, fields, collection){
   if(!el) return;
   if(!items.length){el.innerHTML='<div class="empty-state"><div class="empty-icon"><i class="fas fa-envelope-open"></i></div><div class="empty-title">No items yet</div></div>';return;}
   el.innerHTML=items.map((item,i)=>`
-    <div style="border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px">
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:700;font-size:.88rem;color:var(--text);margin-bottom:3px">${item[fields[0]]||'—'}</div>
-        ${fields[1]?'<div style="font-size:.74rem;color:var(--muted)">'+(item[fields[1]]||'')+'</div>':''}
-        ${fields[2]?'<div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+(item[fields[2]]||'')+'</div>':''}
-      </div>
-      <button onclick="deleteContentItem('${collection}','${item._id}')" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#ef4444;font-size:.68rem;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer;flex-shrink:0"><i class="fas fa-trash"></i> Delete</button>
+    <div style="border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px">
+      <div style="font-weight:700;font-size:.88rem;color:var(--text);margin-bottom:3px">${item[fields[0]]||'—'}</div>
+      ${fields[1]?'<div style="font-size:.74rem;color:var(--muted)">'+(item[fields[1]]||'')+'</div>':''}
+      ${fields[2]?'<div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+(item[fields[2]]||'')+'</div>':''}
     </div>`).join('');
 }
 
@@ -3009,7 +3013,7 @@ async function loadTickerItems(){
   try{
     const snap=await window._getDocs(window._query(window._collection(window._db,'fs_ticker'),window._orderBy('createdAt','asc')));
     tickerItems=snap.docs.map(d=>({...d.data(),_id:d.id}));
-    renderTickerList('tickerList',tickerItems,'ticker-new',addTickerItem,deleteTickerItem);
+    renderTickerList('tickerList',tickerItems,'ticker-new',addTickerItem,deleteTickerItem,true);
   }catch(e){console.warn(e);}
 }
 window.loadTickerItems=loadTickerItems;
@@ -3059,13 +3063,13 @@ async function deleteSuccessTickerItem(id){
 }
 window.deleteSuccessTickerItem=deleteSuccessTickerItem;
 
-function renderTickerList(elId,items,inputId,addFn,delFn){
+function renderTickerList(elId,items,inputId,addFn,delFn,readonly){
   const el=document.getElementById(elId); if(!el) return;
-  if(!items.length){el.innerHTML='<div style="text-align:center;padding:16px;color:var(--muted);font-size:.82rem">No items yet. Add one above.</div>';return;}
+  if(!items.length){el.innerHTML='<div style="text-align:center;padding:16px;color:var(--muted);font-size:.82rem">No items yet.'+(readonly?'':' Add one above.')+'</div>';return;}
   el.innerHTML=items.map(t=>`
     <div style="display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px solid var(--border)">
       <span style="flex:1;font-size:.82rem">${t.text||''}</span>
-      <button onclick="${delFn.name}('${t._id}')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:.8rem;padding:2px 6px;border-radius:5px"><i class="fas fa-trash"></i></button>
+      ${readonly?'':`<button onclick="${delFn.name}('${t._id}')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:.8rem;padding:2px 6px;border-radius:5px"><i class="fas fa-trash"></i></button>`}
     </div>`).join('');
 }
 

@@ -1052,7 +1052,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           </div>
         </div>
         <div class="form-group"><label>Featured Banner Text <span style="font-weight:400;color:var(--muted)">(shown at top of newsroom)</span></label>
-          <textarea id="newsroomBanner" style="min-height:65px;" placeholder="e.g. <i class="fas fa-bullhorn"></i> JAMB 2026 results released — check yours now!"></textarea>
+          <textarea id="newsroomBanner" style="min-height:65px;" placeholder="e.g. 📢 JAMB 2026 results released — check yours now!"></textarea>
         </div>
         <div class="btn-row">
           <button class="btn btn-primary" onclick="saveNewsroomSettings()"><i class="fas fa-floppy-disk"></i> Save Settings</button>
@@ -1222,7 +1222,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <div class="section-card">
           <div class="card-title"><i class="fas fa-plus"></i> Add New Fact</div>
           <div class="form-row">
-            <div class="form-group"><label>Emoji Icon</label><input type="text" id="dAddEmoji" placeholder="e.g. <i class="fas fa-brain"></i>" maxlength="5"></div>
+            <div class="form-group"><label>Emoji Icon</label><input type="text" id="dAddEmoji" placeholder="e.g. 🧠" maxlength="5"></div>
             <div class="form-group"><label>Category Tag</label><input type="text" id="dAddCat" placeholder="e.g. JAMB, History, Science"></div>
           </div>
           <div class="form-group"><label>Fact / Headline *</label><input type="text" id="dAddFact" placeholder="Short attention-grabbing fact headline"></div>
@@ -1323,7 +1323,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <div class="form-group"><label>Status</label>
               <select id="sAddStatus"><option value="open"><i class="fas fa-circle" style="font-size:.5em;color:#10b981"></i> Open</option><option value="soon"><i class="fas fa-circle" style="font-size:.5em;color:#f59e0b"></i> Opening Soon</option><option value="ongoing" selected><i class="fas fa-circle" style="font-size:.5em;color:#3b82f6"></i> Ongoing</option><option value="closed"><i class="fas fa-circle" style="font-size:.5em;color:#ef4444"></i> Closed</option></select>
             </div>
-            <div class="form-group"><label>Icon Emoji (shown if no flyer/logo)</label><input type="text" id="sAddIcon" placeholder="e.g. <i class="fas fa-satellite-dish"></i> <i class="fas fa-earth-africa"></i> 🇳🇬" maxlength="8"></div>
+            <div class="form-group"><label>Icon Emoji (shown if no flyer/logo)</label><input type="text" id="sAddIcon" placeholder="e.g. 📡 🌍 🇳🇬" maxlength="8"></div>
           </div>
           <div class="form-group"><label>Mark as Featured?</label><select id="sAddFeatured"><option value="false">No</option><option value="true">Yes — show first</option></select></div>
           <div class="btn-row">
@@ -2085,7 +2085,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <select id="gistAddCat" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.84rem;font-family:inherit;background:var(--surface2);color:var(--text)">
               <option value="Funny"><i class="fas fa-face-laugh-squint"></i> Funny</option><option value="Relatable"><i class="fas fa-handshake"></i> Relatable</option>
               <option value="Hostel"><i class="fas fa-house"></i> Hostel</option><option value="Exam"><i class="fas fa-note-sticky"></i> Exam</option>
-              <option value="Lecturer"><i class="fas fa-person"></i>‍<i class="fas fa-school"></i> Lecturer</option><option value="Meme"><i class="fas fa-image"></i> Meme</option><option value="General"><i class="fas fa-comment"></i> General</option>
+              <option value="Lecturer"><i class="fas fa-chalkboard-user"></i> Lecturer</option><option value="Meme"><i class="fas fa-image"></i> Meme</option><option value="General"><i class="fas fa-comment"></i> General</option>
             </select>
           </div>
           <div class="form-group"><label>Emoji (optional)</label><input type="text" id="gistAddEmoji" placeholder="😂" maxlength="4" style="width:80px"></div>
@@ -7396,7 +7396,7 @@ async function loadCampusGist(){
           <span style="background:#fce7f3;color:#9d174d;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${g.category||'General'}</span>
           ${g.pinned?'<span style="background:var(--orange);color:#fff;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px"><i class="fas fa-thumbtack"></i> Pinned</span>':''}
           <span style="font-size:.64rem;color:var(--muted);margin-left:auto">${g.createdAt?.toDate?g.createdAt.toDate().toLocaleDateString('en-NG'):''}</span>
-          <button onclick="toggleGistPublished('${g._id}',${!g.published})" style="background:${g.published?'#dcfce7':'#fee2e2'};border:1px solid ${g.published?'#86efac':'#fca5a5'};color:${g.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${g.published?'<i class="fas fa-circle-check"></i> Published':'⏸ Hidden'}</button>
+          <button onclick="toggleGistPublished('${g._id}',${!g.published})" style="background:${g.published?'#dcfce7':'#fee2e2'};border:1px solid ${g.published?'#86efac':'#fca5a5'};color:${g.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${g.published?'<i class="fas fa-circle-check"></i> Published':'<i class="fas fa-pause"></i> Hidden'}</button>
           <button onclick="deleteGistPost('${g._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
         <div style="font-size:.84rem;color:var(--text-main);line-height:1.6">${(g.text||'').substring(0,200)}${(g.text||'').length>200?'…':''}</div>
@@ -7472,7 +7472,7 @@ async function loadPolls(){
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
           <span style="background:#ede9fe;color:#7c3aed;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${p.category||'Poll'}</span>
           <span style="font-size:.64rem;color:var(--muted);margin-left:auto">${p.createdAt?.toDate?p.createdAt.toDate().toLocaleDateString('en-NG'):''}</span>
-          <button onclick="togglePollPublished('${p._id}',${!p.published})" style="background:${p.published?'#dcfce7':'#fee2e2'};border:1px solid ${p.published?'#86efac':'#fca5a5'};color:${p.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${p.published?'<i class="fas fa-circle-check"></i> Published':'⏸ Hidden'}</button>
+          <button onclick="togglePollPublished('${p._id}',${!p.published})" style="background:${p.published?'#dcfce7':'#fee2e2'};border:1px solid ${p.published?'#86efac':'#fca5a5'};color:${p.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${p.published?'<i class="fas fa-circle-check"></i> Published':'<i class="fas fa-pause"></i> Hidden'}</button>
           <button onclick="deletePoll('${p._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
         <div style="font-family:'Montserrat',sans-serif;font-size:.84rem;font-weight:700;color:var(--text-main);margin-bottom:8px">${p.caption||p.question||''}</div>
