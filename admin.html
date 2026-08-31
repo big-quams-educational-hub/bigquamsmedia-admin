@@ -34,61 +34,46 @@ body.dark .modal-box{background:#1e293b}
 body.dark .modal-body input,body.dark .modal-body select,body.dark .modal-body textarea{background:#0f172a;border-color:#334155;color:#e2e8f0}
 body.dark .dash-module{background:#1e293b;border-color:#334155}
 body.dark .dash-module:hover{border-color:var(--orange)}
+body.dark .login-card{background:#1e293b}
+body.dark .login-card h2{color:#bfdbfe}
+body.dark .login-input{background:#0f172a;border-color:#334155;color:#e2e8f0}
 body.dark .item-title{color:#bfdbfe}
 body.dark .card-title{color:#bfdbfe}
 body.dark .section-title-h2{color:#bfdbfe}
 body.dark .stat-card{background:#1e293b;border-color:#334155}
 
 /* ─── LOGIN ─── */
-#loginScreen{min-height:100vh;display:flex;background:var(--card);overflow:auto}
-.login-brand{
-  display:none;position:relative;width:45%;min-width:420px;flex-shrink:0;
-  background:linear-gradient(155deg,#080f20 0%,#102880 45%,#1a3fa8 100%);
-  color:#fff;padding:56px 48px;flex-direction:column;overflow:hidden;
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:linear-gradient(135deg,rgba(8,15,32,0.92) 0%,rgba(16,40,128,0.89) 50%,rgba(29,78,216,0.87) 100%),
+             url('https://bigquamsmedia.com.ng/bigquamsmedia-admin/admin.png') center/cover no-repeat;
+  position:relative;
 }
-@media(min-width:960px){.login-brand{display:flex}}
-.login-brand::before{
-  content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;
-  background-image:
-    radial-gradient(circle at 15% 12%,rgba(255,255,255,.08) 0%,transparent 40%),
-    radial-gradient(circle at 85% 88%,rgba(249,115,22,.10) 0%,transparent 45%),
-    repeating-linear-gradient(115deg,rgba(255,255,255,.025) 0px,rgba(255,255,255,.025) 1px,transparent 1px,transparent 64px);
+#loginScreen::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 15% 85%,rgba(249,115,22,0.10) 0%,transparent 50%),
+             radial-gradient(ellipse at 85% 15%,rgba(29,78,216,0.15) 0%,transparent 50%);
+  pointer-events:none;
+  z-index:0;
 }
-.login-brand-top{position:relative;z-index:1;display:flex;align-items:center;gap:10px}
-.login-brand-top img{width:34px;height:34px;border-radius:8px;object-fit:cover}
-.login-brand-top span{font-family:'Montserrat',sans-serif;font-weight:800;font-size:.86rem;letter-spacing:.6px}
-.login-brand-mid{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:center;max-width:400px}
-.login-brand-mid h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:2.1rem;line-height:1.25;margin-bottom:18px;letter-spacing:-.5px}
-.login-brand-mid p{font-size:.92rem;line-height:1.6;color:rgba(255,255,255,.72);max-width:340px}
-.login-brand-bottom{position:relative;z-index:1;display:flex;align-items:center;gap:8px;font-size:.78rem;color:rgba(255,255,255,.65);font-weight:600}
-.login-brand-bottom .dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.22)}
-
-.login-panel{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px;min-height:100vh}
-.login-card{background:var(--card);border-radius:18px;padding:32px 24px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(16,40,128,.12);border:1.5px solid var(--border);position:relative;z-index:1;animation:loginIn .35s cubic-bezier(.34,1.2,.64,1)}
-@keyframes loginIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@media(prefers-reduced-motion:reduce){.login-card{animation:none}}
-@media(min-width:480px){.login-card{padding:38px 34px}}
-@media(min-width:960px){.login-card{box-shadow:none;border:none;max-width:380px;padding:0}}
+.login-card{background:white;border-radius:20px;padding:28px 22px;width:100%;max-width:420px;box-shadow:0 40px 100px rgba(0,0,0,0.35);position:relative;z-index:1;}
+@media(min-width:480px){.login-card{padding:36px 32px}}
 body.dark .login-card{background:#1e293b}
 .login-step{display:none}
 .login-step.active{display:block}
 .login-tabs{display:flex;gap:0;margin-bottom:22px;border-radius:10px;overflow:hidden;border:1.5px solid var(--border)}
-.login-tab-btn{flex:1;padding:10px;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;border:none;cursor:pointer;background:var(--light);color:var(--muted);transition:.18s;min-height:40px}
+.login-tab-btn{flex:1;padding:10px;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;border:none;cursor:pointer;background:var(--light);color:var(--muted);transition:.2s}
 .login-tab-btn.active{background:var(--blue);color:#fff}
 body.dark .login-tab-btn{background:#1a2236;color:#94a3b8}
 body.dark .login-tab-btn.active{background:var(--blue);color:#fff}
-.login-divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:.72rem}
+.login-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:.72rem}
 .login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.google-login-btn,.apple-login-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:10px;padding:12px;min-height:46px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.87rem;cursor:pointer;transition:.18s;margin-bottom:10px}
-.google-login-btn{background:#fff;border:1.5px solid var(--border);color:#1e2749}
+.google-login-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.88rem;color:#1e2749;cursor:pointer;transition:.2s;margin-bottom:10px}
 body.dark .google-login-btn{background:#1a2236;border-color:#334155;color:#e2e8f0}
-.google-login-btn:hover{border-color:#4285F4;box-shadow:0 2px 12px rgba(66,133,244,.18);transform:translateY(-1px)}
-.apple-login-btn{background:#000;border:1.5px solid #000;color:#fff}
-.apple-login-btn:hover{background:#1a1a1a;transform:translateY(-1px)}
+.google-login-btn:hover{border-color:#4285F4;box-shadow:0 2px 12px rgba(66,133,244,.2)}
+.apple-login-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#000;border:1.5px solid #000;border-radius:10px;padding:12px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.88rem;color:#fff;cursor:pointer;transition:.2s;margin-bottom:12px}
+.apple-login-btn:hover{background:#1a1a1a}
 body.dark .apple-login-btn{background:#fff;color:#000;border-color:#fff}
 body.dark .apple-login-btn:hover{background:#f0f0f0}
-.google-login-btn:focus-visible,.apple-login-btn:focus-visible,.login-btn:focus-visible,.pw-toggle:focus-visible,.login-tab-btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-.google-login-btn:disabled,.apple-login-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .step-indicator{display:flex;align-items:center;gap:8px;margin-bottom:20px}
 .step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0;border:2px solid var(--border);color:var(--muted);background:var(--light)}
 body.dark .step-dot{background:#1a2236;border-color:#334155}
@@ -105,32 +90,16 @@ body.dark .admin-badge-name{color:#93c5fd}
 .pin-hint{font-size:.68rem;color:var(--muted);margin-top:4px;line-height:1.5}
 .back-btn{background:none;border:none;color:var(--muted);font-size:.78rem;cursor:pointer;display:flex;align-items:center;gap:4px;margin-bottom:16px;padding:0;font-family:'Roboto',sans-serif}
 .back-btn:hover{color:var(--blue)}
-.login-logo{width:56px;height:56px;border-radius:14px;margin:0 auto 18px;overflow:hidden;border:1.5px solid var(--border)}
-@media(min-width:960px){.login-logo{margin:0 0 18px}}
+.login-logo{width:80px;height:80px;border-radius:50%;border:3px solid var(--orange);margin:0 auto 20px;overflow:hidden}
 .login-logo img{width:100%;height:100%;object-fit:cover}
-.login-title{font-family:'Montserrat',sans-serif;font-size:1.3rem;font-weight:800;color:var(--blue-dk);margin-bottom:4px;text-align:center}
-body.dark .login-title{color:#bfdbfe}
-@media(min-width:960px){.login-title{text-align:left}}
-.login-sub{font-size:0.84rem;color:var(--muted);margin-bottom:26px;text-align:center;line-height:1.5}
-@media(min-width:960px){.login-sub{text-align:left}}
-.login-field-label{font-size:0.7rem;font-weight:700;color:#374151;margin-bottom:6px;display:block;letter-spacing:0.5px;text-transform:uppercase}
-body.dark .login-field-label{color:#94a3b8}
-.login-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:0.92rem;font-family:'Roboto',sans-serif;margin-bottom:14px;transition:.18s;color:var(--text);background:#fafafa;min-height:46px}
-body.dark .login-input{background:#0f172a;border-color:#334155;color:#e2e8f0}
-.login-input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,63,168,0.1);background:#fff}
-body.dark .login-input:focus{background:#0f172a}
-.pw-field-wrap{position:relative}
-.pw-field-wrap .login-input{padding-right:42px;margin-bottom:0}
-.pw-field-wrap{margin-bottom:14px}
-.pw-toggle{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem}
-.pw-toggle:hover{color:var(--blue);background:var(--light)}
-.login-btn{width:100%;background:linear-gradient(135deg,var(--blue-dk),var(--blue));color:white;padding:13px;border:none;border-radius:9px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.92rem;cursor:pointer;transition:.18s;letter-spacing:.3px;margin-top:4px;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px}
-.login-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 26px rgba(26,63,168,0.3)}
-.login-btn:disabled{opacity:.7;cursor:not-allowed;transform:none}
-.login-error{color:var(--red);font-size:0.8rem;margin-top:12px;display:none;align-items:flex-start;gap:8px;font-weight:600;text-align:left;padding:10px 12px;background:#fee2e2;border-radius:9px;line-height:1.4}
-body.dark .login-error{background:rgba(220,38,38,.15)}
-.login-secure-note{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:22px;font-size:.7rem;color:var(--muted)}
-@media(min-width:960px){.login-secure-note{justify-content:flex-start}}
+.login-card h2{font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;color:var(--blue-dk);margin-bottom:4px;text-align:center}
+.login-sub{font-size:0.8rem;color:var(--muted);margin-bottom:28px;text-align:center;line-height:1.5}
+.login-field-label{font-size:0.7rem;font-weight:700;color:#374151;margin-bottom:5px;display:block;letter-spacing:0.5px;text-transform:uppercase}
+.login-input{width:100%;padding:13px 15px;border:1.5px solid var(--border);border-radius:10px;font-size:0.95rem;font-family:'Roboto',sans-serif;margin-bottom:16px;transition:.2s;color:var(--text);background:#fafafa}
+.login-input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,63,168,0.1);background:white}
+.login-btn{width:100%;background:linear-gradient(135deg,var(--blue-dk),var(--blue));color:white;padding:14px;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;transition:.2s;letter-spacing:.5px;margin-top:4px}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,63,168,0.35)}
+.login-error{color:var(--red);font-size:0.8rem;margin-top:12px;display:none;font-weight:600;text-align:center;padding:10px;background:#fee2e2;border-radius:8px}
 
 /* ─── ADMIN APP WRAPPER ─── */
 #adminApp{display:none}
@@ -573,22 +542,10 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 
 <!-- ══════════════ LOGIN ══════════════ -->
 <div id="loginScreen">
-  <div class="login-brand">
-    <div class="login-brand-top">
-      <img src="https://bigquamsmedia.com.ng/logo.png" alt="BQM Logo">
-      <span>BIG QUAMS MEDIA®</span>
-    </div>
-    <div class="login-brand-mid">
-      <h1>Your platform.<br>Your operations.<br>One control centre.</h1>
-      <p>Manage your content, operations and platform performance from one secure workspace.</p>
-    </div>
-    <div class="login-brand-bottom"><span class="dot"></span> Secure workspace</div>
-  </div>
-  <div class="login-panel">
   <div class="login-card">
     <div class="login-logo"><img src="https://bigquamsmedia.com.ng/logo.png" alt="BQM Logo"></div>
-    <div class="login-title">Welcome back</div>
-    <p class="login-sub">Sign in to your admin workspace<br><span style="color:#dc2626;font-weight:700"><i class="fas fa-lock"></i> Restricted to authorised team members</span></p>
+    <h2>BIG QUAMS MEDIA®</h2>
+    <p class="login-sub">Admin Panel — Authorised Team Members Only<br><span style="color:#dc2626;font-weight:700"><i class="fas fa-lock"></i> Restricted Access</span></p>
 
     <!-- STEP INDICATOR -->
     <div class="step-indicator" id="stepIndicator" style="display:none"></div>
@@ -610,48 +567,39 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <svg width="18" height="18" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-37.6-155.5-127.4C46.7 790.7 0 663 0 541.8c0-207.8 165.5-317.3 328.4-317.3 85.5 0 156.6 47.6 212.4 47.6 52.3 0 135.9-50.5 211.1-50.5l43.1 1.6zm-131.5-190c38.8-45.5 69.6-109.3 69.6-173.1 0-8.9-.9-17.7-2.5-26.4-65.3 2.5-144.3 43.7-191.2 95.7-38.8 41.9-75.2 105.7-75.2 170.5 0 9.6 1.6 19.2 2.5 22.3 4.5.6 11.6 1.9 18.7 1.9 59.2 0 132.5-39.8 177.3-90.9z"/></svg>
         Continue with Apple
       </button>
-      <div class="login-divider">or continue with email</div>
+      <div class="login-divider">or use email</div>
 
       <!-- SIGN IN FORM -->
       <div id="signinForm">
-        <label class="login-field-label" for="authEmail">Email address</label>
-        <input class="login-input" type="email" id="authEmail" placeholder="you@example.com" autocomplete="email" onkeydown="if(event.key==='Enter') document.getElementById('authPassword').focus()">
-        <label class="login-field-label" for="authPassword">Password</label>
-        <div class="pw-field-wrap">
-          <input class="login-input" type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') signInWithEmail()">
-          <button type="button" class="pw-toggle" onclick="togglePwVisibility('authPassword',this)" aria-label="Show password"><i class="fas fa-eye"></i></button>
-        </div>
-        <button class="login-btn" onclick="signInWithEmail()">Sign In <i class="fas fa-arrow-right"></i></button>
+        <label class="login-field-label">Email Address</label>
+        <input class="login-input" type="email" id="authEmail" placeholder="your@email.com" autocomplete="email" onkeydown="if(event.key==='Enter') document.getElementById('authPassword').focus()">
+        <label class="login-field-label">Password</label>
+        <input class="login-input" type="password" id="authPassword" placeholder="Enter your password" autocomplete="current-password" onkeydown="if(event.key==='Enter') signInWithEmail()">
+        <button class="login-btn" onclick="signInWithEmail()">Sign In →</button>
         <button style="width:100%;background:none;border:none;color:var(--blue);font-size:.76rem;font-weight:700;margin-top:10px;cursor:pointer;padding:4px" onclick="forgotPassword()">Forgot password?</button>
       </div>
 
       <!-- REGISTER FORM -->
       <div id="registerForm" style="display:none">
-        <label class="login-field-label" for="regName">Full Name</label>
+        <label class="login-field-label">Full Name</label>
         <input class="login-input" type="text" id="regName" placeholder="e.g. Abdulraheem" autocomplete="name">
-        <label class="login-field-label" for="regNickname">Your Tag / Nickname <span style="color:#dc2626">*</span></label>
+        <label class="login-field-label">Your Tag / Nickname <span style="color:#dc2626">*</span></label>
         <input class="login-input" type="text" id="regNickname" placeholder="e.g. QuamsJr, TechAdmin, NewsGuru…" maxlength="24" autocomplete="off">
         <div style="font-size:.68rem;color:#64748b;margin:-8px 0 10px;padding:0 2px">This tag will appear on every article you publish e.g. "Posted by QuamsJr"</div>
-        <label class="login-field-label" for="regEmail">Email address</label>
-        <input class="login-input" type="email" id="regEmail" placeholder="you@example.com" autocomplete="email">
-        <label class="login-field-label" for="regPassword">Password</label>
-        <div class="pw-field-wrap">
-          <input class="login-input" type="password" id="regPassword" placeholder="Min 6 characters" autocomplete="new-password">
-          <button type="button" class="pw-toggle" onclick="togglePwVisibility('regPassword',this)" aria-label="Show password"><i class="fas fa-eye"></i></button>
-        </div>
-        <label class="login-field-label" for="regConfirm">Confirm Password</label>
-        <div class="pw-field-wrap">
-          <input class="login-input" type="password" id="regConfirm" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter') createAccount()">
-          <button type="button" class="pw-toggle" onclick="togglePwVisibility('regConfirm',this)" aria-label="Show password"><i class="fas fa-eye"></i></button>
-        </div>
-        <button class="login-btn" onclick="createAccount()">Create Account <i class="fas fa-arrow-right"></i></button>
+        <label class="login-field-label">Email Address</label>
+        <input class="login-input" type="email" id="regEmail" placeholder="your@email.com" autocomplete="email">
+        <label class="login-field-label">Password</label>
+        <input class="login-input" type="password" id="regPassword" placeholder="Min 6 characters" autocomplete="new-password">
+        <label class="login-field-label">Confirm Password</label>
+        <input class="login-input" type="password" id="regConfirm" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter') createAccount()">
+        <button class="login-btn" onclick="createAccount()">Create Account →</button>
       </div>
     </div>
 
     <!-- STEP 2: Team Access PIN -->
     <!-- STEP 1.5: Nickname (Google sign-in new accounts only) -->
     <div class="login-step" id="loginStepNick">
-      <button class="back-btn" onclick="goBackToStep1()"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="back-btn" onclick="goBackToStep1()">← Back</button>
       <div class="admin-badge" id="adminBadgeWrapNick">
         <div style="width:36px;height:36px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0"><i class="fas fa-user"></i></div>
         <div>
@@ -659,18 +607,16 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="admin-badge-email" id="adminBadgeEmailNick"></div>
         </div>
       </div>
-      <label class="login-field-label" for="googleNickname">Your Tag / Nickname <span style="color:#dc2626">*</span></label>
+      <label class="login-field-label">Your Tag / Nickname <span style="color:#dc2626">*</span></label>
       <input class="login-input" type="text" id="googleNickname" placeholder="e.g. QuamsJr, TechAdmin, NewsGuru…" maxlength="24" autocomplete="off" onkeydown="if(event.key==='Enter') saveGoogleNickname()">
       <div style="font-size:.72rem;color:#64748b;margin:-8px 0 14px;padding:0 2px;line-height:1.5"><i class="fas fa-triangle-exclamation"></i> This is <strong>not</strong> your Google name. Choose a unique tag — it will appear on every article you publish e.g. "Posted by QuamsJr"</div>
-      <button class="login-btn" onclick="saveGoogleNickname()">Continue <i class="fas fa-arrow-right"></i></button>
+      <button class="login-btn" onclick="saveGoogleNickname()">Continue →</button>
     </div>
 
     <!-- Step 2 removed — Firebase Auth is sufficient for admin panel -->
     <div class="login-step" id="loginStep2" style="display:none"></div>
 
-    <div class="login-error" id="loginError" role="alert" aria-live="polite"><i class="fas fa-circle-xmark"></i> <span>Error occurred.</span></div>
-    <div class="login-secure-note"><i class="fas fa-lock"></i> Secure access to your BQM workspace</div>
-  </div>
+    <div class="login-error" id="loginError"><i class="fas fa-circle-xmark"></i> Error occurred.</div>
   </div>
 </div>
 
@@ -712,7 +658,6 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <button class="sidebar-close-btn" onclick="closeSidebar()" title="Close menu" aria-label="Close navigation menu"><i class="fas fa-xmark"></i></button>
       </div>
 
-      <div class="nav-section-label">Workspace</div>
       <button class="section-tab active" onclick="switchSection('dashboard')">
         <span class="nav-icon"><i class="fas fa-house"></i></span><span class="nav-label">Dashboard</span>
       </button>
@@ -758,7 +703,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       </button>
 
       <div class="sidebar-divider"></div>
-      <div class="nav-section-label">Education</div>
+      <div class="nav-section-label">Academic Tools</div>
       <button class="section-tab" onclick="switchSection('cbt')">
         <span class="nav-icon"><i class="fas fa-bullseye"></i></span><span class="nav-label">JAMB CBT Practice</span>
       </button>
@@ -791,7 +736,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <span class="nav-icon"><i class="fas fa-gamepad"></i></span><span class="nav-label">Campus Life</span>
       </button>
       <button class="section-tab" onclick="switchSection('campusgist')">
-        <span class="nav-icon"><i class="fas fa-face-laugh-squint"></i></span><span class="nav-label">Campus Gist</span>
+        <span class="nav-icon">😂</span><span class="nav-label">Campus Gist</span>
         <span class="nav-count" id="cnt-gist">—</span>
       </button>
       <button class="section-tab" onclick="switchSection('polls')">
@@ -807,25 +752,22 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       </button>
 
       <div class="sidebar-divider"></div>
-      <div class="nav-section-label">System</div>
+      <div class="nav-section-label">Homepage &amp; Site</div>
       <button class="section-tab" onclick="switchSection('ticker')">
         <span class="nav-icon"><i class="fas fa-bullhorn"></i></span><span class="nav-label">News Ticker</span>
       </button>
-      <button class="section-tab" onclick="switchSection('siteconfig')">
-        <span class="nav-icon"><i class="fas fa-gear"></i></span><span class="nav-label">Site Settings</span>
+      <button class="section-tab" onclick="switchSection('pushnotif')">
+        <span class="nav-icon"><i class="fas fa-mobile-screen"></i></span><span class="nav-label">Push Broadcast</span>
       </button>
+
+      <div class="sidebar-divider"></div>
+      <div class="nav-section-label">System</div>
       <button class="section-tab" onclick="switchSection('users')">
         <span class="nav-icon"><i class="fas fa-users"></i></span><span class="nav-label">Users</span>
         <span class="nav-count" id="cnt-users">—</span>
       </button>
       <button class="section-tab" onclick="switchSection('activitylog')">
         <span class="nav-icon"><i class="fas fa-user-secret"></i></span><span class="nav-label">Activity Log</span>
-      </button>
-
-      <div class="sidebar-divider"></div>
-      <div class="nav-section-label">Account</div>
-      <button class="section-tab" onclick="openMyProfileModal()">
-        <span class="nav-icon"><i class="fas fa-user"></i></span><span class="nav-label">My Profile</span>
       </button>
     </nav>
 
@@ -836,7 +778,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     <div class="admin-section active" id="section-dashboard">
       <div class="dash-welcome">
         <div class="welcome-text">
-          <h2 id="welcomeHeading">Welcome back, Admin <i class="fas fa-hand"></i></h2>
+          <h2 id="welcomeHeading">Welcome back, Admin 👋</h2>
           <p>Manage all content for Big Quams Media® from here.<br>Tap the <i class="fas fa-bars"></i> menu to jump to any section.</p>
         </div>
         <img class="welcome-img" src="https://i.imgur.com/lYJXUyY.jpeg" alt="BQM">
@@ -954,11 +896,11 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
                 <button type="button" class="editor-tbtn" onclick="insertLink('addFullContent')"><i class="fas fa-link"></i> Link</button>
                 <button type="button" class="editor-tbtn" onclick="removeFormatting('addFullContent')" title="Remove formatting">Tx Clear</button>
                 <div class="editor-more">
-                  <button type="button" class="editor-tbtn" onclick="toggleMoreMenu(this)"><i class="fas fa-ellipsis"></i> More</button>
+                  <button type="button" class="editor-tbtn" onclick="toggleMoreMenu(this)">⋯ More ▾</button>
                   <div class="editor-more-menu">
                     <button type="button" onclick="wrapSelection('addFullContent','~');closeMoreMenus()"><s>S</s> Strikethrough</button>
                     <button type="button" onclick="wrapSelection('addFullContent','\`');closeMoreMenus()">&lt;/&gt; Monospace</button>
-                    <button type="button" onclick="insertTable('addFullContent');closeMoreMenus()"><i class="fas fa-table"></i> Insert table</button>
+                    <button type="button" onclick="insertTable('addFullContent');closeMoreMenus()">▦ Insert table</button>
                     <button type="button" onclick="addTableRow('addFullContent');closeMoreMenus()">▦ Add row to table</button>
                     <button type="button" onclick="addTableColumn('addFullContent');closeMoreMenus()">▦ Add column to table</button>
                     <button type="button" onclick="toggleFindReplace('addFindReplace');closeMoreMenus()"><i class="fas fa-magnifying-glass"></i> Find &amp; replace</button>
@@ -1032,6 +974,31 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     <div class="admin-section" id="section-newsroom">
       <div class="section-header">
         <h2 class="section-title-h2"><i class="fas fa-newspaper"></i> Newsroom Settings</h2>
+      </div>
+      <div class="section-card">
+        <div class="card-title"><i class="fas fa-newspaper"></i> Newsroom Page Configuration</div>
+        <div class="nelfund-highlight">
+          <h4>ℹ️ How the Newsroom works</h4>
+          <p>The Newsroom page automatically pulls from <strong>news.json</strong> managed in the News section. All articles published there appear in the Newsroom. Use the settings below to control display options.</p>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Newsroom Page Title</label><input type="text" id="newsroomTitle" value="BQM Newsroom" placeholder="Page headline"></div>
+          <div class="form-group"><label>Subtitle / Tagline</label><input type="text" id="newsroomSubtitle" placeholder="Stay informed — latest student news"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Articles Per Page</label>
+            <select id="newsroomPerPage"><option value="10">10</option><option value="15" selected>15</option><option value="20">20</option><option value="25">25</option></select>
+          </div>
+          <div class="form-group"><label>Default Sort</label>
+            <select id="newsroomSort"><option value="newest">Newest First</option><option value="pinned">Pinned First</option><option value="oldest">Oldest First</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label>Featured Banner Text <span style="font-weight:400;color:var(--muted)">(shown at top of newsroom)</span></label>
+          <textarea id="newsroomBanner" style="min-height:65px;" placeholder="e.g. 📢 JAMB 2026 results released — check yours now!"></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveNewsroomSettings()"><i class="fas fa-floppy-disk"></i> Save Settings</button>
+        </div>
       </div>
       <div class="section-card">
         <div class="card-title"><i class="fas fa-image"></i> Category Default Images</div>
@@ -1132,7 +1099,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="admin-panel active" id="lib-tab-list">
         <div class="section-card">
           <div class="card-title"><i class="fas fa-book"></i> All Books in eLibrary</div>
-          <div id="bookList"><div class="empty"><div class="ei"><i class="fas fa-spinner fa-spin"></i></div><p>Loading…</p></div></div>
+          <div id="bookList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
         </div>
       </div>
       <div class="admin-panel" id="lib-tab-add">
@@ -1296,7 +1263,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           </div>
           <div class="form-row">
             <div class="form-group"><label>Status</label>
-              <select id="sAddStatus"><option value="open"><i class="fas fa-circle" style="font-size:.5em;color:#10b981"></i> Open</option><option value="soon"><i class="fas fa-circle" style="font-size:.5em;color:#f59e0b"></i> Opening Soon</option><option value="ongoing" selected><i class="fas fa-circle" style="font-size:.5em;color:#3b82f6"></i> Ongoing</option><option value="closed"><i class="fas fa-circle" style="font-size:.5em;color:#ef4444"></i> Closed</option></select>
+              <select id="sAddStatus"><option value="open">🟢 Open</option><option value="soon">🟡 Opening Soon</option><option value="ongoing" selected>🔵 Ongoing</option><option value="closed">🔴 Closed</option></select>
             </div>
             <div class="form-group"><label>Icon Emoji (shown if no flyer/logo)</label><input type="text" id="sAddIcon" placeholder="e.g. 📡 🌍 🇳🇬" maxlength="8"></div>
           </div>
@@ -1510,89 +1477,42 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       </div>
     </div>
 
-    <!-- ══ SITE SETTINGS (global branding / hero / topbar / contact / social) ══ -->
-    <div class="admin-section" id="section-siteconfig">
+    <!-- ══ PUSH BROADCAST ══ -->
+    <div class="admin-section" id="section-pushnotif">
       <div class="section-header">
-        <h2 class="section-title-h2"><i class="fas fa-gear"></i> Site Settings</h2>
+        <h2 class="section-title-h2"><i class="fas fa-bullhorn"></i> Push Broadcast</h2>
+        <span style="font-size:.72rem;color:var(--muted)"><span id="tokenCount">—</span> devices <button class="btn btn-ghost btn-sm" onclick="loadTokenCount()" style="margin-left:6px"><i class="fas fa-arrows-rotate"></i> Refresh count</button></span>
       </div>
-
       <div class="section-card">
-        <div class="card-title"><i class="fas fa-gear"></i> Global Site Config</div>
-        <div class="form-row">
-          <div class="form-group"><label>Site Name</label><input type="text" id="cfg-siteName" placeholder="BIG QUAMS MEDIA"></div>
-          <div class="form-group"><label>Tagline</label><input type="text" id="cfg-tagline" placeholder="Nigeria's #1 Student Platform"></div>
+        <div class="card-title"><i class="fas fa-bullhorn"></i> Compose Broadcast</div>
+        <div class="form-group">
+          <label>Title * <span style="font-weight:400;color:var(--muted)" id="pushTitleCount">0/65</span></label>
+          <input type="text" id="pushTitle" maxlength="65" oninput="updatePushPreview()" placeholder="e.g. New Scholarship Alert!">
+        </div>
+        <div class="form-group">
+          <label>Message * <span style="font-weight:400;color:var(--muted)" id="pushBodyCount">0/200</span></label>
+          <textarea id="pushBody" maxlength="200" oninput="updatePushPreview()" style="min-height:80px" placeholder="Notification message body…"></textarea>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>WhatsApp Number</label><input type="text" id="cfg-whatsapp" placeholder="2348XXXXXXXXX"></div>
-          <div class="form-group"><label>Contact Email</label><input type="email" id="cfg-email" placeholder="info@bigquamsmedia.com.ng"></div>
+          <div class="form-group"><label>Link (where tapping opens)</label><input type="url" id="pushLink" placeholder="https://bigquamsmedia.com.ng/"></div>
+          <div class="form-group"><label>Icon URL</label><input type="url" id="pushIcon" oninput="updatePushPreview()" placeholder="https://bigquamsmedia.com.ng/logo.png"></div>
         </div>
-        <div class="form-group"><label>Formspree ID</label><input type="text" id="cfg-formspree" placeholder="Formspree form ID"></div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="saveSiteConfig()"><i class="fas fa-floppy-disk"></i> Save Config</button>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="card-title"><i class="fas fa-user-shield"></i> Hero &amp; Stats</div>
-        <div class="form-row">
-          <div class="form-group"><label>Hero Badge</label><input type="text" id="hero-badge" placeholder="🔥 Nigeria's #1 Student Platform"></div>
-          <div class="form-group"><label>Hero Headline</label><input type="text" id="hero-headline" placeholder="Main headline text"></div>
-        </div>
-        <div class="form-group"><label>Hero Description</label><textarea id="hero-desc" style="min-height:65px" placeholder="Subheading text…"></textarea></div>
-        <div class="form-row">
-          <div class="form-group"><label>Stat 1 Value</label><input type="text" id="stat1-val" placeholder="50,000+"></div>
-          <div class="form-group"><label>Stat 1 Label</label><input type="text" id="stat1-lbl" placeholder="Students Helped"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Stat 2 Value</label><input type="text" id="stat2-val" placeholder="1,200+"></div>
-          <div class="form-group"><label>Stat 2 Label</label><input type="text" id="stat2-lbl" placeholder="Books Available"></div>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="saveHeroStats()"><i class="fas fa-floppy-disk"></i> Save Hero &amp; Stats</button>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="card-title"><i class="fas fa-bell"></i> Top Bar Notification</div>
-        <div class="form-row">
-          <div class="form-group"><label>Notification Message</label><input type="text" id="topbar-msg" placeholder="📢 JAMB registration closes soon — register now!"></div>
-          <div class="form-group"><label>Enabled?</label>
-            <select id="topbar-enabled"><option value="true">Yes — Show</option><option value="false">No — Hide</option></select>
+        <div style="background:var(--light);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;gap:10px;align-items:center;margin-bottom:14px">
+          <img id="pushPreviewIcon" src="https://i.imgur.com/lYJXUyY.jpeg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;flex-shrink:0">
+          <div style="min-width:0">
+            <div id="pushPreviewTitle" style="font-weight:800;font-size:.84rem;color:var(--text)">Notification Title</div>
+            <div id="pushPreviewBody" style="font-size:.76rem;color:var(--muted)">Your message will appear here…</div>
           </div>
         </div>
+        <div class="status-bar" id="pushStatus" style="display:none"></div>
         <div class="btn-row">
-          <button class="btn btn-primary" onclick="saveTopBar()"><i class="fas fa-floppy-disk"></i> Save Top Bar</button>
+          <button class="btn btn-success" id="sendPushBtn" onclick="sendPushNotification()"><i class="fas fa-bullhorn"></i> Send to All Students</button>
+          <button class="btn btn-ghost" onclick="clearPushForm()">Clear</button>
         </div>
       </div>
-
       <div class="section-card">
-        <div class="card-title"><i class="fas fa-phone"></i> Contact Channels</div>
-        <div class="form-row">
-          <div class="form-group"><label>WhatsApp Group Link</label><input type="url" id="ch-wagroup" placeholder="https://chat.whatsapp.com/..."></div>
-          <div class="form-group"><label>WhatsApp Channel</label><input type="url" id="ch-wachannel" placeholder="https://whatsapp.com/channel/..."></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Telegram Group</label><input type="url" id="ch-telegram" placeholder="https://t.me/..."></div>
-          <div class="form-group"><label>Email Address</label><input type="email" id="ch-email" placeholder="contact@bigquamsmedia.com.ng"></div>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="saveContactChannels()"><i class="fas fa-floppy-disk"></i> Save Channels</button>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="card-title"><i class="fas fa-link"></i> Social Links</div>
-        <div class="form-row">
-          <div class="form-group"><label>Instagram</label><input type="url" id="soc-instagram" placeholder="https://instagram.com/bigquamsmedia"></div>
-          <div class="form-group"><label>TikTok</label><input type="url" id="soc-tiktok" placeholder="https://tiktok.com/@bigquamsmedia"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>X / Twitter</label><input type="url" id="soc-twitter" placeholder="https://x.com/bigquamsmedia"></div>
-          <div class="form-group"><label>LinkedIn</label><input type="url" id="soc-linkedin" placeholder="https://linkedin.com/company/bigquamsmedia"></div>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="saveSocialLinks()"><i class="fas fa-floppy-disk"></i> Save Social Links</button>
-        </div>
+        <div class="card-title"><i class="fas fa-inbox"></i> Broadcast History</div>
+        <div id="pushHistory"></div>
       </div>
     </div>
 
@@ -1627,7 +1547,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
               <option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option>
             </select>
           </div>
-          <div id="cbtList"><div class="empty"><div class="ei"><i class="fas fa-spinner fa-spin"></i></div><p>Loading from Firebase…</p></div></div>
+          <div id="cbtList"><div class="empty"><div class="ei">⏳</div><p>Loading from Firebase…</p></div></div>
           <div id="cbtPagination" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;"></div>
         </div>
       </div>
@@ -2083,7 +2003,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     <!-- ══ CAMPUS GIST ══ -->
     <div class="admin-section" id="section-campusgist">
       <div class="section-header">
-        <h2 class="section-title-h2"><i class="fas fa-face-laugh-squint"></i> Campus Gist</h2>
+        <h2 class="section-title-h2">😂 Campus Gist</h2>
       </div>
       <div class="admin-tabs">
         <button class="admin-tab active" onclick="switchTab('campusgist','list')">All Posts</button>
@@ -2105,9 +2025,9 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="card-title"><i class="fas fa-plus"></i> Add Campus Gist Post</div>
           <div class="form-group"><label>Category</label>
             <select id="gistAddCat" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.84rem;font-family:inherit;background:var(--surface2);color:var(--text)">
-              <option value="Funny"><i class="fas fa-face-laugh-squint"></i> Funny</option><option value="Relatable"><i class="fas fa-handshake"></i> Relatable</option>
-              <option value="Hostel"><i class="fas fa-house"></i> Hostel</option><option value="Exam"><i class="fas fa-note-sticky"></i> Exam</option>
-              <option value="Lecturer"><i class="fas fa-chalkboard-user"></i> Lecturer</option><option value="Meme"><i class="fas fa-image"></i> Meme</option><option value="General"><i class="fas fa-comment"></i> General</option>
+              <option value="Funny">😂 Funny</option><option value="Relatable">🤝 Relatable</option>
+              <option value="Hostel">🏠 Hostel</option><option value="Exam">📝 Exam</option>
+              <option value="Lecturer">👨🏽‍🏫 Lecturer</option><option value="Meme">🖼 Meme</option><option value="General">💬 General</option>
             </select>
           </div>
           <div class="form-group"><label>Emoji (optional)</label><input type="text" id="gistAddEmoji" placeholder="😂" maxlength="4" style="width:80px"></div>
@@ -2120,7 +2040,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             </select>
           </div>
           <div class="btn-row">
-            <button class="btn btn-success" onclick="addCampusGist()" id="addGistBtn"><i class="fas fa-face-laugh-squint"></i> Publish Gist</button>
+            <button class="btn btn-success" onclick="addCampusGist()" id="addGistBtn">😂 Publish Gist</button>
             <button class="btn btn-ghost" onclick="clearGistForm()">Clear</button>
           </div>
         </div>
@@ -2384,7 +2304,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           </div>
         </div>
         <div class="btn-row">
-          <button class="btn btn-primary" onclick="showStatus('success','GPA scale settings saved!')"><i class="fas fa-floppy-disk"></i> Save Settings</button>
+          <button class="btn btn-primary" onclick="showStatus('success','<i class="fas fa-circle-check"></i> GPA scale settings saved!')"><i class="fas fa-floppy-disk"></i> Save Settings</button>
         </div>
       </div>
     </div>
@@ -2402,7 +2322,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="admin-panel active" id="prep-tab-list">
         <div class="section-card">
           <div class="card-title"><i class="fas fa-book-open"></i> All Prep Guides</div>
-          <div id="prepList"><div class="empty"><div class="ei"><i class="fas fa-spinner fa-spin"></i></div><p>Loading…</p></div></div>
+          <div id="prepList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
         </div>
       </div>
       <div class="admin-panel" id="prep-tab-add">
@@ -2448,7 +2368,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         </div>
         <div class="section-card" style="padding:0;overflow:hidden">
           <div style="padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <input type="text" id="actLogSearch" placeholder="Search by admin, action or section…" style="flex:1;min-width:180px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:'Roboto',sans-serif;color:var(--text);background:var(--light)" oninput="filterActivityLog()">
+            <input type="text" id="actLogSearch" placeholder="<i class="fas fa-magnifying-glass"></i> Search by admin, action or section…" style="flex:1;min-width:180px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:'Roboto',sans-serif;color:var(--text);background:var(--light)" oninput="filterActivityLog()">
             <select id="actLogFilter" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:'Roboto',sans-serif;color:var(--text);background:var(--light)" onchange="filterActivityLog()">
               <option value="">All Actions</option>
               <option value="add">Add</option>
@@ -2529,7 +2449,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
               <option value="general">General</option>
             </select>
           </div>
-          <div id="pucbtList"><div class="empty"><div class="ei"><i class="fas fa-spinner fa-spin"></i></div><p>Loading…</p></div></div>
+          <div id="pucbtList"><div class="empty"><div class="ei">⏳</div><p>Loading…</p></div></div>
         </div>
       </div>
 
@@ -2651,7 +2571,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <div style="font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Challenge Questions</div>
           </div>
           <div style="background:var(--light);border-radius:10px;padding:14px;text-align:center">
-            <div style="font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;color:var(--success,#16a34a)">5 <i class="fas fa-coins"></i></div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;color:var(--success,#16a34a)">5 🪙</div>
             <div style="font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Coins Per Correct Answer</div>
           </div>
           <div style="background:var(--light);border-radius:10px;padding:14px;text-align:center">
@@ -2732,7 +2652,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit News Modal -->
 <div class="modal-overlay" id="editNewsModal" onclick="handleOverlay(event,'editNewsModal')">
   <div class="modal-box wide-modal">
-    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Article</h3><button class="modal-close" onclick="closeModal('editNewsModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Article</h3><button class="modal-close" onclick="closeModal('editNewsModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editNewsIdx">
       <details class="rules-card">
@@ -2824,11 +2744,11 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <button type="button" class="editor-tbtn" onclick="insertLink('eNewsFullContent')"><i class="fas fa-link"></i> Link</button>
             <button type="button" class="editor-tbtn" onclick="removeFormatting('eNewsFullContent')" title="Remove formatting">Tx Clear</button>
             <div class="editor-more">
-              <button type="button" class="editor-tbtn" onclick="toggleMoreMenu(this)"><i class="fas fa-ellipsis"></i> More</button>
+              <button type="button" class="editor-tbtn" onclick="toggleMoreMenu(this)">⋯ More ▾</button>
               <div class="editor-more-menu">
                 <button type="button" onclick="wrapSelection('eNewsFullContent','~');closeMoreMenus()"><s>S</s> Strikethrough</button>
                 <button type="button" onclick="wrapSelection('eNewsFullContent','\`');closeMoreMenus()">&lt;/&gt; Monospace</button>
-                <button type="button" onclick="insertTable('eNewsFullContent');closeMoreMenus()"><i class="fas fa-table"></i> Insert table</button>
+                <button type="button" onclick="insertTable('eNewsFullContent');closeMoreMenus()">▦ Insert table</button>
                 <button type="button" onclick="addTableRow('eNewsFullContent');closeMoreMenus()">▦ Add row to table</button>
                 <button type="button" onclick="addTableColumn('eNewsFullContent');closeMoreMenus()">▦ Add column to table</button>
                 <button type="button" onclick="toggleFindReplace('eFindReplace');closeMoreMenus()"><i class="fas fa-magnifying-glass"></i> Find &amp; replace</button>
@@ -2881,7 +2801,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Book Modal -->
 <div class="modal-overlay" id="editBookModal" onclick="handleOverlay(event,'editBookModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Book</h3><button class="modal-close" onclick="closeModal('editBookModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Book</h3><button class="modal-close" onclick="closeModal('editBookModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editBookIdx">
       <div class="form-row">
@@ -2906,7 +2826,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Post-UTME School Modal -->
 <div class="modal-overlay" id="editSchoolModal" onclick="handleOverlay(event,'editSchoolModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit School</h3><button class="modal-close" onclick="closeModal('editSchoolModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit School</h3><button class="modal-close" onclick="closeModal('editSchoolModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editSchoolIdx">
       <div class="form-row">
@@ -2930,7 +2850,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Subject Combo Modal -->
 <div class="modal-overlay" id="editComboModal" onclick="handleOverlay(event,'editComboModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Course Combination</h3><button class="modal-close" onclick="closeModal('editComboModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Course Combination</h3><button class="modal-close" onclick="closeModal('editComboModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editComboIdx">
       <div class="form-row">
@@ -2955,7 +2875,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Review Modal -->
 <div class="modal-overlay" id="editReviewModal" onclick="handleOverlay(event,'editReviewModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Review</h3><button class="modal-close" onclick="closeModal('editReviewModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Review</h3><button class="modal-close" onclick="closeModal('editReviewModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editReviewIdx">
       <div class="form-row">
@@ -2980,7 +2900,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Q&A Modal -->
 <div class="modal-overlay" id="editQAModal" onclick="handleOverlay(event,'editQAModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Q&amp;A</h3><button class="modal-close" onclick="closeModal('editQAModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Q&amp;A</h3><button class="modal-close" onclick="closeModal('editQAModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editQAIdx">
       <div class="form-group"><label>Question *</label><textarea id="eQaQ" style="min-height:60px"></textarea></div>
@@ -2999,7 +2919,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Calendar Event Modal -->
 <div class="modal-overlay" id="editCalModal" onclick="handleOverlay(event,'editCalModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Calendar Event</h3><button class="modal-close" onclick="closeModal('editCalModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Calendar Event</h3><button class="modal-close" onclick="closeModal('editCalModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editCalIdx">
       <div class="form-row">
@@ -3024,7 +2944,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit Admission Requirement Modal -->
 <div class="modal-overlay" id="editAdmModal" onclick="handleOverlay(event,'editAdmModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Admission Requirement</h3><button class="modal-close" onclick="closeModal('editAdmModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Admission Requirement</h3><button class="modal-close" onclick="closeModal('editAdmModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editAdmIdx">
       <div class="form-row">
@@ -3114,7 +3034,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <!-- Edit CBT Modal -->
 <div class="modal-overlay" id="exportAdmCsvModal" onclick="handleOverlay(event,'exportAdmCsvModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3><i class="fas fa-download"></i> Export Admission Requirements</h3><button class="modal-close" onclick="closeModal('exportAdmCsvModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+    <div class="modal-header"><h3><i class="fas fa-download"></i> Export Admission Requirements</h3><button class="modal-close" onclick="closeModal('exportAdmCsvModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <div class="btn-row" style="margin-bottom:10px">
         <button class="btn btn-ghost btn-sm" onclick="setAllExportSchools(true)"><i class="fas fa-square-check"></i> Select All</button>
@@ -3133,7 +3053,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 
 <div class="modal-overlay" id="editCBTModal" onclick="handleOverlay(event,'editCBTModal')">
   <div class="modal-box">
-    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit CBT Question</h3><button class="modal-close" onclick="closeModal('editCBTModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit CBT Question</h3><button class="modal-close" onclick="closeModal('editCBTModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editCBTDocId">
       <div class="form-row">
@@ -3263,17 +3183,6 @@ function showLoginError(msg){
   setTimeout(()=>el.style.display='none',5000);
 }
 
-// ── Password visibility toggle (login form) ──
-function togglePwVisibility(inputId,btn){
-  const input=document.getElementById(inputId);
-  if(!input) return;
-  const showing=input.type==='text';
-  input.type=showing?'password':'text';
-  btn.innerHTML=showing?'<i class="fas fa-eye"></i>':'<i class="fas fa-eye-slash"></i>';
-  btn.setAttribute('aria-label',showing?'Show password':'Hide password');
-}
-window.togglePwVisibility=togglePwVisibility;
-
 // ── Auth tab switch ──
 function switchAuthTab(tab, btn){
   document.querySelectorAll('.login-tab-btn').forEach(b=>b.classList.remove('active'));
@@ -3320,7 +3229,7 @@ async function signInWithEmail(){
   const email=document.getElementById('authEmail').value.trim();
   const pass=document.getElementById('authPassword').value;
   if(!email||!pass){showLoginError('Enter your email and password.');return;}
-  const btn=document.querySelector('#signinForm .login-btn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Signing in…';
+  const btn=document.querySelector('#signinForm .login-btn');btn.disabled=true;btn.textContent='Signing in…';
   try{
     if(!window.auth) throw new Error('Auth not ready — wait a moment and try again.');
     const cred=await window.signInWithEmailAndPassword(window.auth,email,pass);
@@ -3331,7 +3240,7 @@ async function signInWithEmail(){
       if(!allowed){
         await window.signOutFB(window.auth).catch(()=>{});
         showLoginError('<i class="fas fa-circle-xmark"></i> Access denied. Your email has not been approved by the CEO. Contact bigquamsmedia024@gmail.com to request access.');
-        btn.disabled=false;btn.innerHTML='Sign In <i class="fas fa-arrow-right"></i>';
+        btn.disabled=false;btn.textContent='Sign In →';
         return;
       }
     }
@@ -3339,7 +3248,7 @@ async function signInWithEmail(){
   }catch(e){
     showLoginError(e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'?'Incorrect email or password.':e.code==='auth/user-not-found'?'No account found with this email.':e.code==='auth/too-many-requests'?'Too many attempts. Try again later.':e.message);
   }
-  btn.disabled=false;btn.innerHTML='Sign In <i class="fas fa-arrow-right"></i>';
+  btn.disabled=false;btn.textContent='Sign In →';
 }
 window.signInWithEmail=signInWithEmail;
 
@@ -3367,7 +3276,7 @@ async function createAccount(){
   if(nickname.length<2){showLoginError('Nickname must be at least 2 characters.');return;}
   if(pass!==conf){showLoginError('Passwords do not match.');return;}
   if(pass.length<6){showLoginError('Password must be at least 6 characters.');return;}
-  const btn=document.querySelector('#registerForm .login-btn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Creating account…';
+  const btn=document.querySelector('#registerForm .login-btn');btn.disabled=true;btn.textContent='Creating account…';
   try{
     if(!window.auth) throw new Error('Auth not ready — wait a moment and try again.');
     const cred=await window.createUserWithEmailAndPassword(window.auth,email,pass);
@@ -3381,11 +3290,12 @@ async function createAccount(){
       createdAt:new Date().toISOString(),
       role:'admin',
     });
+    await syncPublicAuthorProfile(cred.user.uid,{nickname,photo:'',bio:''});
     goToStep2(cred.user);
   }catch(e){
     showLoginError(e.code==='auth/email-already-in-use'?'An account with this email already exists.':e.code==='auth/weak-password'?'Password is too weak.':e.message);
   }
-  btn.disabled=false;btn.innerHTML='Create Account <i class="fas fa-arrow-right"></i>';
+  btn.disabled=false;btn.textContent='Create Account →';
 }
 window.createAccount=createAccount;
 
@@ -3446,7 +3356,7 @@ async function saveGoogleNickname(){
   }
   if(!firebaseUser){showLoginError('Session expired. Please sign in again.');goBackToStep1();return;}
   const btn=document.querySelector('#loginStepNick .login-btn');
-  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving…';
+  btn.disabled=true;btn.textContent='Saving…';
   try{
     // Save admin profile with nickname
     await window.setDoc(window.doc(window.db,'admin_profiles',firebaseUser.uid),{
@@ -3462,7 +3372,7 @@ async function saveGoogleNickname(){
   }catch(e){
     showLoginError('Could not save nickname: '+e.message);
   }
-  btn.disabled=false;btn.innerHTML='Continue <i class="fas fa-arrow-right"></i>';
+  btn.disabled=false;btn.textContent='Continue →';
 }
 window.saveGoogleNickname=saveGoogleNickname;
 
@@ -3524,13 +3434,13 @@ window.enterAdminPanel=enterAdminPanel;
 
 function updateWelcomeHeading(name){
   const h=document.getElementById('welcomeHeading');
-  if(h) h.innerHTML='Welcome back, '+(name||'Admin')+' <i class="fas fa-hand"></i>';
+  if(h) h.textContent='Welcome back, '+(name||'Admin')+' 👋🏽';
 }
 window.updateWelcomeHeading=updateWelcomeHeading;
 
 // ── Logout ──
 function doLogout(){
-  const confirmed=confirm('Are you sure you want to log out?\n\nYou will be signed out of the admin panel and will need to log in again.');
+  const confirmed=confirm('⚠️ Are you sure you want to log out?\n\nYou will be signed out of the admin panel and will need to log in again.');
   if(!confirmed) return;
   logAdminActivity('logout','Session','Admin logged out');
   setTimeout(()=>{
@@ -3575,6 +3485,125 @@ async function logAdminActivity(actionType,section,detail){
   }catch(e){console.warn('Activity log error:',e);}
 }
 window.logAdminActivity=logAdminActivity;
+
+// ══════════════════════════════════════════════
+// ── PUSH NOTIFICATION BROADCAST ──
+// ══════════════════════════════════════════════
+const PUSH_HISTORY_KEY='bqm_push_history';
+
+// Live preview
+['pushTitle','pushBody','pushIcon'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('input',updatePushPreview);
+});
+function updatePushPreview(){
+  const t=document.getElementById('pushTitle');
+  const b=document.getElementById('pushBody');
+  const i=document.getElementById('pushIcon');
+  const tc=document.getElementById('pushTitleCount');
+  if(t){if(tc)tc.textContent=(t.value.length)+'/65';document.getElementById('pushPreviewTitle').textContent=t.value||'Notification Title';}
+  if(b) document.getElementById('pushPreviewBody').textContent=b.value||'Your message will appear here…';
+  if(i&&i.value){document.getElementById('pushPreviewIcon').src=i.value;}
+}
+
+async function loadTokenCount(){
+  try{
+    if(!window.db) return;
+    const snap=await window.getDocs(window.collection(window.db,'fcm_tokens'));
+    document.getElementById('tokenCount').textContent=snap.size;
+  }catch(e){document.getElementById('tokenCount').textContent='?';}
+}
+window.loadTokenCount=loadTokenCount;
+
+async function sendPushNotification(){
+  const title=document.getElementById('pushTitle').value.trim();
+  const body=document.getElementById('pushBody').value.trim();
+  const link=document.getElementById('pushLink').value.trim()||'https://bigquamsmedia.com.ng/';
+  const icon=document.getElementById('pushIcon').value.trim()||'https://bigquamsmedia.com.ng/logo.png';
+  if(!title||!body){showPushStatus('error','<i class="fas fa-circle-xmark"></i> Title and message body are required.');return;}
+  if(!confirm(`Send this notification to ALL subscribed students?\n\nTitle: ${title}\nMessage: ${body}\n\nThis cannot be undone.`)) return;
+  const btn=document.getElementById('sendPushBtn');
+  btn.disabled=true;btn.textContent='Sending…';
+  showPushStatus('info','⏳ Fetching device tokens…');
+  try{
+    // Collect all FCM tokens from Firestore
+    const snap=await window.getDocs(window.collection(window.db,'fcm_tokens'));
+    const tokens=[];
+    snap.forEach(d=>{if(d.data().token&&d.data().active!==false) tokens.push(d.data().token);});
+    if(!tokens.length){showPushStatus('error','<i class="fas fa-circle-xmark"></i> No subscribed devices found. Students need to enable notifications first.');btn.disabled=false;btn.innerHTML='<i class="fas fa-bullhorn"></i> Send to All Students';return;}
+    showPushStatus('info',`⏳ Sending to ${tokens.length} devices via service worker broadcast…`);
+    // Save broadcast record to Firestore
+    const broadcastRef=window.doc(window.db,'push_broadcasts',Date.now().toString());
+    await window.setDoc(broadcastRef,{
+      title,body,link,icon,
+      tokenCount:tokens.length,
+      sentBy:JSON.parse(localStorage.getItem('bqm_user')||'{}').email||'admin',
+      sentByNick:JSON.parse(localStorage.getItem('bqm_user')||'{}').nickname||'Admin',
+      sentAt:new Date().toISOString(),
+      status:'sent',
+    });
+    // Broadcast to all open service worker clients immediately
+    if('serviceWorker' in navigator && navigator.serviceWorker.controller){
+      navigator.serviceWorker.controller.postMessage({
+        type:'BROADCAST_NOTIFICATION',
+        title,body,icon,
+        url:link,
+        tag:'bqm-broadcast-'+Date.now(),
+      });
+    }
+    // Save to local history
+    const hist=JSON.parse(localStorage.getItem(PUSH_HISTORY_KEY)||'[]');
+    hist.unshift({title,body,link,tokens:tokens.length,sentAt:new Date().toISOString()});
+    localStorage.setItem(PUSH_HISTORY_KEY,JSON.stringify(hist.slice(0,20)));
+    renderPushHistory();
+    showPushStatus('success',`<i class="fas fa-circle-check"></i> Broadcast queued for ${tokens.length} devices! Students will receive it shortly.`);
+    logAdminActivity('broadcast','Push Notifications',`Sent "${title}" to ${tokens.length} devices`);
+    document.getElementById('pushTitle').value='';
+    document.getElementById('pushBody').value='';
+    document.getElementById('pushLink').value='';
+    document.getElementById('pushTitleCount').textContent='0/65';
+    document.getElementById('pushBodyCount').textContent='0/200';
+    updatePushPreview();
+  }catch(e){
+    showPushStatus('error','<i class="fas fa-circle-xmark"></i> Error: '+e.message);
+  }
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-bullhorn"></i> Send to All Students';
+}
+window.sendPushNotification=sendPushNotification;
+
+function showPushStatus(type,msg){
+  const el=document.getElementById('pushStatus');
+  el.style.display='block';
+  el.style.background=type==='success'?'#dcfce7':type==='error'?'#fee2e2':'#ede9fe';
+  el.style.color=type==='success'?'#15803d':type==='error'?'#b91c1c':'#7c3aed';
+  el.textContent=msg;
+}
+
+function renderPushHistory(){
+  const el=document.getElementById('pushHistory');if(!el)return;
+  const hist=JSON.parse(localStorage.getItem(PUSH_HISTORY_KEY)||'[]');
+  if(!hist.length){el.innerHTML='<div class="empty"><div class="ei"><i class="fas fa-inbox"></i></div><p>No broadcasts sent yet.</p></div>';return;}
+  el.innerHTML=hist.map(h=>`
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="width:32px;height:32px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-bullhorn"></i></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.8rem;font-weight:700;color:var(--text)">${h.title}</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">${h.body.slice(0,80)}…</div>
+        <div style="font-size:.66rem;color:var(--muted);margin-top:4px"><i class="fas fa-mobile-screen"></i> ${h.tokens} devices · ${new Date(h.sentAt).toLocaleString('en-NG')}</div>
+      </div>
+    </div>`).join('');
+}
+
+function clearPushForm(){
+  ['pushTitle','pushBody','pushLink'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('pushTitleCount').textContent='0/65';
+  document.getElementById('pushBodyCount').textContent='0/200';
+  document.getElementById('pushStatus').style.display='none';
+  updatePushPreview();
+}
+window.clearPushForm=clearPushForm;
+
+// Section hooks moved into switchSection function directly
 
 // ══════════════════════════════════════════════
 // ── POST-UTME CBT QUESTIONS ──
@@ -3782,7 +3811,7 @@ function filterActivityLog(){
 window.filterActivityLog=filterActivityLog;
 
 function exportActivityLog(){
-  if(!_allActivityLogs.length){showStatus('error','No activity to export.');return;}
+  if(!_allActivityLogs.length){alert('No activity to export.');return;}
   const rows=[['Admin Name','Admin Email','Action','Section','Detail','Date','Time']];
   _allActivityLogs.forEach(l=>rows.push([l.adminName||'',l.adminEmail||'',l.actionType||'',l.section||'',l.detail||'',l.date||'',l.time||'']));
   const csv=rows.map(r=>r.map(v=>'"'+(v||'').replace(/"/g,'""')+'"').join(',')).join('\n');
@@ -3942,7 +3971,7 @@ window.openModal=openModal; window.closeModal=closeModal; window.handleOverlay=h
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
 
 // ── SECTION & TAB SWITCHING ──
-const ALL_SECTIONS=['dashboard','news','newsroom','imglib','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','admission','campuslife','campusgist','polls','dailyhub','anonymous','activitylog','users','reviews','qa','calendar','ticker','siteconfig'];
+const ALL_SECTIONS=['dashboard','news','newsroom','imglib','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','admission','campuslife','campusgist','polls','dailyhub','anonymous','activitylog','users','reviews','qa','calendar','ticker','pushnotif'];
 
 function toggleSidebar(){
   const isOpen=document.getElementById('adminSidebar').classList.contains('open');
@@ -3980,10 +4009,10 @@ function switchSection(name){
   if(name==='postutmecbt') setTimeout(loadPUCBTQuestions,100);
   if(name==='anonymous') setTimeout(loadAnonMessages,100);
   if(name==='users') setTimeout(loadUsers,100);
+  if(name==='pushnotif') setTimeout(()=>{loadTokenCount();renderPushHistory();},100);
   if(name==='admission') setTimeout(loadAdmissionPriceForm,100);
   if(name==='imglib') setTimeout(loadImageLibrary,100);
   if(name==='newsroom') setTimeout(loadCategoryDefaultsIntoSettingsGrid,100);
-  if(name==='siteconfig'&&!_siteSettingsLoaded){ _siteSettingsLoaded=true; setTimeout(loadSiteSettings,100); }
 }
 window.switchSection=switchSection;
 
@@ -4183,8 +4212,13 @@ window.makeSlug=makeSlug;
 function articleUrl(item){
   const slug=item.slug||makeSlug(item.title||'untitled');
   const id=item._id||'';
-  const hash=slug+(id?'--'+id:'');
-  return SITE_BASE+'/newsroom.html#'+hash;
+  const seg=slug+(id?'--'+id:'');
+  // Canonical, crawlable URL — matches articleUrl() in newsroom.html and
+  // the static pages generated by scripts/generate-news-pages.mjs. Do NOT
+  // revert this to a /newsroom.html#hash link — that format bypasses the
+  // whole per-article link-preview system and shares a URL that will never
+  // show the right image/title/description on WhatsApp/Facebook/X.
+  return SITE_BASE+'/news/'+seg+'/';
 }
 window.articleUrl=articleUrl;
 
@@ -4376,7 +4410,7 @@ function insertLink(taId){
   const url=prompt('Paste the link URL:'); if(!url) return;
   let valid=false;
   try{const p=new URL(url); valid=p.protocol==='http:'||p.protocol==='https:';}catch(e){valid=false;}
-  if(!valid){ showStatus('error','That doesn\'t look like a valid link. Please include https:// and try again.'); return; }
+  if(!valid){ alert('That doesn\'t look like a valid link. Please include https:// and try again.'); return; }
   const text=prompt('Link text (what readers will see):','Read more')||url;
   const s=ta.selectionStart,e=ta.selectionEnd;
   const insert=`[${text}](${url})`;
@@ -4458,7 +4492,7 @@ function findTableAtCursor(ta){
 function addTableRow(taId){
   const ta=document.getElementById(taId); if(!ta) return;
   const t=findTableAtCursor(ta);
-  if(!t){ showStatus('error','Place your cursor inside a table first (or use "Insert table" to create one).'); return; }
+  if(!t){ alert('Place your cursor inside a table first (or use "Insert table" to create one).'); return; }
   const {lines,start,end}=t;
   const cols=(lines[start].match(/\|/g)||[]).length-1;
   const newRow='| '+Array.from({length:Math.max(cols,1)},()=>' ').join(' | ')+' |';
@@ -4472,7 +4506,7 @@ window.addTableRow=addTableRow;
 function addTableColumn(taId){
   const ta=document.getElementById(taId); if(!ta) return;
   const t=findTableAtCursor(ta);
-  if(!t){ showStatus('error','Place your cursor inside a table first (or use "Insert table" to create one).'); return; }
+  if(!t){ alert('Place your cursor inside a table first (or use "Insert table" to create one).'); return; }
   const {lines,start,end}=t;
   for(let i=start;i<=end;i++){
     const l=lines[i];
@@ -4509,11 +4543,11 @@ function findReplace(taId,findId,replId,all){
     ta.value=ta.value.split(find).join(repl);
     ta.dispatchEvent(new Event('input'));
     recordEditorHistoryNow(taId);
-    showStatus(count?'success':'error',count?`Replaced ${count} occurrence${count===1?'':'s'}.`:'No matches found.');
+    alert(count?`Replaced ${count} occurrence${count===1?'':'s'}.`:'No matches found.');
   } else {
     const idx=ta.value.indexOf(find, ta.selectionEnd||0);
     const foundAt=idx===-1?ta.value.indexOf(find):idx;
-    if(foundAt===-1){ showStatus('error','No matches found.'); return; }
+    if(foundAt===-1){ alert('No matches found.'); return; }
     ta.value=ta.value.slice(0,foundAt)+repl+ta.value.slice(foundAt+find.length);
     ta.focus(); ta.selectionStart=foundAt; ta.selectionEnd=foundAt+repl.length;
     ta.dispatchEvent(new Event('input'));
@@ -4736,7 +4770,7 @@ function updateSocialPreview(which){
   const previewImgVal=document.getElementById(isAdd?'addPreviewImageB64':'ePreviewImageB64')?.value||'';
   const useFeatured=document.getElementById(isAdd?'addUseFeaturedAsPreview':'eUseFeaturedAsPreview')?.checked;
   const resolvedImg=resolvePreviewImageAdmin(featuredImg,previewImgVal,useFeatured,category);
-  const desc=seoDesc||plainTextExcerpt(body).slice(0,140);
+  const desc=seoDesc||firstSentenceExcerpt(body);
   const slug=slugField||makeSlug(title);
   const out=document.getElementById(isAdd?'addSocialPreviewBody':'eSocialPreviewBody');
   if(!out) return;
@@ -4768,6 +4802,24 @@ function plainTextExcerpt(raw){
     .replace(/^\d+[.)]\s+/gm,'')
     .replace(/\s+/g,' ')
     .trim();
+}
+// Standard news-site practice: use the article's lead sentence as the
+// auto-generated description, rather than an arbitrary character slice —
+// lands on a clean sentence boundary instead of cutting off mid-word.
+// Mirrors firstSentenceExcerpt() in generate-news-pages.mjs / newsroom.html.
+function firstSentenceExcerpt(raw,hardCap){
+  hardCap=hardCap||320;
+  const clean=plainTextExcerpt(raw);
+  if(!clean) return '';
+  const m=/[.!?](?:\s|$)/.exec(clean);
+  if(m){
+    const end=m.index+1;
+    if(end>=20&&end<=hardCap) return clean.slice(0,end).trim();
+  }
+  if(clean.length<=hardCap) return clean;
+  const truncated=clean.slice(0,hardCap);
+  const lastSpace=truncated.lastIndexOf(' ');
+  return (lastSpace>40?truncated.slice(0,lastSpace):truncated).trim();
 }
 
 function updateNewsPreview(which){
@@ -4850,7 +4902,7 @@ window.syncAuthorSelectToValue=syncAuthorSelectToValue;
 // ── "My Profile" — photo + bio, layered onto the existing admin_profiles
 // doc (which already holds name/nickname/email/role/createdAt) ──
 function openMyProfileModal(){
-  if(!firebaseUser){ showStatus('error','Please wait for login to finish.'); return; }
+  if(!firebaseUser){ alert('Please wait for login to finish.'); return; }
   let modal=document.getElementById('myProfileModal');
   if(!modal){
     modal=document.createElement('div');
@@ -4859,7 +4911,7 @@ function openMyProfileModal(){
     modal.onclick=e=>{if(e.target===modal) closeModal('myProfileModal');};
     modal.innerHTML=`
       <div class="modal-box">
-        <div class="modal-header"><h3><i class="fas fa-user"></i> My Author Profile</h3><button class="modal-close" onclick="closeModal('myProfileModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+        <div class="modal-header"><h3><i class="fas fa-user"></i> My Author Profile</h3><button class="modal-close" onclick="closeModal('myProfileModal')"><i class="fas fa-xmark"></i></button></div>
         <div class="modal-body">
           <div class="form-group" style="text-align:center">
             <img id="myProfilePhotoPreview" src="" alt="" style="width:88px;height:88px;border-radius:50%;object-fit:cover;display:none;margin:0 auto 10px;border:2px solid var(--border)">
@@ -4910,12 +4962,14 @@ async function saveMyProfile(){
   if(!firebaseUser) return;
   const nickname=document.getElementById('myProfileNickname').value.trim();
   const bio=document.getElementById('myProfileBio').value.trim();
-  if(!nickname){ showStatus('error','Please enter a display name.'); return; }
+  if(!nickname){ alert('Please enter a display name.'); return; }
   const btn=document.getElementById('saveMyProfileBtn'); btn.disabled=true; btn.textContent='Saving…';
   try{
+    const photo=window._myProfilePhotoB64||'';
     await window.setDoc(window.doc(window.db,'admin_profiles',firebaseUser.uid),{
-      nickname, bio, photo:window._myProfilePhotoB64||''
+      nickname, bio, photo
     },{merge:true});
+    await syncPublicAuthorProfile(firebaseUser.uid,{nickname,bio,photo});
     closeModal('myProfileModal');
     await loadAuthorProfiles();
     // Keep the Add form's author field/badge in sync if it currently shows this admin
@@ -4925,11 +4979,24 @@ async function saveMyProfile(){
     const authorField=document.getElementById('addAuthor');
     if(authorField&&!isCEO) authorField.value=nickname;
   }catch(e){
-    showStatus('error','Could not save profile: '+e.message);
+    alert('Could not save profile: '+e.message);
   }
   btn.disabled=false; btn.textContent='Save Profile';
 }
 window.saveMyProfile=saveMyProfile;
+
+// Writes ONLY the public-safe subset of an admin's profile (nickname, photo,
+// bio) to a separate public collection, so the newsroom page can show
+// bylines without needing read access to admin_profiles — which also holds
+// email and role, and must never be publicly readable.
+async function syncPublicAuthorProfile(uid,{nickname,photo,bio}){
+  try{
+    await window.setDoc(window.doc(window.db,'fs_author_profiles',uid),{
+      nickname:nickname||'', photo:photo||'', bio:bio||''
+    },{merge:true});
+  }catch(e){ console.warn('Public author profile sync failed:',e.message); }
+}
+window.syncPublicAuthorProfile=syncPublicAuthorProfile;
 
 // ── News Image Library ──
 window._imageLibrary=[];
@@ -5013,7 +5080,7 @@ async function deleteLibraryImage(id){
   try{
     await window.deleteDoc(window.doc(window.db,'fs_image_library',id));
     await loadImageLibrary();
-  }catch(e){ showStatus('error','Could not delete: '+e.message); }
+  }catch(e){ alert('Could not delete: '+e.message); }
 }
 window.deleteLibraryImage=deleteLibraryImage;
 
@@ -5029,7 +5096,7 @@ function openImageLibraryPicker(hiddenInputId,previewImgId,clearElId,which){
     modal.onclick=e=>{if(e.target===modal) closeModal('ilPickerModal');};
     modal.innerHTML=`
       <div class="modal-box wide-modal">
-        <div class="modal-header"><h3><i class="fas fa-photo-film"></i> Choose from Image Library</h3><button class="modal-close" onclick="closeModal('ilPickerModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+        <div class="modal-header"><h3><i class="fas fa-photo-film"></i> Choose from Image Library</h3><button class="modal-close" onclick="closeModal('ilPickerModal')"><i class="fas fa-xmark"></i></button></div>
         <div class="modal-body">
           <div class="imglib-toolbar">
             <input type="text" id="ilPickerSearch" placeholder="Search by name…" oninput="renderImageLibraryGrid(true)">
@@ -5127,136 +5194,6 @@ function clearCategoryDefault(cat){
   renderCategoryDefaultsGrid();
 }
 window.clearCategoryDefault=clearCategoryDefault;
-
-// ══════════════════════════════════════════════
-// ── SITE SETTINGS (global branding / hero / topbar / contact / social) ──
-// Same site_config/* Firestore documents used by the live site — shared with CEO's read-only view.
-// ══════════════════════════════════════════════
-async function loadSiteSettings(){
-  try{
-    const [g,h,t,c,s]=await Promise.all([
-      window.getDoc(window.doc(window.db,'site_config','global')),
-      window.getDoc(window.doc(window.db,'site_config','hero')),
-      window.getDoc(window.doc(window.db,'site_config','topbar')),
-      window.getDoc(window.doc(window.db,'site_config','channels')),
-      window.getDoc(window.doc(window.db,'site_config','socials')),
-    ]);
-    if(g.exists()){
-      const d=g.data();
-      document.getElementById('cfg-siteName').value=d.siteName||'';
-      document.getElementById('cfg-tagline').value=d.tagline||'';
-      document.getElementById('cfg-whatsapp').value=d.whatsapp||'';
-      document.getElementById('cfg-email').value=d.email||'';
-      document.getElementById('cfg-formspree').value=d.formspree||'';
-    }
-    if(h.exists()){
-      const d=h.data();
-      document.getElementById('hero-badge').value=d.badge||'';
-      document.getElementById('hero-headline').value=d.headline||'';
-      document.getElementById('hero-desc').value=d.description||'';
-      document.getElementById('stat1-val').value=d.stat1?.value||'';
-      document.getElementById('stat1-lbl').value=d.stat1?.label||'';
-      document.getElementById('stat2-val').value=d.stat2?.value||'';
-      document.getElementById('stat2-lbl').value=d.stat2?.label||'';
-    }
-    if(t.exists()){
-      const d=t.data();
-      document.getElementById('topbar-msg').value=d.message||'';
-      document.getElementById('topbar-enabled').value=d.enabled===false?'false':'true';
-    }
-    if(c.exists()){
-      const d=c.data();
-      document.getElementById('ch-wagroup').value=d.waGroup||'';
-      document.getElementById('ch-wachannel').value=d.waChannel||'';
-      document.getElementById('ch-telegram').value=d.telegram||'';
-      document.getElementById('ch-email').value=d.email||'';
-    }
-    if(s.exists()){
-      const d=s.data();
-      document.getElementById('soc-instagram').value=d.instagram||'';
-      document.getElementById('soc-tiktok').value=d.tiktok||'';
-      document.getElementById('soc-twitter').value=d.twitter||'';
-      document.getElementById('soc-linkedin').value=d.linkedin||'';
-    }
-  }catch(e){console.warn('loadSiteSettings error:',e);}
-}
-window.loadSiteSettings=loadSiteSettings;
-let _siteSettingsLoaded=false;
-
-async function saveSiteConfig(){
-  const data={
-    siteName:document.getElementById('cfg-siteName').value.trim(),
-    tagline:document.getElementById('cfg-tagline').value.trim(),
-    whatsapp:document.getElementById('cfg-whatsapp').value.trim(),
-    email:document.getElementById('cfg-email').value.trim(),
-    formspree:document.getElementById('cfg-formspree').value.trim(),
-    updatedAt:window.serverTimestamp()
-  };
-  try{
-    await window.setDoc(window.doc(window.db,'site_config','global'),data,{merge:true});
-    showStatus('success','Site config saved!');
-  }catch(e){showStatus('error','Error: '+e.message);}
-}
-window.saveSiteConfig=saveSiteConfig;
-
-async function saveHeroStats(){
-  const data={
-    badge:document.getElementById('hero-badge').value.trim(),
-    headline:document.getElementById('hero-headline').value.trim(),
-    description:document.getElementById('hero-desc').value.trim(),
-    stat1:{value:document.getElementById('stat1-val').value.trim(),label:document.getElementById('stat1-lbl').value.trim()},
-    stat2:{value:document.getElementById('stat2-val').value.trim(),label:document.getElementById('stat2-lbl').value.trim()},
-    updatedAt:window.serverTimestamp()
-  };
-  try{
-    await window.setDoc(window.doc(window.db,'site_config','hero'),data,{merge:true});
-    showStatus('success','Hero & Stats saved!');
-  }catch(e){showStatus('error','Error: '+e.message);}
-}
-window.saveHeroStats=saveHeroStats;
-
-async function saveTopBar(){
-  const data={
-    message:document.getElementById('topbar-msg').value.trim(),
-    enabled:document.getElementById('topbar-enabled').value==='true',
-    updatedAt:window.serverTimestamp()
-  };
-  try{
-    await window.setDoc(window.doc(window.db,'site_config','topbar'),data,{merge:true});
-    showStatus('success','Top Bar saved!');
-  }catch(e){showStatus('error','Error: '+e.message);}
-}
-window.saveTopBar=saveTopBar;
-
-async function saveContactChannels(){
-  const data={
-    waGroup:document.getElementById('ch-wagroup').value.trim(),
-    waChannel:document.getElementById('ch-wachannel').value.trim(),
-    telegram:document.getElementById('ch-telegram').value.trim(),
-    email:document.getElementById('ch-email').value.trim(),
-    updatedAt:window.serverTimestamp()
-  };
-  try{
-    await window.setDoc(window.doc(window.db,'site_config','channels'),data,{merge:true});
-    showStatus('success','Contact channels saved!');
-  }catch(e){showStatus('error','Error: '+e.message);}
-}
-window.saveContactChannels=saveContactChannels;
-
-async function saveSocialLinks(){
-  const data={
-    instagram:document.getElementById('soc-instagram').value.trim(),
-    tiktok:document.getElementById('soc-tiktok').value.trim(),
-    twitter:document.getElementById('soc-twitter').value.trim(),
-    linkedin:document.getElementById('soc-linkedin').value.trim(),
-    updatedAt:window.serverTimestamp()
-  };
-  try{
-    await window.setDoc(window.doc(window.db,'site_config','socials'),data,{merge:true});
-    showStatus('success','Social links saved!');
-  }catch(e){showStatus('error','Error: '+e.message);}
-}
-window.saveSocialLinks=saveSocialLinks;
 
 async function saveCategoryDefaultImages(){
   try{
@@ -5446,6 +5383,8 @@ async function saveEditNews(){
 }
 window.saveEditNews=saveEditNews;
 
+function saveNewsroomSettings(){ showStatus('success','<i class="fas fa-circle-check"></i> Newsroom settings saved!'); }
+window.saveNewsroomSettings=saveNewsroomSettings;
 
 // ════════════════════════════════════
 // ══ BOOKS / eLibrary ══
@@ -5546,7 +5485,7 @@ function renderDyk(){
   el.innerHTML='<div class="items-list">'+dykData.map((d,idx)=>`
     <div class="content-item">
       <div class="item-header" onclick="toggleExpand(this)">
-        <div class="item-num">${d.emoji||'<i class="fas fa-lightbulb"></i>'}</div>
+        <div class="item-num">${d.emoji||'💡'}</div>
         <div class="item-info">
           <div class="item-title">${d.fact||d.title}</div>
           <div class="item-meta">${d.category?`<span class="item-cat">${d.category}</span>`:''}${d.source?' · '+d.source:''}</div>
@@ -5566,7 +5505,7 @@ async function addDyk(){
   const fact=document.getElementById('dAddFact').value.trim();
   const body=document.getElementById('dAddBody').value.trim();
   if(!fact||!body){showStatus('error','Fill in the Fact and Explanation.');return;}
-  const item={fact,body,emoji:document.getElementById('dAddEmoji').value.trim()||'<i class="fas fa-lightbulb"></i>',category:document.getElementById('dAddCat').value.trim(),source:document.getElementById('dAddSource').value.trim()};
+  const item={fact,body,emoji:document.getElementById('dAddEmoji').value.trim()||'💡',category:document.getElementById('dAddCat').value.trim(),source:document.getElementById('dAddSource').value.trim()};
   dykData.unshift(item);
   const btn=document.getElementById('addDykBtn'); btn.disabled=true; btn.textContent='Adding…';
   try{ await fbAdd('fs_dyk',item,'Add DYK: '+fact.slice(0,40)); dykData=await fbLoad('fs_dyk'); showStatus('success','<i class="fas fa-lightbulb"></i> Fact added!'); clearDykForm(); renderDyk(); updateBadges(); switchTab('dyk','list'); }
@@ -7117,14 +7056,14 @@ function renderTickerList(){
   if(!tickerItems.length){el.innerHTML='<div class="empty"><div class="ei"><i class="fas fa-bullhorn"></i></div><p>No ticker items yet. Add your first announcement.</p></div>';return;}
   el.innerHTML='<div class="items-list">'+tickerItems.map((t,idx)=>`
     <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px">
-      <div style="font-size:1.2rem;flex-shrink:0">${t.emoji||'<i class="fas fa-bullhorn"></i>'}</div>
+      <div style="font-size:1.2rem;flex-shrink:0">${t.emoji||'📢'}</div>
       <div style="flex:1;font-size:0.84rem;color:var(--text)">${t.text}</div>
       <button class="btn btn-danger btn-sm" onclick="deleteTickerItem(${idx})"><i class="fas fa-trash"></i></button>
     </div>`).join('')+'</div>';
 }
 
 async function addTickerItem(){
-  const emoji=document.getElementById('tkAddEmoji').value.trim()||'<i class="fas fa-bullhorn"></i>';
+  const emoji=document.getElementById('tkAddEmoji').value.trim()||'📢';
   const text=document.getElementById('tkAddText').value.trim();
   if(!text){showStatus('error','Enter the announcement text.');return;}
   tickerItems.push({emoji,text});
@@ -7134,7 +7073,7 @@ async function addTickerItem(){
   btn.disabled=false; btn.innerHTML='<i class="fas fa-bullhorn"></i> Add Item';
 }
 window.addTickerItem=addTickerItem;
-function clearTickerForm(){ document.getElementById('tkAddEmoji').value='<i class="fas fa-bullhorn"></i>'; document.getElementById('tkAddText').value=''; }
+function clearTickerForm(){ document.getElementById('tkAddEmoji').value='📢'; document.getElementById('tkAddText').value=''; }
 window.clearTickerForm=clearTickerForm;
 async function deleteTickerItem(idx){
   if(!confirm('Delete this ticker item?')) return;
@@ -7427,7 +7366,7 @@ async function loadCampusGist(){
           <span style="background:#fce7f3;color:#9d174d;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${g.category||'General'}</span>
           ${g.pinned?'<span style="background:var(--orange);color:#fff;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px"><i class="fas fa-thumbtack"></i> Pinned</span>':''}
           <span style="font-size:.64rem;color:var(--muted);margin-left:auto">${g.createdAt?.toDate?g.createdAt.toDate().toLocaleDateString('en-NG'):''}</span>
-          <button onclick="toggleGistPublished('${g._id}',${!g.published})" style="background:${g.published?'#dcfce7':'#fee2e2'};border:1px solid ${g.published?'#86efac':'#fca5a5'};color:${g.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${g.published?'<i class="fas fa-circle-check"></i> Published':'<i class="fas fa-pause"></i> Hidden'}</button>
+          <button onclick="toggleGistPublished('${g._id}',${!g.published})" style="background:${g.published?'#dcfce7':'#fee2e2'};border:1px solid ${g.published?'#86efac':'#fca5a5'};color:${g.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${g.published?'<i class="fas fa-circle-check"></i> Published':'⏸ Hidden'}</button>
           <button onclick="deleteGistPost('${g._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
         <div style="font-size:.84rem;color:var(--text-main);line-height:1.6">${(g.text||'').substring(0,200)}${(g.text||'').length>200?'…':''}</div>
@@ -7441,7 +7380,7 @@ window.loadCampusGist=loadCampusGist;
 async function addCampusGist(){
   const text=document.getElementById('gistAddText').value.trim();
   const cat=document.getElementById('gistAddCat').value;
-  const emoji=document.getElementById('gistAddEmoji').value.trim()||'<i class="fas fa-face-laugh-squint"></i>';
+  const emoji=document.getElementById('gistAddEmoji').value.trim()||'😂';
   const pinned=document.getElementById('gistAddPinned').value==='true';
   const imgsRaw=document.getElementById('gistAddImages').value.trim();
   const videoUrl=document.getElementById('gistAddVideo').value.trim();
@@ -7455,10 +7394,10 @@ async function addCampusGist(){
   try{
     await window.addDoc(window.collection(window.db,'fs_campus_gist'),item);
     logAdminActivity('add','campusgist','Add gist: '+text.substring(0,40));
-    showStatus('success','<i class="fas fa-face-laugh-squint"></i> Gist published!');
+    showStatus('success','😂 Gist published!');
     clearGistForm();loadCampusGist();switchTab('campusgist','list');
   }catch(e){showStatus('error','Firebase error: '+e.message);}
-  btn.disabled=false;btn.innerHTML='<i class="fas fa-face-laugh-squint"></i> Publish Gist';
+  btn.disabled=false;btn.textContent='😂 Publish Gist';
 }
 window.addCampusGist=addCampusGist;
 
@@ -7503,7 +7442,7 @@ async function loadPolls(){
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
           <span style="background:#ede9fe;color:#7c3aed;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${p.category||'Poll'}</span>
           <span style="font-size:.64rem;color:var(--muted);margin-left:auto">${p.createdAt?.toDate?p.createdAt.toDate().toLocaleDateString('en-NG'):''}</span>
-          <button onclick="togglePollPublished('${p._id}',${!p.published})" style="background:${p.published?'#dcfce7':'#fee2e2'};border:1px solid ${p.published?'#86efac':'#fca5a5'};color:${p.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${p.published?'<i class="fas fa-circle-check"></i> Published':'<i class="fas fa-pause"></i> Hidden'}</button>
+          <button onclick="togglePollPublished('${p._id}',${!p.published})" style="background:${p.published?'#dcfce7':'#fee2e2'};border:1px solid ${p.published?'#86efac':'#fca5a5'};color:${p.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${p.published?'<i class="fas fa-circle-check"></i> Published':'⏸ Hidden'}</button>
           <button onclick="deletePoll('${p._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
         <div style="font-family:'Montserrat',sans-serif;font-size:.84rem;font-weight:700;color:var(--text-main);margin-bottom:8px">${p.caption||p.question||''}</div>
@@ -7599,8 +7538,8 @@ function renderUsers(users){
         <div style="font-size:.7rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.email||'—'}</div>
       </div>
       <div style="text-align:right;flex-shrink:0;font-size:.68rem;color:var(--muted)">
-        <div><i class="fas fa-coins"></i> ${u.coinsBalance||0} coins</div>
-        <div><i class="fas fa-fire"></i> ${u.dailyStreak||u.streak||0} streak</div>
+        <div>🪙 ${u.coinsBalance||0} coins</div>
+        <div>🔥 ${u.dailyStreak||u.streak||0} streak</div>
         <div style="margin-top:2px">${joined}</div>
       </div>
     </div>`;
