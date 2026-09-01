@@ -3937,7 +3937,15 @@ function showStatus(type,msg){
 }
 window.showStatus = showStatus;
 function openModal(id){ document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+  // Only release the scroll lock if no other modal is still open — the
+  // Image Library picker opens ON TOP of the Edit Article modal, and
+  // closing the picker after picking an image was clearing the scroll
+  // lock even though the Edit modal was still showing underneath.
+  const stillOpen=document.querySelectorAll('.modal-overlay.open').length>0;
+  if(!stillOpen) document.body.style.overflow='';
+}
 function handleOverlay(e,id){ if(e.target===document.getElementById(id)) closeModal(id); }
 window.openModal=openModal; window.closeModal=closeModal; window.handleOverlay=handleOverlay;
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
@@ -5084,21 +5092,29 @@ function openImageLibraryPicker(hiddenInputId,previewImgId,clearElId,which){
       </div>`;
     document.body.appendChild(modal);
   }
-  if(!window._imageLibrary.length) loadImageLibrary().then(()=>renderImageLibraryGrid(true));
-  else renderImageLibraryGrid(true);
   openModal('ilPickerModal');
+  // Always fetch fresh rather than only when the cache is empty — avoids
+  // showing a stale list if an image was added/deleted earlier in the
+  // session without revisiting the Image Library section itself.
+  const grid=document.getElementById('ilPickerGrid');
+  if(grid) grid.innerHTML='<div class="imglib-empty">Loading…</div>';
+  loadImageLibrary().then(()=>renderImageLibraryGrid(true));
 }
 window.openImageLibraryPicker=openImageLibraryPicker;
 
 function selectLibraryImage(id){
-  const img=window._imageLibrary.find(i=>i._id===id); if(!img||!window._ilPickerTarget) return;
+  const img=window._imageLibrary.find(i=>i._id===id);
+  if(!img){ showStatus('error','That image could not be found — try reopening the library.'); return; }
+  if(!window._ilPickerTarget){ showStatus('error','Lost track of which field this image was for — please try again.'); return; }
   const {hiddenInputId,previewImgId,clearElId,which}=window._ilPickerTarget;
   const hidden=document.getElementById(hiddenInputId),prev=document.getElementById(previewImgId),clearEl=document.getElementById(clearElId);
-  if(hidden) hidden.value=img.image;
-  if(prev){ prev.src=img.image; prev.style.display='block'; }
+  if(!hidden||!prev){ showStatus('error','Could not apply the image to that field — please try again.'); return; }
+  hidden.value=img.image;
+  prev.src=img.image; prev.style.display='block';
   if(clearEl) clearEl.classList.add('show');
   closeModal('ilPickerModal');
   if(which) updateNewsPreview(which);
+  showStatus('success','<i class="fas fa-circle-check"></i> Image applied — remember to Save Changes.');
 }
 window.selectLibraryImage=selectLibraryImage;
 
