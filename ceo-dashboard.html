@@ -169,6 +169,40 @@ header{
 }
 .logout-hdr-btn:hover{background:rgba(239,68,68,.22)}
 
+/* ── NOTIFICATION BELL ── */
+.notif-wrap{position:relative}
+.notif-bell{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;
+  width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:.95rem;position:relative;transition:.18s;flex-shrink:0;
+}
+.notif-bell:hover{background:rgba(255,255,255,.16)}
+.notif-badge{
+  position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;font-size:.6rem;font-weight:800;
+  min-width:16px;height:16px;border-radius:20px;display:none;align-items:center;justify-content:center;padding:0 4px;
+  border:1.5px solid #0c1f6e;
+}
+.notif-badge.show{display:flex}
+.notif-dropdown{
+  position:absolute;top:calc(100% + 10px);right:0;width:340px;max-width:calc(100vw - 32px);
+  background:var(--surface);border:1.5px solid var(--border);border-radius:14px;
+  box-shadow:0 20px 48px rgba(0,0,0,.35);z-index:500;display:none;overflow:hidden;
+}
+.notif-dropdown.open{display:block}
+.notif-dropdown-hdr{padding:12px 16px;border-bottom:1px solid var(--border);font-family:'Montserrat',sans-serif;font-weight:800;font-size:.82rem;color:var(--text);display:flex;justify-content:space-between;align-items:center}
+.notif-dropdown-body{max-height:360px;overflow-y:auto}
+.notif-item{display:flex;align-items:flex-start;gap:10px;padding:11px 16px;border-bottom:1px solid var(--surface2);cursor:pointer;transition:.15s}
+.notif-item:last-child{border-bottom:none}
+.notif-item:hover{background:var(--surface2)}
+.notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.notif-dot.red{background:var(--red)}
+.notif-dot.amber{background:var(--orange)}
+.notif-dot.blue{background:var(--blue-light)}
+.notif-item-body{flex:1;min-width:0}
+.notif-item-title{font-size:.8rem;font-weight:700;color:var(--text);line-height:1.4}
+.notif-item-sub{font-size:.7rem;color:var(--muted);margin-top:2px}
+.notif-empty{padding:28px 16px;text-align:center;color:var(--muted);font-size:.8rem}
+
 /* ── MAIN LAYOUT ── */
 main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
 
@@ -505,6 +539,15 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
         </div>
       </div>
       <div class="header-badge"><div class="live-dot"></div> LIVE</div>
+      <div class="notif-wrap">
+        <button class="notif-bell" onclick="toggleNotifDropdown()" aria-label="Notifications"><i class="fas fa-bell"></i><span class="notif-badge" id="notifBadge">0</span></button>
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-dropdown-hdr"><span>Notifications</span><span id="notifCount" style="font-weight:600;color:var(--muted);font-size:.72rem"></span></div>
+          <div class="notif-dropdown-body" id="notifDropdownBody">
+            <div class="notif-empty"><i class="fas fa-spinner fa-spin"></i> Loading…</div>
+          </div>
+        </div>
+      </div>
       <img class="hdr-avatar" id="hdrAvatar" src="" alt="" style="display:none">
       <button class="logout-hdr-btn" onclick="doLogout()">Sign Out</button>
     </div>
@@ -532,20 +575,30 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
         <div class="kpi-card k-blue"><div class="kpi-icon"><i class="fas fa-users"></i></div><div class="kpi-num" id="kpi-admins">—</div><div class="kpi-lbl">Active Admins</div></div>
         <div class="kpi-card k-green"><div class="kpi-icon"><i class="fas fa-newspaper"></i></div><div class="kpi-num" id="kpi-published">—</div><div class="kpi-lbl">Published Content</div></div>
         <div class="kpi-card k-orange"><div class="kpi-icon"><i class="fas fa-clock"></i></div><div class="kpi-num" id="kpi-today">—</div><div class="kpi-lbl">Actions Today</div></div>
-        <div class="kpi-card k-red"><div class="kpi-icon"><i class="fas fa-triangle-exclamation"></i></div><div class="kpi-num" id="kpi-issues">—</div><div class="kpi-lbl">Issues / Alerts</div></div>
+        <div class="kpi-card k-red"><div class="kpi-icon"><i class="fas fa-triangle-exclamation"></i></div><div class="kpi-num" id="kpi-issues">—</div><div class="kpi-lbl">Critical Issues</div></div>
       </div>
       <div class="exec-grid">
         <div class="card">
-          <div class="card-header"><div class="card-title"><i class="fas fa-users"></i> Admin Activity</div></div>
+          <div class="card-header"><div class="card-title"><i class="fas fa-chart-line"></i> Admin Performance <span style="font-size:.62rem;color:var(--muted);font-weight:600">last 30 days</span></div></div>
           <div class="card-body" id="ovAdminActivity"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="skeleton sk-line sk-w70"></div></div>
         </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fas fa-list-check"></i> Pending Work</div></div>
+          <div class="card-body" id="ovPendingWork"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div>
+        </div>
+      </div>
+      <div class="exec-grid">
         <div class="card">
           <div class="card-header"><div class="card-title"><i class="fas fa-book"></i> Content Overview</div></div>
           <div class="card-body" id="ovContentOverview"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="skeleton sk-line sk-w70"></div></div>
         </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fas fa-chart-column"></i> Platform Trends <span style="font-size:.62rem;color:var(--muted);font-weight:600">last 7 days</span></div></div>
+          <div class="card-body" id="ovTrends"><div class="skeleton sk-line sk-w70"></div></div>
+        </div>
       </div>
       <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-triangle-exclamation"></i> Important Events / Alerts</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-triangle-exclamation"></i> Recent Critical Activity</div></div>
         <div class="card-body" id="ovAlerts"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div>
       </div>
       <div class="group-hint"><i class="fas fa-circle-info"></i> Refreshes automatically when you open Audit Log.</div>
@@ -839,7 +892,7 @@ main{max-width:1400px;margin:0 auto;padding:24px 20px 60px}
     <!-- ── TAB: ADMIN WHITELIST ── -->
     <div class="tab-panel" id="tab-whitelist">
       <div style="background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);border-radius:12px;padding:16px;margin-bottom:20px;font-size:.82rem;color:#b91c1c;line-height:1.6">
-        <i class="fas fa-lock"></i> <strong>CEO Only.</strong> Only emails you approve here can sign in to the admin panel. The CEO email is always allowed and cannot be removed.
+        <i class="fas fa-lock"></i> <strong>CEO Only.</strong> Only emails you approve here can sign in to the admin panel. The CEO email is always allowed and cannot be removed. Each admin's role (Contributor / Editor / Admin) controls what they can create, edit, and delete — enforced by Firestore rules, not just hidden in the UI.
       </div>
 
       <!-- Add new admin -->
@@ -2272,6 +2325,127 @@ function switchGroup(name){
 }
 window.switchGroup=switchGroup;
 
+// Navigate directly to a specific tab within a group (used by notifications/alerts).
+function navigateToTab(groupName,tabName){
+  document.querySelectorAll('.group-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.group-panel').forEach(p=>p.classList.remove('active'));
+  const gbtn=document.querySelector('.group-btn[data-group="'+groupName+'"]');
+  if(gbtn) gbtn.classList.add('active');
+  const panel=document.getElementById('group-'+groupName);
+  if(panel) panel.classList.add('active');
+  if(groupName==='overview'){
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab-bar .tab-btn').forEach(b=>b.classList.remove('active'));
+    loadOverview();
+  }else if(tabName&&panel){
+    const btn=panel.querySelector(`.tab-btn[onclick*="switchTab('${tabName}'"]`);
+    if(btn) btn.click(); else { const f=panel.querySelector('.tab-btn'); if(f) f.click(); }
+  }
+  closeNotifDropdown();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+window.navigateToTab=navigateToTab;
+
+// Maps an activity-log "section" string (set by Admin's logAdminActivity) to a CEO group/tab,
+// so a notification can jump straight to the relevant oversight view. Sections with no CEO
+// tab (e.g. cbt, users, results — Admin-only tools) fall back to the Audit Log.
+const SECTION_TO_TAB={
+  books:['operations','library'], dyk:['operations','dyk'], spotlight:['operations','spotlight'],
+  scholarships:['operations','scholarships'], nelfund:['operations','nelfund'],
+  postutme_schools:['operations','postutme'], subject_combo:['operations','combo'],
+  reviews:['operations','reviews'], qa:['operations','qa'], calendar:['operations','calendar'],
+  ticker:['operations','siteconfig'],
+};
+function sectionTarget(section){
+  return SECTION_TO_TAB[section]||['auditlog','log'];
+}
+
+// ── NOTIFICATIONS (shared by header bell + Overview alerts widget) ──
+let _cachedNotifs=null;
+async function computeNotifications(){
+  if(!_allLogs.length){ await loadAll(); }
+  const notifs=[];
+
+  // Issues / errors — anything an admin action logged with a failure/error in its detail text
+  _allLogs.filter(l=>/fail|error/i.test(l.detail||'')).slice(0,15).forEach(l=>{
+    const [g,t]=sectionTarget(l.section);
+    notifs.push({severity:'red',icon:'fa-triangle-exclamation',title:l.detail||'Issue logged',
+      sub:(l.adminName||l.adminEmail||'Admin')+' · '+(l.section||'—'),time:l.timestamp,group:g,tab:t});
+  });
+
+  // Large deletions — delete actions whose detail mentions removing 5+ items at once
+  _allLogs.filter(l=>l.actionType==='delete').slice(0,20).forEach(l=>{
+    const m=(l.detail||'').match(/(\d+)/);
+    const n=m?parseInt(m[1],10):1;
+    if(n>=5){
+      const [g,t]=sectionTarget(l.section);
+      notifs.push({severity:'amber',icon:'fa-trash',title:'Large deletion — '+l.detail,
+        sub:(l.adminName||l.adminEmail||'Admin')+' · '+(l.section||'—'),time:l.timestamp,group:g,tab:t});
+    }
+  });
+
+  // Content waiting for approval — unpublished gist posts & polls (CEO has direct tabs for both)
+  try{
+    const [gistSnap,pollSnap]=await Promise.all([
+      window._getDocs(window._query(window._collection(window._db,'fs_campus_gist'),window._limit(30))),
+      window._getDocs(window._query(window._collection(window._db,'fs_polls'),window._limit(30))),
+    ]);
+    let gistPending=0,pollPending=0;
+    gistSnap.forEach(d=>{ if(d.data().published===false) gistPending++; });
+    pollSnap.forEach(d=>{ if(d.data().published===false) pollPending++; });
+    if(gistPending>0) notifs.push({severity:'blue',icon:'fa-face-laugh-squint',title:gistPending+' Campus Gist post'+(gistPending===1?'':'s')+' unpublished',sub:'Waiting for review',time:null,group:'operations',tab:'gist'});
+    if(pollPending>0) notifs.push({severity:'blue',icon:'fa-square-poll-vertical',title:pollPending+' poll'+(pollPending===1?'':'s')+' unpublished',sub:'Waiting for review',time:null,group:'operations',tab:'polls'});
+  }catch(e){console.warn('notif pending check failed:',e);}
+
+  notifs.sort((a,b)=>{
+    const order={red:0,amber:1,blue:2};
+    if(order[a.severity]!==order[b.severity]) return order[a.severity]-order[b.severity];
+    return tsToMillisCEO(b.time)-tsToMillisCEO(a.time);
+  });
+  _cachedNotifs=notifs;
+  return notifs;
+}
+function tsToMillisCEO(ts){ if(!ts) return 0; const d=new Date(ts); return isNaN(d.getTime())?0:d.getTime(); }
+
+function renderNotifBadgeAndDropdown(notifs){
+  const badge=document.getElementById('notifBadge');
+  const body=document.getElementById('notifDropdownBody');
+  const countEl=document.getElementById('notifCount');
+  const critical=notifs.filter(n=>n.severity==='red'||n.severity==='amber').length;
+  if(badge){ badge.textContent=notifs.length>99?'99+':notifs.length; badge.classList.toggle('show',notifs.length>0); }
+  if(countEl) countEl.textContent=notifs.length?notifs.length+' total':'';
+  if(!body) return;
+  if(!notifs.length){ body.innerHTML='<div class="notif-empty"><i class="fas fa-circle-check"></i> All caught up — nothing needs attention.</div>'; return; }
+  body.innerHTML=notifs.slice(0,25).map(n=>{
+    const dt=n.time?new Date(n.time).toLocaleString('en-NG',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+    return `<div class="notif-item" onclick="navigateToTab('${n.group}','${n.tab}')">
+      <div class="notif-dot ${n.severity}"></div>
+      <div class="notif-item-body"><div class="notif-item-title">${n.title}</div><div class="notif-item-sub">${n.sub}${dt?' · '+dt:''}</div></div>
+    </div>`;
+  }).join('');
+}
+
+async function refreshNotifications(){
+  const notifs=await computeNotifications();
+  renderNotifBadgeAndDropdown(notifs);
+  return notifs;
+}
+window.refreshNotifications=refreshNotifications;
+
+function toggleNotifDropdown(){
+  const dd=document.getElementById('notifDropdown');
+  if(!dd) return;
+  const opening=!dd.classList.contains('open');
+  dd.classList.toggle('open',opening);
+  if(opening){ if(_cachedNotifs) renderNotifBadgeAndDropdown(_cachedNotifs); refreshNotifications(); }
+}
+window.toggleNotifDropdown=toggleNotifDropdown;
+function closeNotifDropdown(){ const dd=document.getElementById('notifDropdown'); if(dd) dd.classList.remove('open'); }
+document.addEventListener('click',(e)=>{
+  const wrap=document.querySelector('.notif-wrap');
+  if(wrap&&!wrap.contains(e.target)) closeNotifDropdown();
+});
+
 // ── EXECUTIVE OVERVIEW ──
 async function loadOverview(){
   try{
@@ -2282,7 +2456,6 @@ async function loadOverview(){
     const today=new Date().toLocaleDateString('en-NG');
     const todayLogs=_allLogs.filter(l=>l.date===today);
     const admins=new Set(_allLogs.map(l=>l.adminEmail).filter(Boolean));
-    const issues=_allLogs.filter(l=>/fail|error/i.test(l.detail||'')).slice(0,20);
 
     // Content counts (published items across the main content collections)
     const collections=[
@@ -2299,38 +2472,70 @@ async function loadOverview(){
       }catch(e){ counts[label]='—'; }
     }
 
+    const notifs=await refreshNotifications();
+    const criticalCount=notifs.filter(n=>n.severity==='red'||n.severity==='amber').length;
+    const pendingCount=notifs.filter(n=>n.severity==='blue').length;
+
     document.getElementById('kpi-admins').textContent=admins.size;
     document.getElementById('kpi-published').textContent=published;
     document.getElementById('kpi-today').textContent=todayLogs.length;
-    document.getElementById('kpi-issues').textContent=issues.length;
+    document.getElementById('kpi-issues').textContent=criticalCount;
 
-    // Admin activity — top admins by action count
+    // Admin Performance — action count + last-active time per admin (last 30 days)
+    const cutoff=Date.now()-30*24*60*60*1000;
     const byAdmin={};
-    _allLogs.forEach(l=>{ const k=l.adminName||l.adminEmail||'Unknown'; byAdmin[k]=(byAdmin[k]||0)+1; });
-    const topAdmins=Object.entries(byAdmin).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    _allLogs.forEach(l=>{
+      const k=l.adminName||l.adminEmail||'Unknown';
+      const t=tsToMillisCEO(l.timestamp);
+      if(!byAdmin[k]) byAdmin[k]={count:0,last:0};
+      if(t>=cutoff) byAdmin[k].count++;
+      if(t>byAdmin[k].last) byAdmin[k].last=t;
+    });
+    const topAdmins=Object.entries(byAdmin).sort((a,b)=>b[1].count-a[1].count).slice(0,6);
     const aa=document.getElementById('ovAdminActivity');
-    aa.innerHTML=topAdmins.length?topAdmins.map(([n,c])=>`<div class="exec-row"><span class="n">${n}</span><span class="v">${c}</span></div>`).join(''):'<div style="color:var(--muted);font-size:.8rem">No activity recorded yet.</div>';
+    aa.innerHTML=topAdmins.length?topAdmins.map(([n,d])=>`<div class="exec-row"><span class="n">${n}<div style="font-size:.66rem;color:var(--muted);font-weight:400">Last active ${d.last?formatAgoCEO(d.last):'—'}</div></span><span class="v">${d.count}<span style="font-size:.6rem;font-weight:600;color:var(--muted)"> /30d</span></span></div>`).join(''):'<div style="color:var(--muted);font-size:.8rem">No activity recorded yet.</div>';
 
     // Content overview
     const co=document.getElementById('ovContentOverview');
     co.innerHTML=Object.entries(counts).map(([label,c])=>`<div class="exec-row"><span class="n">${label}</span><span class="v">${c}</span></div>`).join('');
 
-    // Alerts — recent deletions + failure-flagged entries
-    const recentDeletes=_allLogs.filter(l=>l.actionType==='delete').slice(0,5);
+    // Pending Work
+    const pw=document.getElementById('ovPendingWork');
+    const pendingNotifs=notifs.filter(n=>n.severity==='blue');
+    pw.innerHTML=pendingNotifs.length?pendingNotifs.map(n=>`<div class="exec-row" style="cursor:pointer" onclick="navigateToTab('${n.group}','${n.tab}')"><span class="n"><i class="fas ${n.icon}" style="margin-right:6px;color:var(--blue-light)"></i>${n.title}</span><span class="v"><i class="fas fa-chevron-right" style="font-size:.7rem;color:var(--muted)"></i></span></div>`).join(''):'<div style="color:var(--muted);font-size:.8rem"><i class="fas fa-circle-check"></i> Nothing waiting for review.</div>';
+
+    // Platform Trends — actions per day, last 7 days
+    const trendEl=document.getElementById('ovTrends');
+    const days=[]; const now=new Date();
+    for(let i=6;i>=0;i--){ const d=new Date(now); d.setDate(d.getDate()-i); days.push(d.toLocaleDateString('en-NG')); }
+    const dayCounts=days.map(ds=>_allLogs.filter(l=>l.date===ds).length);
+    const maxC=Math.max(...dayCounts,1);
+    trendEl.innerHTML=`<div style="display:flex;align-items:flex-end;gap:6px;height:80px;padding:4px 2px 0">${dayCounts.map((c,i)=>{
+      const h=Math.max(4,Math.round((c/maxC)*72));
+      const lbl=new Date(days[i]).toLocaleDateString('en-NG',{weekday:'short'})[0];
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div title="${c} actions" style="width:100%;height:${h}px;background:linear-gradient(180deg,var(--blue-light),var(--blue));border-radius:4px 4px 0 0"></div><span style="font-size:.62rem;color:var(--muted)">${lbl}</span></div>`;
+    }).join('')}</div>`;
+
+    // Recent Critical Activity (uses the same notification set — clickable)
     const alertsEl=document.getElementById('ovAlerts');
-    const rows=[];
-    issues.slice(0,5).forEach(l=>rows.push({warn:true,icon:'fa-triangle-exclamation',text:(l.adminName||'Admin')+' — '+(l.detail||'Issue logged'),time:l.timestamp}));
-    recentDeletes.forEach(l=>rows.push({warn:false,icon:'fa-trash',text:(l.adminName||'Admin')+' deleted from '+(l.section||'—'),time:l.timestamp}));
-    rows.sort((a,b)=>new Date(b.time)-new Date(a.time));
-    alertsEl.innerHTML=rows.length?rows.slice(0,8).map(r=>{
+    const criticalNotifs=notifs.filter(n=>n.severity==='red'||n.severity==='amber').slice(0,8);
+    alertsEl.innerHTML=criticalNotifs.length?criticalNotifs.map(r=>{
       const dt=r.time?new Date(r.time).toLocaleString('en-NG',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'';
-      return `<div class="alert-row ${r.warn?'warn':'ok'}"><i class="fas ${r.icon}"></i><span>${r.text}</span><span class="t">${dt}</span></div>`;
-    }).join(''):'<div style="color:var(--muted);font-size:.8rem"><i class="fas fa-circle-check"></i> No recent issues or deletions.</div>';
+      return `<div class="alert-row ${r.severity==='red'?'warn':''}" style="cursor:pointer" onclick="navigateToTab('${r.group}','${r.tab}')"><i class="fas ${r.icon}"></i><span>${r.title}</span><span class="t">${dt}</span></div>`;
+    }).join(''):'<div style="color:var(--muted);font-size:.8rem"><i class="fas fa-circle-check"></i> No recent issues or large deletions.</div>';
   }catch(e){
     console.error('loadOverview error:',e);
   }
 }
 window.loadOverview=loadOverview;
+function formatAgoCEO(ms){
+  const mins=Math.floor((Date.now()-ms)/60000);
+  if(mins<1) return 'just now';
+  if(mins<60) return mins+'m ago';
+  const hrs=Math.floor(mins/60);
+  if(hrs<24) return hrs+'h ago';
+  return Math.floor(hrs/24)+'d ago';
+}
 
 // ── ADMIN WHITELIST ──
 async function loadWhitelist(){
@@ -2344,6 +2549,7 @@ async function loadWhitelist(){
     const snap=await window._getDoc(window._doc(window._db,'admin_whitelist','approved'));
     // Read 'entries' (object array) first; fall back to rebuilding from flat 'emails' array
     let entries=[];
+    let roles={};
     if(snap.exists()){
       const data=snap.data();
       if(data.entries&&data.entries.length){
@@ -2351,26 +2557,54 @@ async function loadWhitelist(){
       } else if(data.emails&&data.emails.length){
         entries=data.emails.map(e=>({email:e,name:e.split('@')[0],addedAt:null}));
       }
+      roles=data.roles||{};
     }
     if(!entries.length){
       el.innerHTML='<div style="text-align:center;padding:24px;color:var(--muted);font-size:.8rem">No admins approved yet. Add one above.</div>';
       return;
     }
-    el.innerHTML=entries.map((e,i)=>`
-      <div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border)">
+    const CEO_EMAILS_LOCAL=['bigquamsmedia024@gmail.com','abdulrasqquwamdeen@gmail.com'];
+    el.innerHTML=entries.map((e,i)=>{
+      const isCeo=CEO_EMAILS_LOCAL.includes(e.email);
+      const role=roles[e.email]||'admin';
+      return `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap">
         <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1a3fa8,#3b62d4);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;color:#fff;font-weight:800">${(e.name||e.email||'A').charAt(0).toUpperCase()}</div>
-        <div style="flex:1;min-width:0">
+        <div style="flex:1;min-width:140px">
           <div style="font-size:.8rem;font-weight:700;color:var(--text)">${e.name||'Admin'}</div>
           <div style="font-size:.68rem;color:var(--muted)">${e.email}</div>
           <div style="font-size:.62rem;color:var(--muted);margin-top:2px">Added: ${e.addedAt?new Date(e.addedAt).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'}):'—'}</div>
         </div>
-        ${e.email!=='bigquamsmedia024@gmail.com'?`<button onclick="removeFromWhitelist('${e.email}')" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#ef4444;font-size:.68rem;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer">Remove</button>`:'<span style="font-size:.62rem;color:#f59e0b;font-weight:700"><i class="fas fa-crown"></i> CEO</span>'}
-      </div>`).join('');
+        ${isCeo?'<span style="font-size:.62rem;color:#f59e0b;font-weight:700"><i class="fas fa-crown"></i> CEO</span>':`
+        <select onchange="setAdminRole('${e.email}',this.value)" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.74rem;font-weight:700;background:var(--surface2);color:var(--text)">
+          <option value="contributor" ${role==='contributor'?'selected':''}>Contributor</option>
+          <option value="editor" ${role==='editor'?'selected':''}>Editor</option>
+          <option value="admin" ${role==='admin'?'selected':''}>Admin (full)</option>
+        </select>
+        <button onclick="removeFromWhitelist('${e.email}')" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#ef4444;font-size:.68rem;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer">Remove</button>`}
+      </div>`;
+    }).join('');
   }catch(e){
     el.innerHTML='<div style="padding:16px;color:#ef4444;font-size:.78rem">Error: '+e.message+'</div>';
   }
 }
 window.loadWhitelist=loadWhitelist;
+
+async function setAdminRole(email,role){
+  try{
+    const ref=window._doc(window._db,'admin_whitelist','approved');
+    const snap=await window._getDoc(ref);
+    const roles=snap.exists()?(snap.data().roles||{}):{};
+    roles[email]=role;
+    // merge:true — only touches the `roles` field, leaves emails/entries untouched.
+    await window._setDoc(ref,{roles},{merge:true});
+    showToast('success',email+' is now '+role.charAt(0).toUpperCase()+role.slice(1));
+  }catch(e){
+    showToast('error','Could not update role: '+e.message);
+    loadWhitelist();
+  }
+}
+window.setAdminRole=setAdminRole;
 
 async function addToWhitelist(){
   const email=document.getElementById('wlEmailInput').value.trim().toLowerCase();
@@ -2391,7 +2625,8 @@ async function addToWhitelist(){
       status.innerHTML='<i class="fas fa-triangle-exclamation"></i> This email is already approved.';return;
     }
     existing.push({email,name:name||email.split('@')[0],addedAt:new Date().toISOString()});
-    await window._setDoc(ref,{emails:existing.map(e=>e.email),entries:existing},{merge:false});
+    // merge:true — preserves the `roles` map (see setAdminRole) instead of wiping it.
+    await window._setDoc(ref,{emails:existing.map(e=>e.email),entries:existing},{merge:true});
     status.style.background='#dcfce7';status.style.color='#15803d';
     status.innerHTML=`<i class="fas fa-circle-check"></i> ${email} approved. They can now sign in to the admin panel.`;
     document.getElementById('wlEmailInput').value='';
@@ -2411,7 +2646,8 @@ async function removeFromWhitelist(email){
     const snap=await window._getDoc(ref);
     if(!snap.exists()) return;
     const remaining=(snap.data().entries||[]).filter(e=>e.email!==email);
-    await window._setDoc(ref,{emails:remaining.map(e=>e.email),entries:remaining},{merge:false});
+    // merge:true — preserves the `roles` map instead of wiping it.
+    await window._setDoc(ref,{emails:remaining.map(e=>e.email),entries:remaining},{merge:true});
     loadWhitelist();
   }catch(e){showToast('error','Error: '+e.message);}
 }
