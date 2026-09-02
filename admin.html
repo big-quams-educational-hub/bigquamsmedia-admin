@@ -182,6 +182,30 @@ body.dark .sidebar-close-btn{background:#0f172a;color:#94a3b8}
 .nav-section-label{font-size:0.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:10px 8px 4px;display:block}
 .sidebar-divider{height:1px;background:var(--border);margin:6px 4px}
 .section-tab{display:flex;align-items:center;gap:8px;padding:10px 10px;border-radius:10px;border:none;font-family:'Roboto',sans-serif;font-size:0.83rem;font-weight:600;cursor:pointer;color:var(--muted);background:transparent;transition:.15s;white-space:nowrap;width:100%;text-align:left;min-height:var(--touch)}
+/* CEO-only UI — hidden by default; enterAdminPanel() adds .is-ceo to <body>
+   only when the signed-in email matches CEO_EMAILS. Never rely on this
+   alone for security — it's a UI convenience, the real gate is always the
+   Firestore rules (isCEO()/isAdmin()). */
+.ceo-only{display:none}
+body.is-ceo .ceo-only{display:flex}
+body.is-ceo .nav-section-label.ceo-only{display:block}
+body.is-ceo .sidebar-divider.ceo-only{display:block}
+/* The Manage Admins *section* itself must still obey the normal
+   .admin-section / .active show-hide toggle from switchSection() — only
+   its sidebar nav button uses the plain ceo-only rule above. Forcing
+   display:block here would show it even while a different section is
+   selected. */
+body.is-ceo .ceo-only.admin-section{display:none}
+body.is-ceo .ceo-only.admin-section.active{display:block}
+.admin-card{border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;background:var(--card)}
+.admin-card-top{display:flex;align-items:center;gap:12px}
+.admin-card-photo{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--light);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--blue);border:1.5px solid var(--border)}
+.admin-card-name{font-weight:800;font-size:.88rem;color:var(--text)}
+.admin-card-email{font-size:.72rem;color:var(--muted)}
+.admin-card-badge{font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:20px;background:#dbeafe;color:#1d4ed8;text-transform:uppercase;letter-spacing:.3px}
+.admin-card-badge.ceo{background:#fef3c7;color:#92400e}
+.admin-card-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.admin-card-actions button{flex:1;min-width:100px;font-size:.72rem}
 .nav-icon{font-size:0.95rem;flex-shrink:0;width:18px;text-align:center}
 .nav-label{flex:1;line-height:1.2;overflow:hidden;text-overflow:ellipsis}
 .nav-count{background:var(--border);color:var(--muted);font-size:0.58rem;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
@@ -717,6 +741,13 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <span class="nav-icon"><i class="fas fa-house"></i></span><span class="nav-label">Dashboard</span>
       </button>
 
+      <div class="sidebar-divider ceo-only"></div>
+      <div class="nav-section-label ceo-only">CEO</div>
+      <button class="section-tab ceo-only" onclick="switchSection('manageadmins')">
+        <span class="nav-icon"><i class="fas fa-user-shield"></i></span><span class="nav-label">Manage Admins</span>
+        <span class="nav-count" id="cnt-manageadmins">—</span>
+      </button>
+
       <div class="sidebar-divider"></div>
       <div class="nav-section-label">Content</div>
       <button class="section-tab" onclick="switchSection('news')">
@@ -860,6 +891,18 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div><div class="stat-num" id="dash-cbt">—</div><div class="stat-lbl">CBT Questions</div></div>
         </div>
       </div>
+    </div>
+
+    <!-- ══ MANAGE ADMINS (CEO only) ══ -->
+    <div class="admin-section ceo-only" id="section-manageadmins">
+      <div class="section-header">
+        <h2 class="section-title-h2"><i class="fas fa-user-shield"></i> Manage Admins</h2>
+        <button class="btn btn-success btn-sm" onclick="openAddAdminModal()"><i class="fas fa-plus"></i> Add Admin</button>
+      </div>
+      <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.78rem;color:#1e40af;line-height:1.6">
+        <i class="fas fa-circle-info"></i> Creating an admin here sets up their login immediately — no separate self-registration step needed. <b>Resetting a password</b> sends them a reset-link email (there's no way for anyone, including the CEO, to see or directly set another person's password — that's a Firebase security limit, not a gap in this panel). <b>Removing</b> an admin revokes their access but does not delete their login account.
+      </div>
+      <div id="adminsList"><div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Loading admins…</div></div>
     </div>
 
     <!-- ══ NEWS ══ -->
@@ -3131,6 +3174,49 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
   </div>
 </div>
 
+<div class="modal-overlay" id="addAdminModal" onclick="handleOverlay(event,'addAdminModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3><i class="fas fa-user-plus"></i> Add New Admin</h3><button class="modal-close" onclick="closeModal('addAdminModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Full Name *</label><input type="text" id="naAdminName" placeholder="e.g. Fatima Bello"></div>
+      <div class="form-group"><label>Display Name / Nickname *</label><input type="text" id="naAdminNickname" placeholder="Shown on their articles as the byline"></div>
+      <div class="form-group"><label>Email *</label><input type="email" id="naAdminEmail" placeholder="admin@example.com"></div>
+      <div class="form-group"><label>Temporary Password *</label>
+        <input type="password" id="naAdminPassword" placeholder="At least 6 characters">
+        <div class="form-hint">Share this with them directly — they can change it later, or you can send a reset link any time from the admin list.</div>
+      </div>
+      <div id="addAdminResult" style="font-size:.8rem;margin-top:6px"></div>
+      <div class="btn-row">
+        <button class="btn btn-success" onclick="createAdminAccount()" id="createAdminBtn"><i class="fas fa-user-plus"></i> Create Admin Account</button>
+        <button class="btn btn-ghost" onclick="closeModal('addAdminModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="editAdminProfileModal" onclick="handleOverlay(event,'editAdminProfileModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Admin Profile</h3><button class="modal-close" onclick="closeModal('editAdminProfileModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+    <div class="modal-body">
+      <input type="hidden" id="eaUid">
+      <div class="form-group" style="text-align:center">
+        <img id="eaPhotoPreview" src="" alt="" style="width:88px;height:88px;border-radius:50%;object-fit:cover;display:none;margin:0 auto 10px;border:2px solid var(--border)">
+        <div class="img-upload-box" onclick="document.getElementById('eaPhotoFile').click()">
+          <input type="file" id="eaPhotoFile" accept="image/*" onchange="onEditAdminPhotoChange(this)">
+          <div class="upload-label"><span><i class="fas fa-image"></i></span>Tap to upload a display picture</div>
+        </div>
+      </div>
+      <div class="form-group"><label>Display Name / Nickname</label><input type="text" id="eaNickname"></div>
+      <div class="form-group"><label>Bio</label><textarea id="eaBio" placeholder="A short line about them — role, beat, or focus area." style="min-height:80px"></textarea></div>
+      <div class="form-hint" id="eaEmailHint" style="margin-bottom:10px"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveAdminProfile()" id="saveAdminProfileBtn">Save Profile</button>
+        <button class="btn btn-ghost" onclick="closeModal('editAdminProfileModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="editCBTModal" onclick="handleOverlay(event,'editCBTModal')">
   <div class="modal-box">
     <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit CBT Question</h3><button class="modal-close" onclick="closeModal('editCBTModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
@@ -3172,7 +3258,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp, deleteField, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp, deleteField, query, orderBy, limit, arrayUnion, arrayRemove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider, signOut, sendPasswordResetEmail, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const fbConfig = {
@@ -3187,6 +3273,17 @@ const fbConfig = {
 const app = initializeApp(fbConfig);
 const db  = getFirestore(app);
 const auth = getAuth(app);
+// Secondary Firebase app instance, signed in independently from the
+// primary one above. createUserWithEmailAndPassword() automatically signs
+// in as whichever user it just created — on the PRIMARY app instance that
+// would silently kick the CEO out of their own session the moment they
+// create a new admin account. Running it on this secondary instance
+// instead keeps the CEO's own session on `auth` completely untouched; see
+// createAdminAccount() further down, which signs the secondary instance
+// back out immediately after the new account is created.
+const secondaryApp = initializeApp(fbConfig, 'Secondary');
+const secondaryAuth = getAuth(secondaryApp);
+window.secondaryAuth = secondaryAuth;
 const googleProvider = new GoogleAuthProvider();
 const appleProvider = new OAuthProvider('apple.com');
 appleProvider.addScope('email');
@@ -3208,6 +3305,8 @@ window.deleteField  = deleteField;
 window.query        = query;
 window.orderBy      = orderBy;
 window.limit        = limit;
+window.arrayUnion   = arrayUnion;
+window.arrayRemove  = arrayRemove;
 window.signInWithEmailAndPassword = signInWithEmailAndPassword;
 window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
 window.signInWithPopup = signInWithPopup;
@@ -3510,6 +3609,7 @@ async function enterAdminPanel(){
     nickname:resolvedNickname,
     isCEO:isCEO,
   }));
+  document.body.classList.toggle('is-ceo',isCEO);
   setTimeout(()=>logAdminActivity('login','Session','Admin logged in via Firebase'),600);
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminApp').style.display='block';
@@ -3800,7 +3900,7 @@ window.exportActivityLog=exportActivityLog;
 if(localStorage.getItem('bqm_auth')==='1'){
   // Firebase auth only
   const savedUser=localStorage.getItem('bqm_user');
-  if(savedUser){try{const u=JSON.parse(savedUser);const nick=u.nickname||(u.isCEO?'Quams':u.name||'Admin');const b=document.getElementById('topBadge');if(b)b.innerHTML=(u.isCEO?'<i class="fas fa-crown"></i> Quams':nick)+' · '+(u.isCEO?'CEO':'Admin');updateWelcomeHeading(u.isCEO?'Quams':nick);setTimeout(()=>{const af=document.getElementById('addAuthor');if(af)af.value=u.isCEO?'BIG QUAMS MEDIA':(nick||'BIG QUAMS MEDIA');},400);}catch(e){}}
+  if(savedUser){try{const u=JSON.parse(savedUser);const nick=u.nickname||(u.isCEO?'Quams':u.name||'Admin');const b=document.getElementById('topBadge');if(b)b.innerHTML=(u.isCEO?'<i class="fas fa-crown"></i> Quams':nick)+' · '+(u.isCEO?'CEO':'Admin');updateWelcomeHeading(u.isCEO?'Quams':nick);document.body.classList.toggle('is-ceo',!!u.isCEO);setTimeout(()=>{const af=document.getElementById('addAuthor');if(af)af.value=u.isCEO?'BIG QUAMS MEDIA':(nick||'BIG QUAMS MEDIA');},400);}catch(e){}}
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminApp').style.display='block';
   setTimeout(()=>init(),300);
@@ -3951,7 +4051,7 @@ window.openModal=openModal; window.closeModal=closeModal; window.handleOverlay=h
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
 
 // ── SECTION & TAB SWITCHING ──
-const ALL_SECTIONS=['dashboard','news','newsroom','imglib','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','admission','campuslife','campusgist','polls','dailyhub','anonymous','activitylog','users','reviews','qa','calendar','ticker','siteconfig'];
+const ALL_SECTIONS=['dashboard','manageadmins','news','newsroom','imglib','library','dyk','spotlight','scholarships','nelfund','cbt','postutme','postutmecbt','postutmeprep','subjectcombo','results','gpa','admission','campuslife','campusgist','polls','dailyhub','anonymous','activitylog','users','reviews','qa','calendar','ticker','siteconfig'];
 
 function toggleSidebar(){
   const isOpen=document.getElementById('adminSidebar').classList.contains('open');
@@ -3993,6 +4093,7 @@ function switchSection(name){
   if(name==='imglib') setTimeout(loadImageLibrary,100);
   if(name==='newsroom') setTimeout(loadCategoryDefaultsIntoSettingsGrid,100);
   if(name==='siteconfig'&&!_siteSettingsLoaded){ _siteSettingsLoaded=true; setTimeout(loadSiteSettings,100); }
+  if(name==='manageadmins') setTimeout(loadAdminsList,100);
 }
 window.switchSection=switchSection;
 
@@ -4977,6 +5078,213 @@ async function syncPublicAuthorProfile(uid,{nickname,photo,bio}){
   }catch(e){ console.warn('Public author profile sync failed:',e.message); }
 }
 window.syncPublicAuthorProfile=syncPublicAuthorProfile;
+
+// ── Manage Admins (CEO only) ──
+window._adminsList=[];
+
+async function loadAdminsList(){
+  const container=document.getElementById('adminsList');
+  if(container) container.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Loading admins…</div>';
+  try{
+    const [wlSnap,profSnap]=await Promise.all([
+      window.getDoc(window.doc(window.db,'admin_whitelist','approved')),
+      window.getDocs(window.collection(window.db,'admin_profiles')),
+    ]);
+    const rawEmails=wlSnap.exists()?(wlSnap.data().emails||[]):[];
+    const profilesByEmail={};
+    profSnap.docs.forEach(d=>{
+      const data=d.data();
+      if(data.email) profilesByEmail[data.email.toLowerCase().trim()]={...data,_uid:d.id};
+    });
+    const list=[];
+    // CEO accounts always shown first, not removable/resettable here
+    CEO_EMAILS.forEach(email=>{
+      list.push({email,emailLower:email.toLowerCase(),isCEOAccount:true,profile:profilesByEmail[email.toLowerCase()]||null});
+    });
+    // Then every whitelisted admin — keep the ORIGINAL casing for email
+    // (needed later so arrayRemove() exact-matches the stored value;
+    // emailLower is only for display/lookup comparisons).
+    rawEmails.forEach(raw=>{
+      const lower=raw.toLowerCase().trim();
+      if(CEO_EMAILS.includes(lower)) return; // already listed above
+      list.push({email:raw,emailLower:lower,isCEOAccount:false,profile:profilesByEmail[lower]||null});
+    });
+    window._adminsList=list;
+    renderAdminsList();
+    const cnt=document.getElementById('cnt-manageadmins');
+    if(cnt) cnt.textContent=list.length;
+  }catch(e){
+    if(container) container.innerHTML='<div style="text-align:center;padding:32px;color:var(--red);font-size:.82rem">Could not load admins: '+admEsc(e.message)+'</div>';
+  }
+}
+window.loadAdminsList=loadAdminsList;
+
+function renderAdminsList(){
+  const container=document.getElementById('adminsList');
+  if(!container) return;
+  const list=window._adminsList||[];
+  if(!list.length){ container.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">No admins yet.</div>'; return; }
+  container.innerHTML=list.map(a=>{
+    const p=a.profile;
+    const name=p?.nickname||p?.name||(a.isCEOAccount?'CEO':'(hasn\u2019t signed in yet)');
+    const initial=(name||'?').replace(/[^\w]/g,'').charAt(0).toUpperCase()||'?';
+    const photoHtml=p?.photo?`<img class="admin-card-photo" src="${p.photo}" alt="">`:`<div class="admin-card-photo">${initial}</div>`;
+    const uid=p?._uid||'';
+    const pendingNote=(!p&&!a.isCEOAccount)?`<div style="font-size:.72rem;color:#b45309;margin-top:8px"><i class="fas fa-clock"></i> Whitelisted but hasn\u2019t created their profile yet — they need to sign in at least once.</div>`:'';
+    return `
+    <div class="admin-card">
+      <div class="admin-card-top">
+        ${photoHtml}
+        <div style="flex:1;min-width:0">
+          <div class="admin-card-name">${admEsc(name)} ${a.isCEOAccount?'<span class="admin-card-badge ceo">CEO</span>':'<span class="admin-card-badge">Admin</span>'}</div>
+          <div class="admin-card-email">${admEsc(a.email)}</div>
+        </div>
+      </div>
+      ${p?.bio?`<div style="font-size:.75rem;color:var(--muted);margin-top:8px">${admEsc(p.bio)}</div>`:''}
+      ${pendingNote}
+      <div class="admin-card-actions">
+        ${p?`<button class="btn btn-outline btn-sm" onclick="openEditAdminProfileModal('${uid}','${admEsc(a.email)}')"><i class="fas fa-pen"></i> Edit Profile</button>`:''}
+        ${!a.isCEOAccount?`<button class="btn btn-outline btn-sm" onclick="resetAdminPassword('${admEsc(a.email)}')"><i class="fas fa-key"></i> Reset Password</button>`:''}
+        ${!a.isCEOAccount?`<button class="btn btn-outline btn-sm" style="color:var(--red);border-color:var(--red)" onclick="removeAdmin('${admEsc(a.email)}')"><i class="fas fa-user-slash"></i> Remove</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+window.renderAdminsList=renderAdminsList;
+
+function openAddAdminModal(){
+  ['naAdminName','naAdminNickname','naAdminEmail','naAdminPassword'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+  const r=document.getElementById('addAdminResult'); if(r) r.innerHTML='';
+  openModal('addAdminModal');
+}
+window.openAddAdminModal=openAddAdminModal;
+
+async function createAdminAccount(){
+  const name=document.getElementById('naAdminName').value.trim();
+  const nickname=document.getElementById('naAdminNickname').value.trim();
+  const email=document.getElementById('naAdminEmail').value.trim();
+  const pass=document.getElementById('naAdminPassword').value;
+  const resultEl=document.getElementById('addAdminResult');
+  if(!name||!nickname||!email||!pass){ if(resultEl) resultEl.innerHTML='<span style="color:var(--red)">Fill in all fields.</span>'; return; }
+  if(pass.length<6){ if(resultEl) resultEl.innerHTML='<span style="color:var(--red)">Password must be at least 6 characters.</span>'; return; }
+  const btn=document.getElementById('createAdminBtn'); btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Creating…';
+  try{
+    if(!window.secondaryAuth) throw new Error('Auth not ready — wait a moment and try again.');
+    // 1. Create the account on the SECONDARY Firebase app instance so the
+    //    CEO's own session (on the primary instance) is never touched —
+    //    createUserWithEmailAndPassword() auto-signs-in as the new user on
+    //    whichever app instance it's called with.
+    const cred=await window.createUserWithEmailAndPassword(window.secondaryAuth,email,pass);
+    await window.updateProfile(cred.user,{displayName:name});
+    const newUid=cred.user.uid;
+    // 2. Immediately sign the secondary instance back out — we only
+    //    needed it to mint the account.
+    await window.signOutFB(window.secondaryAuth).catch(()=>{});
+    // 3. Whitelist their email so isAdmin() recognizes them. Requires
+    //    isCEO(), satisfied by the CEO's untouched primary session.
+    await window.setDoc(window.doc(window.db,'admin_whitelist','approved'),{
+      emails:window.arrayUnion(email)
+    },{merge:true});
+    // 4. Create their profile record + the public byline mirror.
+    await window.setDoc(window.doc(window.db,'admin_profiles',newUid),{
+      uid:newUid,name,nickname,email,createdAt:new Date().toISOString(),role:'admin',
+    });
+    await syncPublicAuthorProfile(newUid,{nickname,photo:'',bio:''});
+    logAdminActivity('add','admin','Created admin account: '+email);
+    if(resultEl) resultEl.innerHTML='<span style="color:#16a34a"><i class="fas fa-circle-check"></i> Admin account created — share the password with them directly.</span>';
+    await loadAdminsList();
+    setTimeout(()=>closeModal('addAdminModal'),1400);
+  }catch(e){
+    const msg=e.code==='auth/email-already-in-use'?'An account with this email already exists.':e.code==='auth/weak-password'?'Password is too weak.':admEsc(e.message);
+    if(resultEl) resultEl.innerHTML='<span style="color:var(--red)">'+msg+'</span>';
+  }
+  btn.disabled=false; btn.innerHTML='<i class="fas fa-user-plus"></i> Create Admin Account';
+}
+window.createAdminAccount=createAdminAccount;
+
+window._eaPhotoB64='';
+async function openEditAdminProfileModal(uid,email){
+  document.getElementById('eaUid').value=uid;
+  document.getElementById('eaEmailHint').textContent=email;
+  window._eaPhotoB64='';
+  const photoPrev=document.getElementById('eaPhotoPreview');
+  photoPrev.style.display='none'; photoPrev.src='';
+  document.getElementById('eaNickname').value='';
+  document.getElementById('eaBio').value='';
+  openModal('editAdminProfileModal');
+  try{
+    const snap=await window.getDoc(window.doc(window.db,'admin_profiles',uid));
+    if(snap.exists()){
+      const data=snap.data();
+      document.getElementById('eaNickname').value=data.nickname||'';
+      document.getElementById('eaBio').value=data.bio||'';
+      if(data.photo){ photoPrev.src=data.photo; photoPrev.style.display='block'; window._eaPhotoB64=data.photo; }
+    }
+  }catch(e){ showStatus('error','Could not load that admin\'s profile: '+e.message); }
+}
+window.openEditAdminProfileModal=openEditAdminProfileModal;
+
+function onEditAdminPhotoChange(input){
+  const file=input.files&&input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    window._eaPhotoB64=e.target.result;
+    const prev=document.getElementById('eaPhotoPreview');
+    prev.src=e.target.result; prev.style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+window.onEditAdminPhotoChange=onEditAdminPhotoChange;
+
+async function saveAdminProfile(){
+  const uid=document.getElementById('eaUid').value;
+  const nickname=document.getElementById('eaNickname').value.trim();
+  const bio=document.getElementById('eaBio').value.trim();
+  if(!uid) return;
+  if(!nickname){ showStatus('error','Please enter a display name.'); return; }
+  const btn=document.getElementById('saveAdminProfileBtn'); btn.disabled=true; btn.textContent='Saving…';
+  try{
+    const photo=window._eaPhotoB64||'';
+    await window.setDoc(window.doc(window.db,'admin_profiles',uid),{nickname,bio,photo},{merge:true});
+    await syncPublicAuthorProfile(uid,{nickname,bio,photo});
+    logAdminActivity('edit','admin','Edited admin profile: '+nickname);
+    closeModal('editAdminProfileModal');
+    await loadAdminsList();
+    showStatus('success','Profile updated.');
+  }catch(e){
+    showStatus('error','Could not save profile: '+e.message);
+  }
+  btn.disabled=false; btn.textContent='Save Profile';
+}
+window.saveAdminProfile=saveAdminProfile;
+
+async function resetAdminPassword(email){
+  if(!confirm('Send a password reset link to '+email+'?')) return;
+  try{
+    await window.sendPasswordResetEmail(window.auth,email);
+    logAdminActivity('edit','admin','Sent password reset to: '+email);
+    showStatus('success','Password reset email sent to '+email+'.');
+  }catch(e){
+    showStatus('error','Could not send reset email: '+(e.code==='auth/user-not-found'?'No account found for that email — they may not have signed in yet.':e.message));
+  }
+}
+window.resetAdminPassword=resetAdminPassword;
+
+async function removeAdmin(email){
+  if(CEO_EMAILS.includes(email.toLowerCase())){ showStatus('error','CEO accounts cannot be removed here.'); return; }
+  if(!confirm('Remove admin access for '+email+'?\n\nThis revokes their ability to use this admin panel. It does NOT delete their login account — you can re-add their email later if needed.')) return;
+  try{
+    await window.setDoc(window.doc(window.db,'admin_whitelist','approved'),{
+      emails:window.arrayRemove(email)
+    },{merge:true});
+    logAdminActivity('delete','admin','Removed admin access: '+email);
+    showStatus('success','Admin access removed for '+email+'.');
+    await loadAdminsList();
+  }catch(e){
+    showStatus('error','Could not remove admin: '+e.message);
+  }
+}
+window.removeAdmin=removeAdmin;
 
 // ── News Image Library ──
 window._imageLibrary=[];
