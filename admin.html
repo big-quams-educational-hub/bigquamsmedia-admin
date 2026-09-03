@@ -747,6 +747,12 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <span class="nav-icon"><i class="fas fa-user-shield"></i></span><span class="nav-label">Manage Admins</span>
         <span class="nav-count" id="cnt-manageadmins">—</span>
       </button>
+      <button class="section-tab ceo-only" onclick="switchSection('siteconfig')">
+        <span class="nav-icon"><i class="fas fa-gear"></i></span><span class="nav-label">Site Settings</span>
+      </button>
+      <button class="section-tab ceo-only" onclick="switchSection('activitylog')">
+        <span class="nav-icon"><i class="fas fa-user-secret"></i></span><span class="nav-label">Activity Log</span>
+      </button>
 
       <div class="sidebar-divider"></div>
       <div class="nav-section-label">Content</div>
@@ -842,15 +848,9 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <button class="section-tab" onclick="switchSection('ticker')">
         <span class="nav-icon"><i class="fas fa-bullhorn"></i></span><span class="nav-label">News Ticker</span>
       </button>
-      <button class="section-tab" onclick="switchSection('siteconfig')">
-        <span class="nav-icon"><i class="fas fa-gear"></i></span><span class="nav-label">Site Settings</span>
-      </button>
       <button class="section-tab" onclick="switchSection('users')">
         <span class="nav-icon"><i class="fas fa-users"></i></span><span class="nav-label">Users</span>
         <span class="nav-count" id="cnt-users">—</span>
-      </button>
-      <button class="section-tab" onclick="switchSection('activitylog')">
-        <span class="nav-icon"><i class="fas fa-user-secret"></i></span><span class="nav-label">Activity Log</span>
       </button>
 
       <div class="sidebar-divider"></div>
@@ -1554,7 +1554,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     </div>
 
     <!-- ══ SITE SETTINGS (global branding / hero / topbar / contact / social) ══ -->
-    <div class="admin-section" id="section-siteconfig">
+    <div class="admin-section ceo-only" id="section-siteconfig">
       <div class="section-header">
         <h2 class="section-title-h2"><i class="fas fa-gear"></i> Site Settings</h2>
       </div>
@@ -2480,7 +2480,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     </div>
 
     <!-- ══ ACTIVITY LOG (CEO ONLY) ══ -->
-    <div class="admin-section" id="section-activitylog">
+    <div class="admin-section ceo-only" id="section-activitylog">
       <div class="section-header">
         <h2 class="section-title-h2"><i class="fas fa-user-secret"></i> Admin Activity Log</h2>
         <button class="btn btn-ghost btn-sm" onclick="refreshActivityLog()"><i class="fas fa-arrows-rotate"></i> Refresh</button>
@@ -2502,6 +2502,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
               <option value="save">Save</option>
             </select>
             <button class="btn btn-ghost btn-sm" onclick="exportActivityLog()" style="white-space:nowrap"><i class="fas fa-download"></i> Export CSV</button>
+            <button class="btn btn-outline btn-sm" id="clearActLogBtn" onclick="clearActivityLog()" style="white-space:nowrap;color:var(--red);border-color:var(--red)"><i class="fas fa-trash"></i> Clear All</button>
           </div>
           <div id="actLogStats" style="display:flex;gap:0;border-bottom:1px solid var(--border)">
             <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
@@ -3813,7 +3814,7 @@ function isCeoAdmin(){
 
 async function refreshActivityLog(){
   const listEl=document.getElementById('actLogList');
-  if(listEl) listEl.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:.84rem">⏳ Loading…</div>';
+  if(listEl) listEl.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:.84rem"><i class="fas fa-spinner fa-spin"></i> Loading…</div>';
   if(!isCeoAdmin()){
     document.getElementById('actLogCeoOnly').style.display='none';
     document.getElementById('actLogNotCeo').style.display='block';
@@ -3824,13 +3825,46 @@ async function refreshActivityLog(){
   if(!window.db){setTimeout(refreshActivityLog,800);return;}
   try{
     const snap=await window.getDocs(window.collection(window.db,'admin_activity_log'));
-    _allActivityLogs=snap.docs.map(d=>d.data()).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+    _allActivityLogs=snap.docs.map(d=>({...d.data(),_id:d.id})).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
     renderActivityLog(_allActivityLogs);
   }catch(e){
     if(listEl) listEl.innerHTML='<div style="text-align:center;padding:40px;color:#ef4444;font-size:.84rem">Error loading log: '+e.message+'</div>';
   }
 }
 window.refreshActivityLog=refreshActivityLog;
+
+async function deleteActivityLogEntry(id){
+  if(!id) return;
+  if(!confirm('Delete this log entry? This cannot be undone.')) return;
+  try{
+    await window.deleteDoc(window.doc(window.db,'admin_activity_log',id));
+    _allActivityLogs=_allActivityLogs.filter(l=>l._id!==id);
+    renderActivityLog(_allActivityLogs);
+    showStatus('success','Log entry deleted.');
+  }catch(e){
+    showStatus('error','Could not delete that entry: '+e.message);
+  }
+}
+window.deleteActivityLogEntry=deleteActivityLogEntry;
+
+async function clearActivityLog(){
+  const list=_allActivityLogs||[];
+  if(!list.length){ showStatus('error','The log is already empty.'); return; }
+  if(!confirm(`Delete all ${list.length} activity log entries? This cannot be undone.`)) return;
+  const btn=document.getElementById('clearActLogBtn');
+  if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Clearing…'; }
+  try{
+    await Promise.all(list.map(l=>window.deleteDoc(window.doc(window.db,'admin_activity_log',l._id))));
+    _allActivityLogs=[];
+    renderActivityLog([]);
+    showStatus('success','Activity log cleared.');
+  }catch(e){
+    showStatus('error','Could not clear the full log: '+e.message+' — some entries may remain.');
+    refreshActivityLog(); // resync with whatever actually survived
+  }
+  if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-trash"></i> Clear All'; }
+}
+window.clearActivityLog=clearActivityLog;
 
 function renderActivityLog(logs){
   const today=new Date().toLocaleDateString('en-NG');
@@ -3866,6 +3900,7 @@ function renderActivityLog(logs){
         </div>
         <div style="font-size:.64rem;color:var(--muted)"><i class="fas fa-calendar-days"></i> ${l.date} &nbsp;⏱ ${l.time}</div>
       </div>
+      <button class="btn btn-outline btn-sm" style="flex-shrink:0;color:var(--red);border-color:var(--red);padding:5px 9px" onclick="deleteActivityLogEntry('${l._id}')" title="Delete this entry" aria-label="Delete this log entry"><i class="fas fa-trash"></i></button>
     </div>`;
   }).join('');
 }
@@ -4140,17 +4175,62 @@ function switchTab(sec,tab){
 window.switchTab=switchTab;
 
 // ── IMAGE HELPERS ──
-function previewImg(input,prevId,clearId,hiddenId){
+// Resizes + re-encodes an image client-side before it ever gets near
+// Firestore's document size limits. Real phone photos are commonly
+// 2-8MB straight out of the camera — rejecting anything over a small raw
+// cap (as this used to do) meant almost no real photo could ever be
+// uploaded. This shrinks dimensions and re-compresses as JPEG instead,
+// so the vast majority of photos succeed automatically with no manual
+// resizing required from the user.
+function compressImageFile(file,maxDim,quality){
+  maxDim=maxDim||1200; quality=quality||0.8;
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        let w=img.width,h=img.height;
+        if(w>maxDim||h>maxDim){
+          if(w>h){h=Math.round(h*maxDim/w);w=maxDim;}
+          else{w=Math.round(w*maxDim/h);h=maxDim;}
+        }
+        const canvas=document.createElement('canvas');
+        canvas.width=w; canvas.height=h;
+        const ctx=canvas.getContext('2d');
+        ctx.drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL('image/jpeg',quality));
+      };
+      img.onerror=()=>reject(new Error('That file doesn\u2019t look like a valid image.'));
+      img.src=e.target.result;
+    };
+    reader.onerror=()=>reject(new Error('Could not read that file.'));
+    reader.readAsDataURL(file);
+  });
+}
+window.compressImageFile=compressImageFile;
+
+async function previewImg(input,prevId,clearId,hiddenId){
   const file=input.files[0]; if(!file) return;
-  if(file.size>500000){showStatus('error','Image too large — max 500KB.');input.value='';return;}
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const b64=e.target.result;
+  if(!file.type||!file.type.startsWith('image/')){showStatus('error','Please choose an image file.');input.value='';return;}
+  const prev=document.getElementById(prevId);
+  const clearEl=document.getElementById(clearId);
+  showStatus('loading','Processing image\u2026');
+  try{
+    let b64=await compressImageFile(file,1200,0.8);
+    if(b64.length>700000) b64=await compressImageFile(file,900,0.65); // still large — compress harder once more
+    if(b64.length>950000){
+      showStatus('error','That image is too large even after compression \u2014 try a simpler photo or crop it first.');
+      input.value='';
+      return;
+    }
     document.getElementById(hiddenId).value=b64;
-    const prev=document.getElementById(prevId); prev.src=b64; prev.classList.add('show');
-    document.getElementById(clearId).classList.add('show');
-  };
-  reader.readAsDataURL(file);
+    prev.src=b64; prev.classList.add('show');
+    clearEl.classList.add('show');
+    showStatus('success','Image ready.');
+  }catch(err){
+    showStatus('error','Could not process that image: '+err.message);
+    input.value='';
+  }
 }
 function clearImg(inputId,prevId,clearId,hiddenId){
   document.getElementById(inputId).value='';
@@ -4851,7 +4931,9 @@ function updateSocialPreview(which){
   const previewImgVal=document.getElementById(isAdd?'addPreviewImageB64':'ePreviewImageB64')?.value||'';
   const useFeatured=document.getElementById(isAdd?'addUseFeaturedAsPreview':'eUseFeaturedAsPreview')?.checked;
   const resolvedImg=resolvePreviewImageAdmin(featuredImg,previewImgVal,useFeatured,category);
-  const desc=seoDesc||firstSentenceExcerpt(body);
+  const desc=seoDesc||firstSentenceExcerpt(body,260); // capped a bit tighter — leaves room for the author credit appended below
+  const author=document.getElementById(isAdd?'addAuthor':'eNewsAuthor')?.value.trim();
+  const descWithAuthor=author?`${desc} — By ${author}`:desc;
   const slug=slugField||makeSlug(title);
   const out=document.getElementById(isAdd?'addSocialPreviewBody':'eSocialPreviewBody');
   if(!out) return;
@@ -4863,7 +4945,7 @@ function updateSocialPreview(which){
       <div class="social-preview-body">
         <div class="social-preview-domain">bigquamsmedia.com.ng</div>
         <div class="social-preview-title">${seoTitle||title||'Untitled article'}</div>
-        <div class="social-preview-desc">${desc||'A short description of the article will appear here.'}</div>
+        <div class="social-preview-desc">${descWithAuthor||'A short description of the article will appear here.'}</div>
       </div>
     </div>
     <div class="form-hint" style="margin-top:8px">bigquamsmedia.com.ng/news/${slug||'…'}--&lt;id&gt;/</div>
@@ -5027,15 +5109,17 @@ function openMyProfileModal(){
 }
 window.openMyProfileModal=openMyProfileModal;
 
-function onMyProfilePhotoChange(input){
+async function onMyProfilePhotoChange(input){
   const file=input.files&&input.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    window._myProfilePhotoB64=e.target.result;
+  if(!file.type||!file.type.startsWith('image/')){showStatus('error','Please choose an image file.');return;}
+  try{
+    showStatus('loading','Processing image\u2026');
+    const b64=await compressImageFile(file,500,0.85); // profile photo — small is fine
+    window._myProfilePhotoB64=b64;
     const prev=document.getElementById('myProfilePhotoPreview');
-    prev.src=e.target.result; prev.style.display='block';
-  };
-  reader.readAsDataURL(file);
+    prev.src=b64; prev.style.display='block';
+    showStatus('success','Photo ready.');
+  }catch(err){ showStatus('error','Could not process that image: '+err.message); }
 }
 window.onMyProfilePhotoChange=onMyProfilePhotoChange;
 
@@ -5224,15 +5308,17 @@ async function openEditAdminProfileModal(uid,email){
 }
 window.openEditAdminProfileModal=openEditAdminProfileModal;
 
-function onEditAdminPhotoChange(input){
+async function onEditAdminPhotoChange(input){
   const file=input.files&&input.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    window._eaPhotoB64=e.target.result;
+  if(!file.type||!file.type.startsWith('image/')){showStatus('error','Please choose an image file.');return;}
+  try{
+    showStatus('loading','Processing image\u2026');
+    const b64=await compressImageFile(file,500,0.85); // profile photo — small is fine
+    window._eaPhotoB64=b64;
     const prev=document.getElementById('eaPhotoPreview');
-    prev.src=e.target.result; prev.style.display='block';
-  };
-  reader.readAsDataURL(file);
+    prev.src=b64; prev.style.display='block';
+    showStatus('success','Photo ready.');
+  }catch(err){ showStatus('error','Could not process that image: '+err.message); }
 }
 window.onEditAdminPhotoChange=onEditAdminPhotoChange;
 
@@ -5474,14 +5560,16 @@ function renderCategoryDefaultsGrid(){
 }
 window.renderCategoryDefaultsGrid=renderCategoryDefaultsGrid;
 
-function onCategoryDefaultFileChange(cat,safeId,input){
+async function onCategoryDefaultFileChange(cat,safeId,input){
   const file=input.files&&input.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    window._categoryDefaultImages[cat]=e.target.result;
+  if(!file.type||!file.type.startsWith('image/')){showStatus('error','Please choose an image file.');return;}
+  try{
+    showStatus('loading','Processing image\u2026');
+    const b64=await compressImageFile(file,1200,0.8);
+    window._categoryDefaultImages[cat]=b64;
     renderCategoryDefaultsGrid();
-  };
-  reader.readAsDataURL(file);
+    showStatus('success','Image ready \u2014 remember to Save.');
+  }catch(err){ showStatus('error','Could not process that image: '+err.message); }
 }
 window.onCategoryDefaultFileChange=onCategoryDefaultFileChange;
 
