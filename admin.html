@@ -206,6 +206,7 @@ body.is-ceo .ceo-only.admin-section.active{display:block}
 .admin-card-badge.ceo{background:#fef3c7;color:#92400e}
 .admin-card-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .admin-card-actions button{flex:1;min-width:100px;font-size:.72rem}
+.admin-role-select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.78rem;background:var(--card);color:var(--text)}
 .nav-icon{font-size:0.95rem;flex-shrink:0;width:18px;text-align:center}
 .nav-label{flex:1;line-height:1.2;overflow:hidden;text-overflow:ellipsis}
 .nav-count{background:var(--border);color:var(--muted);font-size:0.58rem;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
@@ -496,6 +497,29 @@ body.dark .social-preview-warn{background:#3f2d05;border-color:#78350f;color:#fb
 .empty{text-align:center;padding:40px 20px;color:var(--muted)}
 .empty .ei{font-size:2.8rem;margin-bottom:10px}
 .empty p{font-size:0.84rem}
+.empty-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:.92rem;color:var(--text);margin-bottom:4px}
+.empty-sub{font-size:.78rem;color:var(--muted);max-width:280px;margin:0 auto 14px}
+.empty .btn{margin-top:4px}
+
+/* ─── ATTENTION WIDGETS (dashboard) ─── */
+.attn-row{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--border);cursor:pointer;transition:.15s;border-radius:8px}
+.attn-row:last-child{border-bottom:none}
+.attn-row:hover{background:var(--light);padding-left:8px;padding-right:8px}
+.attn-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.attn-body{flex:1;min-width:0}
+.attn-title{font-size:.83rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.attn-sub{font-size:.7rem;color:var(--muted);margin-top:1px}
+.attn-time{font-size:.68rem;color:var(--muted);flex-shrink:0;white-space:nowrap}
+
+/* ─── DASHBOARD WIDGET CARDS ─── */
+.dash-two-col{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:16px}
+@media(min-width:900px){.dash-two-col{grid-template-columns:1fr 1fr}}
+.widget-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px}
+.widget-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.widget-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:.88rem;color:var(--text);display:flex;align-items:center;gap:7px}
+.widget-badge{background:var(--light);color:var(--muted);font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:20px}
+.widget-badge.warn{background:#fef3c7;color:#92400e}
+.widget-badge.danger{background:#fee2e2;color:#b91c1c}
 
 /* ─── STAT CARDS ─── */
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px}
@@ -891,6 +915,76 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div><div class="stat-num" id="dash-cbt">—</div><div class="stat-lbl">CBT Questions</div></div>
         </div>
       </div>
+
+      <div class="dash-two-col">
+        <div class="widget-card">
+          <div class="widget-hdr">
+            <div class="widget-title"><i class="fas fa-file-pen"></i> Drafts</div>
+            <span class="widget-badge" id="dashDraftsBadge">—</span>
+          </div>
+          <div id="dashDraftsList"><div class="empty"><div class="ei"><i class="fas fa-spinner fa-spin"></i></div><p>Checking…</p></div></div>
+        </div>
+        <div class="widget-card">
+          <div class="widget-hdr">
+            <div class="widget-title"><i class="fas fa-triangle-exclamation"></i> Pending Your Attention</div>
+            <span class="widget-badge" id="dashPendingBadge">—</span>
+          </div>
+          <div id="dashPendingList"><div class="empty"><div class="ei"><i class="fas fa-spinner fa-spin"></i></div><p>Checking…</p></div></div>
+        </div>
+      </div>
+
+      <div class="widget-card">
+        <div class="widget-hdr"><div class="widget-title"><i class="fas fa-bolt"></i> Quick Actions</div></div>
+        <div class="dash-grid">
+          <div class="dash-module" onclick="switchSection('news');switchTab('news','add')" style="--dm-color:#2563eb">
+            <div class="dm-icon" style="background:#dbeafe;color:#1d4ed8"><i class="fas fa-plus"></i></div>
+            <div class="dm-title">Write Article</div>
+            <div class="dm-desc">Publish a news update</div>
+          </div>
+          <div class="dash-module" onclick="switchSection('cbt');switchTab('cbt','add')" style="--dm-color:#7c3aed">
+            <div class="dm-icon" style="background:#f3e8ff;color:#7c3aed"><i class="fas fa-bullseye"></i></div>
+            <div class="dm-title">Add CBT Question</div>
+            <div class="dm-desc">JAMB practice bank</div>
+          </div>
+          <div class="dash-module" onclick="switchSection('scholarships')" style="--dm-color:#059669">
+            <div class="dm-icon" style="background:#dcfce7;color:#059669"><i class="fas fa-sack-dollar"></i></div>
+            <div class="dm-title">Add Scholarship</div>
+            <div class="dm-desc">Post a new opportunity</div>
+          </div>
+          <div class="dash-module" onclick="switchSection('library')" style="--dm-color:#d97706">
+            <div class="dm-icon" style="background:#fef3c7;color:#d97706"><i class="fas fa-book"></i></div>
+            <div class="dm-title">Add Book</div>
+            <div class="dm-desc">eLibrary upload</div>
+          </div>
+          <div class="dash-module" onclick="switchSection('ticker')" style="--dm-color:#0891b2">
+            <div class="dm-icon" style="background:#cffafe;color:#0891b2"><i class="fas fa-bullhorn"></i></div>
+            <div class="dm-title">News Ticker</div>
+            <div class="dm-desc">Update the live banner</div>
+          </div>
+          <div class="dash-module" onclick="switchSection('anonymous')" style="--dm-color:#db2777">
+            <div class="dm-icon" style="background:#fce7f3;color:#db2777"><i class="fas fa-comment"></i></div>
+            <div class="dm-title">Moderate Messages</div>
+            <div class="dm-desc">Anonymous confessions</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-two-col">
+        <div class="widget-card">
+          <div class="widget-hdr">
+            <div class="widget-title"><i class="fas fa-circle-check"></i> Recently Published</div>
+            <button class="btn btn-ghost btn-sm" onclick="switchSection('news')">View all</button>
+          </div>
+          <div id="dashRecentPublished"><div class="empty"><div class="ei"><i class="fas fa-spinner fa-spin"></i></div><p>Loading…</p></div></div>
+        </div>
+        <div class="widget-card">
+          <div class="widget-hdr">
+            <div class="widget-title"><i class="fas fa-user-clock"></i> Recent Activity</div>
+            <button class="btn btn-ghost btn-sm ceo-only" onclick="switchSection('activitylog')">View all</button>
+          </div>
+          <div id="dashRecentActivity"><div class="empty"><div class="ei"><i class="fas fa-spinner fa-spin"></i></div><p>Loading…</p></div></div>
+        </div>
+      </div>
     </div>
 
     <!-- ══ MANAGE ADMINS (CEO only) ══ -->
@@ -900,7 +994,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <button class="btn btn-success btn-sm" onclick="openAddAdminModal()"><i class="fas fa-plus"></i> Add Admin</button>
       </div>
       <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.78rem;color:#1e40af;line-height:1.6">
-        <i class="fas fa-circle-info"></i> Creating an admin here sets up their login immediately — no separate self-registration step needed. <b>Resetting a password</b> sends them a reset-link email (there's no way for anyone, including the CEO, to see or directly set another person's password — that's a Firebase security limit, not a gap in this panel). <b>Removing</b> an admin revokes their access but does not delete their login account.
+        <i class="fas fa-circle-info"></i> Creating an admin here sets up their login immediately — no separate self-registration step needed. <b>Access Tier</b> controls what they can do: <b>Reporter</b> can write new content but not edit/delete it; <b>Editor</b> has full control over content; <b>Full Access</b> adds operational tools (Site Settings, Ticker, etc). <b>Resetting a password</b> sends them a reset-link email (there's no way for anyone, including the CEO, to see or directly set another person's password — that's a Firebase security limit, not a gap in this panel). <b>Removing</b> an admin revokes their access but does not delete their login account.
       </div>
       <div id="adminsList"><div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Loading admins…</div></div>
     </div>
@@ -917,7 +1011,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       </div>
       <div class="admin-panel active" id="news-tab-list">
         <div class="section-card">
-          <div class="card-title"><i class="fas fa-clipboard-list"></i> All Articles <span style="font-size:0.72rem;font-weight:400;color:var(--muted);">&nbsp;Max 3 pinned</span></div>
+          <div class="card-title"><i class="fas fa-clipboard-list"></i> All Articles <span style="font-size:0.72rem;font-weight:400;color:var(--muted);">&nbsp;Only 1 article can be pinned</span></div>
           <div id="newsList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="sk-tags"><div class="skeleton sk-tag"></div><div class="skeleton sk-tag"></div></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="sk-tags"><div class="skeleton sk-tag"></div><div class="skeleton sk-tag"></div></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="sk-tags"><div class="skeleton sk-tag"></div><div class="skeleton sk-tag"></div></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="sk-tags"><div class="skeleton sk-tag"></div><div class="skeleton sk-tag"></div></div></div><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div><div class="sk-tags"><div class="skeleton sk-tag"></div><div class="skeleton sk-tag"></div></div></div></div></div>
         </div>
       </div>
@@ -1026,7 +1120,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <div class="editor-hint">Use <code>*text*</code> for <b>bold</b>, <code>_text_</code> for <i>italic</i>, <code>~text~</code> for <s>strikethrough</s>, <code>`text`</code> for monospace, <code>## </code> for a heading, <code>&gt; </code> for a pull-quote, <code>- </code> / <code>1. </code> for lists. Converted into clean web formatting — never a WhatsApp look on the published page.</div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label>Pin to Top?</label><select id="addPinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top (max 3)</option></select></div>
+            <div class="form-group"><label>Pin to Top?</label><select id="addPinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top (replaces the current pin, if any)</option></select></div>
             <div class="form-group"><label>Author</label>
               <select id="addAuthorSelect" onchange="onAuthorSelectChange('add')"><option value="__custom__">Type a name…</option></select>
               <input type="text" id="addAuthor" value="BIG QUAMS MEDIA" placeholder="Author name" onchange="updateNewsPreview('add')" style="margin-top:6px">
@@ -4043,6 +4137,7 @@ function updateBadges(){
   document.getElementById('dash-news').textContent = newsData.length;
   document.getElementById('dash-books').textContent = booksData.length;
   document.getElementById('dash-sch').textContent = schData.length;
+  loadDashboardWidgets();
   // dash-cbt updated by CBT loader
   // Dashboard module counts
   const dm = {
@@ -4061,6 +4156,107 @@ function updateBadges(){
   };
   Object.entries(dm).forEach(([id,v])=>{const el=document.getElementById(id);if(el) el.textContent=v;});
 }
+
+function tsToMillis(ts){
+  if(!ts) return 0;
+  if(typeof ts==='number') return ts;
+  if(typeof ts.toMillis==='function') return ts.toMillis();
+  const d=new Date(ts);
+  return isNaN(d.getTime())?0:d.getTime();
+}
+
+// ── DASHBOARD: "What needs attention" widgets ──
+async function loadDashboardWidgets(){
+  // Drafts (from autosave localStorage)
+  const draftsList=document.getElementById('dashDraftsList');
+  const draftsBadge=document.getElementById('dashDraftsBadge');
+  const drafts=[];
+  try{
+    const shared=localStorage.getItem('bqm-news-draft');
+    if(shared){const d=JSON.parse(shared); if(d.title||d.fullContent) drafts.push({title:d.title||'(Untitled article)',savedAt:d.savedAt});}
+    Object.keys(localStorage).forEach(k=>{
+      if(k.startsWith('bqm-news-editdraft-')){
+        try{const d=JSON.parse(localStorage.getItem(k)); if(d.title||d.fullContent) drafts.push({title:d.title||'(Untitled article)',savedAt:d.savedAt});}catch(e){}
+      }
+    });
+  }catch(e){}
+  if(draftsBadge) draftsBadge.textContent=drafts.length;
+  if(draftsList){
+    if(!drafts.length){
+      draftsList.innerHTML='<div class="empty"><div class="ei"><i class="fas fa-file-pen"></i></div><div class="empty-title">No drafts yet</div><div class="empty-sub">Articles you save as drafts will appear here.</div><button class="btn btn-outline btn-sm" onclick="switchSection(\'news\');switchTab(\'news\',\'add\')"><i class="fas fa-plus"></i> Create Article</button></div>';
+    }else{
+      draftsList.innerHTML=drafts.map(d=>`<div class="attn-row" onclick="switchSection('news');switchTab('news','add')">
+        <div class="attn-icon" style="background:#fef3c7;color:#92400e"><i class="fas fa-file-pen"></i></div>
+        <div class="attn-body"><div class="attn-title">${admEsc(d.title)}</div><div class="attn-sub">Draft · autosaved</div></div>
+        <div class="attn-time">${d.savedAt?formatAgo(tsToMillis(d.savedAt)):''}</div>
+      </div>`).join('');
+    }
+  }
+
+  // Pending Your Attention (unpublished gist/polls + unmoderated anonymous messages)
+  const pendingList=document.getElementById('dashPendingList');
+  const pendingBadge=document.getElementById('dashPendingBadge');
+  let pendingItems=[];
+  try{
+    const [gistSnap,pollSnap,anonSnap]=await Promise.all([
+      window.getDocs(window.query(window.collection(window.db,'fs_campus_gist'),window.limit(30))),
+      window.getDocs(window.query(window.collection(window.db,'fs_polls'),window.limit(30))),
+      window.getDocs(window.query(window.collection(window.db,'fs_anonymous_messages'),window.limit(30))),
+    ]);
+    gistSnap.forEach(d=>{const x=d.data(); if(x.published===false) pendingItems.push({type:'Gist post',title:(x.text||'Untitled post').substring(0,60),icon:'fa-face-laugh-squint',color:'#9d174d',bg:'#fce7f3',action:"switchSection('campusgist')"});});
+    pollSnap.forEach(d=>{const x=d.data(); if(x.published===false) pendingItems.push({type:'Poll',title:x.question||'Untitled poll',icon:'fa-square-poll-vertical',color:'#5b21b6',bg:'#ede9fe',action:"switchSection('polls')"});});
+    let anonPending=0;
+    anonSnap.forEach(d=>{ if(!d.data().featured) anonPending++; });
+    if(anonPending>0) pendingItems.push({type:'Moderation',title:anonPending+' anonymous message'+(anonPending===1?'':'s')+' awaiting review',icon:'fa-comment',color:'#db2777',bg:'#fce7f3',action:"switchSection('anonymous')"});
+  }catch(e){console.warn('pending widget error',e);}
+  if(pendingBadge){ pendingBadge.textContent=pendingItems.length; pendingBadge.className='widget-badge'+(pendingItems.length?' warn':''); }
+  if(pendingList){
+    if(!pendingItems.length){
+      pendingList.innerHTML='<div class="empty"><div class="ei"><i class="fas fa-circle-check"></i></div><div class="empty-title">All caught up</div><div class="empty-sub">Nothing waiting for your review right now.</div></div>';
+    }else{
+      pendingList.innerHTML=pendingItems.slice(0,6).map(p=>`<div class="attn-row" onclick="${p.action}">
+        <div class="attn-icon" style="background:${p.bg};color:${p.color}"><i class="fas ${p.icon}"></i></div>
+        <div class="attn-body"><div class="attn-title">${admEsc(p.title)}</div><div class="attn-sub">${p.type}</div></div>
+      </div>`).join('');
+    }
+  }
+
+  // Recently Published (reuses already-loaded newsData — no extra query)
+  const pubList=document.getElementById('dashRecentPublished');
+  if(pubList){
+    const recent=[...newsData].sort((a,b)=>tsToMillis(b.createdAt)-tsToMillis(a.createdAt)).slice(0,5);
+    if(!recent.length){
+      pubList.innerHTML='<div class="empty"><div class="ei"><i class="fas fa-newspaper"></i></div><div class="empty-title">Nothing published yet</div><div class="empty-sub">Published articles will show up here.</div></div>';
+    }else{
+      pubList.innerHTML=recent.map(n=>`<div class="attn-row" onclick="switchSection('news')">
+        <div class="attn-icon" style="background:#dbeafe;color:#1d4ed8"><i class="fas fa-newspaper"></i></div>
+        <div class="attn-body"><div class="attn-title">${admEsc(n.title||'Untitled')}</div><div class="attn-sub">${admEsc(n.category||'')}${n.author?' · '+admEsc(n.author):''}</div></div>
+        <div class="attn-time">${n.createdAt?formatAgo(tsToMillis(n.createdAt)):''}</div>
+      </div>`).join('');
+    }
+  }
+
+  // Recent Activity (shared admin_activity_log — same collection CEO's audit log reads)
+  const actList=document.getElementById('dashRecentActivity');
+  if(actList){
+    try{
+      const snap=await window.getDocs(window.query(window.collection(window.db,'admin_activity_log'),window.orderBy('timestamp','desc'),window.limit(6)));
+      const logs=snap.docs.map(d=>d.data());
+      if(!logs.length){
+        actList.innerHTML='<div class="empty"><div class="ei"><i class="fas fa-user-clock"></i></div><p>No activity yet.</p></div>';
+      }else{
+        actList.innerHTML=logs.map(l=>`<div class="attn-row" onclick="switchSection('activitylog')">
+          <div class="attn-icon" style="background:#f3e8ff;color:#7c3aed"><i class="fas fa-user"></i></div>
+          <div class="attn-body"><div class="attn-title">${admEsc(l.adminName||l.adminEmail||'Admin')} — ${admEsc(l.detail||l.actionType||'')}</div><div class="attn-sub">${admEsc(l.section||'')}</div></div>
+          <div class="attn-time">${l.timestamp?formatAgo(tsToMillis(l.timestamp)):''}</div>
+        </div>`).join('');
+      }
+    }catch(e){
+      actList.innerHTML='<div class="empty"><div class="ei"><i class="fas fa-triangle-exclamation"></i></div><p>Could not load activity.</p></div>';
+    }
+  }
+}
+window.loadDashboardWidgets=loadDashboardWidgets;
 
 // ── UI HELPERS ──
 function showStatus(type,msg){ 
@@ -5175,6 +5371,12 @@ async function loadAdminsList(){
       window.getDocs(window.collection(window.db,'admin_profiles')),
     ]);
     const rawEmails=wlSnap.exists()?(wlSnap.data().emails||[]):[];
+    // Firebase Auth's token.email claim (what the rules' roleOf() compares
+    // against) is always lowercase, so roles are looked up — and saved —
+    // by lowercased email, regardless of what case is stored in `emails`.
+    const rolesMapRaw=wlSnap.exists()?(wlSnap.data().roles||{}):{};
+    const rolesMap={};
+    Object.keys(rolesMapRaw).forEach(k=>{rolesMap[k.toLowerCase().trim()]=rolesMapRaw[k];});
     const profilesByEmail={};
     profSnap.docs.forEach(d=>{
       const data=d.data();
@@ -5183,7 +5385,7 @@ async function loadAdminsList(){
     const list=[];
     // CEO accounts always shown first, not removable/resettable here
     CEO_EMAILS.forEach(email=>{
-      list.push({email,emailLower:email.toLowerCase(),isCEOAccount:true,profile:profilesByEmail[email.toLowerCase()]||null});
+      list.push({email,emailLower:email.toLowerCase(),isCEOAccount:true,profile:profilesByEmail[email.toLowerCase()]||null,role:'ceo'});
     });
     // Then every whitelisted admin — keep the ORIGINAL casing for email
     // (needed later so arrayRemove() exact-matches the stored value;
@@ -5191,7 +5393,7 @@ async function loadAdminsList(){
     rawEmails.forEach(raw=>{
       const lower=raw.toLowerCase().trim();
       if(CEO_EMAILS.includes(lower)) return; // already listed above
-      list.push({email:raw,emailLower:lower,isCEOAccount:false,profile:profilesByEmail[lower]||null});
+      list.push({email:raw,emailLower:lower,isCEOAccount:false,profile:profilesByEmail[lower]||null,role:rolesMap[lower]||'full_access'});
     });
     window._adminsList=list;
     renderAdminsList();
@@ -5215,17 +5417,25 @@ function renderAdminsList(){
     const photoHtml=p?.photo?`<img class="admin-card-photo" src="${p.photo}" alt="">`:`<div class="admin-card-photo">${initial}</div>`;
     const uid=p?._uid||'';
     const pendingNote=(!p&&!a.isCEOAccount)?`<div style="font-size:.72rem;color:#b45309;margin-top:8px"><i class="fas fa-clock"></i> Whitelisted but hasn\u2019t created their profile yet — they need to sign in at least once.</div>`:'';
+    const roleLabels={reporter:'Reporter',editor:'Editor',full_access:'Full Access',ceo:'CEO'};
+    const roleSelector=a.isCEOAccount?`<span class="admin-card-badge ceo">CEO</span>`:
+      `<select class="admin-role-select" onchange="setAdminRole('${admEsc(a.email)}',this.value)" title="Access tier">
+        <option value="reporter"${a.role==='reporter'?' selected':''}>Reporter — create only</option>
+        <option value="editor"${a.role==='editor'?' selected':''}>Editor — create/edit/delete content</option>
+        <option value="full_access"${a.role==='full_access'?' selected':''}>Full Access — content + operations</option>
+      </select>`;
     return `
     <div class="admin-card">
       <div class="admin-card-top">
         ${photoHtml}
         <div style="flex:1;min-width:0">
-          <div class="admin-card-name">${admEsc(name)} ${a.isCEOAccount?'<span class="admin-card-badge ceo">CEO</span>':'<span class="admin-card-badge">Admin</span>'}</div>
+          <div class="admin-card-name">${admEsc(name)} ${a.isCEOAccount?'<span class="admin-card-badge ceo">CEO</span>':`<span class="admin-card-badge">${roleLabels[a.role]||'Full Access'}</span>`}</div>
           <div class="admin-card-email">${admEsc(a.email)}</div>
         </div>
       </div>
       ${p?.bio?`<div style="font-size:.75rem;color:var(--muted);margin-top:8px">${admEsc(p.bio)}</div>`:''}
       ${pendingNote}
+      ${!a.isCEOAccount?`<div style="margin-top:10px"><label style="font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:4px">Access Tier</label>${roleSelector}</div>`:''}
       <div class="admin-card-actions">
         ${p?`<button class="btn btn-outline btn-sm" onclick="openEditAdminProfileModal('${uid}','${admEsc(a.email)}')"><i class="fas fa-pen"></i> Edit Profile</button>`:''}
         ${!a.isCEOAccount?`<button class="btn btn-outline btn-sm" onclick="resetAdminPassword('${admEsc(a.email)}')"><i class="fas fa-key"></i> Reset Password</button>`:''}
@@ -5371,6 +5581,28 @@ async function removeAdmin(email){
   }
 }
 window.removeAdmin=removeAdmin;
+
+async function setAdminRole(email,role){
+  try{
+    const lower=email.toLowerCase().trim();
+    // Firestore doesn't support dotted-key merges into a nested map field
+    // by path the way some SDKs do here, so read-modify-write the whole
+    // roles map to avoid clobbering other admins' assignments.
+    const snap=await window.getDoc(window.doc(window.db,'admin_whitelist','approved'));
+    const roles=snap.exists()?(snap.data().roles||{}):{};
+    roles[lower]=role;
+    await window.setDoc(window.doc(window.db,'admin_whitelist','approved'),{roles},{merge:true});
+    const entry=(window._adminsList||[]).find(a=>a.emailLower===lower);
+    if(entry) entry.role=role;
+    logAdminActivity('edit','admin','Set access tier for '+email+' to '+role);
+    showStatus('success','Access tier updated for '+email+'.');
+    renderAdminsList();
+  }catch(e){
+    showStatus('error','Could not update access tier: '+e.message);
+    loadAdminsList(); // resync the dropdown to the real saved state
+  }
+}
+window.setAdminRole=setAdminRole;
 
 // ── News Image Library ──
 window._imageLibrary=[];
@@ -5742,10 +5974,15 @@ async function addNews(){
     else{const u=JSON.parse(localStorage.getItem('bqm_user')||'{}');author=u.nickname||u.name||u.email?.split('@')[0]||'Big Quams Media®';}
   }catch(e){}
   if(!title||!category||!fullContent){showStatus('error','Fill in Title, Category and Content.');return;}
-  if(pinned&&newsData.filter(n=>n.pinned).length>=3){showStatus('error','Max 3 pinned articles. Unpin one first.');return;}
   const slug=makeSlug(customSlug||title);
   const btn=document.getElementById('addNewsBtn'); btn.disabled=true; btn.textContent='Publishing…';
   try{
+    if(pinned){
+      // Only one article may be pinned at a time — automatically unpin
+      // whatever was pinned before instead of blocking publish.
+      const currentlyPinned=newsData.filter(n=>n.pinned);
+      await Promise.all(currentlyPinned.map(n=>window.updateDoc(window.doc(window.db,'fs_news',n._id),{pinned:false})));
+    }
     const item={title,category,date,author,slug,fullContent,pinned:pinned||false,likes:0,views:0,useFeaturedAsPreview,createdAt:window.serverTimestamp()};
     if(image) item.image=image;
     if(!useFeaturedAsPreview && previewImage) item.previewImage=previewImage;
@@ -5794,9 +6031,15 @@ window.clearNewsForm=clearNewsForm;
 
 async function togglePin(idx){
   const item=newsData[idx],willPin=!item.pinned;
-  if(willPin&&newsData.filter(n=>n.pinned).length>=3){showStatus('error','Max 3 pinned.');return;}
   try{
-    if(item._id) await window.updateDoc(window.doc(window.db,'news',item._id),{pinned:willPin});
+    if(willPin){
+      // Only one article may be pinned at a time — automatically unpin
+      // whatever was pinned before instead of blocking with an error and
+      // making the admin manually unpin it first.
+      const currentlyPinned=newsData.filter(n=>n.pinned&&n._id!==item._id);
+      await Promise.all(currentlyPinned.map(n=>window.updateDoc(window.doc(window.db,'fs_news',n._id),{pinned:false})));
+    }
+    if(item._id) await window.updateDoc(window.doc(window.db,'fs_news',item._id),{pinned:willPin});
     logAdminActivity('edit','news',(willPin?'Pin':'Unpin')+': '+item.title);
     await loadNewsFromFirebase();
     showStatus('success','<i class="fas fa-thumbtack"></i> '+(willPin?'Article pinned!':'Article unpinned.'));
