@@ -234,6 +234,9 @@ body.role-editor .editor-only{display:inline-flex}
 .admin-card-email{font-size:.72rem;color:var(--muted)}
 .admin-card-badge{font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:20px;background:#dbeafe;color:#1d4ed8;text-transform:uppercase;letter-spacing:.3px}
 .admin-card-badge.ceo{background:#fef3c7;color:#92400e}
+.admin-card-badge.active{background:#dcfce7;color:#166534}
+.admin-card-badge.suspended{background:#fee2e2;color:#b91c1c}
+.admin-card.is-suspended{opacity:.72;border-color:#fca5a5;background:repeating-linear-gradient(135deg,var(--card),var(--card) 10px,rgba(239,68,68,.04) 10px,rgba(239,68,68,.04) 20px)}
 .admin-card-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .admin-card-actions button{flex:1;min-width:100px;font-size:.72rem}
 .admin-role-select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.78rem;background:var(--card);color:var(--text)}
@@ -1024,7 +1027,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <button class="btn btn-success btn-sm" onclick="openAddAdminModal()"><i class="fas fa-plus"></i> Add Admin</button>
       </div>
       <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.78rem;color:#1e40af;line-height:1.6">
-        <i class="fas fa-circle-info"></i> Creating an admin here sets up their login immediately — no separate self-registration step needed. <b>Access Tier</b> controls what they can do: <b>Reporter</b> can write new content but not edit/delete it; <b>Editor</b> has full control over content; <b>Full Access</b> adds operational tools (Site Settings, Ticker, etc). <b>Resetting a password</b> sends them a reset-link email (there's no way for anyone, including the CEO, to see or directly set another person's password — that's a Firebase security limit, not a gap in this panel). <b>Removing</b> an admin revokes their access but does not delete their login account.
+        <i class="fas fa-circle-info"></i> Creating an admin here sets up their login immediately — no separate self-registration step needed. <b>Access Tier</b> controls what they can do: <b>Reporter</b> can write new content but not edit/delete it; <b>Editor</b> has full control over content; <b>Full Access</b> adds operational tools (Site Settings, Ticker, etc). CEO isn\u2019t assignable here — it\u2019s limited to the two founder accounts by design and can\u2019t be changed from this screen. <b>Resetting a password</b> sends them a reset-link email (there's no way for anyone, including the CEO, to see or directly set another person's password — that's a Firebase security limit, not a gap in this panel). <b>Suspend</b> temporarily blocks access (reversible with <b>Restore</b>); <b>Revoke</b> removes them from the whitelist entirely — their login and profile history are kept either way.
       </div>
       <div id="adminsList"><div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Loading admins…</div></div>
     </div>
@@ -2102,7 +2105,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
               <select id="admSchoolFilter" onchange="renderAdmissionReqs()"><option value="">All schools</option></select>
             </div>
             <div class="form-group" style="margin-bottom:0;display:flex;align-items:flex-end">
-              <button class="btn btn-danger btn-sm" onclick="deleteAllForSchool()" id="admDeleteAllBtn" style="width:100%" disabled><i class="fas fa-trash"></i> Delete All for Selected School</button>
+              <button class="btn btn-danger btn-sm fullaccess-only" onclick="deleteAllForSchool()" id="admDeleteAllBtn" style="width:100%" disabled><i class="fas fa-trash"></i> Delete All for Selected School</button>
             </div>
           </div>
           <div id="admissionReqList"><div class="sk-grid"><div class="sk-card"><div class="skeleton sk-line sk-w70"></div><div class="skeleton sk-line sk-w50"></div></div></div></div>
@@ -3306,6 +3309,23 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="form-group"><label>Full Name *</label><input type="text" id="naAdminName" placeholder="e.g. Fatima Bello"></div>
       <div class="form-group"><label>Display Name / Nickname *</label><input type="text" id="naAdminNickname" placeholder="Shown on their articles as the byline"></div>
       <div class="form-group"><label>Email *</label><input type="email" id="naAdminEmail" placeholder="admin@example.com"></div>
+      <div class="form-group"><label>Access Tier *</label>
+        <select id="naAdminRole">
+          <option value="reporter" selected>Reporter — create only</option>
+          <option value="editor">Editor — create/edit/delete content</option>
+          <option value="full_access">Full Access — content + operations</option>
+        </select>
+        <div class="form-hint">CEO isn\u2019t an assignable tier here \u2014 it\u2019s limited to the two founder accounts by design.</div>
+      </div>
+      <div class="form-group"><label>Bio <span style="text-transform:none;font-weight:400">(optional)</span></label><textarea id="naAdminBio" placeholder="A short line about them — role, beat, or focus area." style="min-height:70px"></textarea></div>
+      <div class="form-group">
+        <label>Profile Photo <span style="text-transform:none;font-weight:400">(optional)</span></label>
+        <img id="naAdminPhotoPreview" src="" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;display:none;margin-bottom:8px;border:2px solid var(--border)">
+        <div class="img-upload-box" onclick="document.getElementById('naAdminPhotoFile').click()">
+          <input type="file" id="naAdminPhotoFile" accept="image/*" onchange="onNewAdminPhotoChange(this)">
+          <div class="upload-label"><span><i class="fas fa-image"></i></span>Tap to upload a display picture</div>
+        </div>
+      </div>
       <div class="form-group"><label>Temporary Password *</label>
         <input type="password" id="naAdminPassword" placeholder="At least 6 characters">
         <div class="form-hint">Share this with them directly — they can change it later, or you can send a reset link any time from the admin list.</div>
@@ -3717,8 +3737,9 @@ async function enterAdminPanel(){
   if(!firebaseUser) return;
   const isCEO=isCeoEmail(firebaseUser.email);
   let resolvedNickname='';
-  let myRole=isCEO?'ceo':'full_access'; // sensible default until the whitelist read below resolves
+  let myRole='reporter'; // safe floor — never assume elevated access
   if(isCEO){
+    myRole='ceo';
     resolvedNickname='Quams';
   } else {
     try{
@@ -3726,16 +3747,22 @@ async function enterAdminPanel(){
       if(profDoc.exists()&&profDoc.data().nickname) resolvedNickname=profDoc.data().nickname;
     }catch(e){}
     if(!resolvedNickname) resolvedNickname=firebaseUser.displayName||firebaseUser.email.split('@')[0];
-    // Determine this admin's own access tier for UI purposes — same
-    // source of truth the Firestore rules use (admin_whitelist/approved
-    // .roles, keyed by lowercased email, defaulting to full_access when
-    // unset). This is a UX convenience only; the real enforcement is the
-    // rules themselves, which don't depend on this read succeeding.
+    // Determine this admin's own access tier from the same source of
+    // truth the Firestore rules use (admin_whitelist/approved.roles,
+    // keyed by lowercased email). If this read fails, it means the rules
+    // themselves rejected it — i.e. this account is no longer whitelisted
+    // or has been suspended — so we must NOT let them into the app with
+    // a guessed role. Block here, don't just log a warning and carry on.
+    let wlSnap;
     try{
-      const wlSnap=await window.getDoc(window.doc(window.db,'admin_whitelist','approved'));
-      const roles=wlSnap.exists()?(wlSnap.data().roles||{}):{};
-      myRole=roles[firebaseUser.email.toLowerCase().trim()]||'full_access';
-    }catch(e){ console.warn('Could not determine access tier, defaulting to full_access:',e); }
+      wlSnap=await window.getDoc(window.doc(window.db,'admin_whitelist','approved'));
+    }catch(e){
+      console.error('Access check failed — treating as blocked:',e);
+      showAccessBlockedScreen();
+      return;
+    }
+    const roles=wlSnap.exists()?(wlSnap.data().roles||{}):{};
+    myRole=roles[firebaseUser.email.toLowerCase().trim()]||'reporter';
   }
   window._myRole=myRole;
   localStorage.setItem('bqm_auth','1');
@@ -3761,6 +3788,32 @@ async function enterAdminPanel(){
   init();
 }
 window.enterAdminPanel=enterAdminPanel;
+
+// Shown when a signed-in Firebase user fails the admin_whitelist read —
+// meaning the rules themselves rejected them (not whitelisted, or
+// suspended). Signs them out rather than leaving a half-entered session,
+// and never guesses a role for someone we couldn't actually verify.
+function showAccessBlockedScreen(){
+  localStorage.removeItem('bqm_auth');
+  localStorage.removeItem('bqm_user');
+  const login=document.getElementById('loginScreen');
+  const app=document.getElementById('adminApp');
+  if(app) app.style.display='none';
+  if(login){
+    login.style.display='flex';
+    let blocked=document.getElementById('accessBlockedNotice');
+    if(!blocked){
+      blocked=document.createElement('div');
+      blocked.id='accessBlockedNotice';
+      blocked.style.cssText='background:#fee2e2;border:1.5px solid #fca5a5;color:#991b1b;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.82rem;line-height:1.5';
+      blocked.innerHTML='<i class="fas fa-circle-exclamation"></i> This account doesn\u2019t currently have admin access. If you believe this is a mistake, contact the CEO.';
+      const card=document.querySelector('.login-card');
+      if(card) card.insertBefore(blocked,card.firstChild);
+    }
+  }
+  if(window.auth&&window.signOutFB) window.signOutFB(window.auth).catch(()=>{});
+}
+window.showAccessBlockedScreen=showAccessBlockedScreen;
 
 function updateWelcomeHeading(name){
   const h=document.getElementById('welcomeHeading');
@@ -3871,7 +3924,7 @@ function renderPUCBTList(){
       </div>
       ${q.exp?`<div style="font-size:.74rem;color:#15803d;background:#f0fdf4;border-radius:7px;padding:8px 10px;margin-bottom:8px"><i class="fas fa-lightbulb"></i> ${q.exp}</div>`:''}
       <div style="display:flex;gap:8px">
-        <button class="btn btn-danger btn-sm" onclick="deletePUCBT('${q.id}')"><i class="fas fa-trash"></i> Delete</button>
+        <button class="btn btn-danger btn-sm editor-only" onclick="deletePUCBT('${q.id}')"><i class="fas fa-trash"></i> Delete</button>
       </div>
     </div>`).join('')+'</div>';
 }
@@ -4097,12 +4150,27 @@ if(localStorage.getItem('bqm_auth')==='1'){
     if(b)b.innerHTML=(u.isCEO?'<i class="fas fa-crown"></i> Quams':nick)+' · '+(u.isCEO?'CEO':(roleLabelsInline[u.role]||'Admin'));
     updateWelcomeHeading(u.isCEO?'Quams':nick);
     document.body.classList.toggle('is-ceo',!!u.isCEO);
-    applyRoleClasses(u.isCEO?'ceo':(u.role||'full_access'));
+    applyRoleClasses(u.isCEO?'ceo':(u.role||'reporter'));
     setTimeout(()=>{const af=document.getElementById('addAuthor');if(af)af.value=u.isCEO?'BIG QUAMS MEDIA':(nick||'BIG QUAMS MEDIA');},400);
   }catch(e){}}
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminApp').style.display='block';
-  setTimeout(()=>init(),300);
+  setTimeout(()=>{
+    init();
+    // A cached session is trusted for the instant repaint above (snappy
+    // UX), but re-verified here in the background — if the CEO suspended
+    // or revoked this account since the last login, the whitelist read
+    // now fails for them, and we must not leave a stale "logged in" UI
+    // showing. Skipped for CEO accounts, which never depend on this doc.
+    try{
+      const u=JSON.parse(localStorage.getItem('bqm_user')||'{}');
+      if(u.email&&!u.isCEO&&window.db){
+        window.getDoc(window.doc(window.db,'admin_whitelist','approved')).catch(()=>{
+          showAccessBlockedScreen();
+        });
+      }
+    }catch(e){}
+  },300);
 }
 
 // ── FIREBASE HELPERS ──
@@ -4600,7 +4668,7 @@ async function loadAnonMessages(){
           <button onclick="toggleAnonFeatured('${m._id}',${!m.featured})" style="margin-left:auto;background:${m.featured?'#dcfce7':'var(--surface-alt)'};border:1px solid var(--border);padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700;color:${m.featured?'#15803d':'var(--muted)'}">
             ${m.featured?'<i class="fas fa-star"></i> Featured':'<i class="far fa-star"></i> Feature'}
           </button>
-          <button onclick="deleteAnonMsg('${m._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
+          <button class="editor-only" onclick="deleteAnonMsg('${m._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
         <div style="font-size:.84rem;color:var(--text-main);line-height:1.65">${m.message||''}</div>
       </div>`).join('');
@@ -5442,35 +5510,42 @@ async function loadAdminsList(){
     ]);
     const rawEmails=wlSnap.exists()?(wlSnap.data().emails||[]):[];
     // Firebase Auth's token.email claim (what the rules' roleOf() compares
-    // against) is always lowercase, so roles are looked up — and saved —
-    // by lowercased email, regardless of what case is stored in `emails`.
+    // against) is always lowercase, so roles/suspended are looked up —
+    // and saved — by lowercased email, regardless of what case is stored
+    // in `emails`.
     const rolesMapRaw=wlSnap.exists()?(wlSnap.data().roles||{}):{};
     const rolesMap={};
     Object.keys(rolesMapRaw).forEach(k=>{rolesMap[k.toLowerCase().trim()]=rolesMapRaw[k];});
+    const suspendedMapRaw=wlSnap.exists()?(wlSnap.data().suspended||{}):{};
+    const suspendedMap={};
+    Object.keys(suspendedMapRaw).forEach(k=>{suspendedMap[k.toLowerCase().trim()]=!!suspendedMapRaw[k];});
     const profilesByEmail={};
     profSnap.docs.forEach(d=>{
       const data=d.data();
       if(data.email) profilesByEmail[data.email.toLowerCase().trim()]={...data,_uid:d.id};
     });
     const list=[];
-    // CEO accounts always shown first, not removable/resettable here
+    // CEO accounts always shown first, not removable/resettable/suspendable here
     CEO_EMAILS.forEach(email=>{
-      list.push({email,emailLower:email.toLowerCase(),isCEOAccount:true,profile:profilesByEmail[email.toLowerCase()]||null,role:'ceo'});
+      list.push({email,emailLower:email.toLowerCase(),isCEOAccount:true,profile:profilesByEmail[email.toLowerCase()]||null,role:'ceo',suspended:false});
     });
     // Then every whitelisted admin — keep the ORIGINAL casing for email
     // (needed later so arrayRemove() exact-matches the stored value;
-    // emailLower is only for display/lookup comparisons).
+    // emailLower is only for display/lookup comparisons). Matches
+    // roleOf()'s default in firestore.rules: an unset role is 'reporter'
+    // (the lowest tier), never a silently-elevated default.
     rawEmails.forEach(raw=>{
       const lower=raw.toLowerCase().trim();
       if(CEO_EMAILS.includes(lower)) return; // already listed above
-      list.push({email:raw,emailLower:lower,isCEOAccount:false,profile:profilesByEmail[lower]||null,role:rolesMap[lower]||'full_access'});
+      list.push({email:raw,emailLower:lower,isCEOAccount:false,profile:profilesByEmail[lower]||null,role:rolesMap[lower]||'reporter',suspended:!!suspendedMap[lower]});
     });
     window._adminsList=list;
     renderAdminsList();
     const cnt=document.getElementById('cnt-manageadmins');
     if(cnt) cnt.textContent=list.length;
   }catch(e){
-    if(container) container.innerHTML='<div style="text-align:center;padding:32px;color:var(--red);font-size:.82rem">Could not load admins: '+admEsc(e.message)+'</div>';
+    console.error('loadAdminsList failed:',e);
+    if(container) container.innerHTML='<div style="text-align:center;padding:32px;color:var(--red);font-size:.82rem"><i class="fas fa-triangle-exclamation"></i> Couldn\u2019t load admins. Please try again.</div>';
   }
 }
 window.loadAdminsList=loadAdminsList;
@@ -5488,27 +5563,33 @@ function renderAdminsList(){
     const uid=p?._uid||'';
     const pendingNote=(!p&&!a.isCEOAccount)?`<div style="font-size:.72rem;color:#b45309;margin-top:8px"><i class="fas fa-clock"></i> Whitelisted but hasn\u2019t created their profile yet — they need to sign in at least once.</div>`:'';
     const roleSelector=a.isCEOAccount?`<span class="admin-card-badge ceo">CEO</span>`:
-      `<select class="admin-role-select" data-prev-role="${a.role}" onchange="setAdminRole('${admEsc(a.email)}',this.value,this)" title="Access tier">
+      `<select class="admin-role-select" data-prev-role="${a.role}" onchange="setAdminRole('${admEsc(a.email)}',this.value,this)" title="Access tier"${a.suspended?' disabled':''}>
         <option value="reporter"${a.role==='reporter'?' selected':''}>Reporter — create only</option>
         <option value="editor"${a.role==='editor'?' selected':''}>Editor — create/edit/delete content</option>
         <option value="full_access"${a.role==='full_access'?' selected':''}>Full Access — content + operations</option>
       </select>`;
+    const statusBadge=a.isCEOAccount?'':(a.suspended?'<span class="admin-card-badge suspended"><i class="fas fa-ban"></i> Suspended</span>':'<span class="admin-card-badge active"><i class="fas fa-circle-check"></i> Active</span>');
     return `
-    <div class="admin-card">
+    <div class="admin-card${a.suspended?' is-suspended':''}">
       <div class="admin-card-top">
         ${photoHtml}
         <div style="flex:1;min-width:0">
-          <div class="admin-card-name">${admEsc(name)} ${a.isCEOAccount?'<span class="admin-card-badge ceo">CEO</span>':`<span class="admin-card-badge">${ROLE_LABELS[a.role]||'Full Access'}</span>`}</div>
+          <div class="admin-card-name">${admEsc(name)} ${a.isCEOAccount?'<span class="admin-card-badge ceo">CEO</span>':`<span class="admin-card-badge">${ROLE_LABELS[a.role]||'Reporter'}</span>`} ${statusBadge}</div>
           <div class="admin-card-email">${admEsc(a.email)}</div>
         </div>
       </div>
       ${p?.bio?`<div style="font-size:.75rem;color:var(--muted);margin-top:8px">${admEsc(p.bio)}</div>`:''}
       ${pendingNote}
+      ${a.suspended?`<div style="font-size:.72rem;color:#b91c1c;margin-top:8px"><i class="fas fa-triangle-exclamation"></i> This admin cannot sign in or make any changes while suspended.</div>`:''}
       ${!a.isCEOAccount?`<div style="margin-top:10px"><label style="font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:4px">Access Tier</label>${roleSelector}</div>`:''}
       <div class="admin-card-actions">
         ${p?`<button class="btn btn-outline btn-sm" onclick="openEditAdminProfileModal('${uid}','${admEsc(a.email)}')"><i class="fas fa-pen"></i> Edit Profile</button>`:''}
         ${!a.isCEOAccount?`<button class="btn btn-outline btn-sm" onclick="resetAdminPassword('${admEsc(a.email)}')"><i class="fas fa-key"></i> Reset Password</button>`:''}
-        ${!a.isCEOAccount?`<button class="btn btn-outline btn-sm" style="color:var(--red);border-color:var(--red)" onclick="removeAdmin('${admEsc(a.email)}')"><i class="fas fa-user-slash"></i> Remove</button>`:''}
+        ${!a.isCEOAccount?(a.suspended
+          ?`<button class="btn btn-outline btn-sm" style="color:#16a34a;border-color:#16a34a" onclick="restoreAdmin('${admEsc(a.email)}')"><i class="fas fa-rotate-left"></i> Restore</button>`
+          :`<button class="btn btn-outline btn-sm" style="color:#b45309;border-color:#b45309" onclick="suspendAdmin('${admEsc(a.email)}')"><i class="fas fa-ban"></i> Suspend</button>`
+        ):''}
+        ${!a.isCEOAccount?`<button class="btn btn-outline btn-sm" style="color:var(--red);border-color:var(--red)" onclick="removeAdmin('${admEsc(a.email)}')"><i class="fas fa-user-slash"></i> Revoke</button>`:''}
       </div>
     </div>`;
   }).join('');
@@ -5516,23 +5597,47 @@ function renderAdminsList(){
 window.renderAdminsList=renderAdminsList;
 
 function openAddAdminModal(){
-  ['naAdminName','naAdminNickname','naAdminEmail','naAdminPassword'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+  ['naAdminName','naAdminNickname','naAdminEmail','naAdminPassword','naAdminBio'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+  const roleSel=document.getElementById('naAdminRole'); if(roleSel) roleSel.value='reporter';
+  const photoPrev=document.getElementById('naAdminPhotoPreview');
+  if(photoPrev){ photoPrev.style.display='none'; photoPrev.src=''; }
+  window._naAdminPhotoB64='';
   const r=document.getElementById('addAdminResult'); if(r) r.innerHTML='';
   openModal('addAdminModal');
 }
 window.openAddAdminModal=openAddAdminModal;
+
+async function onNewAdminPhotoChange(input){
+  const file=input.files&&input.files[0]; if(!file) return;
+  if(!file.type||!file.type.startsWith('image/')){showStatus('error','Please choose an image file.');return;}
+  try{
+    showStatus('loading','Processing image\u2026');
+    const b64=await compressImageFile(file,500,0.85);
+    window._naAdminPhotoB64=b64;
+    const prev=document.getElementById('naAdminPhotoPreview');
+    prev.src=b64; prev.style.display='block';
+    showStatus('success','Photo ready.');
+  }catch(err){ showStatus('error','Could not process that image: '+err.message); }
+}
+window.onNewAdminPhotoChange=onNewAdminPhotoChange;
 
 async function createAdminAccount(){
   const name=document.getElementById('naAdminName').value.trim();
   const nickname=document.getElementById('naAdminNickname').value.trim();
   const email=document.getElementById('naAdminEmail').value.trim();
   const pass=document.getElementById('naAdminPassword').value;
+  const role=document.getElementById('naAdminRole').value||'reporter';
+  const bio=document.getElementById('naAdminBio').value.trim();
+  const photo=window._naAdminPhotoB64||'';
   const resultEl=document.getElementById('addAdminResult');
-  if(!name||!nickname||!email||!pass){ if(resultEl) resultEl.innerHTML='<span style="color:var(--red)">Fill in all fields.</span>'; return; }
+  if(!name||!nickname||!email||!pass){ if(resultEl) resultEl.innerHTML='<span style="color:var(--red)">Fill in all required fields.</span>'; return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ if(resultEl) resultEl.innerHTML='<span style="color:var(--red)">That doesn\u2019t look like a valid email address.</span>'; return; }
   if(pass.length<6){ if(resultEl) resultEl.innerHTML='<span style="color:var(--red)">Password must be at least 6 characters.</span>'; return; }
+  if((window._adminsList||[]).some(a=>a.emailLower===email.toLowerCase().trim())){ if(resultEl) resultEl.innerHTML='<span style="color:var(--red)">This email is already an admin.</span>'; return; }
   const btn=document.getElementById('createAdminBtn'); btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Creating…';
   try{
     if(!window.secondaryAuth) throw new Error('Auth not ready — wait a moment and try again.');
+    const lower=email.toLowerCase().trim();
     // 1. Create the account on the SECONDARY Firebase app instance so the
     //    CEO's own session (on the primary instance) is never touched —
     //    createUserWithEmailAndPassword() auto-signs-in as the new user on
@@ -5543,22 +5648,35 @@ async function createAdminAccount(){
     // 2. Immediately sign the secondary instance back out — we only
     //    needed it to mint the account.
     await window.signOutFB(window.secondaryAuth).catch(()=>{});
-    // 3. Whitelist their email so isAdmin() recognizes them. Requires
+    // 3. Whitelist their email AND set their chosen access tier. Requires
     //    isCEO(), satisfied by the CEO's untouched primary session.
+    //    (Never 'ceo' — that's not an option this form offers, by design;
+    //    see the note under the Access Tier field.)
+    //    Read-modify-write the roles map rather than merging a bare
+    //    {roles:{email:role}} object — Firestore's merge REPLACES a
+    //    nested map field wholesale unless you use dot-notation paths,
+    //    and email addresses contain dots themselves, which would be
+    //    misread as extra nesting levels. This is the same reasoning
+    //    setAdminRole() uses below.
+    const wlSnapForCreate=await window.getDoc(window.doc(window.db,'admin_whitelist','approved'));
+    const rolesForCreate=wlSnapForCreate.exists()?(wlSnapForCreate.data().roles||{}):{};
+    rolesForCreate[lower]=role;
     await window.setDoc(window.doc(window.db,'admin_whitelist','approved'),{
-      emails:window.arrayUnion(email)
+      emails:window.arrayUnion(email),
+      roles:rolesForCreate,
     },{merge:true});
     // 4. Create their profile record + the public byline mirror.
     await window.setDoc(window.doc(window.db,'admin_profiles',newUid),{
-      uid:newUid,name,nickname,email,createdAt:new Date().toISOString(),role:'admin',
+      uid:newUid,name,nickname,email,bio,photo,createdAt:new Date().toISOString(),role:'admin',
     });
-    await syncPublicAuthorProfile(newUid,{nickname,photo:'',bio:''});
-    logAdminActivity('add','admin','Created admin account: '+email);
+    await syncPublicAuthorProfile(newUid,{nickname,photo,bio});
+    logAdminActivity('add','admin',`Created admin account: ${nickname} (${email}) \u2014 ${ROLE_LABELS[role]}`);
     if(resultEl) resultEl.innerHTML='<span style="color:#16a34a"><i class="fas fa-circle-check"></i> Admin account created — share the password with them directly.</span>';
     await loadAdminsList();
     setTimeout(()=>closeModal('addAdminModal'),1400);
   }catch(e){
-    const msg=e.code==='auth/email-already-in-use'?'An account with this email already exists.':e.code==='auth/weak-password'?'Password is too weak.':admEsc(e.message);
+    console.error('createAdminAccount failed:',e);
+    const msg=e.code==='auth/email-already-in-use'?'An account with this email already exists.':e.code==='auth/weak-password'?'Password is too weak.':e.code==='auth/invalid-email'?'That doesn\u2019t look like a valid email address.':'Couldn\u2019t create the account. Please try again.';
     if(resultEl) resultEl.innerHTML='<span style="color:var(--red)">'+msg+'</span>';
   }
   btn.disabled=false; btn.innerHTML='<i class="fas fa-user-plus"></i> Create Admin Account';
@@ -5627,29 +5745,77 @@ async function resetAdminPassword(email){
   if(!confirm('Send a password reset link to '+email+'?')) return;
   try{
     await window.sendPasswordResetEmail(window.auth,email);
-    logAdminActivity('edit','admin','Sent password reset to: '+email);
+    logAdminActivity('edit','admin','Password Reset Sent \u2014 '+email);
     showStatus('success','Password reset email sent to '+email+'.');
   }catch(e){
-    showStatus('error','Could not send reset email: '+(e.code==='auth/user-not-found'?'No account found for that email — they may not have signed in yet.':e.message));
+    console.error('resetAdminPassword failed:',e);
+    const msg=e.code==='auth/user-not-found'?'No account found for that email — they may not have signed in yet.':'Couldn\u2019t send the reset email. Please try again.';
+    showStatus('error',msg);
   }
 }
 window.resetAdminPassword=resetAdminPassword;
 
 async function removeAdmin(email){
   if(CEO_EMAILS.includes(email.toLowerCase())){ showStatus('error','CEO accounts cannot be removed here.'); return; }
-  if(!confirm('Remove admin access for '+email+'?\n\nThis revokes their ability to use this admin panel. It does NOT delete their login account — you can re-add their email later if needed.')) return;
+  if(!confirm('Revoke admin access for '+email+' permanently?\n\nThis removes them from the whitelist entirely. Their login account and profile history are kept — you can re-add their email later if needed. If you just want to temporarily block them, use Suspend instead.')) return;
   try{
     await window.setDoc(window.doc(window.db,'admin_whitelist','approved'),{
       emails:window.arrayRemove(email)
     },{merge:true});
-    logAdminActivity('delete','admin','Removed admin access: '+email);
-    showStatus('success','Admin access removed for '+email+'.');
+    logAdminActivity('delete','admin','Admin Access Revoked \u2014 '+email);
+    showStatus('success','Admin access revoked for '+email+'.');
     await loadAdminsList();
   }catch(e){
-    showStatus('error','Could not remove admin: '+e.message);
+    console.error('removeAdmin failed:',e);
+    showStatus('error','Couldn\u2019t revoke access. Please try again.');
   }
 }
 window.removeAdmin=removeAdmin;
+
+// Suspend/Restore toggle a flag in the SAME whitelist document
+// (admin_whitelist/approved.suspended), rather than removing the admin's
+// email from the whitelist — this is the reversible, temporary action;
+// Revoke above is the permanent one. Both read-modify-write the relevant
+// map rather than merging a bare object literal, for the same reason
+// setAdminRole() does: Firestore's merge replaces a nested map field
+// wholesale unless you use dot-notation paths, which can't safely be used
+// here since email addresses contain dots themselves.
+async function suspendAdmin(email){
+  if(CEO_EMAILS.includes(email.toLowerCase())){ showStatus('error','CEO accounts cannot be suspended.'); return; }
+  if(!confirm('Suspend '+email+'?\n\nThey will immediately lose all admin access until restored. Their account, profile, and role assignment are kept.')) return;
+  try{
+    const lower=email.toLowerCase().trim();
+    const snap=await window.getDoc(window.doc(window.db,'admin_whitelist','approved'));
+    const suspended=snap.exists()?(snap.data().suspended||{}):{};
+    suspended[lower]=true;
+    await window.setDoc(window.doc(window.db,'admin_whitelist','approved'),{suspended},{merge:true});
+    logAdminActivity('edit','admin','Admin Suspended \u2014 '+email);
+    showStatus('success','Access suspended for '+email+'.');
+    await loadAdminsList();
+  }catch(e){
+    console.error('suspendAdmin failed:',e);
+    showStatus('error','Couldn\u2019t suspend that admin. Please try again.');
+  }
+}
+window.suspendAdmin=suspendAdmin;
+
+async function restoreAdmin(email){
+  if(!confirm('Restore admin access for '+email+'?')) return;
+  try{
+    const lower=email.toLowerCase().trim();
+    const snap=await window.getDoc(window.doc(window.db,'admin_whitelist','approved'));
+    const suspended=snap.exists()?(snap.data().suspended||{}):{};
+    delete suspended[lower];
+    await window.setDoc(window.doc(window.db,'admin_whitelist','approved'),{suspended},{merge:true});
+    logAdminActivity('edit','admin','Admin Access Restored \u2014 '+email);
+    showStatus('success','Access restored for '+email+'.');
+    await loadAdminsList();
+  }catch(e){
+    console.error('restoreAdmin failed:',e);
+    showStatus('error','Couldn\u2019t restore that admin. Please try again.');
+  }
+}
+window.restoreAdmin=restoreAdmin;
 
 const ROLE_LABELS={reporter:'Reporter',editor:'Editor',full_access:'Full Access',ceo:'CEO'};
 
@@ -5739,7 +5905,7 @@ function renderImageLibraryGrid(pickMode){
         <div class="imglib-card-cat">${admEsc(img.category||'General')}</div>
       </div>
       ${pickMode?'':`<div class="imglib-card-actions" onclick="event.stopPropagation()">
-        <button class="btn btn-outline btn-sm" onclick="deleteLibraryImage('${img._id}')"><i class="fas fa-trash"></i></button>
+        <button class="btn btn-outline btn-sm editor-only" onclick="deleteLibraryImage('${img._id}')"><i class="fas fa-trash"></i></button>
       </div>`}
     </div>`;
   }).join('');
@@ -6252,9 +6418,9 @@ function renderBooks(){
         <div class="item-preview">${(b.description||'').slice(0,180)}</div>
         ${b.downloadUrl?`<div class="item-url"><i class="fas fa-download"></i> ${b.downloadUrl}</div>`:''}
         <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="openEditBook(${idx})"><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn btn-outline btn-sm editor-only" onclick="openEditBook(${idx})"><i class="fas fa-pen"></i> Edit</button>
           ${b.downloadUrl?`<a href="${b.downloadUrl}" target="_blank" class="btn btn-ghost btn-sm"><i class="fas fa-download"></i> Download</a>`:''}
-          <button class="btn btn-danger btn-sm" onclick="deleteBook(${idx})"><i class="fas fa-trash"></i> Delete</button>
+          <button class="btn btn-danger btn-sm editor-only" onclick="deleteBook(${idx})"><i class="fas fa-trash"></i> Delete</button>
         </div>
       </div>
     </div>`).join('')+'</div>';
@@ -6340,7 +6506,7 @@ function renderDyk(){
       <div class="item-expand">
         <div class="item-preview">${d.body||d.explanation||''}</div>
         <div class="item-actions">
-          <button class="btn btn-danger btn-sm" onclick="deleteDyk(${idx})"><i class="fas fa-trash"></i> Delete</button>
+          <button class="btn btn-danger btn-sm editor-only" onclick="deleteDyk(${idx})"><i class="fas fa-trash"></i> Delete</button>
         </div>
       </div>
     </div>`).join('')+'</div>';
@@ -6388,7 +6554,7 @@ function renderSpotlights(){
       <div class="item-expand">
         <div class="item-preview">${(s.story||'').slice(0,200)}</div>
         <div class="item-actions">
-          <button class="btn btn-danger btn-sm" onclick="deleteSpotlight(${idx})"><i class="fas fa-trash"></i> Delete</button>
+          <button class="btn btn-danger btn-sm editor-only" onclick="deleteSpotlight(${idx})"><i class="fas fa-trash"></i> Delete</button>
         </div>
       </div>
     </div>`).join('')+'</div>';
@@ -6442,7 +6608,7 @@ function renderScholarships(){
         ${s.eligibility?`<div class="item-meta" style="margin-bottom:6px"><strong>Eligibility:</strong> ${s.eligibility.slice(0,180)}</div>`:'<div class="item-meta" style="margin-bottom:6px;color:#dc2626"><i class="fas fa-triangle-exclamation"></i> No eligibility info added</div>'}
         <div class="item-meta" style="margin-bottom:8px"><i class="fas fa-calendar-days"></i> ${s.deadline||'—'} ${s.link?`· <a href="${s.link}" target="_blank" style="color:var(--blue);font-weight:600">Apply →</a>`:'· <span style="color:#dc2626">No apply link</span>'}</div>
         <div class="item-actions">
-          <button class="btn btn-danger btn-sm" onclick="deleteScholarship(${idx})"><i class="fas fa-trash"></i> Delete</button>
+          <button class="btn btn-danger btn-sm editor-only" onclick="deleteScholarship(${idx})"><i class="fas fa-trash"></i> Delete</button>
         </div>
       </div>
     </div>`).join('')+'</div>';
@@ -6508,7 +6674,7 @@ function renderNelfund(){
       <div class="item-expand">
         <div class="item-preview">${(n.summary||'').slice(0,200)}</div>
         <div class="item-actions">
-          <button class="btn btn-danger btn-sm" onclick="deleteNelfund(${idx})"><i class="fas fa-trash"></i> Delete</button>
+          <button class="btn btn-danger btn-sm editor-only" onclick="deleteNelfund(${idx})"><i class="fas fa-trash"></i> Delete</button>
         </div>
       </div>
     </div>`).join('')+'</div>';
@@ -6563,9 +6729,9 @@ function renderPostUtme(){
           ${s.location?'<strong>Location:</strong> '+s.location:''}
         </div>
         <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="openEditSchool(${idx})"><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn btn-outline btn-sm editor-only" onclick="openEditSchool(${idx})"><i class="fas fa-pen"></i> Edit</button>
           ${s.link?`<a href="${s.link}" target="_blank" class="btn btn-ghost btn-sm"><i class="fas fa-link"></i> Portal</a>`:''}
-          <button class="btn btn-danger btn-sm" onclick="deleteSchool(${idx})"><i class="fas fa-trash"></i> Delete</button>
+          <button class="btn btn-danger btn-sm editor-only" onclick="deleteSchool(${idx})"><i class="fas fa-trash"></i> Delete</button>
         </div>
       </div>
     </div>`).join('');
@@ -6659,8 +6825,8 @@ function renderComboList(){
         ${c.notes?`<div class="item-preview"><strong>Notes:</strong> ${c.notes}</div>`:''}
         <div class="item-meta" style="margin-top:6px">${c.cutoff?'Cut-off: '+c.cutoff+' · ':''} ${c.duration?'Duration: '+c.duration:''}</div>
         <div class="item-actions" style="margin-top:8px">
-          <button class="btn btn-outline btn-sm" onclick="openEditCombo(${realIdx})"><i class="fas fa-pen"></i> Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteCombo(${realIdx})"><i class="fas fa-trash"></i> Delete</button>
+          <button class="btn btn-outline btn-sm editor-only" onclick="openEditCombo(${realIdx})"><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn btn-danger btn-sm editor-only" onclick="deleteCombo(${realIdx})"><i class="fas fa-trash"></i> Delete</button>
         </div>
       </div>
     </div>`;
@@ -6745,7 +6911,7 @@ function renderPrepList(){
       <div class="item-expand">
         <div class="item-preview">${(p.summary||'').slice(0,200)}</div>
         <div class="item-actions">
-          <button class="btn btn-danger btn-sm" onclick="deletePrep(${idx})"><i class="fas fa-trash"></i> Delete</button>
+          <button class="btn btn-danger btn-sm editor-only" onclick="deletePrep(${idx})"><i class="fas fa-trash"></i> Delete</button>
         </div>
       </div>
     </div>`).join('')+'</div>';
@@ -6819,8 +6985,8 @@ function renderAdmissionReqs(){
         <div class="item-meta" style="margin-bottom:6px">Direct Entry: ${r.acceptsDE===false?'<i class="fas fa-circle-xmark"></i> Not accepted':(r.deAcceptedTypes&&r.deAcceptedTypes.length?'<i class="fas fa-circle-check"></i> Accepted via '+admEsc(r.deAcceptedTypes.join(', ')):'<i class="fas fa-circle-check"></i> Accepted (any qualification)')}</div>
         ${r.notes?`<div class="item-meta" style="margin-bottom:8px">${admEsc(r.notes)}</div>`:''}
         <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="openEditAdm(${idx})"><i class="fas fa-pen"></i> Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteAdmissionReq(${idx})"><i class="fas fa-trash"></i> Delete</button>
+          <button class="btn btn-outline btn-sm fullaccess-only" onclick="openEditAdm(${idx})"><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn btn-danger btn-sm fullaccess-only" onclick="deleteAdmissionReq(${idx})"><i class="fas fa-trash"></i> Delete</button>
         </div>
       </div>
     </div>`).join('')+'</div>';
@@ -7492,8 +7658,8 @@ function renderReviews(){
       <div class="item-expand">
         <div class="item-preview">"${admEsc(r.message)||''}"</div>
         <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="openEditReview(${idx})"><i class="fas fa-pen"></i> Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteReview(${idx})"><i class="fas fa-trash"></i> Delete</button>
+          <button class="btn btn-outline btn-sm editor-only" onclick="openEditReview(${idx})"><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn btn-danger btn-sm editor-only" onclick="deleteReview(${idx})"><i class="fas fa-trash"></i> Delete</button>
         </div>
       </div>
     </div>`).join('')+'</div>';
@@ -7570,8 +7736,8 @@ function renderQA(){
       <div class="item-expand">
         <div class="item-preview"><strong>A:</strong> ${admEsc(q.answer||q.a)||''}</div>
         <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="openEditQA(${idx})"><i class="fas fa-pen"></i> Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteQA(${idx})"><i class="fas fa-trash"></i> Delete</button>
+          <button class="btn btn-outline btn-sm editor-only" onclick="openEditQA(${idx})"><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn btn-danger btn-sm editor-only" onclick="deleteQA(${idx})"><i class="fas fa-trash"></i> Delete</button>
         </div>
       </div>
     </div>`).join('')+'</div>';
@@ -7651,8 +7817,8 @@ function renderCalendar(){
       <div class="item-expand">
         ${c.description?`<div class="item-preview">${admEsc(c.description)}</div>`:''}
         <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="openEditCal(${realIdx})"><i class="fas fa-pen"></i> Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteCalEvent(${realIdx})"><i class="fas fa-trash"></i> Delete</button>
+          <button class="btn btn-outline btn-sm editor-only" onclick="openEditCal(${realIdx})"><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn btn-danger btn-sm editor-only" onclick="deleteCalEvent(${realIdx})"><i class="fas fa-trash"></i> Delete</button>
         </div>
       </div>
     </div>`;
@@ -7766,8 +7932,8 @@ function renderCBTList(){
           ${q.exp?`<div style="font-size:0.72rem;color:var(--muted);margin-top:6px;font-style:italic"><i class="fas fa-lightbulb"></i> ${q.exp}</div>`:''}
         </div>
         <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
-          <button class="btn btn-ghost btn-sm" onclick="openEditCBT('${q.id}')"><i class="fas fa-pen"></i></button>
-          <button class="btn btn-danger btn-sm" onclick="deleteCBT('${q.id}')"><i class="fas fa-trash"></i></button>
+          <button class="btn btn-ghost btn-sm editor-only" onclick="openEditCBT('${q.id}')"><i class="fas fa-pen"></i></button>
+          <button class="btn btn-danger btn-sm editor-only" onclick="deleteCBT('${q.id}')"><i class="fas fa-trash"></i></button>
         </div>
       </div>
     </div>`).join('');
@@ -8212,7 +8378,7 @@ async function loadCampusGist(){
           ${g.pinned?'<span style="background:var(--orange);color:#fff;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px"><i class="fas fa-thumbtack"></i> Pinned</span>':''}
           <span style="font-size:.64rem;color:var(--muted);margin-left:auto">${g.createdAt?.toDate?g.createdAt.toDate().toLocaleDateString('en-NG'):''}</span>
           <button onclick="toggleGistPublished('${g._id}',${!g.published})" style="background:${g.published?'#dcfce7':'#fee2e2'};border:1px solid ${g.published?'#86efac':'#fca5a5'};color:${g.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${g.published?'<i class="fas fa-circle-check"></i> Published':'<i class="fas fa-pause"></i> Hidden'}</button>
-          <button onclick="deleteGistPost('${g._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
+          <button class="editor-only" onclick="deleteGistPost('${g._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
         <div style="font-size:.84rem;color:var(--text-main);line-height:1.6">${(g.text||'').substring(0,200)}${(g.text||'').length>200?'…':''}</div>
         ${(g.images||[]).length?`<div style="font-size:.7rem;color:var(--muted);margin-top:4px"><i class="fas fa-camera"></i> ${(g.images||[]).length} image(s)</div>`:''}
@@ -8288,7 +8454,7 @@ async function loadPolls(){
           <span style="background:#ede9fe;color:#7c3aed;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:10px">${p.category||'Poll'}</span>
           <span style="font-size:.64rem;color:var(--muted);margin-left:auto">${p.createdAt?.toDate?p.createdAt.toDate().toLocaleDateString('en-NG'):''}</span>
           <button onclick="togglePollPublished('${p._id}',${!p.published})" style="background:${p.published?'#dcfce7':'#fee2e2'};border:1px solid ${p.published?'#86efac':'#fca5a5'};color:${p.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${p.published?'<i class="fas fa-circle-check"></i> Published':'<i class="fas fa-pause"></i> Hidden'}</button>
-          <button onclick="deletePoll('${p._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
+          <button class="editor-only" onclick="deletePoll('${p._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
         <div style="font-family:'Montserrat',sans-serif;font-size:.84rem;font-weight:700;color:var(--text-main);margin-bottom:8px">${p.caption||p.question||''}</div>
         ${opts.map((opt,i)=>{const v=votes[i]||0;const pct=Math.round((v/total)*100);return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:.78rem"><span style="flex:1;color:var(--text-main)">${opt}</span><span style="font-weight:700;color:var(--muted);min-width:40px;text-align:right">${v} (${pct}%)</span></div>`;}).join('')}
