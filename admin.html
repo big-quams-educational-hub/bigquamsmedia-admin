@@ -187,6 +187,22 @@ body.dark .sidebar-close-btn{background:#0f172a;color:#94a3b8}
 .sidebar-close-btn:hover{background:#fee2e2;color:#b91c1c}
 .sidebar-backdrop{position:fixed;inset:0;background:rgba(15,23,42,0.5);z-index:499;display:none;backdrop-filter:blur(1px)}
 .sidebar-backdrop.show{display:block}
+
+/* ─── DESKTOP: sidebar docks permanently, no slide-out drawer ───
+   Below this width the sidebar stays the off-canvas drawer defined above
+   (opened via the hamburger button). At and above it, the sidebar is
+   simply always visible and the content area gets a matching left margin
+   to sit beside it — no transform, no toggle, nothing to slide. */
+@media(min-width:960px){
+  .sidebar{transform:translateX(0)}
+  .sidebar-close-btn,#hamburgerBtn,.sidebar-backdrop{display:none}
+  .topbar{margin-left:var(--sidebar-w)}
+  /* width must shrink by exactly the sidebar's width too, not just shift
+     via margin — otherwise margin-left + the existing width:100% would
+     add up to more than the viewport and overflow off the right edge,
+     which is the same "needs to scroll sideways" bug we're fixing. */
+  .admin-main{margin-left:var(--sidebar-w);margin-right:0;width:calc(100% - var(--sidebar-w))}
+}
 .nav-section-label{font-size:0.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:10px 8px 4px;display:block}
 .sidebar-divider{height:1px;background:var(--border);margin:6px 4px}
 .section-tab{display:flex;align-items:center;gap:8px;padding:10px 10px;border-radius:10px;border:none;font-family:'Roboto',sans-serif;font-size:0.83rem;font-weight:600;cursor:pointer;color:var(--muted);background:transparent;transition:.15s;white-space:nowrap;width:100%;text-align:left;min-height:var(--touch)}
