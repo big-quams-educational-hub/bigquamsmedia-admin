@@ -579,9 +579,24 @@ body.dark .stat-num{color:#bfdbfe}
 .stat-lbl{font-size:0.7rem;color:var(--muted);margin-top:2px}
 
 /* ─── DASHBOARD MODULES ─── */
-#section-dashboard .stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
-@media(min-width:500px){#section-dashboard .stats-row{gap:12px}}
-@media(min-width:600px){#section-dashboard .stats-row{grid-template-columns:repeat(4,1fr)}}
+#section-dashboard .stats-row,#section-activitylog .stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+@media(min-width:500px){#section-dashboard .stats-row,#section-activitylog .stats-row{gap:12px}}
+@media(min-width:600px){#section-dashboard .stats-row,#section-activitylog .stats-row{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:800px){#section-activitylog .stats-row{grid-template-columns:repeat(6,1fr)}}
+
+/* ─── CONTENT PERFORMANCE CHARTS (Activity Log) ─── */
+.charts-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:20px}
+@media(min-width:700px){.charts-grid{grid-template-columns:1fr 1fr}}
+.mini-chart-wrap{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px}
+.mini-chart-title{font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:800;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.bar-chart{display:flex;flex-direction:column;gap:9px}
+.bar-chart .bar-row{display:flex;align-items:center;gap:10px;font-size:.74rem}
+.bar-lbl{width:80px;flex-shrink:0;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:capitalize}
+.bar-track{flex:1;height:10px;background:var(--light);border-radius:10px;overflow:hidden}
+body.dark .bar-track{background:#1e293b}
+.bar-fill{height:100%;border-radius:10px;transition:width .6s ease}
+.bar-val{width:26px;text-align:right;flex-shrink:0;font-weight:700;color:var(--text)}
+.bar-chart-empty{text-align:center;padding:20px;color:var(--muted);font-size:.78rem}
 .dash-grid{display:grid;grid-template-columns:1fr;gap:12px}
 @media(min-width:420px){.dash-grid{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:800px){.dash-grid{grid-template-columns:repeat(3,1fr)}}
@@ -2647,25 +2662,53 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <button class="btn btn-ghost btn-sm" onclick="exportActivityLog()" style="white-space:nowrap"><i class="fas fa-download"></i> Export CSV</button>
             <button class="btn btn-outline btn-sm" id="clearActLogBtn" onclick="clearActivityLog()" style="white-space:nowrap;color:var(--red);border-color:var(--red)"><i class="fas fa-trash"></i> Clear All</button>
           </div>
-          <div id="actLogStats" style="display:flex;gap:0;border-bottom:1px solid var(--border)">
-            <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
-              <div style="font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:800;color:var(--blue)" id="als-total">0</div>
-              <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Total Actions</div>
+          <div class="stats-row" id="actLogStats" style="padding:16px 18px 0">
+            <div class="stat-card">
+              <div class="stat-icon" style="background:#dbeafe;color:#1d4ed8"><i class="fas fa-bolt"></i></div>
+              <div><div class="stat-num" id="als-total">0</div><div class="stat-lbl">Total Actions</div></div>
             </div>
-            <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
-              <div style="font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:800;color:#10b981" id="als-today">0</div>
-              <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Today</div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background:#dcfce7;color:#166534"><i class="fas fa-calendar-days"></i></div>
+              <div><div class="stat-num" id="als-today">0</div><div class="stat-lbl">Today</div></div>
             </div>
-            <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
-              <div style="font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:800;color:#f59e0b" id="als-admins">0</div>
-              <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Admins Active</div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background:#fef3c7;color:#92400e"><i class="fas fa-users"></i></div>
+              <div><div class="stat-num" id="als-admins">0</div><div class="stat-lbl">Admins Active</div></div>
             </div>
-            <div style="flex:1;padding:14px;text-align:center">
-              <div style="font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:800;color:#ef4444" id="als-deletes">0</div>
-              <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Deletions</div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background:#fee2e2;color:#b91c1c"><i class="fas fa-trash"></i></div>
+              <div><div class="stat-num" id="als-deletes">0</div><div class="stat-lbl">Deletions</div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background:#f3e8ff;color:#7c3aed"><i class="fas fa-lock"></i></div>
+              <div><div class="stat-num" id="als-logins">0</div><div class="stat-lbl">Logins</div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background:#cffafe;color:#0e7490"><i class="fas fa-pen"></i></div>
+              <div><div class="stat-num" id="als-edits">0</div><div class="stat-lbl">Edits/Saves</div></div>
             </div>
           </div>
-          <div id="actLogList" style="max-height:540px;overflow-y:auto">
+          <div style="padding:0 18px">
+            <div class="charts-grid">
+              <div class="mini-chart-wrap">
+                <div class="mini-chart-title"><i class="fas fa-chart-column"></i> Actions by Type</div>
+                <div class="bar-chart" id="chartByType"></div>
+              </div>
+              <div class="mini-chart-wrap">
+                <div class="mini-chart-title"><i class="fas fa-user"></i> Actions by Admin</div>
+                <div class="bar-chart" id="chartByAdmin"></div>
+              </div>
+              <div class="mini-chart-wrap">
+                <div class="mini-chart-title"><i class="fas fa-folder"></i> Actions by Section</div>
+                <div class="bar-chart" id="chartBySection"></div>
+              </div>
+              <div class="mini-chart-wrap">
+                <div class="mini-chart-title"><i class="fas fa-clock"></i> Activity Last 7 Days</div>
+                <div class="bar-chart" id="chartByDay"></div>
+              </div>
+            </div>
+          </div>
+          <div id="actLogList" style="max-height:540px;overflow-y:auto;padding-top:8px">
             <div style="text-align:center;padding:40px;color:var(--muted);font-size:.84rem">Loading activity log…</div>
           </div>
         </div>
@@ -4090,10 +4133,15 @@ function renderActivityLog(logs){
   const todayLogs=logs.filter(l=>l.date===today);
   const admins=new Set(logs.map(l=>l.adminEmail)).size;
   const deletes=logs.filter(l=>l.actionType==='delete').length;
+  const logins=logs.filter(l=>l.actionType==='login').length;
+  const edits=logs.filter(l=>['edit','save','upload','add'].includes(l.actionType)).length;
   document.getElementById('als-total').textContent=logs.length;
   document.getElementById('als-today').textContent=todayLogs.length;
   document.getElementById('als-admins').textContent=admins;
   document.getElementById('als-deletes').textContent=deletes;
+  document.getElementById('als-logins').textContent=logins;
+  document.getElementById('als-edits').textContent=edits;
+  buildActivityCharts(logs);
   const listEl=document.getElementById('actLogList');
   if(!logs.length){
     listEl.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:.84rem">No activity recorded yet.</div>';
@@ -4122,6 +4170,58 @@ function renderActivityLog(logs){
       <button class="btn btn-outline btn-sm" style="flex-shrink:0;color:var(--red);border-color:var(--red);padding:5px 9px" onclick="deleteActivityLogEntry('${l._id}')" title="Delete this entry" aria-label="Delete this log entry"><i class="fas fa-trash"></i></button>
     </div>`;
   }).join('');
+}
+
+// Renders the four Content Performance charts from whatever log set is
+// currently shown — including a filtered subset, since renderActivityLog()
+// is also called from filterActivityLog(). Empty categories show a plain
+// message instead of a div with nothing in it.
+function buildActivityCharts(logs){
+  const typeColors={login:'#10b981',logout:'#6b7280',add:'#3b82f6',edit:'#f59e0b',delete:'#ef4444',save:'#8b5cf6',upload:'#06b6d4'};
+  const barRow=(label,value,max,color)=>`
+    <div class="bar-row">
+      <div class="bar-lbl" title="${admEsc(label)}">${admEsc(label)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${max>0?(value/max*100).toFixed(1):0}%;background:${color}"></div></div>
+      <div class="bar-val">${value}</div>
+    </div>`;
+  const empty='<div class="bar-chart-empty">No data yet.</div>';
+
+  // Actions by type
+  const byType={};
+  logs.forEach(l=>{const t=l.actionType||'other';byType[t]=(byType[t]||0)+1;});
+  const typeEntries=Object.entries(byType).sort((a,b)=>b[1]-a[1]);
+  const maxType=Math.max(...typeEntries.map(e=>e[1]),1);
+  document.getElementById('chartByType').innerHTML=typeEntries.length
+    ? typeEntries.map(([k,v])=>barRow(k,v,maxType,typeColors[k]||'var(--blue)')).join('') : empty;
+
+  // Actions by admin (top 8)
+  const byAdmin={};
+  logs.forEach(l=>{const n=l.adminName||l.adminEmail||'Unknown';byAdmin[n]=(byAdmin[n]||0)+1;});
+  const adminEntries=Object.entries(byAdmin).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxAdmin=Math.max(...adminEntries.map(e=>e[1]),1);
+  document.getElementById('chartByAdmin').innerHTML=adminEntries.length
+    ? adminEntries.map(([k,v])=>barRow(k,v,maxAdmin,'#2563eb')).join('') : empty;
+
+  // Actions by section (top 8)
+  const bySection={};
+  logs.forEach(l=>{const s=l.section||'other';bySection[s]=(bySection[s]||0)+1;});
+  const sectionEntries=Object.entries(bySection).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxSection=Math.max(...sectionEntries.map(e=>e[1]),1);
+  document.getElementById('chartBySection').innerHTML=sectionEntries.length
+    ? sectionEntries.map(([k,v])=>barRow(k,v,maxSection,'#f97316')).join('') : empty;
+
+  // Last 7 days
+  const last7={};
+  for(let i=6;i>=0;i--){
+    const d=new Date(Date.now()-i*86400000);
+    const key=d.toLocaleDateString('en-NG');
+    const label=i===0?'Today':i===1?'Yesterday':d.toLocaleDateString('en-NG',{weekday:'short'});
+    last7[key]={label,count:0};
+  }
+  logs.forEach(l=>{if(l.date&&last7[l.date]) last7[l.date].count++;});
+  const dayEntries=Object.values(last7);
+  const maxDay=Math.max(...dayEntries.map(d=>d.count),1);
+  document.getElementById('chartByDay').innerHTML=dayEntries.map(({label,count})=>barRow(label,count,maxDay,'#16a34a')).join('');
 }
 
 function filterActivityLog(){
