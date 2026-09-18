@@ -4544,7 +4544,39 @@ async function loadDashboardWidgets(){
     let anonPending=0;
     anonSnap.forEach(d=>{ if(!d.data().featured) anonPending++; });
     if(anonPending>0) pendingItems.push({type:'Moderation',title:anonPending+' anonymous message'+(anonPending===1?'':'s')+' awaiting review',icon:'fa-comment',color:'#db2777',bg:'#fce7f3',action:"switchSection('anonymous')"});
+
+    // CEO-only: failed/errored actions and large deletions, surfaced from
+    // the activity log. Not shown to Reporter/Editor/Full Access — this
+    // is governance-flavored ("who broke what, who deleted a lot at
+    // once"), matching how the rest of this app splits oversight from
+    // execution. Reuses _allActivityLogs (shared with the Activity Log
+    // section) — only fetches fresh if nobody's loaded it yet this
+    // session, so this never duplicates that section's own read.
+    if(isCeoAdmin()){
+      try{
+        if(!_allActivityLogs.length){
+          const logSnap=await window.getDocs(window.collection(window.db,'admin_activity_log'));
+          _allActivityLogs=logSnap.docs.map(d=>({...d.data(),_id:d.id})).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+        }
+        _allActivityLogs.filter(l=>/fail|error/i.test(l.detail||'')).slice(0,5).forEach(l=>{
+          pendingItems.push({type:'Issue logged',title:l.detail||'Issue logged',icon:'fa-triangle-exclamation',color:'#b91c1c',bg:'#fee2e2',action:"switchSection('activitylog')"});
+        });
+        _allActivityLogs.filter(l=>{
+          if(l.actionType!=='delete') return false;
+          const m=(l.detail||'').match(/(\d+)/);
+          return m && parseInt(m[1],10)>=5;
+        }).slice(0,5).forEach(l=>{
+          pendingItems.push({type:'Large deletion',title:l.detail||'Large deletion',icon:'fa-trash',color:'#b45309',bg:'#fef3c7',action:"switchSection('activitylog')"});
+        });
+      }catch(e){console.warn('critical issues check failed',e);}
+    }
   }catch(e){console.warn('pending widget error',e);}
+  // Critical issues (failed actions, large deletions) surface above
+  // routine pending-review items — otherwise, on a busy day with 6+
+  // routine items already queued, the governance-relevant ones could get
+  // silently cut off by the slice(0,6) below.
+  const PRIORITY={'Issue logged':0,'Large deletion':1};
+  pendingItems.sort((a,b)=>(PRIORITY[a.type]??2)-(PRIORITY[b.type]??2));
   if(pendingBadge){ pendingBadge.textContent=pendingItems.length; pendingBadge.className='widget-badge'+(pendingItems.length?' warn':''); }
   if(pendingList){
     if(!pendingItems.length){
