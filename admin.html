@@ -579,10 +579,10 @@ body.dark .stat-num{color:#bfdbfe}
 .stat-lbl{font-size:0.7rem;color:var(--muted);margin-top:2px}
 
 /* ─── DASHBOARD MODULES ─── */
-#section-dashboard .stats-row,#section-activitylog .stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
-@media(min-width:500px){#section-dashboard .stats-row,#section-activitylog .stats-row{gap:12px}}
-@media(min-width:600px){#section-dashboard .stats-row,#section-activitylog .stats-row{grid-template-columns:repeat(4,1fr)}}
-@media(min-width:800px){#section-activitylog .stats-row{grid-template-columns:repeat(6,1fr)}}
+#section-dashboard .stats-row,#section-activitylog .stats-row,#section-users .stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+@media(min-width:500px){#section-dashboard .stats-row,#section-activitylog .stats-row,#section-users .stats-row{gap:12px}}
+@media(min-width:600px){#section-dashboard .stats-row,#section-activitylog .stats-row,#section-users .stats-row{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:800px){#section-activitylog .stats-row,#section-users .stats-row{grid-template-columns:repeat(6,1fr)}}
 
 /* ─── CONTENT PERFORMANCE CHARTS (Activity Log) ─── */
 .charts-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:20px}
@@ -2105,10 +2105,92 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
         <h2 class="section-title-h2"><i class="fas fa-users"></i> Registered Users</h2>
         <button class="btn btn-outline btn-sm" onclick="loadUsers()"><i class="fas fa-arrows-rotate"></i> Refresh</button>
       </div>
-      <div class="search-bar">
-        <input type="text" id="userSearch" placeholder="Search by name or email…" oninput="filterUsers()" class="log-search" style="width:100%">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('users','list')">All Users</button>
+        <button class="admin-tab" onclick="switchTab('users','referrals')">Referrals</button>
+        <button class="admin-tab" onclick="switchTab('users','cbtanalytics')">CBT Analytics</button>
       </div>
-      <div id="usersList"><div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Refresh to load users</div></div>
+      <div class="admin-panel active" id="users-tab-list">
+        <div class="search-bar">
+          <input type="text" id="userSearch" placeholder="Search by name or email…" oninput="filterUsers()" class="log-search" style="width:100%">
+        </div>
+        <div id="usersList"><div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">Click Refresh to load users</div></div>
+      </div>
+      <div class="admin-panel" id="users-tab-referrals">
+        <div class="stats-row" style="margin-top:16px">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#dbeafe;color:#1d4ed8"><i class="fas fa-users"></i></div>
+            <div><div class="stat-num" id="ref-totalusers">0</div><div class="stat-lbl">Total Users</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#dcfce7;color:#166534"><i class="fas fa-user-plus"></i></div>
+            <div><div class="stat-num" id="ref-withreferrals">0</div><div class="stat-lbl">Have Referred Someone</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#fef3c7;color:#92400e"><i class="fas fa-link"></i></div>
+            <div><div class="stat-num" id="ref-totalconnections">0</div><div class="stat-lbl">Total Referral Connections</div></div>
+          </div>
+        </div>
+        <div class="mini-chart-wrap" style="margin-bottom:16px">
+          <div class="mini-chart-title"><i class="fas fa-trophy"></i> Top Referrers</div>
+          <div class="bar-chart" id="chartTopReferrers"></div>
+        </div>
+        <div id="referralsList"></div>
+      </div>
+      <div class="admin-panel" id="users-tab-cbtanalytics">
+        <div class="stats-row" style="margin-top:16px">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#dbeafe;color:#1d4ed8"><i class="fas fa-user-graduate"></i></div>
+            <div><div class="stat-num" id="cbta-students">0</div><div class="stat-lbl">Students</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#dcfce7;color:#166534"><i class="fas fa-pen-to-square"></i></div>
+            <div><div class="stat-num" id="cbta-sessions">0</div><div class="stat-lbl">Sessions</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#fef3c7;color:#92400e"><i class="fas fa-bullseye"></i></div>
+            <div><div class="stat-num" id="cbta-avgscore">0%</div><div class="stat-lbl">Avg Best Score</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#fee2e2;color:#b91c1c"><i class="fas fa-fire"></i></div>
+            <div><div class="stat-num" id="cbta-streaks">0</div><div class="stat-lbl">Active Streaks</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#f3e8ff;color:#7c3aed"><i class="fas fa-award"></i></div>
+            <div><div class="stat-num" id="cbta-achievements">0</div><div class="stat-lbl">Achievements Earned</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#cffafe;color:#0e7490"><i class="fas fa-link"></i></div>
+            <div><div class="stat-num" id="cbta-referrals">0</div><div class="stat-lbl">Referrals</div></div>
+          </div>
+        </div>
+        <div class="charts-grid">
+          <div class="mini-chart-wrap">
+            <div class="mini-chart-title"><i class="fas fa-book"></i> Practice by Subject</div>
+            <div class="bar-chart" id="cbta-chart-subjects"></div>
+          </div>
+          <div class="mini-chart-wrap">
+            <div class="mini-chart-title"><i class="fas fa-chart-simple"></i> Score Distribution</div>
+            <div class="bar-chart" id="cbta-chart-scores"></div>
+          </div>
+          <div class="mini-chart-wrap">
+            <div class="mini-chart-title"><i class="fas fa-clock"></i> New Students — Last 7 Days</div>
+            <div class="bar-chart" id="cbta-chart-joins"></div>
+          </div>
+          <div class="mini-chart-wrap">
+            <div class="mini-chart-title"><i class="fas fa-trophy"></i> Top Achievements</div>
+            <div class="bar-chart" id="cbta-chart-ach"></div>
+          </div>
+        </div>
+        <div class="widget-card">
+          <div class="widget-hdr"><div class="widget-title"><i class="fas fa-ranking-star"></i> Leaderboard — Top 20 by Best Score</div></div>
+          <div id="cbta-leaderboard"></div>
+        </div>
+        <div class="widget-card">
+          <div class="widget-hdr"><div class="widget-title"><i class="fas fa-bolt"></i> Recently Active</div></div>
+          <div id="cbta-recent"></div>
+        </div>
+      </div>
     </div>
 
     <!-- ══ ADMISSION CHANCES CALCULATOR ══ -->
@@ -4591,7 +4673,7 @@ function switchTab(sec,tab){
     ticker:'section-ticker',pucbt:'section-postutmecbt',
     rev:'section-reviews',qa:'section-qa',cal:'section-calendar',
     polls:'section-polls',campusgist:'section-campusgist',cl:'section-campuslife',
-    adm:'section-admission'
+    adm:'section-admission',users:'section-users'
   };
   const secEl=document.getElementById(sMap[sec]);
   if(!secEl) return;
@@ -4614,6 +4696,15 @@ function switchTab(sec,tab){
     const pucbtPanel=document.getElementById('pucbt-tab-'+tab);
     if(pucbtPanel) pucbtPanel.classList.add('active');
     secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')||(i===2&&tab==='bulk')));
+    return;
+  }
+  if(sec==='users'){
+    secEl.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
+    const usersPanel=document.getElementById('users-tab-'+tab);
+    if(usersPanel) usersPanel.classList.add('active');
+    secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='referrals')||(i===2&&tab==='cbtanalytics')));
+    if(tab==='referrals') buildReferralsView();
+    if(tab==='cbtanalytics') buildCbtAnalyticsView();
     return;
   }
   secEl.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='list')||(i===1&&tab==='add')||(i===2&&tab==='settings')));
@@ -4786,7 +4877,7 @@ async function loadAnonMessages(){
           </button>
           <button class="editor-only" onclick="deleteAnonMsg('${m._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
-        <div style="font-size:.84rem;color:var(--text-main);line-height:1.65">${m.message||''}</div>
+        <div style="font-size:.84rem;color:var(--text);line-height:1.65">${m.message||''}</div>
       </div>`).join('');
   }catch(e){el.innerHTML='<div style="color:#ef4444;padding:16px">Error: '+e.message+'</div>';}
 }
@@ -8496,7 +8587,7 @@ async function loadCampusGist(){
           <button onclick="toggleGistPublished('${g._id}',${!g.published})" style="background:${g.published?'#dcfce7':'#fee2e2'};border:1px solid ${g.published?'#86efac':'#fca5a5'};color:${g.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${g.published?'<i class="fas fa-circle-check"></i> Published':'<i class="fas fa-pause"></i> Hidden'}</button>
           <button class="editor-only" onclick="deleteGistPost('${g._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
-        <div style="font-size:.84rem;color:var(--text-main);line-height:1.6">${(g.text||'').substring(0,200)}${(g.text||'').length>200?'…':''}</div>
+        <div style="font-size:.84rem;color:var(--text);line-height:1.6">${(g.text||'').substring(0,200)}${(g.text||'').length>200?'…':''}</div>
         ${(g.images||[]).length?`<div style="font-size:.7rem;color:var(--muted);margin-top:4px"><i class="fas fa-camera"></i> ${(g.images||[]).length} image(s)</div>`:''}
         ${g.videoUrl?`<div style="font-size:.7rem;color:var(--muted);margin-top:4px"><i class="fas fa-video"></i> Video attached</div>`:''}
       </div>`).join('');
@@ -8572,8 +8663,8 @@ async function loadPolls(){
           <button onclick="togglePollPublished('${p._id}',${!p.published})" style="background:${p.published?'#dcfce7':'#fee2e2'};border:1px solid ${p.published?'#86efac':'#fca5a5'};color:${p.published?'#15803d':'#b91c1c'};padding:3px 10px;border-radius:8px;font-size:.68rem;cursor:pointer;font-weight:700">${p.published?'<i class="fas fa-circle-check"></i> Published':'<i class="fas fa-pause"></i> Hidden'}</button>
           <button class="editor-only" onclick="deletePoll('${p._id}')" style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:3px 8px;border-radius:8px;font-size:.68rem;cursor:pointer"><i class="fas fa-trash"></i></button>
         </div>
-        <div style="font-family:'Montserrat',sans-serif;font-size:.84rem;font-weight:700;color:var(--text-main);margin-bottom:8px">${p.caption||p.question||''}</div>
-        ${opts.map((opt,i)=>{const v=votes[i]||0;const pct=Math.round((v/total)*100);return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:.78rem"><span style="flex:1;color:var(--text-main)">${opt}</span><span style="font-weight:700;color:var(--muted);min-width:40px;text-align:right">${v} (${pct}%)</span></div>`;}).join('')}
+        <div style="font-family:'Montserrat',sans-serif;font-size:.84rem;font-weight:700;color:var(--text);margin-bottom:8px">${p.caption||p.question||''}</div>
+        ${opts.map((opt,i)=>{const v=votes[i]||0;const pct=Math.round((v/total)*100);return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:.78rem"><span style="flex:1;color:var(--text)">${opt}</span><span style="font-weight:700;color:var(--muted);min-width:40px;text-align:right">${v} (${pct}%)</span></div>`;}).join('')}
         <div style="font-size:.68rem;color:var(--muted);margin-top:4px">Total votes: ${votes.reduce((a,b)=>a+(b||0),0)}</div>
       </div>`;
     }).join('');
@@ -8661,7 +8752,7 @@ function renderUsers(users){
     return`<div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
       <div style="width:36px;height:36px;border-radius:50%;background:hsl(${name.charCodeAt(0)*13%360},55%,35%);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.82rem;color:#fff;flex-shrink:0">${initials}</div>
       <div style="flex:1;min-width:0">
-        <div style="font-weight:700;font-size:.84rem;color:var(--text-main)">${name} ${u.gender?`<span style="font-size:.62rem;color:var(--muted)">(${u.gender})</span>`:''}</div>
+        <div style="font-weight:700;font-size:.84rem;color:var(--text)">${name} ${u.gender?`<span style="font-size:.62rem;color:var(--muted)">(${u.gender})</span>`:''}</div>
         <div style="font-size:.7rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.email||'—'}</div>
       </div>
       <div style="text-align:right;flex-shrink:0;font-size:.68rem;color:var(--muted)">
@@ -8672,6 +8763,164 @@ function renderUsers(users){
     </div>`;
   }).join('');
 }
+
+// Reuses the same allUsersData already fetched by loadUsers() — no new
+// Firestore read. Triggers that load first if the admin opens Referrals
+// before ever visiting All Users. Fields (referralCode/referralCount/
+// referredBy) mirror what the student-facing CBT app already writes to
+// each cbt_users document.
+async function buildReferralsView(){
+  if(!allUsersData.length) await loadUsers();
+  const withReferrals=allUsersData.filter(u=>(u.referralCount||0)>0);
+  const totalConnections=allUsersData.reduce((sum,u)=>sum+(u.referralCount||0),0);
+  document.getElementById('ref-totalusers').textContent=allUsersData.length;
+  document.getElementById('ref-withreferrals').textContent=withReferrals.length;
+  document.getElementById('ref-totalconnections').textContent=totalConnections;
+
+  const top=withReferrals.slice().sort((a,b)=>(b.referralCount||0)-(a.referralCount||0)).slice(0,8);
+  const maxCount=Math.max(...top.map(u=>u.referralCount||0),1);
+  const chartEl=document.getElementById('chartTopReferrers');
+  chartEl.innerHTML=top.length?top.map(u=>{
+    const name=u.displayName||u.nickname||u.email||'Unknown';
+    return `<div class="bar-row">
+      <div class="bar-lbl" title="${admEsc(name)}">${admEsc(name)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${((u.referralCount||0)/maxCount*100).toFixed(1)}%;background:#7c3aed"></div></div>
+      <div class="bar-val">${u.referralCount||0}</div>
+    </div>`;
+  }).join('') : '<div class="bar-chart-empty">No referrals recorded yet.</div>';
+
+  const listEl=document.getElementById('referralsList');
+  if(!top.length){ listEl.innerHTML=''; return; }
+  listEl.innerHTML=`<div style="font-size:.72rem;color:var(--muted);padding:4px 4px 10px">Top referrer${top.length===1?'':'s'} by connections</div>`+
+    top.map(u=>{
+      const name=u.displayName||u.nickname||'—';
+      const initials=(name[0]||'?').toUpperCase();
+      return `<div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+        <div style="width:36px;height:36px;border-radius:50%;background:hsl(${name.charCodeAt(0)*13%360},55%,35%);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.82rem;color:#fff;flex-shrink:0">${initials}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:.84rem;color:var(--text)">${admEsc(name)}</div>
+          <div style="font-size:.7rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${admEsc(u.email||'—')}${u.referralCode?` · code: ${admEsc(u.referralCode)}`:''}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;font-size:.78rem;font-weight:700;color:#7c3aed">${u.referralCount||0} <span style="font-weight:400;color:var(--muted);font-size:.65rem">referred</span></div>
+      </div>`;
+    }).join('');
+}
+window.buildReferralsView=buildReferralsView;
+
+// Same reused allUsersData as Referrals above — one shared fetch across
+// all three Users tabs. This is the one view that touches real academic
+// performance data (scores, sessions, achievements), not just names/
+// emails, so it's worth being explicit: nothing here is a NEW read or a
+// new field being pulled from Firestore — cbt_users already included all
+// of this, it just wasn't presented anywhere before.
+async function buildCbtAnalyticsView(){
+  if(!allUsersData.length) await loadUsers();
+  const students=allUsersData;
+  const total=students.length;
+  const totalSessions=students.reduce((s,u)=>s+(u.sessions||0),0);
+  const avgBest=total?Math.round(students.reduce((s,u)=>s+(u.bestScore||0),0)/total):0;
+  const activeStreaks=students.filter(u=>(u.streak||0)>=2).length;
+  const totalAch=students.reduce((s,u)=>s+(u.achievements||[]).length,0);
+  const totalRefs=students.reduce((s,u)=>s+(u.referralCount||0),0);
+  document.getElementById('cbta-students').textContent=total;
+  document.getElementById('cbta-sessions').textContent=totalSessions;
+  document.getElementById('cbta-avgscore').textContent=avgBest+'%';
+  document.getElementById('cbta-streaks').textContent=activeStreaks;
+  document.getElementById('cbta-achievements').textContent=totalAch;
+  document.getElementById('cbta-referrals').textContent=totalRefs;
+
+  const barRow=(label,value,max,color)=>`
+    <div class="bar-row">
+      <div class="bar-lbl" title="${admEsc(label)}">${admEsc(label)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${max>0?(value/max*100).toFixed(1):0}%;background:${color}"></div></div>
+      <div class="bar-val">${value}</div>
+    </div>`;
+
+  // Practice by subject
+  const subjCount={};
+  students.forEach(u=>{
+    Object.keys(u.subjectHistory||{}).forEach(s=>{subjCount[s]=(subjCount[s]||0)+(u.subjectHistory[s].sessions||0);});
+  });
+  const SLABELS={english:'English',maths:'Maths',physics:'Physics',chemistry:'Chemistry',biology:'Biology',economics:'Economics',gov:'Government',literature:'Literature',geography:'Geography',agric:'Agriculture',crk:'CRK',accounts:'Accounting'};
+  const subjEntries=Object.entries(subjCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxSubj=Math.max(...subjEntries.map(e=>e[1]),1);
+  document.getElementById('cbta-chart-subjects').innerHTML=subjEntries.length
+    ? subjEntries.map(([k,v])=>barRow(SLABELS[k]||k,v,maxSubj,'#2563eb')).join('') : '<div class="bar-chart-empty">No data yet.</div>';
+
+  // Score distribution
+  const bands={'0\u201320':0,'21\u201340':0,'41\u201360':0,'61\u201380':0,'81\u2013100':0};
+  students.forEach(u=>{
+    const s=u.bestScore||0;
+    if(s<=20) bands['0\u201320']++; else if(s<=40) bands['21\u201340']++; else if(s<=60) bands['41\u201360']++;
+    else if(s<=80) bands['61\u201380']++; else bands['81\u2013100']++;
+  });
+  const bandColors={'0\u201320':'#ef4444','21\u201340':'#f97316','41\u201360':'#f59e0b','61\u201380':'#3b82f6','81\u2013100':'#10b981'};
+  const maxBand=Math.max(...Object.values(bands),1);
+  document.getElementById('cbta-chart-scores').innerHTML=Object.entries(bands).map(([k,v])=>barRow(k+'%',v,maxBand,bandColors[k])).join('');
+
+  // New students, last 7 days
+  const joinsByDay={};
+  for(let i=6;i>=0;i--){
+    const d=new Date(Date.now()-i*86400000);
+    const key=d.toISOString().substring(0,10);
+    const label=i===0?'Today':i===1?'Yesterday':d.toLocaleDateString('en-NG',{weekday:'short'});
+    joinsByDay[key]={label,count:0};
+  }
+  students.forEach(u=>{
+    if(u.joinDate){const day=String(u.joinDate).substring(0,10);if(joinsByDay[day]) joinsByDay[day].count++;}
+  });
+  const maxJoin=Math.max(...Object.values(joinsByDay).map(x=>x.count),1);
+  document.getElementById('cbta-chart-joins').innerHTML=Object.values(joinsByDay).map(({label,count})=>barRow(label,count,maxJoin,'#16a34a')).join('');
+
+  // Top achievements
+  const achCount={};
+  const ACH_NAMES={first_session:'First Step',score_80:'Star Performer',score_100:'Perfect Score',sessions_5:'On Fire',sessions_10:'Dedicated',sessions_25:'JAMB Champion',streak_3:'3-Day Streak',streak_7:'Weekly Warrior',referral_1:'Team Player',referral_5:'Ambassador',multi_subj:'All-Rounder',night_owl:'Night Owl'};
+  students.forEach(u=>(u.achievements||[]).forEach(a=>{achCount[a]=(achCount[a]||0)+1;}));
+  const achEntries=Object.entries(achCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxAch=Math.max(...achEntries.map(e=>e[1]),1);
+  document.getElementById('cbta-chart-ach').innerHTML=achEntries.length
+    ? achEntries.map(([k,v])=>barRow(ACH_NAMES[k]||k,v,maxAch,'#f59e0b')).join('') : '<div class="bar-chart-empty">No achievements yet.</div>';
+
+  // Leaderboard — top 20 by best score (div-rows, matching this app's
+  // established list style rather than an HTML <table>)
+  const top=students.slice().sort((a,b)=>(b.bestScore||0)-(a.bestScore||0)).slice(0,20);
+  const medal=i=>i<3?'<i class="fas fa-medal" style="color:'+['#eab308','#94a3b8','#b45309'][i]+'"></i>':'#'+(i+1);
+  document.getElementById('cbta-leaderboard').innerHTML=top.length
+    ? top.map((u,i)=>{
+        const scoreColor=(u.bestScore||0)>=80?'#10b981':(u.bestScore||0)>=60?'#3b82f6':'#f59e0b';
+        const name=u.nickname||u.displayName||'Student';
+        return `<div style="display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--border)">
+          <div style="width:26px;text-align:center;font-weight:800;font-size:.8rem;flex-shrink:0">${medal(i)}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.8rem;font-weight:700;color:var(--text)">${admEsc(name)}</div>
+            <div style="font-size:.64rem;color:var(--muted)">${admEsc(u.email||'\u2014')} \u00b7 ${u.sessions||0} sessions \u00b7 ${u.streak||0}\u{1F525} \u00b7 ${u.referralCount||0} referred</div>
+          </div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:.95rem;font-weight:800;color:${scoreColor};flex-shrink:0">${u.bestScore||0}%</div>
+        </div>`;
+      }).join('')
+    : '<div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">No students yet.</div>';
+
+  // Recently active — top 10 by last practice date
+  const recent=students.filter(u=>u.lastPracticeDate).sort((a,b)=>new Date(b.lastPracticeDate)-new Date(a.lastPracticeDate)).slice(0,10);
+  document.getElementById('cbta-recent').innerHTML=recent.length
+    ? recent.map(u=>{
+        const scoreColor=(u.bestScore||0)>=80?'#10b981':(u.bestScore||0)>=60?'#3b82f6':'#f59e0b';
+        const name=u.nickname||u.displayName||'Student';
+        const initial=(name[0]||'S').toUpperCase();
+        return `<div style="display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--border)">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1a3fa8,#3b62d4);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;color:#fff;font-weight:800">${admEsc(initial)}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.8rem;font-weight:700;color:var(--text)">${admEsc(name)}</div>
+            <div style="font-size:.64rem;color:var(--muted)">${admEsc(u.email||'')} \u00b7 ${u.sessions||0} sessions \u00b7 ${u.streak||0}\u{1F525} streak</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:800;color:${scoreColor}">${u.bestScore||0}%</div>
+          </div>
+        </div>`;
+      }).join('')
+    : '<div style="text-align:center;padding:32px;color:var(--muted);font-size:.82rem">No recent activity.</div>';
+}
+window.buildCbtAnalyticsView=buildCbtAnalyticsView;
 
 </script>
 </body>
