@@ -46,6 +46,8 @@ body.dark .stat-card{background:#1e293b;border-color:#334155}
   background:url('https://bigquamsmedia.com.ng/bigquamsmedia-admin/admin.png') center/cover no-repeat;
 }
 @media(min-width:960px){.login-brand{display:block}}
+.login-brand-logo{position:absolute;top:24px;left:24px;width:48px;height:48px;border-radius:12px;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px}
+.login-brand-logo img{width:100%;height:100%;object-fit:contain}
 .login-panel{position:relative;flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px;min-height:100vh;background:var(--card)}
 .login-card{background:var(--card);border-radius:18px;padding:32px 24px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.35);border:1.5px solid var(--border);position:relative;z-index:1;animation:loginIn .35s cubic-bezier(.34,1.2,.64,1)}
 @keyframes loginIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -88,9 +90,9 @@ body.dark .admin-badge-name{color:#93c5fd}
 .pin-hint{font-size:.68rem;color:var(--muted);margin-top:4px;line-height:1.5}
 .back-btn{background:none;border:none;color:var(--muted);font-size:.78rem;cursor:pointer;display:flex;align-items:center;gap:4px;margin-bottom:16px;padding:0;font-family:'Roboto',sans-serif}
 .back-btn:hover{color:var(--blue)}
-.login-logo{width:56px;height:56px;border-radius:14px;margin:0 auto 18px;overflow:hidden;border:1.5px solid var(--border)}
+.login-logo{width:84px;height:84px;border-radius:16px;margin:0 auto 18px;overflow:hidden;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;background:var(--card)}
 @media(min-width:960px){.login-logo{margin:0 0 18px}}
-.login-logo img{width:100%;height:100%;object-fit:cover}
+.login-logo img{width:100%;height:100%;object-fit:contain}
 .login-title{font-family:'Montserrat',sans-serif;font-size:1.3rem;font-weight:800;color:var(--blue-dk);margin-bottom:4px;text-align:center}
 body.dark .login-title{color:#bfdbfe}
 @media(min-width:960px){.login-title{text-align:left}}
@@ -660,7 +662,9 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 
 <!-- ══════════════ LOGIN ══════════════ -->
 <div id="loginScreen">
-  <div class="login-brand"></div>
+  <div class="login-brand">
+    <div class="login-brand-logo"><img src="https://bigquamsmedia.com.ng/logo.png" alt="BQM Logo"></div>
+  </div>
   <div class="login-panel">
   <div class="login-card">
     <div class="login-logo"><img src="https://bigquamsmedia.com.ng/logo.png" alt="BQM Logo"></div>
@@ -690,39 +694,39 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="login-divider">or continue with email</div>
 
       <!-- SIGN IN FORM -->
-      <div id="signinForm">
+      <form id="signinForm" autocomplete="on" onsubmit="event.preventDefault();signInWithEmail();return false;">
         <label class="login-field-label" for="authEmail">Email address</label>
-        <input class="login-input" type="email" id="authEmail" placeholder="you@example.com" autocomplete="email" onkeydown="if(event.key==='Enter') document.getElementById('authPassword').focus()">
+        <input class="login-input" type="email" id="authEmail" name="email" placeholder="you@example.com" autocomplete="username" required onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('authPassword').focus();}">
         <label class="login-field-label" for="authPassword">Password</label>
         <div class="pw-field-wrap">
-          <input class="login-input" type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') signInWithEmail()">
+          <input class="login-input" type="password" id="authPassword" name="password" placeholder="••••••••" autocomplete="current-password" required>
           <button type="button" class="pw-toggle" onclick="togglePwVisibility('authPassword',this)" aria-label="Show password"><i class="fas fa-eye"></i></button>
         </div>
-        <button class="login-btn" onclick="signInWithEmail()">Sign In <i class="fas fa-arrow-right"></i></button>
-        <button style="width:100%;background:none;border:none;color:var(--blue);font-size:.76rem;font-weight:700;margin-top:10px;cursor:pointer;padding:4px" onclick="forgotPassword()">Forgot password?</button>
-      </div>
+        <button type="submit" class="login-btn">Sign In <i class="fas fa-arrow-right"></i></button>
+        <button type="button" style="width:100%;background:none;border:none;color:var(--blue);font-size:.76rem;font-weight:700;margin-top:10px;cursor:pointer;padding:4px" onclick="forgotPassword()">Forgot password?</button>
+      </form>
 
       <!-- REGISTER FORM -->
-      <div id="registerForm" style="display:none">
+      <form id="registerForm" style="display:none" autocomplete="on" onsubmit="event.preventDefault();createAccount();return false;">
         <label class="login-field-label" for="regName">Full Name</label>
-        <input class="login-input" type="text" id="regName" placeholder="e.g. Abdulraheem" autocomplete="name">
+        <input class="login-input" type="text" id="regName" name="name" placeholder="e.g. Abdulraheem" autocomplete="name">
         <label class="login-field-label" for="regNickname">Your Tag / Nickname <span style="color:#dc2626">*</span></label>
         <input class="login-input" type="text" id="regNickname" placeholder="e.g. QuamsJr, TechAdmin, NewsGuru…" maxlength="24" autocomplete="off">
         <div style="font-size:.68rem;color:#64748b;margin:-8px 0 10px;padding:0 2px">This tag will appear on every article you publish e.g. "Posted by QuamsJr"</div>
         <label class="login-field-label" for="regEmail">Email address</label>
-        <input class="login-input" type="email" id="regEmail" placeholder="you@example.com" autocomplete="email">
+        <input class="login-input" type="email" id="regEmail" name="email" placeholder="you@example.com" autocomplete="username">
         <label class="login-field-label" for="regPassword">Password</label>
         <div class="pw-field-wrap">
-          <input class="login-input" type="password" id="regPassword" placeholder="Min 6 characters" autocomplete="new-password">
+          <input class="login-input" type="password" id="regPassword" name="new-password" placeholder="Min 6 characters" autocomplete="new-password">
           <button type="button" class="pw-toggle" onclick="togglePwVisibility('regPassword',this)" aria-label="Show password"><i class="fas fa-eye"></i></button>
         </div>
         <label class="login-field-label" for="regConfirm">Confirm Password</label>
         <div class="pw-field-wrap">
-          <input class="login-input" type="password" id="regConfirm" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter') createAccount()">
+          <input class="login-input" type="password" id="regConfirm" placeholder="Repeat password" autocomplete="new-password">
           <button type="button" class="pw-toggle" onclick="togglePwVisibility('regConfirm',this)" aria-label="Show password"><i class="fas fa-eye"></i></button>
         </div>
-        <button class="login-btn" onclick="createAccount()">Create Account <i class="fas fa-arrow-right"></i></button>
-      </div>
+        <button type="submit" class="login-btn">Create Account <i class="fas fa-arrow-right"></i></button>
+      </form>
     </div>
 
     <!-- STEP 2: Team Access PIN -->
