@@ -40,38 +40,13 @@ body.dark .section-title-h2{color:#bfdbfe}
 body.dark .stat-card{background:#1e293b;border-color:#334155}
 
 /* ─── LOGIN ─── */
-#loginScreen{min-height:100vh;display:flex;overflow:auto;position:relative;
+#loginScreen{min-height:100vh;display:flex;overflow:auto;position:relative;background:var(--card)}
+.login-brand{
+  display:none;position:relative;width:50%;flex-shrink:0;
   background:url('https://bigquamsmedia.com.ng/bigquamsmedia-admin/admin.png') center/cover no-repeat;
 }
-/* Dark/brand overlay — keeps the login card and brand text readable over
-   the photo without hiding it entirely. Reuses the same brand color stops
-   the panel used before, just as a translucent tint over the image now. */
-#loginScreen::before{
-  content:'';position:absolute;inset:0;z-index:0;
-  background:linear-gradient(155deg,rgba(8,15,32,.90) 0%,rgba(16,40,128,.84) 45%,rgba(26,63,168,.80) 100%);
-}
-.login-brand{
-  display:none;position:relative;z-index:1;width:45%;min-width:420px;flex-shrink:0;
-  color:#fff;padding:56px 48px;flex-direction:column;overflow:hidden;
-}
-@media(min-width:960px){.login-brand{display:flex}}
-.login-brand::before{
-  content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;
-  background-image:
-    radial-gradient(circle at 15% 12%,rgba(255,255,255,.08) 0%,transparent 40%),
-    radial-gradient(circle at 85% 88%,rgba(249,115,22,.10) 0%,transparent 45%),
-    repeating-linear-gradient(115deg,rgba(255,255,255,.025) 0px,rgba(255,255,255,.025) 1px,transparent 1px,transparent 64px);
-}
-.login-brand-top{position:relative;z-index:1;display:flex;align-items:center;gap:10px}
-.login-brand-top img{width:34px;height:34px;border-radius:8px;object-fit:cover}
-.login-brand-top span{font-family:'Montserrat',sans-serif;font-weight:800;font-size:.86rem;letter-spacing:.6px}
-.login-brand-mid{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:center;max-width:400px}
-.login-brand-mid h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:2.1rem;line-height:1.25;margin-bottom:18px;letter-spacing:-.5px}
-.login-brand-mid p{font-size:.92rem;line-height:1.6;color:rgba(255,255,255,.72);max-width:340px}
-.login-brand-bottom{position:relative;z-index:1;display:flex;align-items:center;gap:8px;font-size:.78rem;color:rgba(255,255,255,.65);font-weight:600}
-.login-brand-bottom .dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.22)}
-
-.login-panel{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px;min-height:100vh}
+@media(min-width:960px){.login-brand{display:block}}
+.login-panel{position:relative;flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px;min-height:100vh;background:var(--card)}
 .login-card{background:var(--card);border-radius:18px;padding:32px 24px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.35);border:1.5px solid var(--border);position:relative;z-index:1;animation:loginIn .35s cubic-bezier(.34,1.2,.64,1)}
 @keyframes loginIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.login-card{animation:none}}
@@ -685,17 +660,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 
 <!-- ══════════════ LOGIN ══════════════ -->
 <div id="loginScreen">
-  <div class="login-brand">
-    <div class="login-brand-top">
-      <img src="https://bigquamsmedia.com.ng/logo.png" alt="BQM Logo">
-      <span>BIG QUAMS MEDIA®</span>
-    </div>
-    <div class="login-brand-mid">
-      <h1>Your platform.<br>Your operations.<br>One control centre.</h1>
-      <p>Manage your content, operations and platform performance from one secure workspace.</p>
-    </div>
-    <div class="login-brand-bottom"><span class="dot"></span> Secure workspace</div>
-  </div>
+  <div class="login-brand"></div>
   <div class="login-panel">
   <div class="login-card">
     <div class="login-logo"><img src="https://bigquamsmedia.com.ng/logo.png" alt="BQM Logo"></div>
