@@ -297,6 +297,20 @@ body.dark .skeleton{background:linear-gradient(90deg,#2a3550 25%,#1a2236 50%,#2a
 .form-row-3{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px}
 @media(min-width:600px){.form-row-3{grid-template-columns:1fr 1fr 1fr}}
 .form-group{margin-bottom:12px}
+/* Grouped sections for the article form — replaces one long flat stack of
+   fields with clearly separated, labeled blocks. Purely visual grouping;
+   every field inside keeps its existing id/behavior unchanged. */
+.form-section{background:var(--light);border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px}
+body.dark .form-section{background:#0f172a}
+.form-section-hdr{display:flex;align-items:center;gap:8px;font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:800;color:var(--blue-dk);margin-bottom:14px}
+.form-section-hdr i{color:var(--blue);width:18px;text-align:center}
+.form-section:last-of-type{margin-bottom:0}
+/* Library-picker button, promoted from a small secondary link to a
+   properly prominent full-width action — this is the button behind the
+   "picking image from library isn't easy" feedback. */
+.library-pick-btn{width:100%;margin-top:10px;padding:12px;border-radius:9px;border:1.5px solid var(--blue);background:var(--blue-lt);color:var(--blue-dk);font-size:.85rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;min-height:var(--touch)}
+.library-pick-btn:hover{background:var(--blue);color:#fff}
+.media-or-divider{text-align:center;font-size:.68rem;font-weight:700;color:var(--muted);margin:8px 0;text-transform:uppercase;letter-spacing:.5px}
 .form-group label{display:block;font-size:0.7rem;font-weight:700;color:#374151;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
 body.dark .form-group label{color:#94a3b8}
 .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:1rem;font-family:'Roboto',sans-serif;color:var(--text);background:var(--card);transition:.2s;-webkit-appearance:none;appearance:none;min-height:var(--touch)}
@@ -1073,43 +1087,54 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
               <ul><li>Always use descriptive anchor text rather than a raw URL — e.g. "Read the full admission requirements" instead of pasting the link directly.</li></ul>
             </div>
           </details>
-          <div class="form-row">
-            <div class="form-group"><label>Headline *</label><input type="text" class="headline-input" id="addTitle" placeholder="e.g. WAEC Announces New Guidelines for 2026 Examination" oninput="updateNewsPreview('add')"></div>
-            <div class="form-group"><label>Category *</label>
-              <select id="addCategory" onchange="updateNewsPreview('add')"><option value="">— Select —</option><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>Published Date</label><input type="text" id="addDate" onchange="updateNewsPreview('add')"></div>
-            <div class="form-group"><label>Updated Date <span style="text-transform:none;font-weight:400">(optional)</span></label><input type="text" id="addUpdatedDate" placeholder="Leave blank if not updated" onchange="updateNewsPreview('add')"></div>
-          </div>
-          <div class="form-group">
-            <label>Featured Image <span style="text-transform:none;font-weight:400">(shown on the article page &amp; Newsroom cards)</span></label>
-            <div class="img-upload-box" onclick="document.getElementById('addImageFile').click()">
-              <input type="file" id="addImageFile" accept="image/*" onchange="previewImg(this,'addImgPreview','addImgClear','addImageB64');updateNewsPreview('add')">
-              <div class="upload-label"><span><i class="fas fa-image"></i></span>Tap to upload image</div>
-            </div>
-            <img id="addImgPreview" class="img-preview" alt="preview">
-            <span id="addImgClear" class="img-clear" onclick="clearImg('addImageFile','addImgPreview','addImgClear','addImageB64');updateNewsPreview('add')"><i class="fas fa-xmark"></i> Remove image</span>
-            <input type="hidden" id="addImageB64">
-            <button type="button" class="btn btn-outline btn-sm" style="margin-top:8px" onclick="openImageLibraryPicker('addImageB64','addImgPreview','addImgClear','add')"><i class="fas fa-photo-film"></i> Choose from Image Library</button>
-          </div>
-          <div class="form-group">
-            <label>Link Preview Image <span style="text-transform:none;font-weight:400">(what shows when the article link is shared on WhatsApp, Facebook, X)</span></label>
-            <label class="preview-toggle-row"><input type="checkbox" id="addUseFeaturedAsPreview" checked onchange="onUseFeaturedPreviewToggle('add');updateNewsPreview('add')"> Use featured image as link preview</label>
-            <div id="addPreviewImgFields" style="display:none">
-              <div class="img-upload-box" onclick="document.getElementById('addPreviewImageFile').click()">
-                <input type="file" id="addPreviewImageFile" accept="image/*" onchange="previewImg(this,'addPreviewImgPreview','addPreviewImgClear','addPreviewImageB64');updateNewsPreview('add')">
-                <div class="upload-label"><span><i class="fas fa-image"></i></span>Choose Preview Image</div>
+          <div class="form-section">
+            <div class="form-section-hdr"><i class="fas fa-heading"></i> Article Details</div>
+            <div class="form-row">
+              <div class="form-group"><label>Headline *</label><input type="text" class="headline-input" id="addTitle" placeholder="e.g. WAEC Announces New Guidelines for 2026 Examination" oninput="updateNewsPreview('add')"></div>
+              <div class="form-group"><label>Category *</label>
+                <select id="addCategory" onchange="updateNewsPreview('add')"><option value="">— Select —</option><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select>
               </div>
-              <img id="addPreviewImgPreview" class="img-preview" alt="preview">
-              <span id="addPreviewImgClear" class="img-clear" onclick="clearImg('addPreviewImageFile','addPreviewImgPreview','addPreviewImgClear','addPreviewImageB64');updateNewsPreview('add')"><i class="fas fa-xmark"></i> Remove image</span>
-              <input type="hidden" id="addPreviewImageB64">
-              <button type="button" class="btn btn-outline btn-sm" style="margin-top:8px" onclick="openImageLibraryPicker('addPreviewImageB64','addPreviewImgPreview','addPreviewImgClear','add')"><i class="fas fa-photo-film"></i> Choose from Image Library</button>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Published Date</label><input type="text" id="addDate" onchange="updateNewsPreview('add')"></div>
+              <div class="form-group"><label>Updated Date <span style="text-transform:none;font-weight:400">(optional)</span></label><input type="text" id="addUpdatedDate" placeholder="Leave blank if not updated" onchange="updateNewsPreview('add')"></div>
             </div>
           </div>
-          <div class="form-group">
-            <label>Full Article Content *</label>
+
+          <div class="form-section">
+            <div class="form-section-hdr"><i class="fas fa-images"></i> Media</div>
+            <div class="form-group">
+              <label>Featured Image <span style="text-transform:none;font-weight:400">(shown on the article page &amp; Newsroom cards)</span></label>
+              <div class="img-upload-box" onclick="document.getElementById('addImageFile').click()">
+                <input type="file" id="addImageFile" accept="image/*" onchange="previewImg(this,'addImgPreview','addImgClear','addImageB64');updateNewsPreview('add')">
+                <div class="upload-label"><span><i class="fas fa-image"></i></span>Tap to upload image</div>
+              </div>
+              <img id="addImgPreview" class="img-preview" alt="preview">
+              <span id="addImgClear" class="img-clear" onclick="clearImg('addImageFile','addImgPreview','addImgClear','addImageB64');updateNewsPreview('add')"><i class="fas fa-xmark"></i> Remove image</span>
+              <input type="hidden" id="addImageB64">
+              <div class="media-or-divider">or</div>
+              <button type="button" class="library-pick-btn" onclick="openImageLibraryPicker('addImageB64','addImgPreview','addImgClear','add')"><i class="fas fa-photo-film"></i> Choose from Image Library</button>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Link Preview Image <span style="text-transform:none;font-weight:400">(what shows when the article link is shared on WhatsApp, Facebook, X)</span></label>
+              <label class="preview-toggle-row"><input type="checkbox" id="addUseFeaturedAsPreview" checked onchange="onUseFeaturedPreviewToggle('add');updateNewsPreview('add')"> Use featured image as link preview</label>
+              <div id="addPreviewImgFields" style="display:none">
+                <div class="img-upload-box" onclick="document.getElementById('addPreviewImageFile').click()">
+                  <input type="file" id="addPreviewImageFile" accept="image/*" onchange="previewImg(this,'addPreviewImgPreview','addPreviewImgClear','addPreviewImageB64');updateNewsPreview('add')">
+                  <div class="upload-label"><span><i class="fas fa-image"></i></span>Choose Preview Image</div>
+                </div>
+                <img id="addPreviewImgPreview" class="img-preview" alt="preview">
+                <span id="addPreviewImgClear" class="img-clear" onclick="clearImg('addPreviewImageFile','addPreviewImgPreview','addPreviewImgClear','addPreviewImageB64');updateNewsPreview('add')"><i class="fas fa-xmark"></i> Remove image</span>
+                <input type="hidden" id="addPreviewImageB64">
+                <div class="media-or-divider">or</div>
+                <button type="button" class="library-pick-btn" onclick="openImageLibraryPicker('addPreviewImageB64','addPreviewImgPreview','addPreviewImgClear','add')"><i class="fas fa-photo-film"></i> Choose from Image Library</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-hdr"><i class="fas fa-pen-nib"></i> Content</div>
+            <div class="form-group" style="margin-bottom:0">
             <div class="editor-wrap" id="addEditorWrap">
               <div class="editor-toolbar">
                 <button type="button" class="editor-tbtn" onclick="editorUndo('addFullContent')" title="Undo"><i class="fas fa-rotate-left"></i> Undo</button>
@@ -1151,19 +1176,25 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
               </div>
             </div>
             <div class="editor-hint">Use <code>*text*</code> for <b>bold</b>, <code>_text_</code> for <i>italic</i>, <code>~text~</code> for <s>strikethrough</s>, <code>`text`</code> for monospace, <code>## </code> for a heading, <code>&gt; </code> for a pull-quote, <code>- </code> / <code>1. </code> for lists. Converted into clean web formatting — never a WhatsApp look on the published page.</div>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>Pin to Top?</label><select id="addPinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top (replaces the current pin, if any)</option></select></div>
-            <div class="form-group"><label>Author</label>
-              <select id="addAuthorSelect" onchange="onAuthorSelectChange('add')"><option value="__custom__">Type a name…</option></select>
-              <input type="text" id="addAuthor" value="BIG QUAMS MEDIA" placeholder="Author name" onchange="updateNewsPreview('add')" style="margin-top:6px">
             </div>
           </div>
-          <div class="form-group">
-            <label>Tags <span style="text-transform:none;font-weight:400">(optional — a few relevant keywords, not every word)</span></label>
-            <input type="text" id="addTags" placeholder="e.g. JAMB, UTME 2026, Admission, Universities" onchange="updateNewsPreview('add')">
-            <div class="form-hint">Comma-separated. Keep to 3–6 focused tags — used to surface related articles, not for stuffing keywords.</div>
+
+          <div class="form-section">
+            <div class="form-section-hdr"><i class="fas fa-rocket"></i> Publishing</div>
+            <div class="form-row">
+              <div class="form-group"><label>Pin to Top?</label><select id="addPinned"><option value="false">No — normal article</option><option value="true">Yes — pin to top (replaces the current pin, if any)</option></select></div>
+              <div class="form-group"><label>Author</label>
+                <select id="addAuthorSelect" onchange="onAuthorSelectChange('add')"><option value="__custom__">Type a name…</option></select>
+                <input type="text" id="addAuthor" value="BIG QUAMS MEDIA" placeholder="Author name" onchange="updateNewsPreview('add')" style="margin-top:6px">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Tags <span style="text-transform:none;font-weight:400">(optional — a few relevant keywords, not every word)</span></label>
+              <input type="text" id="addTags" placeholder="e.g. JAMB, UTME 2026, Admission, Universities" onchange="updateNewsPreview('add')">
+              <div class="form-hint">Comma-separated. Keep to 3–6 focused tags — used to surface related articles, not for stuffing keywords.</div>
+            </div>
           </div>
+
           <details class="rules-card">
             <summary><i class="fas fa-magnifying-glass-chart"></i> SEO &amp; Link Settings <span style="font-weight:400;text-transform:none">(optional — sensible defaults are generated automatically)</span></summary>
             <div class="rules-card-body">
@@ -4950,12 +4981,19 @@ function formatArticleBody(raw){
   const isValidUrl=u=>{try{const p=new URL(u);return p.protocol==='http:'||p.protocol==='https:';}catch(e){return false;}};
   const inline=line=>{
     let t=esc(line);
-    t=t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,(m,txt,url)=>isValidUrl(url)?`<a href="${url}" target="_blank" rel="noopener">${txt}</a>`:m);
-    t=t.replace(/(https?:\/\/[^\s<>"']+)/g,u=>u.match(/^<a /)||!isValidUrl(u)?u:`<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
+    const linkPlaceholders=[];
+    t=t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,(m,txt,url)=>{
+      if(!isValidUrl(url)) return m;
+      const token='\u0000LINK'+linkPlaceholders.length+'\u0000';
+      linkPlaceholders.push(`<a href="${url}" target="_blank" rel="noopener">${txt}</a>`);
+      return token;
+    });
+    t=t.replace(/(https?:\/\/[^\s<>"']+)/g,u=>!isValidUrl(u)?u:`<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
     t=t.replace(/`([^`\n]+)`/g,'<code>$1</code>');
     t=t.replace(/\*([^\*\n]+)\*/g,'<strong>$1</strong>');
     t=t.replace(/_([^_\n]+)_/g,'<em>$1</em>');
     t=t.replace(/~([^~\n]+)~/g,'<s>$1</s>');
+    linkPlaceholders.forEach((html,i)=>{ t=t.replace('\u0000LINK'+i+'\u0000',html); });
     return t;
   };
   const isTableRow=l=>/^\|.*\|$/.test(l.trim());
@@ -6073,7 +6111,15 @@ window._imageLibrary=[];
 async function loadImageLibrary(){
   const grid=document.getElementById('ilGrid');
   try{
-    if(!window.db||!window.getDocs||!window.collection) return;
+    if(!window.db||!window.getDocs||!window.collection){
+      // Previously returned here with no message at all — a picker that
+      // silently shows nothing looks identical to an empty library, which
+      // is exactly the "picking from library doesn't work" symptom. Now
+      // it says so explicitly instead of failing invisibly.
+      console.warn('Image library: Firebase not ready yet (window.db/getDocs/collection missing).');
+      if(grid) grid.innerHTML='<div class="imglib-empty">Still loading — try again in a moment.</div>';
+      return;
+    }
     const snap=await window.getDocs(window.collection(window.db,'fs_image_library'));
     window._imageLibrary=snap.docs.map(d=>({_id:d.id,...d.data()}));
     const cnt=document.getElementById('ilCount');
@@ -6098,7 +6144,15 @@ function renderImageLibraryGrid(pickMode){
   if(!grid) return;
   const q=(document.getElementById(searchId)?.value||'').trim().toLowerCase();
   const cat=document.getElementById(filterId)?.value||'';
-  const items=window._imageLibrary.filter(img=>
+  // window._imageLibrary can genuinely be undefined here — e.g. the very
+  // first time the picker opens before the main Image Library tab has
+  // ever loaded it once. Previously this threw an uncaught TypeError
+  // (undefined.filter is not a function) with nothing shown to the user:
+  // the modal just opened and stayed blank, which is exactly the
+  // "picking from library doesn't work" symptom. Defaulting to [] here
+  // means it now shows a proper "No images found" message instead of
+  // silently crashing.
+  const items=(window._imageLibrary||[]).filter(img=>
     (!q||(img.name||'').toLowerCase().includes(q)) &&
     (!cat||img.category===cat)
   );
