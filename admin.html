@@ -488,6 +488,14 @@ body.dark .item-preview{background:#0f172a}
 
 /* ─── LINK PREVIEW IMAGE / SOCIAL PREVIEW CARD ─── */
 .preview-toggle-row{display:flex;align-items:center;gap:8px;margin:4px 0 10px;font-size:.8rem;font-weight:600;color:var(--text)}
+/* Circular checkbox — replaces the default square browser checkbox for
+   "Use featured image as link preview" (and anywhere else .circle-check
+   is used). Still a real <input type="checkbox"> underneath (appearance:
+   none just hides the native box), so all existing onchange/value logic
+   is untouched. */
+.circle-check{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--border);background:var(--card);flex-shrink:0;cursor:pointer;position:relative;transition:.15s}
+.circle-check:checked{border-color:var(--blue);background:var(--blue)}
+.circle-check:checked::after{content:'';position:absolute;top:50%;left:50%;width:8px;height:8px;border-radius:50%;background:#fff;transform:translate(-50%,-50%)}
 .preview-toggle-row input[type=checkbox]{width:17px;height:17px;accent-color:var(--blue)}
 .social-preview-card{border:1.5px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card);max-width:420px}
 .social-preview-img{width:100%;height:180px;object-fit:cover;background:var(--light);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.75rem}
@@ -1117,7 +1125,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             </div>
             <div class="form-group" style="margin-bottom:0">
               <label>Link Preview Image <span style="text-transform:none;font-weight:400">(what shows when the article link is shared on WhatsApp, Facebook, X)</span></label>
-              <label class="preview-toggle-row"><input type="checkbox" id="addUseFeaturedAsPreview" checked onchange="onUseFeaturedPreviewToggle('add');updateNewsPreview('add')"> Use featured image as link preview</label>
+              <label class="preview-toggle-row"><input type="checkbox" class="circle-check" id="addUseFeaturedAsPreview" checked onchange="onUseFeaturedPreviewToggle('add');updateNewsPreview('add')"> Use featured image as link preview</label>
               <div id="addPreviewImgFields" style="display:none">
                 <div class="img-upload-box" onclick="document.getElementById('addPreviewImageFile').click()">
                   <input type="file" id="addPreviewImageFile" accept="image/*" onchange="previewImg(this,'addPreviewImgPreview','addPreviewImgClear','addPreviewImageB64');updateNewsPreview('add')">
@@ -1147,6 +1155,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
                 <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','## ')">H Heading</button>
                 <button type="button" class="editor-tbtn" onclick="insertListPrefix('addFullContent','&gt; ')"><i class="fas fa-quote-left"></i> Quote</button>
                 <button type="button" class="editor-tbtn" onclick="insertLink('addFullContent')"><i class="fas fa-link"></i> Link</button>
+                <button type="button" class="editor-tbtn" onclick="openInlineImagePicker('addFullContent','add')"><i class="fas fa-image"></i> Image</button>
                 <button type="button" class="editor-tbtn" onclick="removeFormatting('addFullContent')" title="Remove formatting">Tx Clear</button>
                 <div class="editor-more">
                   <button type="button" class="editor-tbtn" onclick="toggleMoreMenu(this)"><i class="fas fa-ellipsis"></i> More</button>
@@ -3047,81 +3056,54 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Article</h3><button class="modal-close" onclick="closeModal('editNewsModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
     <div class="modal-body">
       <input type="hidden" id="editNewsIdx">
-      <details class="rules-card">
-        <summary><i class="fas fa-book-open"></i> News Writing &amp; Formatting Rules</summary>
-        <div class="rules-card-body">
-          <h5>Bold — <code>*text*</code></h5>
-          <ul><li>Important facts, key terms, dates, names, warnings. Don't bold whole paragraphs.</li></ul>
-          <h5>Italic — <code>_text_</code></h5>
-          <ul><li>Light emphasis, terminology, titles, publication names. Use sparingly.</li></ul>
-          <h5>Strikethrough — <code>~text~</code></h5>
-          <ul><li>Corrections — a cancelled date or withdrawn figure.</li></ul>
-          <h5>Monospace — <code>`text`</code></h5>
-          <ul><li>Codes, reference/matric numbers, short technical values.</li></ul>
-          <h5>Pull-quote — <code>&gt; text</code></h5>
-          <ul><li>Official statements or direct quotes.</li></ul>
-          <h5>Bulleted lists — <code>- item</code></h5>
-          <ul><li>Unordered related items — requirements, courses, documents.</li></ul>
-          <h5>Numbered lists — <code>1. item</code></h5>
-          <ul><li>Steps, procedures, rankings, instructions.</li></ul>
-          <h5>Links — <code>[text](url)</code></h5>
-          <ul><li>Descriptive anchor text, never a raw URL.</li></ul>
-        </div>
-      </details>
-      <div class="form-row">
-        <div class="form-group"><label>Headline *</label><input type="text" class="headline-input" id="eNewsTitle" oninput="updateNewsPreview('e')"></div>
-        <div class="form-group"><label>Category *</label>
-          <select id="eNewsCategory" onchange="updateNewsPreview('e')"><option value="">— Select —</option><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Published Date</label><input type="text" id="eNewsDate" onchange="updateNewsPreview('e')"></div>
-        <div class="form-group"><label>Updated Date <span style="text-transform:none;font-weight:400">(optional)</span></label><input type="text" id="eNewsUpdatedDate" placeholder="Leave blank if not updated" onchange="updateNewsPreview('e')"></div>
-      </div>
-      <div class="form-group">
-        <label>Featured Image <span style="text-transform:none;font-weight:400">(shown on the article page &amp; Newsroom cards)</span></label>
-        <div class="img-upload-box" onclick="document.getElementById('eImageFile').click()">
-          <input type="file" id="eImageFile" accept="image/*" onchange="previewImg(this,'eImgPreview','eImgClear','eImageB64');updateNewsPreview('e')">
-          <div class="upload-label"><span><i class="fas fa-image"></i></span>Tap to upload image</div>
-        </div>
-        <img id="eImgPreview" class="img-preview" alt="preview">
-        <span id="eImgClear" class="img-clear" onclick="clearImg('eImageFile','eImgPreview','eImgClear','eImageB64');updateNewsPreview('e')"><i class="fas fa-xmark"></i> Remove image</span>
-        <input type="hidden" id="eImageB64">
-        <button type="button" class="btn btn-outline btn-sm" style="margin-top:8px" onclick="openImageLibraryPicker('eImageB64','eImgPreview','eImgClear','e')"><i class="fas fa-photo-film"></i> Choose from Image Library</button>
-      </div>
-      <div class="form-group">
-        <label>Link Preview Image <span style="text-transform:none;font-weight:400">(what shows when the article link is shared)</span></label>
-        <label class="preview-toggle-row"><input type="checkbox" id="eUseFeaturedAsPreview" checked onchange="onUseFeaturedPreviewToggle('e');updateNewsPreview('e')"> Use featured image as link preview</label>
-        <div id="ePreviewImgFields" style="display:none">
-          <div class="img-upload-box" onclick="document.getElementById('ePreviewImageFile').click()">
-            <input type="file" id="ePreviewImageFile" accept="image/*" onchange="previewImg(this,'ePreviewImgPreview','ePreviewImgClear','ePreviewImageB64');updateNewsPreview('e')">
-            <div class="upload-label"><span><i class="fas fa-image"></i></span>Choose Preview Image</div>
+      <div class="form-section">
+        <div class="form-section-hdr"><i class="fas fa-heading"></i> Article Details</div>
+        <div class="form-row">
+          <div class="form-group"><label>Headline *</label><input type="text" class="headline-input" id="eNewsTitle" oninput="updateNewsPreview('e')"></div>
+          <div class="form-group"><label>Category *</label>
+            <select id="eNewsCategory" onchange="updateNewsPreview('e')"><option value="">— Select —</option><option>JAMB Update</option><option>Campus News</option><option>Scholarship</option><option>Admission Guide</option><option>Services</option><option>Academic Coaching</option><option>Lifestyle</option><option>Announcement</option></select>
           </div>
-          <img id="ePreviewImgPreview" class="img-preview" alt="preview">
-          <span id="ePreviewImgClear" class="img-clear" onclick="clearImg('ePreviewImageFile','ePreviewImgPreview','ePreviewImgClear','ePreviewImageB64');updateNewsPreview('e')"><i class="fas fa-xmark"></i> Remove image</span>
-          <input type="hidden" id="ePreviewImageB64">
-          <button type="button" class="btn btn-outline btn-sm" style="margin-top:8px" onclick="openImageLibraryPicker('ePreviewImageB64','ePreviewImgPreview','ePreviewImgClear','e')"><i class="fas fa-photo-film"></i> Choose from Image Library</button>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Published Date</label><input type="text" id="eNewsDate" onchange="updateNewsPreview('e')"></div>
+          <div class="form-group"><label>Updated Date <span style="text-transform:none;font-weight:400">(optional)</span></label><input type="text" id="eNewsUpdatedDate" placeholder="Leave blank if not updated" onchange="updateNewsPreview('e')"></div>
         </div>
       </div>
-      <div class="form-group"><label>Author</label>
-        <select id="eNewsAuthorSelect" onchange="onAuthorSelectChange('e')"><option value="__custom__">Type a name…</option></select>
-        <input type="text" id="eNewsAuthor" placeholder="Author name" onchange="updateNewsPreview('e')" style="margin-top:6px">
-      </div>
-      <div class="form-group">
-        <label>Tags <span style="text-transform:none;font-weight:400">(optional — a few relevant keywords)</span></label>
-        <input type="text" id="eNewsTags" placeholder="e.g. JAMB, UTME 2026, Admission, Universities" onchange="updateNewsPreview('e')">
-        <div class="form-hint">Comma-separated. Keep to 3–6 focused tags.</div>
-      </div>
-      <details class="rules-card">
-        <summary><i class="fas fa-magnifying-glass-chart"></i> SEO &amp; Link Settings</summary>
-        <div class="rules-card-body">
-          <div class="form-group"><label>SEO Title</label><input type="text" id="eSeoTitle" placeholder="Defaults to the headline"></div>
-          <div class="form-group"><label>Meta Description</label><textarea id="eSeoDesc" placeholder="Defaults to a short excerpt of the article" style="min-height:70px"></textarea></div>
-          <div class="form-group"><label>URL Slug</label><input type="text" id="eSlug"><div class="form-hint">Public URL: <span id="eSlugPreview">/news/…</span></div></div>
+
+      <div class="form-section">
+        <div class="form-section-hdr"><i class="fas fa-images"></i> Media</div>
+        <div class="form-group">
+          <label>Featured Image <span style="text-transform:none;font-weight:400">(shown on the article page &amp; Newsroom cards)</span></label>
+          <div class="img-upload-box" onclick="document.getElementById('eImageFile').click()">
+            <input type="file" id="eImageFile" accept="image/*" onchange="previewImg(this,'eImgPreview','eImgClear','eImageB64');updateNewsPreview('e')">
+            <div class="upload-label"><span><i class="fas fa-image"></i></span>Tap to upload image</div>
+          </div>
+          <img id="eImgPreview" class="img-preview" alt="preview">
+          <span id="eImgClear" class="img-clear" onclick="clearImg('eImageFile','eImgPreview','eImgClear','eImageB64');updateNewsPreview('e')"><i class="fas fa-xmark"></i> Remove image</span>
+          <input type="hidden" id="eImageB64">
+          <div class="media-or-divider">or</div>
+          <button type="button" class="library-pick-btn" onclick="openImageLibraryPicker('eImageB64','eImgPreview','eImgClear','e')"><i class="fas fa-photo-film"></i> Choose from Image Library</button>
         </div>
-      </details>
-      <div class="form-group">
-        <label>Full Content *</label>
+        <div class="form-group" style="margin-bottom:0">
+          <label>Link Preview Image <span style="text-transform:none;font-weight:400">(what shows when the article link is shared)</span></label>
+          <label class="preview-toggle-row"><input type="checkbox" class="circle-check" id="eUseFeaturedAsPreview" checked onchange="onUseFeaturedPreviewToggle('e');updateNewsPreview('e')"> Use featured image as link preview</label>
+          <div id="ePreviewImgFields" style="display:none">
+            <div class="img-upload-box" onclick="document.getElementById('ePreviewImageFile').click()">
+              <input type="file" id="ePreviewImageFile" accept="image/*" onchange="previewImg(this,'ePreviewImgPreview','ePreviewImgClear','ePreviewImageB64');updateNewsPreview('e')">
+              <div class="upload-label"><span><i class="fas fa-image"></i></span>Choose Preview Image</div>
+            </div>
+            <img id="ePreviewImgPreview" class="img-preview" alt="preview">
+            <span id="ePreviewImgClear" class="img-clear" onclick="clearImg('ePreviewImageFile','ePreviewImgPreview','ePreviewImgClear','ePreviewImageB64');updateNewsPreview('e')"><i class="fas fa-xmark"></i> Remove image</span>
+            <input type="hidden" id="ePreviewImageB64">
+            <div class="media-or-divider">or</div>
+            <button type="button" class="library-pick-btn" onclick="openImageLibraryPicker('ePreviewImageB64','ePreviewImgPreview','ePreviewImgClear','e')"><i class="fas fa-photo-film"></i> Choose from Image Library</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-hdr"><i class="fas fa-pen-nib"></i> Content</div>
+        <div class="form-group" style="margin-bottom:0">
         <div class="editor-wrap" id="eEditorWrap">
           <div class="editor-toolbar">
             <button type="button" class="editor-tbtn" onclick="editorUndo('eNewsFullContent')" title="Undo"><i class="fas fa-rotate-left"></i> Undo</button>
@@ -3134,6 +3116,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','## ')">H Heading</button>
             <button type="button" class="editor-tbtn" onclick="insertListPrefix('eNewsFullContent','&gt; ')"><i class="fas fa-quote-left"></i> Quote</button>
             <button type="button" class="editor-tbtn" onclick="insertLink('eNewsFullContent')"><i class="fas fa-link"></i> Link</button>
+            <button type="button" class="editor-tbtn" onclick="openInlineImagePicker('eNewsFullContent','e')"><i class="fas fa-image"></i> Image</button>
             <button type="button" class="editor-tbtn" onclick="removeFormatting('eNewsFullContent')" title="Remove formatting">Tx Clear</button>
             <div class="editor-more">
               <button type="button" class="editor-tbtn" onclick="toggleMoreMenu(this)"><i class="fas fa-ellipsis"></i> More</button>
@@ -3162,8 +3145,54 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <span class="autosave-status" id="eAutosaveStatus"></span>
           </div>
         </div>
-        <div class="editor-hint">Use <code>*text*</code> for bold, <code>_text_</code> for italic, <code>~text~</code> for strikethrough, <code>`text`</code> for monospace, <code>## </code> for a heading, <code>&gt; </code> for a pull-quote, <code>- </code> for bullet lists, <code>1. </code> for numbered lists.</div>
+        <div class="editor-hint">Use <code>*text*</code> for bold, <code>_text_</code> for italic, <code>~text~</code> for strikethrough, <code>`text`</code> for monospace, <code>## </code> for a heading, <code>&gt; </code> for a pull-quote, <code>- </code> for bullet lists, <code>1. </code> for numbered lists, the Image button to insert a photo inline.</div>
+        </div>
       </div>
+
+      <div class="form-section">
+        <div class="form-section-hdr"><i class="fas fa-rocket"></i> Publishing</div>
+        <div class="form-group"><label>Author</label>
+          <select id="eNewsAuthorSelect" onchange="onAuthorSelectChange('e')"><option value="__custom__">Type a name…</option></select>
+          <input type="text" id="eNewsAuthor" placeholder="Author name" onchange="updateNewsPreview('e')" style="margin-top:6px">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label>Tags <span style="text-transform:none;font-weight:400">(optional — a few relevant keywords)</span></label>
+          <input type="text" id="eNewsTags" placeholder="e.g. JAMB, UTME 2026, Admission, Universities" onchange="updateNewsPreview('e')">
+          <div class="form-hint">Comma-separated. Keep to 3–6 focused tags.</div>
+        </div>
+      </div>
+
+      <details class="rules-card">
+        <summary><i class="fas fa-magnifying-glass-chart"></i> SEO &amp; Link Settings</summary>
+        <div class="rules-card-body">
+          <div class="form-group"><label>SEO Title</label><input type="text" id="eSeoTitle" placeholder="Defaults to the headline"></div>
+          <div class="form-group"><label>Meta Description</label><textarea id="eSeoDesc" placeholder="Defaults to a short excerpt of the article" style="min-height:70px"></textarea></div>
+          <div class="form-group"><label>URL Slug</label><input type="text" id="eSlug"><div class="form-hint">Public URL: <span id="eSlugPreview">/news/…</span></div></div>
+        </div>
+      </details>
+      <details class="rules-card">
+        <summary><i class="fas fa-book-open"></i> News Writing &amp; Formatting Rules</summary>
+        <div class="rules-card-body">
+          <h5>Bold — <code>*text*</code></h5>
+          <ul><li>Important facts, key terms, dates, names, warnings. Don't bold whole paragraphs.</li></ul>
+          <h5>Italic — <code>_text_</code></h5>
+          <ul><li>Light emphasis, terminology, titles, publication names. Use sparingly.</li></ul>
+          <h5>Strikethrough — <code>~text~</code></h5>
+          <ul><li>Corrections — a cancelled date or withdrawn figure.</li></ul>
+          <h5>Monospace — <code>`text`</code></h5>
+          <ul><li>Codes, reference/matric numbers, short technical values.</li></ul>
+          <h5>Pull-quote — <code>&gt; text</code></h5>
+          <ul><li>Official statements or direct quotes.</li></ul>
+          <h5>Bulleted lists — <code>- item</code></h5>
+          <ul><li>Unordered related items — requirements, courses, documents.</li></ul>
+          <h5>Numbered lists — <code>1. item</code></h5>
+          <ul><li>Steps, procedures, rankings, instructions.</li></ul>
+          <h5>Links — <code>[text](url)</code></h5>
+          <ul><li>Descriptive anchor text, never a raw URL.</li></ul>
+          <h5>Inline image — <code>![alt text](url)</code></h5>
+          <ul><li>Inserted automatically by the toolbar's Image button — you shouldn't need to type this by hand.</li></ul>
+        </div>
+      </details>
       <div class="preview-toggle">
         <button type="button" class="btn btn-outline btn-sm" onclick="togglePreview('e')" id="ePreviewToggleBtn"><i class="fas fa-eye"></i> Show Live Preview</button>
         <div class="preview-device-toggle" id="ePreviewDeviceToggle">
@@ -4979,9 +5008,16 @@ function formatArticleBody(raw){
   raw=preprocessPastedHtml(raw);
   const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const isValidUrl=u=>{try{const p=new URL(u);return p.protocol==='http:'||p.protocol==='https:';}catch(e){return false;}};
+  const isValidImageSrc=u=>/^https?:\/\//.test(u)||/^data:image\//.test(u);
   const inline=line=>{
     let t=esc(line);
     const linkPlaceholders=[];
+    t=t.replace(/!\[([^\]]*)\]\(((?:https?:\/\/|data:)[^\s)]+)\)/g,(m,alt,url)=>{
+      if(!isValidImageSrc(url)) return m;
+      const token='\u0000LINK'+linkPlaceholders.length+'\u0000';
+      linkPlaceholders.push(`<img src="${url}" alt="${alt}" loading="lazy">`);
+      return token;
+    });
     t=t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,(m,txt,url)=>{
       if(!isValidUrl(url)) return m;
       const token='\u0000LINK'+linkPlaceholders.length+'\u0000';
@@ -6257,10 +6293,93 @@ function selectLibraryImage(id){
   prev.src=img.image; prev.style.display='block';
   if(clearEl) clearEl.classList.add('show');
   closeModal('ilPickerModal');
+  // If this picker was opened from the content editor's Image button
+  // (rather than for the featured/preview image fields), insert it as
+  // markdown into the textarea instead of the normal field-apply flow.
+  if(hiddenInputId==='inlineImgPickB64' && window._inlineImagePickTarget){
+    insertInlineImageMarkdown(img.image);
+    window._inlineImagePickTarget=null;
+    return;
+  }
   if(which) updateNewsPreview(which);
   showStatus('success','<i class="fas fa-circle-check"></i> Image applied — remember to Save Changes.');
 }
 window.selectLibraryImage=selectLibraryImage;
+
+// ── Inline images in the article body (Content editor's Image button) ──
+// Inserts standard `![alt](url)` markdown at the cursor — formatArticleBody
+// (generate-news-pages.mjs, newsroom.html, and this file's own preview)
+// all render that syntax as a real <img> in the published article.
+// NOTE: an image picked here is embedded as whatever the source already
+// is — a real URL if it came from the Image Library with one, or a base64
+// data: URI if freshly uploaded (same as how featured/preview images work
+// today). A data: URI still renders correctly, it just makes that
+// specific article's page a bit larger; there is currently no equivalent
+// of the featured-image "materialize base64 into a real file" step for
+// images embedded INSIDE the body text.
+window._inlineImagePickTarget=null;
+function ensureInlineImageScratchEls(){
+  if(document.getElementById('inlineImgPickB64')) return;
+  const wrap=document.createElement('div');
+  wrap.style.display='none';
+  wrap.innerHTML='<input type="hidden" id="inlineImgPickB64"><img id="inlineImgPickPreview" alt=""><span id="inlineImgPickClear"></span>';
+  document.body.appendChild(wrap);
+}
+function openInlineImagePicker(textareaId,which){
+  ensureInlineImageScratchEls();
+  let modal=document.getElementById('inlineImgModal');
+  if(!modal){
+    modal=document.createElement('div');
+    modal.className='modal-overlay';
+    modal.id='inlineImgModal';
+    modal.onclick=e=>{if(e.target===modal) closeModal('inlineImgModal');};
+    modal.innerHTML=`
+      <div class="modal-box">
+        <div class="modal-header"><h3><i class="fas fa-image"></i> Insert Image</h3><button class="modal-close" onclick="closeModal('inlineImgModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+        <div class="modal-body">
+          <div class="img-upload-box" onclick="document.getElementById('inlineImgUploadFile').click()">
+            <input type="file" id="inlineImgUploadFile" accept="image/*" onchange="onInlineImageUpload(this)">
+            <div class="upload-label"><span><i class="fas fa-image"></i></span>Upload New Image</div>
+          </div>
+          <div class="media-or-divider">or</div>
+          <button type="button" class="library-pick-btn" onclick="closeModal('inlineImgModal');openImageLibraryPicker('inlineImgPickB64','inlineImgPickPreview','inlineImgPickClear',null)"><i class="fas fa-photo-film"></i> Choose from Image Library</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+  window._inlineImagePickTarget={textareaId,which};
+  openModal('inlineImgModal');
+}
+window.openInlineImagePicker=openInlineImagePicker;
+
+function onInlineImageUpload(input){
+  const file=input.files&&input.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    closeModal('inlineImgModal');
+    insertInlineImageMarkdown(reader.result);
+    window._inlineImagePickTarget=null;
+    input.value='';
+  };
+  reader.readAsDataURL(file);
+}
+window.onInlineImageUpload=onInlineImageUpload;
+
+function insertInlineImageMarkdown(url){
+  const target=window._inlineImagePickTarget;
+  if(!target||!url) return;
+  const ta=document.getElementById(target.textareaId);
+  if(!ta) return;
+  const alt=(window.prompt('Short description of this image (for accessibility & SEO):','Image')||'Image').replace(/[\[\]]/g,'');
+  const md=`![${alt}](${url})`;
+  const start=ta.selectionStart, end=ta.selectionEnd;
+  ta.value=ta.value.slice(0,start)+md+ta.value.slice(end);
+  ta.selectionStart=ta.selectionEnd=start+md.length;
+  ta.dispatchEvent(new Event('input',{bubbles:true}));
+  ta.focus();
+}
+window.insertInlineImageMarkdown=insertInlineImageMarkdown;
 
 // ── Category default images (Newsroom Settings) ──
 const NEWS_CATEGORIES=['JAMB Update','Campus News','Scholarship','Admission Guide','Services','Academic Coaching','Lifestyle','Announcement'];
