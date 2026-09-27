@@ -520,6 +520,15 @@ body.dark .social-preview-warn{background:#3f2d05;border-color:#78350f;color:#fb
 .imglib-card-actions{display:flex;gap:4px;padding:0 9px 8px}
 .imglib-card-actions button{flex:1;font-size:.62rem;padding:4px 6px}
 .imglib-empty{grid-column:1/-1;text-align:center;padding:30px 10px;color:var(--muted);font-size:.82rem}
+.catmgr-list{display:flex;flex-direction:column;gap:8px}
+.catmgr-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--light);border:1px solid var(--border);border-radius:9px;font-size:.85rem;font-weight:600}
+.progress-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999}
+.progress-overlay.show{display:flex}
+.progress-box{background:var(--card);border-radius:14px;padding:24px;width:280px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.progress-label{font-size:.85rem;font-weight:700;margin-bottom:14px;color:var(--text)}
+.progress-track{height:8px;border-radius:6px;background:var(--light);overflow:hidden;margin-bottom:10px}
+.progress-fill{height:100%;background:var(--blue);border-radius:6px;transition:width .18s ease}
+.progress-pct{font-size:.78rem;font-weight:800;color:var(--blue)}
 
 /* ─── MODAL ─── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,20,60,0.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:500;align-items:flex-end;justify-content:center;padding:0;overflow-y:auto}
@@ -1243,6 +1252,15 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
       <div class="section-header">
         <h2 class="section-title-h2"><i class="fas fa-newspaper"></i> Newsroom Settings</h2>
       </div>
+      <div class="section-card ceo-only">
+        <div class="card-title"><i class="fas fa-tags"></i> Manage News Categories</div>
+        <p class="form-hint" style="margin-bottom:12px">These are the categories offered when writing or editing an article, and in the Image Library. Removing one doesn't change existing articles that already used it — it just stops being offered for new ones.</p>
+        <div id="catMgrList" class="catmgr-list"></div>
+        <div class="form-row" style="margin-top:12px">
+          <input type="text" id="catMgrNewInput" placeholder="New category name…" onkeydown="if(event.key==='Enter'){event.preventDefault();addNewsCategoryToList();}">
+          <button class="btn btn-primary" onclick="addNewsCategoryToList()"><i class="fas fa-plus"></i> Add</button>
+        </div>
+      </div>
       <div class="section-card">
         <div class="card-title"><i class="fas fa-image"></i> Category Default Images</div>
         <p class="form-hint" style="margin-bottom:12px">Used as an article's link-preview image when it has no Featured Image and no manually chosen Preview Image — see the fallback order below.</p>
@@ -1837,7 +1855,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
               <option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option>
             </select>
           </div>
-          <div id="cbtList"><div class="empty"><div class="ei"><i class="fas fa-spinner fa-spin"></i></div><p>Loading from Firebase…</p></div></div>
+          <div id="cbtList"><div class="empty"><div class="ei"><i class="fas fa-spinner fa-spin"></i></div><p>Loading questions…</p></div></div>
           <div id="cbtPagination" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;"></div>
         </div>
       </div>
@@ -1893,7 +1911,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <div class="card-title"><i class="fas fa-folder-open"></i> Bulk Upload Questions via CSV</div>
           <div class="nelfund-highlight">
             <h4>ℹ️ How Bulk Upload works</h4>
-            <p>Prepare your questions in a CSV file using the correct format, then upload here. All valid rows are saved to Firebase at once. Invalid rows are skipped and shown in the error log.</p>
+            <p>Prepare your questions in a CSV file using the correct format, then upload here. All valid rows are saved at once. Invalid rows are skipped and shown in the error log.</p>
           </div>
 
           <!-- CSV Format Guide -->
@@ -1989,7 +2007,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
 
           <div class="btn-row">
             <button class="btn btn-success" id="bulkUploadBtn" onclick="startBulkUpload()" disabled style="opacity:.5">
-              <i class="fas fa-rocket"></i> Upload All Questions to Firebase
+              <i class="fas fa-rocket"></i> Upload All Questions
             </button>
             <button class="btn btn-ghost" onclick="clearBulkUpload()">Clear</button>
           </div>
@@ -2091,7 +2109,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
             <div id="puBulkList" style="max-height:240px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:0.78rem;"></div>
           </div>
           <div class="btn-row" style="margin-top:14px">
-            <button class="btn btn-primary" onclick="uploadPuBulk()" id="puBulkBtn" disabled><i class="fas fa-rocket"></i> Upload All Schools to Firebase</button>
+            <button class="btn btn-primary" onclick="uploadPuBulk()" id="puBulkBtn" disabled><i class="fas fa-rocket"></i> Upload All Schools</button>
             <button class="btn btn-ghost" onclick="clearPuBulk()">Clear</button>
           </div>
           <div id="puBulkProgress" style="display:none;margin-top:10px;font-size:0.82rem;color:var(--muted)"></div>
@@ -4401,12 +4419,22 @@ if(localStorage.getItem('bqm_auth')==='1'){
 }
 
 // ── FIREBASE HELPERS ──
-async function fbLoad(col, orderField='createdAt', dir='desc'){
-  const snap = await window.getDocs(window.query(
-    window.collection(window.db, col),
-    window.orderBy(orderField, dir)
-  ));
-  return snap.docs.map(d=>({...d.data(), _id:d.id}));
+async function fbLoad(col, orderField='createdAt', dir='desc', retries=2){
+  let lastErr;
+  for (let attempt=0; attempt<=retries; attempt++){
+    try{
+      const snap = await window.getDocs(window.query(
+        window.collection(window.db, col),
+        window.orderBy(orderField, dir)
+      ));
+      return snap.docs.map(d=>({...d.data(), _id:d.id}));
+    }catch(e){
+      lastErr=e;
+      if (attempt<retries) await new Promise(r=>setTimeout(r, 500*(attempt+1)));
+    }
+  }
+  console.warn('fbLoad failed for', col, 'after retries:', lastErr && lastErr.message);
+  throw lastErr;
 }
 
 async function fbAdd(col, data, logMsg){
@@ -4430,7 +4458,7 @@ async function fbDelete(col, id, logMsg){
 // ── LOAD NEWS FROM FIRESTORE ──
 async function loadNewsFromFirebase(){
   try{
-    if(!window.db){showStatus('error','Firebase not ready.');return;}
+    if(!window.db){showStatus('error','Not ready yet — please try again in a moment.');return;}
     const snap=await window.getDocs(window.query(window.collection(window.db,'fs_news'),window.orderBy('createdAt','desc')));
     newsData=snap.docs.map(d=>({...d.data(),_id:d.id}));
     renderNews(); updateBadges();
@@ -4441,43 +4469,88 @@ async function loadNewsFromFirebase(){
   }catch(e){showStatus('error','Failed to load news: '+e.message);}
 }
 
-// ── INIT — load everything from Firestore ──
+// ── INIT — load everything ──
 async function init(){
-  showStatus('loading','Loading all data from Firebase…');
-  try{
-    [newsData, booksData, dykData, spotlightData, reviewsData, qaData,
-     calData, schData, postutmeData, comboData, nelfundData, prepData,
-     tickerData, admissionReqData] = await Promise.all([
-      fbLoad('fs_news'),
-      fbLoad('fs_books'),
-      fbLoad('fs_dyk'),
-      fbLoad('fs_spotlight'),
-      fbLoad('fs_reviews'),
-      fbLoad('fs_qa'),
-      fbLoad('fs_calendar','title','asc'),
-      fbLoad('fs_scholarships'),
-      fbLoad('fs_postutme_schools','name','asc'),
-      fbLoad('fs_subject_combo','course','asc'),
-      fbLoad('fs_nelfund'),
-      fbLoad('fs_prep_guides'),
-      fbLoad('fs_ticker'),
-      fbLoad('fs_admission_requirements'),
-    ]);
-    renderAll();
-    updateBadges();
-    showStatus('success',`<i class="fas fa-circle-check"></i> Loaded: ${newsData.length} news articles · ${booksData.length} books · ${schData.length} scholarships`);
-    loadCBTQuestions();
-    loadSiteConfigFiles();
-    document.getElementById('nr-total').textContent = newsData.length;
-    document.getElementById('nr-pinned').textContent = newsData.filter(n=>n.pinned).length;
-    const cats = new Set(newsData.map(n=>n.category).filter(Boolean));
-    document.getElementById('nr-cats').textContent = cats.size;
-    await loadAuthorProfiles();
-    syncAuthorSelectToValue('add');
-    checkForDraftRecovery();
-  }catch(e){
-    showStatus('error','Failed to load data: '+e.message);
+  // Generic, non-revealing wording — the previous message named the exact
+  // backend ("Loading all data from Firebase…"), which is more than a
+  // visitor watching over someone's shoulder needs to know.
+  showStatus('loading','Loading Big Quams database… 0%');
+
+  const jobs = [
+    { key:'newsData',          label:'news articles',  p:fbLoad('fs_news') },
+    { key:'booksData',         label:'books',           p:fbLoad('fs_books') },
+    { key:'dykData',           label:'did-you-know',    p:fbLoad('fs_dyk') },
+    { key:'spotlightData',     label:'spotlights',      p:fbLoad('fs_spotlight') },
+    { key:'reviewsData',       label:'reviews',         p:fbLoad('fs_reviews') },
+    { key:'qaData',            label:'Q&A',             p:fbLoad('fs_qa') },
+    { key:'calData',           label:'calendar',        p:fbLoad('fs_calendar','title','asc') },
+    { key:'schData',           label:'scholarships',    p:fbLoad('fs_scholarships') },
+    { key:'postutmeData',      label:'Post-UTME schools', p:fbLoad('fs_postutme_schools','name','asc') },
+    { key:'comboData',         label:'subject combos',  p:fbLoad('fs_subject_combo','course','asc') },
+    { key:'nelfundData',       label:'NELFUND',         p:fbLoad('fs_nelfund') },
+    { key:'prepData',          label:'prep guides',     p:fbLoad('fs_prep_guides') },
+    { key:'tickerData',        label:'ticker',          p:fbLoad('fs_ticker') },
+    { key:'admissionReqData',  label:'admission reqs',  p:fbLoad('fs_admission_requirements') },
+    { key:'__authorProfiles',  label:'author profiles', p:loadAuthorProfiles() }, // pulled into the SAME parallel batch instead of running sequentially after — was adding a whole extra round-trip of latency on top of everything else
+    { key:'__newsCategories',  label:'categories',      p:loadNewsCategories() },
+  ];
+
+  let completed = 0;
+  const total = jobs.length;
+  const bumpProgress = () => {
+    completed++;
+    const pct = Math.round((completed/total)*100);
+    showStatus('loading',`Loading Big Quams database… ${pct}%`);
+  };
+  jobs.forEach(j => j.p.then(bumpProgress, bumpProgress));
+
+  // allSettled — NOT all: previously ONE failed collection (a transient
+  // network blip, a momentarily-not-ready Firestore connection, etc.)
+  // rejected the entire batch via Promise.all, leaving the whole admin
+  // panel blank with nothing loaded, even though the other 13-14 reads
+  // had genuinely succeeded. That is very likely the "sometimes it fails,
+  // I have to reload the page" symptom. Now each collection's failure is
+  // isolated: it falls back to an empty array (so the rest of the panel
+  // still works) and gets named in a visible warning, instead of
+  // silently/completely blocking everything else.
+  const results = await Promise.allSettled(jobs.map(j => j.p));
+  const failedLabels = [];
+  results.forEach((r, i) => {
+    const { key, label } = jobs[i];
+    if (key === '__authorProfiles' || key === '__newsCategories') {
+      if (r.status === 'rejected') failedLabels.push(label);
+      return; // loadAuthorProfiles manages its own state internally
+    }
+    if (r.status === 'fulfilled') {
+      window[key] = r.value;
+    } else {
+      window[key] = [];
+      failedLabels.push(label);
+      console.warn(`Failed to load ${label}:`, r.reason && r.reason.message);
+    }
+  });
+  // Assign into the actual module-scope variables the rest of the app reads.
+  newsData=window.newsData; booksData=window.booksData; dykData=window.dykData;
+  spotlightData=window.spotlightData; reviewsData=window.reviewsData; qaData=window.qaData;
+  calData=window.calData; schData=window.schData; postutmeData=window.postutmeData;
+  comboData=window.comboData; nelfundData=window.nelfundData; prepData=window.prepData;
+  tickerData=window.tickerData; admissionReqData=window.admissionReqData;
+
+  renderAll();
+  updateBadges();
+  if (failedLabels.length) {
+    showStatus('error',`<i class="fas fa-triangle-exclamation"></i> Loaded, but couldn't fetch: ${failedLabels.join(', ')}. Try reloading just that section.`);
+  } else {
+    showStatus('success',`<i class="fas fa-circle-check"></i> Loaded: ${newsData.length} news articles \u00b7 ${booksData.length} books \u00b7 ${schData.length} scholarships`);
   }
+  loadCBTQuestions();
+  loadSiteConfigFiles();
+  document.getElementById('nr-total').textContent = newsData.length;
+  document.getElementById('nr-pinned').textContent = newsData.filter(n=>n.pinned).length;
+  const cats = new Set(newsData.map(n=>n.category).filter(Boolean));
+  document.getElementById('nr-cats').textContent = cats.size;
+  syncAuthorSelectToValue('add');
+  checkForDraftRecovery();
 }
 window.init = init;
 
@@ -6203,6 +6276,7 @@ function renderImageLibraryGrid(pickMode){
         <div class="imglib-card-cat">${admEsc(img.category||'General')}</div>
       </div>
       ${pickMode?'':`<div class="imglib-card-actions" onclick="event.stopPropagation()">
+        <button class="btn btn-outline btn-sm editor-only" onclick="openEditLibraryImageModal('${img._id}')"><i class="fas fa-pen"></i></button>
         <button class="btn btn-outline btn-sm editor-only" onclick="deleteLibraryImage('${img._id}')"><i class="fas fa-trash"></i></button>
       </div>`}
     </div>`;
@@ -6223,17 +6297,120 @@ async function saveImageToLibrary(){
   const image=document.getElementById('ilAddB64').value;
   if(!name||!image){ showStatus('error','Give the image a name and upload a file first.'); return; }
   const btn=document.getElementById('ilSaveBtn'); btn.disabled=true; btn.innerHTML='Saving…';
+  startProgress('Uploading image…');
   try{
     await window.addDoc(window.collection(window.db,'fs_image_library'),{name,category,image,createdAt:window.serverTimestamp()});
+    await stopProgress();
     showStatus('success','<i class="fas fa-circle-check"></i> Image saved to library!');
     ['ilAddName'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('ilAddCategory').value='General';
     clearImg('ilAddFile','ilAddPreview','ilAddClear','ilAddB64');
     await loadImageLibrary();
-  }catch(e){ showStatus('error','Could not save image: '+e.message); }
+  }catch(e){ await stopProgress(); showStatus('error','Could not save image: '+e.message); }
   btn.disabled=false; btn.innerHTML='<i class="fas fa-floppy-disk"></i> Save to Library';
 }
 window.saveImageToLibrary=saveImageToLibrary;
+
+// ── News categories — owner-editable list (was hardcoded in 4 places:
+// Add form, Edit form, and the Image Library's add/filter category
+// selects). Stored as a single small doc (fs_config/news_categories,
+// field "list") rather than a whole collection — one cheap read instead
+// of many, and simple to manage. Falls back to the original hardcoded set
+// if that doc doesn't exist yet, so nothing breaks before the CEO first
+// opens the management panel. ──
+const DEFAULT_NEWS_CATEGORIES=['JAMB Update','Campus News','Scholarship','Admission Guide','Services','Academic Coaching','Lifestyle','Announcement'];
+window._newsCategories=DEFAULT_NEWS_CATEGORIES.slice();
+
+async function loadNewsCategories(){
+  try{
+    const snap=await window.getDoc(window.doc(window.db,'fs_config','news_categories'));
+    if(snap.exists() && Array.isArray(snap.data().list) && snap.data().list.length){
+      window._newsCategories=snap.data().list;
+    }
+  }catch(e){ console.warn('Could not load news categories, using defaults:',e.message); }
+  populateAllCategoryDropdowns();
+  renderCategoryManager();
+}
+window.loadNewsCategories=loadNewsCategories;
+
+function getNewsCategoryOptionsHtml(selected, opts){
+  opts=opts||{};
+  let html='';
+  if(opts.includeBlank) html+=`<option value="">${opts.blankLabel||'— Select —'}</option>`;
+  if(opts.includeGeneral) html+=`<option${selected==='General'?' selected':''}>General</option>`;
+  html+=window._newsCategories.map(c=>`<option${c===selected?' selected':''}>${admEsc(c)}</option>`).join('');
+  return html;
+}
+window.getNewsCategoryOptionsHtml=getNewsCategoryOptionsHtml;
+
+function populateAllCategoryDropdowns(){
+  const setOpts=(id,html,keepValue)=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    const prev=keepValue?el.value:null;
+    el.innerHTML=html;
+    if(prev) el.value=prev;
+  };
+  setOpts('addCategory', getNewsCategoryOptionsHtml('', {includeBlank:true}), true);
+  setOpts('eNewsCategory', getNewsCategoryOptionsHtml('', {includeBlank:true}), true);
+  setOpts('ilAddCategory', getNewsCategoryOptionsHtml('General', {includeGeneral:true}), true);
+  setOpts('ilFilterCategory', getNewsCategoryOptionsHtml('', {includeBlank:true, includeGeneral:true, blankLabel:'All categories'}), true);
+}
+window.populateAllCategoryDropdowns=populateAllCategoryDropdowns;
+
+async function saveNewsCategoriesList(){
+  await window.setDoc(window.doc(window.db,'fs_config','news_categories'),{list:window._newsCategories},{merge:true});
+}
+
+async function addNewsCategoryToList(){
+  const input=document.getElementById('catMgrNewInput');
+  const val=(input.value||'').trim();
+  if(!val){ showStatus('error','Type a category name first.'); return; }
+  if(window._newsCategories.some(c=>c.toLowerCase()===val.toLowerCase())){ showStatus('error','That category already exists.'); return; }
+  window._newsCategories.push(val);
+  input.value='';
+  try{
+    await saveNewsCategoriesList();
+    populateAllCategoryDropdowns();
+    renderCategoryManager();
+    showStatus('success',`<i class="fas fa-circle-check"></i> Added "${admEsc(val)}".`);
+  }catch(e){
+    window._newsCategories.pop(); // roll back the in-memory add since the save failed
+    showStatus('error','Could not save: '+e.message);
+  }
+}
+window.addNewsCategoryToList=addNewsCategoryToList;
+
+async function removeNewsCategoryFromList(cat){
+  const usedCount=(window.newsData||[]).filter(n=>n.category===cat).length;
+  const warn=usedCount
+    ? `${usedCount} existing article${usedCount===1?'':'s'} currently use "${cat}" — they'll keep that category text, it just won't be offered as a choice for NEW articles anymore. Remove it anyway?`
+    : `Remove "${cat}" from the category list?`;
+  if(!confirm(warn)) return;
+  const idx=window._newsCategories.indexOf(cat);
+  if(idx===-1) return;
+  window._newsCategories.splice(idx,1);
+  try{
+    await saveNewsCategoriesList();
+    populateAllCategoryDropdowns();
+    renderCategoryManager();
+  }catch(e){
+    window._newsCategories.splice(idx,0,cat); // roll back
+    showStatus('error','Could not save: '+e.message);
+  }
+}
+window.removeNewsCategoryFromList=removeNewsCategoryFromList;
+
+function renderCategoryManager(){
+  const el=document.getElementById('catMgrList');
+  if(!el) return;
+  el.innerHTML=window._newsCategories.map(c=>`
+    <div class="catmgr-row">
+      <span>${admEsc(c)}</span>
+      <button type="button" class="btn btn-outline btn-sm" onclick="removeNewsCategoryFromList('${admEsc(c).replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
+    </div>`).join('') || '<div class="imglib-empty">No categories yet.</div>';
+}
+window.renderCategoryManager=renderCategoryManager;
 
 async function deleteLibraryImage(id){
   if(!confirm('Delete this image from the library? Articles already using it keep their own copy — this only removes it from the reusable library.')) return;
@@ -6243,6 +6420,69 @@ async function deleteLibraryImage(id){
   }catch(e){ showStatus('error','Could not delete: '+e.message); }
 }
 window.deleteLibraryImage=deleteLibraryImage;
+
+// ── Edit an existing library image (rename, recategorize, optionally
+// replace the file itself) ──
+function openEditLibraryImageModal(id){
+  const img=(window._imageLibrary||[]).find(i=>i._id===id);
+  if(!img){ showStatus('error','That image could not be found — try reloading the library.'); return; }
+  let modal=document.getElementById('ilEditModal');
+  if(!modal){
+    modal=document.createElement('div');
+    modal.className='modal-overlay';
+    modal.id='ilEditModal';
+    modal.onclick=e=>{if(e.target===modal) closeModal('ilEditModal');};
+    document.body.appendChild(modal);
+  }
+  const catOptions=getNewsCategoryOptionsHtml(img.category||'General',true);
+  modal.innerHTML=`
+    <div class="modal-box">
+      <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Library Image</h3><button class="modal-close" onclick="closeModal('ilEditModal')" aria-label="Close dialog"><i class="fas fa-xmark"></i></button></div>
+      <div class="modal-body">
+        <input type="hidden" id="ilEditId" value="${id}">
+        <div class="form-group"><label>Image Name *</label><input type="text" id="ilEditName" value="${admEsc(img.name||'')}"></div>
+        <div class="form-group"><label>Category</label><select id="ilEditCategory">${catOptions}</select></div>
+        <div class="form-group">
+          <label>Current Image</label>
+          <img src="${img.image}" alt="" style="width:100%;max-height:200px;object-fit:contain;border-radius:8px;border:1px solid var(--border);margin-bottom:8px">
+          <div class="img-upload-box" onclick="document.getElementById('ilEditFile').click()">
+            <input type="file" id="ilEditFile" accept="image/*" onchange="previewImg(this,'ilEditPreview','ilEditClear','ilEditNewB64')">
+            <div class="upload-label"><span><i class="fas fa-image"></i></span>Replace with a new file (optional)</div>
+          </div>
+          <img id="ilEditPreview" class="img-preview" alt="preview">
+          <span id="ilEditClear" class="img-clear" onclick="clearImg('ilEditFile','ilEditPreview','ilEditClear','ilEditNewB64')"><i class="fas fa-xmark"></i> Cancel replacement</span>
+          <input type="hidden" id="ilEditNewB64">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveLibraryImageEdit()" id="ilEditSaveBtn">Save Changes</button>
+          <button class="btn btn-ghost" onclick="closeModal('ilEditModal')">Cancel</button>
+        </div>
+      </div>
+    </div>`;
+  openModal('ilEditModal');
+}
+window.openEditLibraryImageModal=openEditLibraryImageModal;
+
+async function saveLibraryImageEdit(){
+  const id=document.getElementById('ilEditId').value;
+  const name=document.getElementById('ilEditName').value.trim();
+  const category=document.getElementById('ilEditCategory').value||'General';
+  const newImage=document.getElementById('ilEditNewB64').value;
+  if(!name){ showStatus('error','Give the image a name.'); return; }
+  const btn=document.getElementById('ilEditSaveBtn'); btn.disabled=true; btn.innerHTML='Saving…';
+  startProgress('Saving changes…');
+  try{
+    const update={name,category};
+    if(newImage) update.image=newImage;
+    await window.updateDoc(window.doc(window.db,'fs_image_library',id),update);
+    await stopProgress();
+    showStatus('success','<i class="fas fa-circle-check"></i> Library image updated.');
+    closeModal('ilEditModal');
+    await loadImageLibrary();
+  }catch(e){ await stopProgress(); showStatus('error','Could not save changes: '+e.message); }
+  btn.disabled=false; btn.innerHTML='Save Changes';
+}
+window.saveLibraryImageEdit=saveLibraryImageEdit;
 
 // ── Image Library picker modal (used from the news editor) ──
 window._ilPickerTarget=null;
@@ -6590,6 +6830,53 @@ async function saveCategoryDefaultImages(){
 }
 window.saveCategoryDefaultImages=saveCategoryDefaultImages;
 
+// ── Progress overlay for publish/upload actions ──
+// Firestore document writes (which is how this whole admin panel saves
+// articles and images — as base64 fields on a document, not Firebase
+// Storage files) don't expose real byte-level upload progress events the
+// way Storage uploads do. So this is an HONEST approximation, not a
+// fabricated number: the bar animates smoothly toward ~90% while the
+// real operation is in flight, then jumps to 100% the instant it
+// genuinely completes — it always finishes exactly when the real work
+// finishes, it just can't show true bytes-transferred progress along the
+// way because Firestore doesn't report that.
+let _progressTick=null;
+function startProgress(label){
+  let el=document.getElementById('progressOverlay');
+  if(!el){
+    el=document.createElement('div');
+    el.id='progressOverlay';
+    el.className='progress-overlay';
+    document.body.appendChild(el);
+  }
+  el.innerHTML=`<div class="progress-box">
+    <div class="progress-label" id="progressLabel">${label}</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-pct" id="progressPct">0%</div>
+  </div>`;
+  el.classList.add('show');
+  let pct=0;
+  clearInterval(_progressTick);
+  _progressTick=setInterval(()=>{
+    pct += (90-pct)*0.12;
+    const fill=document.getElementById('progressFill'), pctEl=document.getElementById('progressPct');
+    if(fill) fill.style.width=pct+'%';
+    if(pctEl) pctEl.textContent=Math.round(pct)+'%';
+  },180);
+}
+window.startProgress=startProgress;
+
+async function stopProgress(){
+  clearInterval(_progressTick);
+  const fill=document.getElementById('progressFill'), pctEl=document.getElementById('progressPct');
+  if(fill) fill.style.width='100%';
+  if(pctEl) pctEl.textContent='100%';
+  await new Promise(r=>setTimeout(r,250));
+  const el=document.getElementById('progressOverlay');
+  if(el) el.classList.remove('show');
+}
+window.stopProgress=stopProgress;
+
 async function addNews(){
   const title=document.getElementById('addTitle').value.trim();
   const category=document.getElementById('addCategory').value;
@@ -6613,6 +6900,7 @@ async function addNews(){
   if(!title||!category||!fullContent){showStatus('error','Fill in Title, Category and Content.');return;}
   const slug=makeSlug(customSlug||title);
   const btn=document.getElementById('addNewsBtn'); btn.disabled=true; btn.textContent='Publishing…';
+  startProgress('Publishing article…');
   try{
     if(pinned){
       // Only one article may be pinned at a time — automatically unpin
@@ -6630,11 +6918,12 @@ async function addNews(){
     const ref=await window.addDoc(window.collection(window.db,'fs_news'),item);
     // Update doc with its own Firestore ID so articleUrl stays stable
     await window.updateDoc(window.doc(window.db,'fs_news',ref.id),{_docId:ref.id});
+    await stopProgress();
     logAdminActivity('add','news','Add: '+title);
     showStatus('success','<i class="fas fa-champagne-glasses"></i> Article published! Link: '+SITE_BASE+'/news/'+slug+'--'+ref.id+'/ (social preview appears once the news-pages workflow next runs)');
     localStorage.removeItem('bqm-news-draft');
     clearNewsForm(); await loadNewsFromFirebase(); switchTab('news','list');
-  }catch(e){showStatus('error','Firebase error: '+e.message);}
+  }catch(e){await stopProgress();showStatus('error','Error: '+e.message);}
   btn.disabled=false; btn.innerHTML='<i class="fas fa-rocket"></i> Publish Article';
 }
 window.addNews=addNews;
@@ -6680,7 +6969,7 @@ async function togglePin(idx){
     logAdminActivity('edit','news',(willPin?'Pin':'Unpin')+': '+item.title);
     await loadNewsFromFirebase();
     showStatus('success','<i class="fas fa-thumbtack"></i> '+(willPin?'Article pinned!':'Article unpinned.'));
-  }catch(e){showStatus('error','Firebase error: '+e.message);}
+  }catch(e){showStatus('error','Error: '+e.message);}
 }
 window.togglePin=togglePin;
 
@@ -6748,6 +7037,7 @@ async function saveEditNews(){
   const t=document.getElementById('eNewsTitle').value.trim();
   const f=document.getElementById('eNewsFullContent').value.trim();
   if(!t||!f){showStatus('error','Fill in Title and Content.');return;}
+  startProgress('Saving changes…');
   try{
     const customSlug=document.getElementById('eSlug').value.trim();
     const slug=makeSlug(customSlug||t);
@@ -6768,12 +7058,13 @@ async function saveEditNews(){
       previewImage:(!useFeaturedAsPreview && previewImage)?previewImage:window.deleteField(),
     };
     if(item._id) await window.updateDoc(window.doc(window.db,'fs_news',item._id),updates);
+    await stopProgress();
     logAdminActivity('edit','news','Edit: '+t);
     if(item._id) localStorage.removeItem('bqm-news-editdraft-'+item._id);
     await loadNewsFromFirebase();
     closeModal('editNewsModal');
     showStatus('success','<i class="fas fa-circle-check"></i> Article updated!');
-  }catch(e){showStatus('error','Firebase error: '+e.message);}
+  }catch(e){await stopProgress();showStatus('error','Error: '+e.message);}
 }
 window.saveEditNews=saveEditNews;
 
@@ -8656,7 +8947,7 @@ function clearBulkUpload(){
   document.getElementById('bulkProgressWrap').style.display='none';
   document.getElementById('bulkProgressBar').style.width='0%';
   const btn=document.getElementById('bulkUploadBtn');
-  btn.disabled=true;btn.style.opacity='.5';btn.innerHTML='<i class="fas fa-rocket"></i> Upload All Questions to Firebase';
+  btn.disabled=true;btn.style.opacity='.5';btn.innerHTML='<i class="fas fa-rocket"></i> Upload All Questions';
 }
 window.clearBulkUpload=clearBulkUpload;
 
@@ -8694,7 +8985,7 @@ window.previewPuBulk=previewPuBulk;
 
 async function uploadPuBulk(){
   if(!puBulkParsed.length){showStatus('error','No valid schools to upload.');return;}
-  if(!window.db){showStatus('error','Firebase not ready.');return;}
+  if(!window.db){showStatus('error','Not ready yet — please try again in a moment.');return;}
   const btn=document.getElementById('puBulkBtn');
   btn.disabled=true; btn.textContent='Uploading…';
   const prog=document.getElementById('puBulkProgress');
@@ -8735,7 +9026,7 @@ function clearPuBulk(){
   document.getElementById('puBulkPreview').style.display='none';
   document.getElementById('puBulkProgress').style.display='none';
   const btn=document.getElementById('puBulkBtn');
-  btn.disabled=true; btn.innerHTML='<i class="fas fa-rocket"></i> Upload All Schools to Firebase';
+  btn.disabled=true; btn.innerHTML='<i class="fas fa-rocket"></i> Upload All Schools';
 }
 window.clearPuBulk=clearPuBulk;
 
@@ -8788,7 +9079,7 @@ async function addCampusGist(){
     logAdminActivity('add','campusgist','Add gist: '+text.substring(0,40));
     showStatus('success','<i class="fas fa-face-laugh-squint"></i> Gist published!');
     clearGistForm();loadCampusGist();switchTab('campusgist','list');
-  }catch(e){showStatus('error','Firebase error: '+e.message);}
+  }catch(e){showStatus('error','Error: '+e.message);}
   btn.disabled=false;btn.innerHTML='<i class="fas fa-face-laugh-squint"></i> Publish Gist';
 }
 window.addCampusGist=addCampusGist;
@@ -8866,7 +9157,7 @@ async function addPoll(){
     logAdminActivity('add','polls','Add poll: '+question.substring(0,40));
     showStatus('success','<i class="fas fa-square-poll-vertical"></i> Poll published!');
     clearPollForm();loadPolls();switchTab('polls','list');
-  }catch(e){showStatus('error','Firebase error: '+e.message);}
+  }catch(e){showStatus('error','Error: '+e.message);}
   btn.disabled=false;btn.innerHTML='<i class="fas fa-square-poll-vertical"></i> Publish Poll';
 }
 window.addPoll=addPoll;
