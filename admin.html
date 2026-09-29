@@ -128,7 +128,7 @@ body.dark .login-error{background:rgba(220,38,38,.15)}
 .topbar-sub{font-size:0.58rem;color:#bfdbfe;display:block}
 @media(max-width:420px){.topbar-brand-text{display:none}}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:6px;flex-shrink:0}
-.topbar-badge{background:rgba(255,255,255,0.15);padding:3px 10px;border-radius:20px;font-size:0.62rem;font-weight:600;white-space:nowrap;display:none}
+.topbar-badge{background:rgba(255,255,255,0.15);padding:3px 10px;border-radius:20px;font-size:0.62rem;font-weight:600;white-space:nowrap;display:none;max-width:220px;overflow:hidden;text-overflow:ellipsis}
 @media(min-width:680px){.topbar-badge{display:inline-flex}}
 .site-link{color:rgba(255,255,255,0.8);font-size:0.7rem;text-decoration:none;white-space:nowrap;display:none}
 @media(min-width:860px){.site-link{display:inline}}
@@ -246,7 +246,7 @@ body.role-editor .editor-only{display:inline-flex}
 @media(min-width:741px){.admin-main{padding:22px 26px 80px}}
 
 /* ─── STATUS BAR ─── */
-.status-bar{padding:11px 16px;border-radius:10px;font-size:0.83rem;font-weight:600;margin-bottom:16px;display:none;align-items:center;gap:8px;flex-wrap:wrap;line-height:1.4}
+.status-bar{padding:11px 16px;border-radius:10px;font-size:0.83rem;font-weight:600;margin-bottom:16px;display:none;align-items:center;gap:8px;flex-wrap:wrap;line-height:1.4;word-break:break-word;overflow-wrap:break-word}
 .status-bar.show{display:flex}
 .status-bar.success{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
 .status-bar.error{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca}
@@ -521,7 +521,8 @@ body.dark .social-preview-warn{background:#3f2d05;border-color:#78350f;color:#fb
 .imglib-card-actions button{flex:1;font-size:.62rem;padding:4px 6px}
 .imglib-empty{grid-column:1/-1;text-align:center;padding:30px 10px;color:var(--muted);font-size:.82rem}
 .catmgr-list{display:flex;flex-direction:column;gap:8px}
-.catmgr-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--light);border:1px solid var(--border);border-radius:9px;font-size:.85rem;font-weight:600}
+.catmgr-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:var(--light);border:1px solid var(--border);border-radius:9px;font-size:.85rem;font-weight:600}
+.catmgr-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .progress-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999}
 .progress-overlay.show{display:flex}
 .progress-box{background:var(--card);border-radius:14px;padding:24px;width:280px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
@@ -793,7 +794,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
   <div class="topbar">
     <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" title="Menu" aria-label="Open navigation menu"><i class="fas fa-bars"></i></button>
     <div class="topbar-logo">
-      <img src="https://i.imgur.com/lYJXUyY.jpeg" alt="Logo">
+      <img src="https://bigquamsmedia.com.ng/logo.png" alt="Logo">
       <div><div class="topbar-brand">BIG QUAMS MEDIA®</div><span class="topbar-sub">News Admin Panel</span></div>
     </div>
     <div class="topbar-right">
@@ -818,7 +819,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
     <nav class="sidebar" id="adminSidebar">
       <div class="sidebar-header">
         <div class="sidebar-header-brand">
-          <img src="https://i.imgur.com/lYJXUyY.jpeg" alt="Logo">
+          <img src="https://bigquamsmedia.com.ng/logo.png" alt="Logo">
           <span>BQM Admin</span>
         </div>
         <button class="sidebar-close-btn" onclick="closeSidebar()" title="Close menu" aria-label="Close navigation menu"><i class="fas fa-xmark"></i></button>
@@ -958,7 +959,7 @@ body.dark .nelfund-highlight h4{color:#93c5fd}
           <h2 id="welcomeHeading">Welcome back, Admin <i class="fas fa-hand"></i></h2>
           <p>Manage all content for Big Quams Media® from here.<br>Tap the <i class="fas fa-bars"></i> menu to jump to any section.</p>
         </div>
-        <img class="welcome-img" src="https://i.imgur.com/lYJXUyY.jpeg" alt="BQM">
+        <img class="welcome-img" src="https://bigquamsmedia.com.ng/logo.png" alt="BQM">
       </div>
 
       <div class="stats-row">
@@ -5774,6 +5775,10 @@ function openMyProfileModal(){
           </div>
           <div class="form-group"><label>Display Name (byline)</label><input type="text" id="myProfileNickname"></div>
           <div class="form-group"><label>Bio <span style="text-transform:none;font-weight:400">(shown under your byline on articles)</span></label><textarea id="myProfileBio" placeholder="A short line about you — role, beat, or focus area." style="min-height:90px"></textarea></div>
+          <div class="form-group ceo-only">
+            <label class="preview-toggle-row"><input type="checkbox" class="circle-check" id="myProfileIsOwner"> Show "Big Quams Media" instead of my name on articles</label>
+            <div class="form-hint">Only visible to CEO accounts. When on, your byline reads "Big Quams Media" (still links to this profile) instead of your personal name, and this profile gets an "Owner" badge and its own section on the Authors page.</div>
+          </div>
           <div class="btn-row">
             <button class="btn btn-primary" onclick="saveMyProfile()" id="saveMyProfileBtn">Save Profile</button>
             <button class="btn btn-ghost" onclick="closeModal('myProfileModal')">Cancel</button>
@@ -5788,6 +5793,8 @@ function openMyProfileModal(){
       const data=snap.exists()?snap.data():{};
       document.getElementById('myProfileNickname').value=data.nickname||firebaseUser.displayName||'';
       document.getElementById('myProfileBio').value=data.bio||'';
+      const ownerBox=document.getElementById('myProfileIsOwner');
+      if(ownerBox) ownerBox.checked=data.role==='owner';
       const photoPrev=document.getElementById('myProfilePhotoPreview');
       if(data.photo){ photoPrev.src=data.photo; photoPrev.style.display='block'; }
       else { photoPrev.style.display='none'; }
@@ -5820,15 +5827,21 @@ async function saveMyProfile(){
   const btn=document.getElementById('saveMyProfileBtn'); btn.disabled=true; btn.textContent='Saving…';
   try{
     const photo=window._myProfilePhotoB64||'';
+    // Only a genuine CEO account can end up with role:'owner' here, even
+    // though the checkbox is CSS-hidden (not removed) for everyone else —
+    // this re-checks isCeoEmail() server-request-side rather than trusting
+    // the checkbox's DOM state alone.
+    const isCEO=isCeoEmail(firebaseUser.email);
+    const ownerBox=document.getElementById('myProfileIsOwner');
+    const role=(isCEO && ownerBox && ownerBox.checked) ? 'owner' : '';
     await window.setDoc(window.doc(window.db,'admin_profiles',firebaseUser.uid),{
-      nickname, bio, photo
+      nickname, bio, photo, role
     },{merge:true});
-    await syncPublicAuthorProfile(firebaseUser.uid,{nickname,bio,photo});
+    await syncPublicAuthorProfile(firebaseUser.uid,{nickname,bio,photo,role});
     closeModal('myProfileModal');
     await loadAuthorProfiles();
     // Keep the Add form's author field/badge in sync if it currently shows this admin
     const badge=document.getElementById('topBadge');
-    const isCEO=isCeoEmail(firebaseUser.email);
     if(badge&&!isCEO) badge.textContent=nickname+' · Admin';
     const authorField=document.getElementById('addAuthor');
     if(authorField&&!isCEO) authorField.value=nickname;
@@ -5843,10 +5856,10 @@ window.saveMyProfile=saveMyProfile;
 // bio) to a separate public collection, so the newsroom page can show
 // bylines without needing read access to admin_profiles — which also holds
 // email and role, and must never be publicly readable (see firestore.rules).
-async function syncPublicAuthorProfile(uid,{nickname,photo,bio}){
+async function syncPublicAuthorProfile(uid,{nickname,photo,bio,role}){
   try{
     await window.setDoc(window.doc(window.db,'fs_author_profiles',uid),{
-      nickname:nickname||'', photo:photo||'', bio:bio||''
+      nickname:nickname||'', photo:photo||'', bio:bio||'', role:role||''
     },{merge:true});
   }catch(e){ console.warn('Public author profile sync failed:',e.message); }
 }
